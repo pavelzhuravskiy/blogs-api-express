@@ -7,6 +7,7 @@ import {
   bodyNameValidationMiddleware,
   bodyWebsiteUrlValidationMiddleware,
 } from "../middlewares/body-input-validation-middleware";
+import { basicAuthMiddleware } from "../middlewares/basic-auth-middleware";
 
 export const blogsRouter = Router({});
 
@@ -26,6 +27,7 @@ blogsRouter.get("/:id", (req: Request, res: Response) => {
 
 blogsRouter.post(
   "/",
+  basicAuthMiddleware,
   bodyNameValidationMiddleware,
   bodyDescriptionValidationMiddleware,
   bodyWebsiteUrlValidationMiddleware,
@@ -44,6 +46,7 @@ blogsRouter.post(
 
 blogsRouter.put(
   "/:id",
+  basicAuthMiddleware,
   bodyNameValidationMiddleware,
   bodyDescriptionValidationMiddleware,
   bodyWebsiteUrlValidationMiddleware,
@@ -64,10 +67,14 @@ blogsRouter.put(
   }
 );
 
-blogsRouter.delete("/:id", (req: Request, res: Response) => {
-  const deletedVideo = blogsRepository.deleteBlog(req.params.id);
-  if (deletedVideo) {
-    res.sendStatus(204);
+blogsRouter.delete(
+  "/:id",
+  basicAuthMiddleware,
+  (req: Request, res: Response) => {
+    const deletedVideo = blogsRepository.deleteBlog(req.params.id);
+    if (deletedVideo) {
+      res.sendStatus(204);
+    }
+    res.sendStatus(404);
   }
-  res.sendStatus(404);
-});
+);
