@@ -61,7 +61,6 @@ postsRouter.put(
   errorCheckMiddleware,
   (req: Request, res: Response) => {
     const isUpdated = postsRepository.updatePost(
-      req.body.id,
       req.body.title,
       req.body.shortDescription,
       req.body.content,

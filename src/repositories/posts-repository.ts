@@ -41,16 +41,14 @@ export const postsRepository = {
 
   // Update existing post
   updatePost(
-    id: string,
     title: string,
     shortDescription: string,
     content: string,
     blogId: string,
     blogName: string
   ) {
-    const postToUpdate = posts.find((post) => post.id === id);
+    const postToUpdate = posts.find((post) => post.id);
     if (postToUpdate) {
-      postToUpdate.id = id;
       postToUpdate.title = title;
       postToUpdate.shortDescription = shortDescription;
       postToUpdate.content = content;
