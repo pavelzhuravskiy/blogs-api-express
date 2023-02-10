@@ -1,7 +1,7 @@
 import express from "express";
 import { blogsRouter } from "./routers/blogs-router";
 import { postsRouter } from "./routers/posts-router";
-import { testingRouter } from "./routers/testing_router";
+import { testingRouter } from "./routers/testing-router";
 
 const app = express();
 const port = 3000;
