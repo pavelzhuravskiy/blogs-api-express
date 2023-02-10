@@ -53,6 +53,7 @@ blogsRouter.put(
   errorCheckMiddleware,
   (req: Request, res: Response) => {
     const isUpdated = blogsRepository.updateBlog(
+      req.params.id,
       req.body.name,
       req.body.description,
       req.body.websiteUrl

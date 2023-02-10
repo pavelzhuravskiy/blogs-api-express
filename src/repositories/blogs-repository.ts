@@ -37,12 +37,14 @@ export const blogsRepository = {
 
   // Update existing blog
   updateBlog(
+    id: string,
     name: string,
     description: string,
     websiteUrl: string
   ) {
-    const blogToUpdate = blogs.find((blog) => blog.id);
+    const blogToUpdate = blogs.find((blog) => blog.id === id);
     if (blogToUpdate) {
+      blogToUpdate.id = id;
       blogToUpdate.name = name;
       blogToUpdate.description = description;
       blogToUpdate.websiteUrl = websiteUrl;
