@@ -71,8 +71,8 @@ blogsRouter.delete(
   "/:id",
   basicAuthMiddleware,
   (req: Request, res: Response) => {
-    const deletedVideo = blogsRepository.deleteBlog(req.params.id);
-    if (deletedVideo) {
+    const deletedBlog = blogsRepository.deleteBlog(req.params.id);
+    if (deletedBlog) {
       res.sendStatus(204);
     }
     res.sendStatus(404);

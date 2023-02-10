@@ -1,4 +1,4 @@
-import { BlogViewModelArray } from "../models/BlogViewModel";
+import {BlogViewModel, BlogViewModelArray} from "../models/BlogViewModel";
 
 const blogs: BlogViewModelArray = [];
 
@@ -25,7 +25,7 @@ export const blogsRepository = {
     description: string,
     websiteUrl: string
   ) {
-    const newBlog = {
+    const newBlog: BlogViewModel = {
       id: id,
       name: name,
       description: description,
