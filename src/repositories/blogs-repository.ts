@@ -1,4 +1,4 @@
-import {BlogViewModel, BlogViewModelArray} from "../models/BlogViewModel";
+import { BlogViewModelArray } from "../models/BlogViewModel";
 
 const blogs: BlogViewModelArray = [];
 
@@ -25,7 +25,7 @@ export const blogsRepository = {
     description: string,
     websiteUrl: string
   ) {
-    const newBlog: BlogViewModel = {
+    const newBlog = {
       id: id,
       name: name,
       description: description,
@@ -37,12 +37,11 @@ export const blogsRepository = {
 
   // Update existing blog
   updateBlog(
-    id: string,
     name: string,
     description: string,
     websiteUrl: string
   ) {
-    const blogToUpdate = blogs.find((blog) => blog.id === id);
+    const blogToUpdate = blogs.find((blog) => blog.id);
     if (blogToUpdate) {
       blogToUpdate.name = name;
       blogToUpdate.description = description;
