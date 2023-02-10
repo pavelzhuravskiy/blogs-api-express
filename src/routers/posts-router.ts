@@ -1,6 +1,15 @@
 import { Request, Response, Router } from "express";
 import { postsRepository } from "../repositories/posts-repository";
 import { randomNumber } from "../functions/random-num-generator";
+import { basicAuthMiddleware } from "../middlewares/basic-auth-middleware";
+import {
+  postBodyBlogIdValidationMiddleware,
+  postBodyContentValidationMiddleware,
+  postBodyDescriptionValidationMiddleware,
+  postBodyNameValidationMiddleware,
+} from "../middlewares/posts-body-validation-middleware";
+import { errorCheckMiddleware } from "../middlewares/error-check-middleware";
+import { blogIdCheckMiddleware } from "../middlewares/blog-id-check-middleware";
 
 export const postsRouter = Router({});
 
@@ -20,11 +29,13 @@ postsRouter.get("/:id", (req: Request, res: Response) => {
 
 postsRouter.post(
   "/",
-  // basicAuthMiddleware,
-  // bodyNameValidationMiddleware,
-  // bodyDescriptionValidationMiddleware,
-  // bodyWebsiteUrlValidationMiddleware,
-  // errorCheckMiddleware,
+  basicAuthMiddleware,
+  blogIdCheckMiddleware,
+  postBodyNameValidationMiddleware,
+  postBodyDescriptionValidationMiddleware,
+  postBodyContentValidationMiddleware,
+  postBodyBlogIdValidationMiddleware,
+  errorCheckMiddleware,
   (req: Request, res: Response) => {
     const newPost = postsRepository.createNewPost(
       randomNumber(1, 999999999999999999999),
@@ -41,11 +52,13 @@ postsRouter.post(
 
 postsRouter.put(
   "/:id",
-  // basicAuthMiddleware,
-  // bodyNameValidationMiddleware,
-  // bodyDescriptionValidationMiddleware,
-  // bodyWebsiteUrlValidationMiddleware,
-  // errorCheckMiddleware,
+  basicAuthMiddleware,
+  blogIdCheckMiddleware,
+  postBodyNameValidationMiddleware,
+  postBodyDescriptionValidationMiddleware,
+  postBodyContentValidationMiddleware,
+  postBodyBlogIdValidationMiddleware,
+  errorCheckMiddleware,
   (req: Request, res: Response) => {
     const isUpdated = postsRepository.updatePost(
       req.body.id,
@@ -66,7 +79,7 @@ postsRouter.put(
 
 postsRouter.delete(
   "/:id",
-  // basicAuthMiddleware,
+  basicAuthMiddleware,
   (req: Request, res: Response) => {
     const deletedPost = postsRepository.deletePost(req.params.id);
     if (deletedPost) {

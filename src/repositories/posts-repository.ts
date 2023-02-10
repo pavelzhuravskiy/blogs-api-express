@@ -1,4 +1,4 @@
-import { PostViewModel, PostViewModelArray } from "../models/postViewModel";
+import { PostViewModel, PostViewModelArray } from "../models/PostViewModel";
 
 const posts: PostViewModelArray = [];
 
