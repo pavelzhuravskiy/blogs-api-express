@@ -10,6 +10,7 @@ import {
 } from "../middlewares/posts-body-validation-middleware";
 import { errorCheckMiddleware } from "../middlewares/error-check-middleware";
 import { blogIdCheckMiddleware } from "../middlewares/blog-id-check-middleware";
+import { blogNameFinder } from "../functions/blog-name-finder";
 
 export const postsRouter = Router({});
 
@@ -43,7 +44,7 @@ postsRouter.post(
       req.body.shortDescription,
       req.body.content,
       req.body.blogId,
-      req.body.blogName
+      blogNameFinder(req)
     );
     res.status(201).json(newPost);
     return;
