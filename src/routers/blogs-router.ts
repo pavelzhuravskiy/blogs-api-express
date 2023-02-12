@@ -2,11 +2,7 @@ import { Request, Response, Router } from "express";
 import { blogsRepository } from "../repositories/blogs-repository";
 import { randomNumber } from "../functions/random-num-generator";
 import { errorCheckMiddleware } from "../middlewares/error-check-middleware";
-import {
-  blogBodyDescriptionValidationMiddleware,
-  blogBodyNameValidationMiddleware,
-  blogBodyWebsiteUrlValidationMiddleware,
-} from "../middlewares/blogs-body-validation-middleware";
+import { blogInputValidationMiddleware } from "../middlewares/blogs-input-validation-middleware";
 import { basicAuthMiddleware } from "../middlewares/basic-auth-middleware";
 
 export const blogsRouter = Router({});
@@ -28,9 +24,7 @@ blogsRouter.get("/:id", (req: Request, res: Response) => {
 blogsRouter.post(
   "/",
   basicAuthMiddleware,
-  blogBodyNameValidationMiddleware,
-  blogBodyDescriptionValidationMiddleware,
-  blogBodyWebsiteUrlValidationMiddleware,
+  blogInputValidationMiddleware,
   errorCheckMiddleware,
   (req: Request, res: Response) => {
     const newBlog = blogsRepository.createNewBlog(
@@ -47,9 +41,7 @@ blogsRouter.post(
 blogsRouter.put(
   "/:id",
   basicAuthMiddleware,
-  blogBodyNameValidationMiddleware,
-  blogBodyDescriptionValidationMiddleware,
-  blogBodyWebsiteUrlValidationMiddleware,
+  blogInputValidationMiddleware,
   errorCheckMiddleware,
   (req: Request, res: Response) => {
     const isUpdated = blogsRepository.updateBlog(

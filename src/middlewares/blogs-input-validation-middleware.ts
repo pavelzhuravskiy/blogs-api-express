@@ -3,7 +3,7 @@ import { body } from "express-validator";
 const websiteUrlPattern =
   /^https:\/\/([a-zA-Z0-9_-]+\.)+[a-zA-Z0-9_-]+(\/[a-zA-Z0-9_-]+)*\/?$/;
 
-export const blogBodyNameValidationMiddleware = body("name")
+export const blogInputValidationMiddleware = body("name")
   .exists()
   .withMessage("Name is required")
   .bail()
@@ -21,7 +21,7 @@ export const blogBodyNameValidationMiddleware = body("name")
     "Name length must be more than 0 and less than or equal to 15 symbols"
   );
 
-export const blogBodyDescriptionValidationMiddleware = body("description")
+body("description")
   .exists()
   .withMessage("Description is required")
   .bail()
@@ -39,7 +39,7 @@ export const blogBodyDescriptionValidationMiddleware = body("description")
     "Description length must be more than 0 and less than or equal to 500 symbols"
   );
 
-export const blogBodyWebsiteUrlValidationMiddleware = body("websiteUrl")
+body("websiteUrl")
   .exists()
   .withMessage("Website URL is required")
   .bail()
