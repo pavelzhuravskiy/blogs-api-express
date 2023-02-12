@@ -2,12 +2,7 @@ import { Request, Response, Router } from "express";
 import { postsRepository } from "../repositories/posts-repository";
 import { randomNumber } from "../functions/random-num-generator";
 import { basicAuthMiddleware } from "../middlewares/basic-auth-middleware";
-import {
-  postBodyBlogIdValidationMiddleware,
-  postBodyContentValidationMiddleware,
-  postBodyDescriptionValidationMiddleware,
-  postBodyNameValidationMiddleware,
-} from "../middlewares/posts-body-validation-middleware";
+import { postInputValidationMiddleware } from "../middlewares/posts-input-validation-middleware";
 import { errorCheckMiddleware } from "../middlewares/error-check-middleware";
 import { blogIdCheckMiddleware } from "../middlewares/blog-id-check-middleware";
 import { blogNameFinder } from "../functions/blog-name-finder";
@@ -31,11 +26,8 @@ postsRouter.get("/:id", (req: Request, res: Response) => {
 postsRouter.post(
   "/",
   basicAuthMiddleware,
+  postInputValidationMiddleware,
   blogIdCheckMiddleware,
-  postBodyNameValidationMiddleware,
-  postBodyDescriptionValidationMiddleware,
-  postBodyContentValidationMiddleware,
-  postBodyBlogIdValidationMiddleware,
   errorCheckMiddleware,
   (req: Request, res: Response) => {
     const newPost = postsRepository.createNewPost(
@@ -54,11 +46,8 @@ postsRouter.post(
 postsRouter.put(
   "/:id",
   basicAuthMiddleware,
+  postInputValidationMiddleware,
   blogIdCheckMiddleware,
-  postBodyNameValidationMiddleware,
-  postBodyDescriptionValidationMiddleware,
-  postBodyContentValidationMiddleware,
-  postBodyBlogIdValidationMiddleware,
   errorCheckMiddleware,
   (req: Request, res: Response) => {
     const isUpdated = postsRepository.updatePost(
