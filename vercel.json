@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "name": "homework_02_01",
+  "name": "blogs_api_memory",
   "builds": [
     {
       "src": "src/index.ts",

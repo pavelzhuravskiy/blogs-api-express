@@ -1,6 +1,8 @@
-export type BlogViewModel = {
-  id: string;
-  name: string;
-  description: string;
-  websiteUrl: string;
-} | undefined;
+export type BlogViewModel =
+  | {
+      id: string;
+      name: string;
+      description: string;
+      websiteUrl: string;
+    }
+  | undefined;

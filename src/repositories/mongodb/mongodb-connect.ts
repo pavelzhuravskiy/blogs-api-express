@@ -13,7 +13,7 @@ export async function runDB() {
     console.log("Connected successfully to mongo server");
   } catch {
     console.log("Connection to DB failed");
-    await client.close()
+    await client.close();
     // Ensures that client will close when you finish/error
   }
 }

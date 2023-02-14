@@ -14,6 +14,7 @@ postsRouter.get("/", async (req: Request, res: Response) => {
   const foundPosts: PostViewModel[] =
     await postsRepositoryMemory.findAllPosts();
   res.json(foundPosts);
+  return;
 });
 
 postsRouter.get("/:id", async (req: Request, res: Response) => {
@@ -41,7 +42,7 @@ postsRouter.post(
       req.body.shortDescription,
       req.body.content,
       req.body.blogId,
-      blogNameFinder(req)
+      await blogNameFinder(req)
     );
     res.status(201).json(newPost);
     return;
@@ -61,7 +62,7 @@ postsRouter.put(
       req.body.shortDescription,
       req.body.content,
       req.body.blogId,
-      blogNameFinder(req)
+      await blogNameFinder(req)
     );
     if (isUpdated) {
       const updatedPost: PostViewModel =
@@ -70,6 +71,7 @@ postsRouter.put(
     } else {
       res.sendStatus(404);
     }
+    return;
   }
 );
 
@@ -82,7 +84,9 @@ postsRouter.delete(
     );
     if (deletedPost) {
       res.sendStatus(204);
+    } else {
+      res.sendStatus(404);
     }
-    res.sendStatus(404);
+    return;
   }
 );

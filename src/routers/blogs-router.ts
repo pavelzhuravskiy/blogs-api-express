@@ -12,6 +12,7 @@ blogsRouter.get("/", async (req: Request, res: Response) => {
   const foundBlogs: BlogViewModel[] =
     await blogsRepositoryMemory.findAllBlogs();
   res.json(foundBlogs);
+  return;
 });
 
 blogsRouter.get("/:id", async (req: Request, res: Response) => {
@@ -62,6 +63,7 @@ blogsRouter.put(
     } else {
       res.sendStatus(404);
     }
+    return;
   }
 );
 
@@ -69,12 +71,14 @@ blogsRouter.delete(
   "/:id",
   basicAuthMiddleware,
   async (req: Request, res: Response) => {
-    const deletedBlog: boolean = await blogsRepositoryMemory.deleteBlog(
+    const isDeleted: boolean = await blogsRepositoryMemory.deleteBlog(
       req.params.id
     );
-    if (deletedBlog) {
+    if (isDeleted) {
       res.sendStatus(204);
+    } else {
+      res.sendStatus(404);
     }
-    res.sendStatus(404);
+    return;
   }
 );
