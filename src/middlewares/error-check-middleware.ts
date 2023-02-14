@@ -6,7 +6,7 @@ export const errorCheckMiddleware = async (
   res: Response,
   next: NextFunction
 ) => {
-  const errorFormatter = ({ msg, param }: ValidationError) => {
+  const errorFormatter = async ({ msg, param }: ValidationError) => {
     return {
       message: msg,
       field: param,
