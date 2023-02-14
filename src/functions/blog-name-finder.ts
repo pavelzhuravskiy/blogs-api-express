@@ -1,9 +1,9 @@
 import { Request } from "express";
-import { blogsRepository } from "../repositories/blogs-repository";
+import { blogsRepositoryMemory } from "../repositories/memory/blogs-repository-memory";
 
 export const blogNameFinder = (req: Request) => {
   let blogName;
-  const blogToFind = blogsRepository
+  const blogToFind = blogsRepositoryMemory
     .findAllBlogs()
     .find((blog) => blog.id === req.body.blogId);
   if (blogToFind) {

@@ -1,32 +1,27 @@
-import { PostViewModel, PostViewModelArray } from "../models/PostViewModel";
+import { PostViewModel } from "../../models/PostViewModel";
 
-const posts: PostViewModelArray = [];
+const posts: PostViewModel[] = [];
 
-export const postsRepository = {
+export const postsRepositoryMemory = {
   // Return all posts
-  findAllPosts() {
+  async findAllPosts(): Promise<PostViewModel[]> {
     return posts;
   },
 
   // Return all posts
-  findPostById(id: string) {
-    const foundPost = posts.find((post) => post.id === id);
-    if (id) {
-      return foundPost;
-    } else {
-      return posts;
-    }
+  async findPostById(id: string): Promise<PostViewModel> {
+    return posts.find((post) => post?.id === id);
   },
 
   // Create new post
-  createNewPost(
+  async createNewPost(
     id: string,
     title: string,
     shortDescription: string,
     content: string,
     blogId: string,
     blogName: string
-  ) {
+  ): Promise<PostViewModel> {
     const newPost: PostViewModel = {
       id: id,
       title: title,
@@ -40,15 +35,15 @@ export const postsRepository = {
   },
 
   // Update existing post
-  updatePost(
-      id: string,
+  async updatePost(
+    id: string,
     title: string,
     shortDescription: string,
     content: string,
     blogId: string,
     blogName: string
-  ) {
-    const postToUpdate = posts.find((post) => post.id === id);
+  ): Promise<boolean> {
+    const postToUpdate = posts.find((post) => post?.id === id);
     if (postToUpdate) {
       postToUpdate.id = id;
       postToUpdate.title = title;
@@ -62,9 +57,9 @@ export const postsRepository = {
   },
 
   // Delete existing post
-  deletePost(id: string) {
+  async deletePost(id: string): Promise<boolean> {
     for (let i = 0; i < posts.length; i++) {
-      if (posts[i].id === id) {
+      if (posts[i]?.id === id) {
         posts.splice(i, 1);
         return true;
       }

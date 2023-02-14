@@ -1,18 +1,23 @@
 import { Request, Response, Router } from "express";
-import { blogsRepository } from "../repositories/blogs-repository";
+import { blogsRepositoryMemory } from "../repositories/memory/blogs-repository-memory";
 import { randomNumber } from "../functions/random-num-generator";
 import { errorCheckMiddleware } from "../middlewares/error-check-middleware";
 import { blogInputValidationMiddleware } from "../middlewares/blogs-input-validation-middleware";
 import { basicAuthMiddleware } from "../middlewares/basic-auth-middleware";
+import { BlogViewModel } from "../models/BlogViewModel";
 
 export const blogsRouter = Router({});
 
-blogsRouter.get("/", (req: Request, res: Response) => {
-  res.json(blogsRepository.findAllBlogs());
+blogsRouter.get("/", async (req: Request, res: Response) => {
+  const foundBlogs: BlogViewModel[] =
+    await blogsRepositoryMemory.findAllBlogs();
+  res.json(foundBlogs);
 });
 
-blogsRouter.get("/:id", (req: Request, res: Response) => {
-  const foundBlog = blogsRepository.findBlogById(req.params.id);
+blogsRouter.get("/:id", async (req: Request, res: Response) => {
+  const foundBlog: BlogViewModel = await blogsRepositoryMemory.findBlogById(
+    req.params.id
+  );
   if (foundBlog) {
     res.json(foundBlog);
   } else {
@@ -26,8 +31,8 @@ blogsRouter.post(
   basicAuthMiddleware,
   blogInputValidationMiddleware,
   errorCheckMiddleware,
-  (req: Request, res: Response) => {
-    const newBlog = blogsRepository.createNewBlog(
+  async (req: Request, res: Response) => {
+    const newBlog: BlogViewModel = await blogsRepositoryMemory.createNewBlog(
       randomNumber(1, 999999999999999999999),
       req.body.name,
       req.body.description,
@@ -43,15 +48,16 @@ blogsRouter.put(
   basicAuthMiddleware,
   blogInputValidationMiddleware,
   errorCheckMiddleware,
-  (req: Request, res: Response) => {
-    const isUpdated = blogsRepository.updateBlog(
+  async (req: Request, res: Response) => {
+    const isUpdated: boolean = await blogsRepositoryMemory.updateBlog(
       req.params.id,
       req.body.name,
       req.body.description,
       req.body.websiteUrl
     );
     if (isUpdated) {
-      const updatedBlog = blogsRepository.findBlogById(req.body.id);
+      const updatedBlog: BlogViewModel =
+        await blogsRepositoryMemory.findBlogById(req.body.id);
       res.status(204).json(updatedBlog);
     } else {
       res.sendStatus(404);
@@ -62,8 +68,10 @@ blogsRouter.put(
 blogsRouter.delete(
   "/:id",
   basicAuthMiddleware,
-  (req: Request, res: Response) => {
-    const deletedBlog = blogsRepository.deleteBlog(req.params.id);
+  async (req: Request, res: Response) => {
+    const deletedBlog: boolean = await blogsRepositoryMemory.deleteBlog(
+      req.params.id
+    );
     if (deletedBlog) {
       res.sendStatus(204);
     }

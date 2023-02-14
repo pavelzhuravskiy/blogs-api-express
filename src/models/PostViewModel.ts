@@ -5,6 +5,4 @@ export type PostViewModel = {
   content: string;
   blogId: string;
   blogName: string;
-};
-
-export type PostViewModelArray = Array<PostViewModel>;
+} | undefined

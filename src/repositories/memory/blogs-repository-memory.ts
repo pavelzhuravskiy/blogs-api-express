@@ -1,30 +1,25 @@
-import { BlogViewModelArray } from "../models/BlogViewModel";
+import { BlogViewModel } from "../../models/BlogViewModel";
 
-const blogs: BlogViewModelArray = [];
+const blogs: BlogViewModel[] = [];
 
-export const blogsRepository = {
+export const blogsRepositoryMemory = {
   // Return all blogs
-  findAllBlogs() {
+  async findAllBlogs(): Promise<BlogViewModel[]> {
     return blogs;
   },
 
   // Return blog by ID
-  findBlogById(id: string) {
-    const foundBlog = blogs.find((blog) => blog.id === id);
-    if (id) {
-      return foundBlog;
-    } else {
-      return blogs;
-    }
+  async findBlogById(id: string): Promise<BlogViewModel> {
+    return blogs.find((blog) => blog?.id === id);
   },
 
   // Create new blog
-  createNewBlog(
+  async createNewBlog(
     id: string,
     name: string,
     description: string,
     websiteUrl: string
-  ) {
+  ): Promise<BlogViewModel> {
     const newBlog = {
       id: id,
       name: name,
@@ -36,13 +31,13 @@ export const blogsRepository = {
   },
 
   // Update existing blog
-  updateBlog(
+  async updateBlog(
     id: string,
     name: string,
     description: string,
     websiteUrl: string
-  ) {
-    const blogToUpdate = blogs.find((blog) => blog.id === id);
+  ): Promise<boolean> {
+    const blogToUpdate = blogs.find((blog) => blog?.id === id);
     if (blogToUpdate) {
       blogToUpdate.id = id;
       blogToUpdate.name = name;
@@ -54,9 +49,9 @@ export const blogsRepository = {
   },
 
   // Delete existing blog
-  deleteBlog(id: string) {
+  async deleteBlog(id: string): Promise<boolean> {
     for (let i = 0; i < blogs.length; i++) {
-      if (blogs[i].id === id) {
+      if (blogs[i]?.id === id) {
         blogs.splice(i, 1);
         return true;
       }

@@ -1,20 +1,25 @@
 import { Request, Response, Router } from "express";
-import { postsRepository } from "../repositories/posts-repository";
+import { postsRepositoryMemory } from "../repositories/memory/posts-repository-memory";
 import { randomNumber } from "../functions/random-num-generator";
 import { basicAuthMiddleware } from "../middlewares/basic-auth-middleware";
 import { postInputValidationMiddleware } from "../middlewares/posts-input-validation-middleware";
 import { errorCheckMiddleware } from "../middlewares/error-check-middleware";
 import { blogIdCheckMiddleware } from "../middlewares/blog-id-check-middleware";
 import { blogNameFinder } from "../functions/blog-name-finder";
+import { PostViewModel } from "../models/PostViewModel";
 
 export const postsRouter = Router({});
 
-postsRouter.get("/", (req: Request, res: Response) => {
-  res.json(postsRepository.findAllPosts());
+postsRouter.get("/", async (req: Request, res: Response) => {
+  const foundPosts: PostViewModel[] =
+    await postsRepositoryMemory.findAllPosts();
+  res.json(foundPosts);
 });
 
-postsRouter.get("/:id", (req: Request, res: Response) => {
-  const foundPost = postsRepository.findPostById(req.params.id);
+postsRouter.get("/:id", async (req: Request, res: Response) => {
+  const foundPost: PostViewModel = await postsRepositoryMemory.findPostById(
+    req.params.id
+  );
   if (foundPost) {
     res.json(foundPost);
   } else {
@@ -29,8 +34,8 @@ postsRouter.post(
   postInputValidationMiddleware,
   blogIdCheckMiddleware,
   errorCheckMiddleware,
-  (req: Request, res: Response) => {
-    const newPost = postsRepository.createNewPost(
+  async (req: Request, res: Response) => {
+    const newPost: PostViewModel = await postsRepositoryMemory.createNewPost(
       randomNumber(1, 999999999999999999999),
       req.body.title,
       req.body.shortDescription,
@@ -49,8 +54,8 @@ postsRouter.put(
   postInputValidationMiddleware,
   blogIdCheckMiddleware,
   errorCheckMiddleware,
-  (req: Request, res: Response) => {
-    const isUpdated = postsRepository.updatePost(
+  async (req: Request, res: Response) => {
+    const isUpdated: boolean = await postsRepositoryMemory.updatePost(
       req.params.id,
       req.body.title,
       req.body.shortDescription,
@@ -59,7 +64,8 @@ postsRouter.put(
       blogNameFinder(req)
     );
     if (isUpdated) {
-      const updatedPost = postsRepository.findPostById(req.body.id);
+      const updatedPost: PostViewModel =
+        await postsRepositoryMemory.findPostById(req.body.id);
       res.status(204).json(updatedPost);
     } else {
       res.sendStatus(404);
@@ -70,8 +76,10 @@ postsRouter.put(
 postsRouter.delete(
   "/:id",
   basicAuthMiddleware,
-  (req: Request, res: Response) => {
-    const deletedPost = postsRepository.deletePost(req.params.id);
+  async (req: Request, res: Response) => {
+    const deletedPost: boolean = await postsRepositoryMemory.deletePost(
+      req.params.id
+    );
     if (deletedPost) {
       res.sendStatus(204);
     }
