@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { ValidationError, validationResult } from "express-validator";
 
-export const errorCheckMiddleware = (
+export const errorCheckMiddleware = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -20,4 +20,5 @@ export const errorCheckMiddleware = (
   } else {
     next();
   }
+  return;
 };

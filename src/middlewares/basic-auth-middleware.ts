@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 
-export const basicAuthMiddleware = (
+export const basicAuthMiddleware = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -10,4 +10,5 @@ export const basicAuthMiddleware = (
   } else {
     next();
   }
+  return;
 };
