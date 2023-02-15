@@ -5,20 +5,19 @@ import { basicAuthMiddleware } from "../middlewares/basic-auth-middleware";
 import { postInputValidationMiddleware } from "../middlewares/posts-input-validation-middleware";
 import { errorCheckMiddleware } from "../middlewares/error-check-middleware";
 import { blogIdCheckMiddleware } from "../middlewares/blog-id-check-middleware";
-import { PostViewModel } from "../models/PostViewModel";
+import { PostMemoryModel } from "../models/PostMemoryModel";
 import { blogNameFinder } from "../functions/blog-name-finder";
 
 export const postsRouter = Router({});
 
 postsRouter.get("/", async (req: Request, res: Response) => {
-  const foundPosts: PostViewModel[] =
+  const foundPosts: PostMemoryModel[] =
     await postsRepositoryMemory.findAllPosts();
   res.json(foundPosts);
-  return;
 });
 
 postsRouter.get("/:id", async (req: Request, res: Response) => {
-  const foundPost: PostViewModel = await postsRepositoryMemory.findPostById(
+  const foundPost: PostMemoryModel = await postsRepositoryMemory.findPostById(
     req.params.id
   );
   if (foundPost) {
@@ -35,7 +34,7 @@ postsRouter.post(
   blogIdCheckMiddleware,
   errorCheckMiddleware,
   async (req: Request, res: Response) => {
-    const newPost: PostViewModel = await postsRepositoryMemory.createNewPost(
+    const newPost: PostMemoryModel = await postsRepositoryMemory.createNewPost(
       randomNumber(1, 999999999999999999999),
       req.body.title,
       req.body.shortDescription,
@@ -44,7 +43,6 @@ postsRouter.post(
       await blogNameFinder(req)
     );
     res.status(201).json(newPost);
-    return;
   }
 );
 
@@ -64,7 +62,7 @@ postsRouter.put(
       await blogNameFinder(req)
     );
     if (isUpdated) {
-      const updatedPost: PostViewModel =
+      const updatedPost: PostMemoryModel =
         await postsRepositoryMemory.findPostById(req.body.id);
       res.status(204).json(updatedPost);
     } else {
