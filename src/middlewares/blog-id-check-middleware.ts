@@ -1,5 +1,6 @@
 import { body } from "express-validator";
-import { blogsRepository } from "../repositories/memory/blogs-repository-memory";
+import { blogsRepository } from "../repositories/mongodb/blogs-repository-mongodb";
+// import { blogsRepository } from "../repositories/memory/blogs-repository-memory";
 
 export const blogIdCheckMiddleware = body("blogId").custom(
     async value => {

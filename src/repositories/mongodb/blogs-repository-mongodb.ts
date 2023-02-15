@@ -1,22 +1,15 @@
-import { client } from "./mongodb-connect";
+import { blogsCollection } from "./_mongodb-connect";
 import { BlogMongoModel } from "../../models/BlogMongoModel";
 
 export const blogsRepository = {
   // Return all blogs
   async findAllBlogs(): Promise<BlogMongoModel[]> {
-    return client
-      .db("bp")
-      .collection<BlogMongoModel>("blogs")
-      .find({})
-      .toArray();
+    return blogsCollection.find({}).toArray();
   },
 
   // Return blog by ID
   async findBlogById(id: string): Promise<BlogMongoModel | null> {
-    const foundBlog = await client
-      .db("bp")
-      .collection<BlogMongoModel>("blogs")
-      .findOne({ id });
+    const foundBlog = await blogsCollection.findOne({ id });
     if (foundBlog) {
       return foundBlog;
     } else {
@@ -37,10 +30,7 @@ export const blogsRepository = {
       description: description,
       websiteUrl: websiteUrl,
     };
-    await client
-      .db("bp")
-      .collection<BlogMongoModel>("blogs")
-      .insertOne(newBlog);
+    await blogsCollection.insertOne(newBlog);
     return newBlog;
   },
 
@@ -51,28 +41,22 @@ export const blogsRepository = {
     description: string,
     websiteUrl: string
   ): Promise<boolean> {
-    const result = await client
-      .db("bp")
-      .collection<BlogMongoModel>("blogs")
-      .updateOne(
-        { id: id },
-        {
-          $set: {
-            name: name,
-            description: description,
-            websiteUrl: websiteUrl,
-          },
-        }
-      );
+    const result = await blogsCollection.updateOne(
+      { id: id },
+      {
+        $set: {
+          name: name,
+          description: description,
+          websiteUrl: websiteUrl,
+        },
+      }
+    );
     return result.matchedCount === 1;
   },
 
   // Delete existing blog
   async deleteBlog(id: string): Promise<boolean> {
-    const result = await client
-      .db("bp")
-      .collection<BlogMongoModel>("blogs")
-      .deleteOne({id: id});
+    const result = await blogsCollection.deleteOne({ id: id });
     return result.deletedCount === 1;
   },
 };

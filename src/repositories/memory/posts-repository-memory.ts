@@ -2,13 +2,13 @@ import { PostMemoryModel } from "../../models/PostMemoryModel";
 
 const posts: PostMemoryModel[] = [];
 
-export const postsRepositoryMemory = {
+export const postsRepository = {
   // Return all posts
   async findAllPosts(): Promise<PostMemoryModel[]> {
     return posts;
   },
 
-  // Return all posts
+  // Return post by ID
   async findPostById(id: string): Promise<PostMemoryModel> {
     return posts.find((post) => post?.id === id);
   },
