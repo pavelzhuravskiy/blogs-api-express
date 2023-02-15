@@ -1,15 +1,15 @@
 import { Request, Response, Router } from "express";
-import { blogsRepositoryMemory } from "../repositories/memory/blogs-repository-memory";
+import { blogsRepository } from "../repositories/memory/blogs-repository-memory";
 import { postsRepositoryMemory } from "../repositories/memory/posts-repository-memory";
-import { BlogViewModel } from "../models/BlogViewModel";
-import { PostViewModel } from "../models/PostViewModel";
+import { BlogMemoryModel } from "../models/BlogMemoryModel";
+import { PostMemoryModel } from "../models/PostMemoryModel";
 
 export const testingRouter = Router({});
 
 testingRouter.delete("/all-data", async (req: Request, res: Response) => {
-  const emptyBlogs: BlogViewModel[] =
-    await blogsRepositoryMemory.findAllBlogs();
-  const emptyPosts: PostViewModel[] =
+  const emptyBlogs: BlogMemoryModel[] =
+    await blogsRepository.findAllBlogs();
+  const emptyPosts: PostMemoryModel[] =
     await postsRepositoryMemory.findAllPosts();
   emptyBlogs.length = 0;
   emptyPosts.length = 0;

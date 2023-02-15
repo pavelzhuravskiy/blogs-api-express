@@ -1,9 +1,9 @@
 import { body } from "express-validator";
-import { blogsRepositoryMemory } from "../repositories/memory/blogs-repository-memory";
+import { blogsRepository } from "../repositories/memory/blogs-repository-memory";
 
 export const blogIdCheckMiddleware = body("blogId").custom(
     async value => {
-      const validBlogId = await blogsRepositoryMemory.findAllBlogs()
+      const validBlogId = await blogsRepository.findAllBlogs()
       const isValid = validBlogId.filter(el => el!.id === value)
       if(isValid.length < 1) {
         throw new Error('Invalid blogId')

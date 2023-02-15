@@ -1,15 +1,15 @@
-import { PostViewModel } from "../../models/PostViewModel";
+import { PostMemoryModel } from "../../models/PostMemoryModel";
 
-const posts: PostViewModel[] = [];
+const posts: PostMemoryModel[] = [];
 
 export const postsRepositoryMemory = {
   // Return all posts
-  async findAllPosts(): Promise<PostViewModel[]> {
+  async findAllPosts(): Promise<PostMemoryModel[]> {
     return posts;
   },
 
   // Return all posts
-  async findPostById(id: string): Promise<PostViewModel> {
+  async findPostById(id: string): Promise<PostMemoryModel> {
     return posts.find((post) => post?.id === id);
   },
 
@@ -21,8 +21,8 @@ export const postsRepositoryMemory = {
     content: string,
     blogId: string,
     blogName: string
-  ): Promise<PostViewModel> {
-    const newPost: PostViewModel = {
+  ): Promise<PostMemoryModel> {
+    const newPost: PostMemoryModel = {
       id: id,
       title: title,
       shortDescription: shortDescription,
