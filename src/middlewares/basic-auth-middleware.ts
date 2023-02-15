@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 
-export const basicAuthMiddleware = async (
+export const basicAuthMiddleware = (
   req: Request,
   res: Response,
   next: NextFunction

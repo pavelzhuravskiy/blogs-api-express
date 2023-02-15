@@ -5,8 +5,8 @@ import { basicAuthMiddleware } from "../middlewares/basic-auth-middleware";
 import { postInputValidationMiddleware } from "../middlewares/posts-input-validation-middleware";
 import { errorCheckMiddleware } from "../middlewares/error-check-middleware";
 import { blogIdCheckMiddleware } from "../middlewares/blog-id-check-middleware";
-import { blogNameFinder } from "../functions/blog-name-finder";
 import { PostViewModel } from "../models/PostViewModel";
+import { blogNameFinder } from "../functions/blog-name-finder";
 
 export const postsRouter = Router({});
 
@@ -26,7 +26,6 @@ postsRouter.get("/:id", async (req: Request, res: Response) => {
   } else {
     res.sendStatus(404);
   }
-  return;
 });
 
 postsRouter.post(
@@ -71,7 +70,6 @@ postsRouter.put(
     } else {
       res.sendStatus(404);
     }
-    return;
   }
 );
 
@@ -87,6 +85,5 @@ postsRouter.delete(
     } else {
       res.sendStatus(404);
     }
-    return;
   }
 );
