@@ -13,25 +13,21 @@ blogsRouter.get("/", async (req: Request, res: Response) => {
   res.json(blogMapping(foundBlogs));
 });
 
-blogsRouter.get(
-  "/:id",
-  errorCheckMiddleware,
-  async (req: Request, res: Response) => {
-    try {
-      const foundBlog = await blogsRepository.findBlogById(
-        new ObjectId(req.params.id)
-      );
-      if (foundBlog) {
-        res.json(foundBlog);
-      } else {
-        res.sendStatus(404);
-      }
-    } catch (err) {
-      console.log(err);
+blogsRouter.get("/:id", async (req: Request, res: Response) => {
+  try {
+    const foundBlog = await blogsRepository.findBlogById(
+      new ObjectId(req.params.id)
+    );
+    if (foundBlog) {
+      res.json(foundBlog);
+    } else {
       res.sendStatus(404);
     }
+  } catch (err) {
+    console.log(err);
+    res.sendStatus(404);
   }
-);
+});
 
 blogsRouter.post(
   "/",
@@ -61,16 +57,21 @@ blogsRouter.put(
   blogInputValidationMiddleware,
   errorCheckMiddleware,
   async (req: Request, res: Response) => {
-    const isUpdated = await blogsRepository.updateBlog(
-      req.params.id,
-      req.body.name,
-      req.body.description,
-      req.body.websiteUrl
-    );
-    if (isUpdated) {
-      const updatedBlog = await blogsRepository.findBlogById(req.body.id);
-      res.status(204).json(updatedBlog);
-    } else {
+    try {
+      const isUpdated = await blogsRepository.updateBlog(
+        new ObjectId(req.params.id),
+        req.body.name,
+        req.body.description,
+        req.body.websiteUrl
+      );
+      if (isUpdated) {
+        const updatedBlog = await blogsRepository.findBlogById(req.body.id);
+        res.status(204).json(updatedBlog);
+      } else {
+        res.sendStatus(404);
+      }
+    } catch (err) {
+      console.log(err);
       res.sendStatus(404);
     }
   }
@@ -80,12 +81,17 @@ blogsRouter.delete(
   "/:id",
   basicAuthMiddleware,
   async (req: Request, res: Response) => {
-    const isDeleted = await blogsRepository.deleteBlog(req.params.id);
-    if (isDeleted) {
-      res.sendStatus(204);
-    } else {
-      res.sendStatus(404);
-    }
+      try {
+          const isDeleted = await blogsRepository.deleteBlog(new ObjectId(req.params.id));
+          if (isDeleted) {
+              res.sendStatus(204);
+          } else {
+              res.sendStatus(404);
+          }
+      } catch (err) {
+          console.log(err);
+          res.sendStatus(404);
+      }
   }
 );
 
