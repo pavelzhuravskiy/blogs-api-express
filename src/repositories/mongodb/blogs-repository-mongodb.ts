@@ -1,37 +1,64 @@
 import { blogsCollection } from "./_mongodb-connect";
-import { BlogMongoModel } from "../../models/BlogMongoModel";
+import { BlogMongoModelNoId } from "../../models/BlogMongoModelNoId";
+import { ObjectId } from "mongodb";
 
 export const blogsRepository = {
   // Return all blogs
-  async findAllBlogs(): Promise<BlogMongoModel[]> {
+  async findAllBlogs(): Promise<BlogMongoModelNoId[]> {
     return blogsCollection.find({}).toArray();
   },
 
   // Return blog by ID
-  async findBlogById(id: string): Promise<BlogMongoModel | null> {
-    const foundBlog = await blogsCollection.findOne({ id });
-    if (foundBlog) {
-      return foundBlog;
-    } else {
-      return null;
+  async findBlogById(_id: ObjectId): Promise<boolean | (BlogMongoModelNoId & { id: string; })> {
+
+    const foundBlog = await blogsCollection.findOne({ _id });
+
+    if(!foundBlog){
+      return false
     }
+
+    return {
+      id: foundBlog._id.toString(),
+      name: foundBlog.name,
+      description: foundBlog.description,
+      websiteUrl: foundBlog.websiteUrl,
+      createdAt: foundBlog.createdAt,
+      isMembership: foundBlog.isMembership
+    }
+
   },
 
   // Create new blog
   async createNewBlog(
-    id: string,
     name: string,
     description: string,
-    websiteUrl: string
-  ): Promise<BlogMongoModel> {
+    websiteUrl: string,
+    createdAt: string,
+    isMembership: boolean
+  ): Promise<boolean | (BlogMongoModelNoId & { id: string; })> {
+
     const newBlog = {
-      id: id,
       name: name,
       description: description,
       websiteUrl: websiteUrl,
+      createdAt: createdAt,
+      isMembership: isMembership,
     };
-    await blogsCollection.insertOne(newBlog);
-    return newBlog;
+
+    const insertedBlog = await blogsCollection.insertOne(newBlog);
+
+    if(!insertedBlog){
+      return false
+    }
+
+    return {
+      id: insertedBlog.insertedId.toString(),
+      name: newBlog.name,
+      description: newBlog.description,
+      websiteUrl: newBlog.websiteUrl,
+      createdAt: newBlog.createdAt,
+      isMembership: newBlog.isMembership
+    }
   },
 
   // Update existing blog
@@ -58,5 +85,12 @@ export const blogsRepository = {
   async deleteBlog(id: string): Promise<boolean> {
     const result = await blogsCollection.deleteOne({ id: id });
     return result.deletedCount === 1;
+  },
+
+  // Delete all blogs
+
+  async deleteAll(): Promise<boolean> {
+    await blogsCollection.deleteMany({});
+    return (await blogsCollection.countDocuments()) === 0;
   },
 };

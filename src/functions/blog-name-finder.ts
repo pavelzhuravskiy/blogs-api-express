@@ -4,6 +4,8 @@ import { blogsRepository } from "../repositories/mongodb/blogs-repository-mongod
 
 export const blogNameFinder = async (req: Request) => {
   const blogs = await blogsRepository.findAllBlogs();
+  // @ts-ignore
+  // TODO Исправить!
   const blogToFind = blogs.find((el) => el?.id === req.body.blogId);
   return blogToFind!.name;
 };

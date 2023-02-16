@@ -20,5 +20,4 @@ export const errorCheckMiddleware = (
   } else {
     next();
   }
-  return;
 };
