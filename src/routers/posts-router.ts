@@ -6,6 +6,7 @@ import { errorCheckMiddleware } from "../middlewares/error-check-middleware";
 import { blogNameFinder } from "../functions/blog-name-finder";
 import { postMapping } from "../functions/post-mapping";
 import { ObjectId } from "mongodb";
+import {blogIdCheckMiddleware} from "../middlewares/blog-id-check-middleware";
 
 export const postsRouter = Router({});
 
@@ -34,7 +35,7 @@ postsRouter.post(
   "/",
   basicAuthMiddleware,
   postInputValidationMiddleware,
-  // blogIdCheckMiddleware,
+  blogIdCheckMiddleware,
   errorCheckMiddleware,
   async (req: Request, res: Response) => {
     const newPost = await postsRepository.createNewPost(
@@ -42,8 +43,7 @@ postsRouter.post(
       req.body.shortDescription,
       req.body.content,
       req.body.blogId,
-      "123",
-      // await blogNameFinder(req),
+      await blogNameFinder(req),
       new Date().toISOString()
     );
     res.status(201).json(newPost);
@@ -54,7 +54,7 @@ postsRouter.put(
   "/:id",
   basicAuthMiddleware,
   postInputValidationMiddleware,
-  // blogIdCheckMiddleware,
+  blogIdCheckMiddleware,
   errorCheckMiddleware,
   async (req: Request, res: Response) => {
     try {
