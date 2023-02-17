@@ -1,1 +1,1 @@
-IT Incubator backend course homework 02-01.
+Blogs and posts project API

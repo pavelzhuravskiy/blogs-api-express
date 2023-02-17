@@ -1,8 +1,8 @@
-export type PostMongoModel = {
-  id: string;
+export type PostMongoModelNoId = {
   title: string;
   shortDescription: string;
   content: string;
   blogId: string;
   blogName: string;
+  createdAt: string;
 };

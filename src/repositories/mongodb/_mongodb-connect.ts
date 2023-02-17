@@ -1,5 +1,5 @@
 import { MongoClient } from "mongodb";
-import { PostMongoModel } from "../../models/PostMongoModel";
+import { PostMongoModelNoId } from "../../models/PostMongoModelNoId";
 import { BlogMongoModelNoId } from "../../models/BlogMongoModelNoId";
 
 const mongoURI = process.env.mongoURI || "mongodb://0.0.0.0:27017";
@@ -10,7 +10,7 @@ const blogsAndPostsDB = client.db("bp");
 export const blogsCollection =
   blogsAndPostsDB.collection<BlogMongoModelNoId>("blogs");
 export const postsCollection =
-  blogsAndPostsDB.collection<PostMongoModel>("posts");
+  blogsAndPostsDB.collection<PostMongoModelNoId>("posts");
 
 export async function runDB() {
   try {

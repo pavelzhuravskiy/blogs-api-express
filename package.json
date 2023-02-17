@@ -8,6 +8,7 @@
     "dev": "nodemon --inspect dist/index.js"
   },
   "dependencies": {
+    "@types/mongodb": "^4.0.7",
     "express": "^4.18.2",
     "express-validator": "^6.14.3",
     "mongodb": "^5.0.1"
