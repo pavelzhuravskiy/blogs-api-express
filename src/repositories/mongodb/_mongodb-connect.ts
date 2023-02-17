@@ -1,10 +1,16 @@
 import { MongoClient } from "mongodb";
 import { PostMongoModelNoId } from "../../models/PostMongoModelNoId";
 import { BlogMongoModelNoId } from "../../models/BlogMongoModelNoId";
+import * as dotenv from 'dotenv'
+dotenv.config()
 
-const mongoURI = process.env.mongoURI || "mongodb://0.0.0.0:27017";
+const uri = process.env.MONGO_URI /*|| "mongodb://0.0.0.0:27017"*/ // Local connection
 
-const client = new MongoClient(mongoURI);
+if (!uri) {
+  throw new Error("URI not found")
+}
+
+const client = new MongoClient(uri);
 
 const blogsAndPostsDB = client.db("bp");
 export const blogsCollection =
@@ -17,7 +23,7 @@ export async function runDB() {
     // Connect the client to the server
     await client.connect();
     // Establish and verify connection
-    await client.db("blogs_and_posts").command({ ping: 1 });
+    await client.db("bp").command({ ping: 1 });
     console.log("Connected successfully to mongo server");
   } catch {
     console.log("Connection to database failed");
