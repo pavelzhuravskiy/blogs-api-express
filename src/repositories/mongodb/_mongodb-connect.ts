@@ -12,7 +12,7 @@ if (!uri) {
 
 const client = new MongoClient(uri);
 
-const blogsAndPostsDB = client.db("bp");
+const blogsAndPostsDB = client.db();
 export const blogsCollection =
   blogsAndPostsDB.collection<BlogMongoModelNoId>("blogs");
 export const postsCollection =
@@ -23,7 +23,7 @@ export async function runDB() {
     // Connect the client to the server
     await client.connect();
     // Establish and verify connection
-    await client.db("bp").command({ ping: 1 });
+    await client.db().command({ ping: 1 });
     console.log("Connected successfully to mongo server");
   } catch {
     console.log("Connection to database failed");
