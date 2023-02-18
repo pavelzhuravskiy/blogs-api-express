@@ -4,7 +4,7 @@ import { postsRouter } from "./routers/posts-router";
 import { testingRouter } from "./routers/testing-router";
 import { runDB } from "./repositories/mongodb/_mongodb-connect";
 
-const app = express();
+export const app = express();
 const port = process.env.PORT || 5000;
 
 app.use(express.json());
@@ -20,4 +20,4 @@ const startApp = async () => {
   });
 };
 
-startApp()
+startApp();
