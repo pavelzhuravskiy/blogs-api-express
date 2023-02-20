@@ -14,6 +14,14 @@ beforeAll(async () => {
     .set("Authorization", "Basic YWRtaW46cXdlcnR5");
 });
 
+const foundBlogs = async () => {
+  return await blogsRepository.findAllBlogs();
+};
+
+const foundPosts = async () => {
+  return await postsRepository.findAllPosts();
+};
+
 describe("Blogs and posts testing", () => {
   it("should return all blogs", async () => {
     const response = await request(app).get("/blogs");
@@ -36,8 +44,8 @@ describe("Blogs and posts testing", () => {
 
     // Checking result by returning created blog
 
-    const foundBlogs = await blogsRepository.findAllBlogs();
-    expect(foundBlogs[0]).toStrictEqual({
+    const blogs = await foundBlogs();
+    expect(blogs[0]).toStrictEqual({
       _id: expect.any(ObjectId),
       name: "Test Blog Name",
       description: "Test Description",
@@ -61,8 +69,8 @@ describe("Blogs and posts testing", () => {
 
     // Checking result
 
-    const foundBlogs = await blogsRepository.findAllBlogs();
-    expect(foundBlogs.length).toBe(1);
+    const blogs = await foundBlogs();
+    expect(blogs.length).toBe(1);
   });
 
   it("should NOT create new blog with incorrect name type", async () => {
@@ -80,8 +88,8 @@ describe("Blogs and posts testing", () => {
 
     // Checking result
 
-    const foundBlogs = await blogsRepository.findAllBlogs();
-    expect(foundBlogs.length).toBe(1);
+    const blogs = await foundBlogs();
+    expect(blogs.length).toBe(1);
   });
 
   it("should NOT create new blog with incorrect name length", async () => {
@@ -99,8 +107,8 @@ describe("Blogs and posts testing", () => {
 
     // Checking result
 
-    const foundBlogs = await blogsRepository.findAllBlogs();
-    expect(foundBlogs.length).toBe(1);
+    const blogs = await foundBlogs();
+    expect(blogs.length).toBe(1);
   });
 
   it("should NOT create new blog without description", async () => {
@@ -117,8 +125,8 @@ describe("Blogs and posts testing", () => {
 
     // Checking result
 
-    const foundBlogs = await blogsRepository.findAllBlogs();
-    expect(foundBlogs.length).toBe(1);
+    const blogs = await foundBlogs();
+    expect(blogs.length).toBe(1);
   });
 
   it("should NOT create new blog with incorrect description type", async () => {
@@ -136,8 +144,8 @@ describe("Blogs and posts testing", () => {
 
     // Checking result
 
-    const foundBlogs = await blogsRepository.findAllBlogs();
-    expect(foundBlogs.length).toBe(1);
+    const blogs = await foundBlogs();
+    expect(blogs.length).toBe(1);
   });
 
   it("should NOT create new blog with incorrect description length", async () => {
@@ -156,8 +164,8 @@ describe("Blogs and posts testing", () => {
 
     // Checking result
 
-    const foundBlogs = await blogsRepository.findAllBlogs();
-    expect(foundBlogs.length).toBe(1);
+    const blogs = await foundBlogs();
+    expect(blogs.length).toBe(1);
   });
 
   it("should NOT create new blog without URL", async () => {
@@ -174,8 +182,8 @@ describe("Blogs and posts testing", () => {
 
     // Checking result
 
-    const foundBlogs = await blogsRepository.findAllBlogs();
-    expect(foundBlogs.length).toBe(1);
+    const blogs = await foundBlogs();
+    expect(blogs.length).toBe(1);
   });
 
   it("should NOT create new blog with incorrect URL type", async () => {
@@ -193,8 +201,8 @@ describe("Blogs and posts testing", () => {
 
     // Checking result
 
-    const foundBlogs = await blogsRepository.findAllBlogs();
-    expect(foundBlogs.length).toBe(1);
+    const blogs = await foundBlogs();
+    expect(blogs.length).toBe(1);
   });
 
   it("should NOT create new blog with incorrect URL length", async () => {
@@ -213,8 +221,8 @@ describe("Blogs and posts testing", () => {
 
     // Checking result
 
-    const foundBlogs = await blogsRepository.findAllBlogs();
-    expect(foundBlogs.length).toBe(1);
+    const blogs = await foundBlogs();
+    expect(blogs.length).toBe(1);
   });
 
   it("should NOT create new blog with incorrect URL format", async () => {
@@ -232,16 +240,17 @@ describe("Blogs and posts testing", () => {
 
     // Checking result
 
-    const foundBlogs = await blogsRepository.findAllBlogs();
-    expect(foundBlogs.length).toBe(1);
+    const blogs = await foundBlogs();
+    expect(blogs.length).toBe(1);
   });
 
   it("should update blog", async () => {
     // Trying to update a blog
 
-    const foundBlogs = await blogsRepository.findAllBlogs();
+    const blogs = await foundBlogs();
     // @ts-ignore
-    const blogId = foundBlogs[0]._id.toString();
+    const blogId = blogs[0]._id.toString();
+
     const updating = await request(app)
       .put("/blogs/" + blogId)
       .send({
@@ -254,12 +263,13 @@ describe("Blogs and posts testing", () => {
   });
 
   it("should return blog by ID with updated data", async () => {
-    const foundBlogs = await blogsRepository.findAllBlogs();
+    const blogs = await foundBlogs();
     // @ts-ignore
-    const blogId = foundBlogs[0]._id.toString();
+    const blogId = blogs[0]._id.toString();
+
     const response = await request(app).get("/blogs/" + blogId);
     expect(response.status).toBe(200);
-    expect(foundBlogs[0]).toStrictEqual({
+    expect(blogs[0]).toStrictEqual({
       _id: new ObjectId(blogId),
       name: "New name",
       description: "New Description",
@@ -304,10 +314,10 @@ describe("Blogs and posts testing", () => {
   it("should create new post", async () => {
     // Returning all blogs
 
-    const foundBlogs = await blogsRepository.findAllBlogs();
+    const blogs = await foundBlogs();
     // @ts-ignore
-    const blogId = foundBlogs[0]._id.toString();
-    const blogName = foundBlogs[0].name;
+    const blogId = blogs[0]._id.toString();
+    const blogName = blogs[0].name;
 
     // Trying to create a post
 
@@ -324,9 +334,9 @@ describe("Blogs and posts testing", () => {
 
     // Checking result by returning created blog
 
-    const foundPosts = await postsRepository.findAllPosts();
+    const posts = await foundPosts();
 
-    expect(foundPosts[0]).toStrictEqual({
+    expect(posts[0]).toStrictEqual({
       _id: expect.any(ObjectId),
       title: "Test title",
       shortDescription: "Test Short Description",
@@ -353,16 +363,16 @@ describe("Blogs and posts testing", () => {
 
     // Checking result
 
-    const foundPosts = await postsRepository.findAllPosts();
-    expect(foundPosts.length).toBe(1);
+    const posts = await foundPosts();
+    expect(posts.length).toBe(1);
   });
 
   it("should NOT create new post without title", async () => {
     // Trying to create a post without title
 
-    const foundBlogs = await blogsRepository.findAllBlogs();
+    const blogs = await foundBlogs();
     // @ts-ignore
-    const blogId = foundBlogs[0]._id.toString();
+    const blogId = blogs[0]._id.toString();
 
     const posting = await request(app)
       .post("/posts")
@@ -376,16 +386,16 @@ describe("Blogs and posts testing", () => {
 
     // Checking result
 
-    const foundPosts = await postsRepository.findAllPosts();
-    expect(foundPosts.length).toBe(1);
+    const posts = await foundPosts();
+    expect(posts.length).toBe(1);
   });
 
   it("should NOT create new post with incorrect title type", async () => {
     // Trying to create a post with incorrect title type
 
-    const foundBlogs = await blogsRepository.findAllBlogs();
+    const blogs = await foundBlogs();
     // @ts-ignore
-    const blogId = foundBlogs[0]._id.toString();
+    const blogId = blogs[0]._id.toString();
 
     const posting = await request(app)
       .post("/posts")
@@ -400,16 +410,16 @@ describe("Blogs and posts testing", () => {
 
     // Checking result
 
-    const foundPosts = await postsRepository.findAllPosts();
-    expect(foundPosts.length).toBe(1);
+    const posts = await foundPosts();
+    expect(posts.length).toBe(1);
   });
 
   it("should NOT create new post with incorrect title length", async () => {
     // Trying to create a post with incorrect title length
 
-    const foundBlogs = await blogsRepository.findAllBlogs();
+    const blogs = await foundBlogs();
     // @ts-ignore
-    const blogId = foundBlogs[0]._id.toString();
+    const blogId = blogs[0]._id.toString();
 
     const posting = await request(app)
       .post("/posts")
@@ -424,16 +434,16 @@ describe("Blogs and posts testing", () => {
 
     // Checking result
 
-    const foundPosts = await postsRepository.findAllPosts();
-    expect(foundPosts.length).toBe(1);
+    const posts = await foundPosts();
+    expect(posts.length).toBe(1);
   });
 
   it("should NOT create new post without short description", async () => {
     // Trying to create a post without short description
 
-    const foundBlogs = await blogsRepository.findAllBlogs();
+    const blogs = await foundBlogs();
     // @ts-ignore
-    const blogId = foundBlogs[0]._id.toString();
+    const blogId = blogs[0]._id.toString();
 
     const posting = await request(app)
       .post("/posts")
@@ -447,16 +457,16 @@ describe("Blogs and posts testing", () => {
 
     // Checking result
 
-    const foundPosts = await postsRepository.findAllPosts();
-    expect(foundPosts.length).toBe(1);
+    const posts = await foundPosts();
+    expect(posts.length).toBe(1);
   });
 
   it("should NOT create new post with incorrect short description type", async () => {
     // Trying to create a post with incorrect short description type
 
-    const foundBlogs = await blogsRepository.findAllBlogs();
+    const blogs = await foundBlogs();
     // @ts-ignore
-    const blogId = foundBlogs[0]._id.toString();
+    const blogId = blogs[0]._id.toString();
 
     const posting = await request(app)
       .post("/posts")
@@ -471,16 +481,16 @@ describe("Blogs and posts testing", () => {
 
     // Checking result
 
-    const foundPosts = await postsRepository.findAllPosts();
-    expect(foundPosts.length).toBe(1);
+    const posts = await foundPosts();
+    expect(posts.length).toBe(1);
   });
 
   it("should NOT create new post with incorrect short description length", async () => {
     // Trying to create a post with incorrect short description length
 
-    const foundBlogs = await blogsRepository.findAllBlogs();
+    const blogs = await foundBlogs();
     // @ts-ignore
-    const blogId = foundBlogs[0]._id.toString();
+    const blogId = blogs[0]._id.toString();
 
     const posting = await request(app)
       .post("/posts")
@@ -496,16 +506,16 @@ describe("Blogs and posts testing", () => {
 
     // Checking result
 
-    const foundPosts = await postsRepository.findAllPosts();
-    expect(foundPosts.length).toBe(1);
+    const posts = await foundPosts();
+    expect(posts.length).toBe(1);
   });
 
   it("should NOT create new post without content", async () => {
     // Trying to create a post without content
 
-    const foundBlogs = await blogsRepository.findAllBlogs();
+    const blogs = await foundBlogs();
     // @ts-ignore
-    const blogId = foundBlogs[0]._id.toString();
+    const blogId = blogs[0]._id.toString();
 
     const posting = await request(app)
       .post("/posts")
@@ -519,16 +529,16 @@ describe("Blogs and posts testing", () => {
 
     // Checking result
 
-    const foundPosts = await postsRepository.findAllPosts();
-    expect(foundPosts.length).toBe(1);
+    const posts = await foundPosts();
+    expect(posts.length).toBe(1);
   });
 
   it("should NOT create new post with incorrect content type", async () => {
     // Trying to create a post with incorrect content type
 
-    const foundBlogs = await blogsRepository.findAllBlogs();
+    const blogs = await foundBlogs();
     // @ts-ignore
-    const blogId = foundBlogs[0]._id.toString();
+    const blogId = blogs[0]._id.toString();
 
     const posting = await request(app)
       .post("/posts")
@@ -543,16 +553,16 @@ describe("Blogs and posts testing", () => {
 
     // Checking result
 
-    const foundPosts = await postsRepository.findAllPosts();
-    expect(foundPosts.length).toBe(1);
+    const posts = await foundPosts();
+    expect(posts.length).toBe(1);
   });
 
   it("should NOT create new post with incorrect content length", async () => {
     // Trying to create a post with incorrect content length
 
-    const foundBlogs = await blogsRepository.findAllBlogs();
+    const blogs = await foundBlogs();
     // @ts-ignore
-    const blogId = foundBlogs[0]._id.toString();
+    const blogId = blogs[0]._id.toString();
 
     const posting = await request(app)
       .post("/posts")
@@ -568,19 +578,21 @@ describe("Blogs and posts testing", () => {
 
     // Checking result
 
-    const foundPosts = await postsRepository.findAllPosts();
-    expect(foundPosts.length).toBe(1);
+    const posts = await foundPosts();
+    expect(posts.length).toBe(1);
   });
 
   it("should update post", async () => {
     // Trying to update a post
 
-    const foundPosts = await postsRepository.findAllPosts();
-    const foundBlogs = await blogsRepository.findAllBlogs();
+    const blogs = await foundBlogs();
+    const posts = await foundPosts();
+
     // @ts-ignore
-    const blogId = foundBlogs[0]._id.toString();
+    const blogId = blogs[0]._id.toString();
     // @ts-ignore
-    const postId = foundPosts[0]._id.toString();
+    const postId = posts[0]._id.toString();
+
     const updating = await request(app)
       .put("/posts/" + postId)
       .send({
@@ -594,16 +606,18 @@ describe("Blogs and posts testing", () => {
   });
 
   it("should return post by ID with updated data", async () => {
-    const foundPosts = await postsRepository.findAllPosts();
-    const foundBlogs = await blogsRepository.findAllBlogs();
+    const blogs = await foundBlogs();
+    const posts = await foundPosts();
+
     // @ts-ignore
-    const postId = foundPosts[0]._id.toString();
+    const blogId = blogs[0]._id.toString();
+    const blogName = blogs[0].name;
     // @ts-ignore
-    const blogId = foundBlogs[0]._id.toString();
-    const blogName = foundBlogs[0].name;
+    const postId = posts[0]._id.toString();
+
     const response = await request(app).get("/posts/" + postId);
     expect(response.status).toBe(200);
-    expect(foundPosts[0]).toStrictEqual({
+    expect(posts[0]).toStrictEqual({
       _id: new ObjectId(postId),
       title: "New title",
       shortDescription: "New short description",
@@ -622,9 +636,10 @@ describe("Blogs and posts testing", () => {
   it("should return 404 when updating not existing post", async () => {
     // Trying to update a post
 
-    const foundBlogs = await blogsRepository.findAllBlogs();
+    const blogs = await foundBlogs();
     // @ts-ignore
-    const blogId = foundBlogs[0]._id.toString();
+    const blogId = blogs[0]._id.toString();
+
     const updating = await request(app)
       .put("/posts/-100")
       .send({
@@ -645,9 +660,10 @@ describe("Blogs and posts testing", () => {
   });
 
   it("should delete post by ID", async () => {
-    const foundPosts = await postsRepository.findAllPosts();
+    const posts = await foundPosts();
     // @ts-ignore
-    const postId = foundPosts[0]._id.toString();
+    const postId = posts[0]._id.toString();
+
     const response = await request(app)
       .delete("/posts/" + postId)
       .set("Authorization", "Basic YWRtaW46cXdlcnR5");
@@ -655,9 +671,10 @@ describe("Blogs and posts testing", () => {
   });
 
   it("should delete blog by ID", async () => {
-    const foundBlogs = await blogsRepository.findAllBlogs();
-    // @ts-ignore
-    const blogId = foundBlogs[0]._id.toString();
+      const blogs = await foundBlogs();
+      // @ts-ignore
+      const blogId = blogs[0]._id.toString();
+
     const response = await request(app)
       .delete("/blogs/" + blogId)
       .set("Authorization", "Basic YWRtaW46cXdlcnR5");
@@ -665,16 +682,16 @@ describe("Blogs and posts testing", () => {
   });
 
   it("should return empty post array", async () => {
-    const foundPosts = await postsRepository.findAllPosts();
+    const posts = await foundPosts();
     const response = await request(app).get("/posts/");
     expect(response.status).toBe(200);
-    expect(foundPosts.length).toBe(0);
+    expect(posts.length).toBe(0);
   });
 
   it("should return empty blog array", async () => {
-    const foundBlogs = await blogsRepository.findAllBlogs();
+    const blogs = await foundBlogs();
     const response = await request(app).get("/blogs/");
     expect(response.status).toBe(200);
-    expect(foundBlogs.length).toBe(0);
+    expect(blogs.length).toBe(0);
   });
 });
