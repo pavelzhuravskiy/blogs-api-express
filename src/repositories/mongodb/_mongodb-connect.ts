@@ -1,13 +1,14 @@
 import { MongoClient } from "mongodb";
 import { PostMongoModelNoId } from "../../models/PostMongoModelNoId";
 import { BlogMongoModelNoId } from "../../models/BlogMongoModelNoId";
-import * as dotenv from 'dotenv'
-dotenv.config()
+import * as dotenv from "dotenv";
 
-const uri = process.env.MONGO_URI /*|| "mongodb://0.0.0.0:27017"*/ // Local connection
+dotenv.config();
+
+const uri = process.env.MONGO_URI; /*|| "mongodb://0.0.0.0:27017"*/ // Local connection
 
 if (!uri) {
-  throw new Error("URI not found")
+  throw new Error("URI not found");
 }
 
 const client = new MongoClient(uri);

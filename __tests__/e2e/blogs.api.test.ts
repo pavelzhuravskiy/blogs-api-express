@@ -1,8 +1,8 @@
 import request from "supertest";
 import { app } from "../../src";
 import { blogsRepository } from "../../src/repositories/mongodb/blogs-repository-mongodb";
-import { ObjectId } from "mongodb";
 import { postsRepository } from "../../src/repositories/mongodb/posts-repository-mongodb";
+import { ObjectId } from "mongodb";
 
 beforeAll(async () => {
   await request(app)
@@ -671,9 +671,9 @@ describe("Blogs and posts testing", () => {
   });
 
   it("should delete blog by ID", async () => {
-      const blogs = await foundBlogs();
-      // @ts-ignore
-      const blogId = blogs[0]._id.toString();
+    const blogs = await foundBlogs();
+    // @ts-ignore
+    const blogId = blogs[0]._id.toString();
 
     const response = await request(app)
       .delete("/blogs/" + blogId)

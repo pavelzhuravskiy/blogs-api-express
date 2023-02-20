@@ -45,11 +45,11 @@ export const blogsService = {
 
   // Delete existing blog
   async deleteBlog(_id: ObjectId): Promise<boolean> {
-      return blogsRepository.deleteBlog(_id);
+    return blogsRepository.deleteBlog(_id);
   },
 
   // Delete all blogs
   async deleteAll(): Promise<boolean> {
-      return blogsRepository.deleteAll();
+    return blogsRepository.deleteAll();
   },
 };

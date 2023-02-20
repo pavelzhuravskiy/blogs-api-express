@@ -1,23 +1,23 @@
 import { Request, Response, Router } from "express";
-import { postsRepository } from "../repositories/mongodb/posts-repository-mongodb";
+import { postsService } from "../domain/posts-service";
 import { basicAuthMiddleware } from "../middlewares/basic-auth-middleware";
 import { postInputValidationMiddleware } from "../middlewares/posts-input-validation-middleware";
 import { errorCheckMiddleware } from "../middlewares/error-check-middleware";
 import { blogNameFinder } from "../functions/blog-name-finder";
 import { postMapping } from "../functions/post-mapping";
 import { ObjectId } from "mongodb";
-import {blogIdCheckMiddleware} from "../middlewares/blog-id-check-middleware";
+import { blogIdCheckMiddleware } from "../middlewares/blog-id-check-middleware";
 
 export const postsRouter = Router({});
 
 postsRouter.get("/", async (req: Request, res: Response) => {
-  const foundPosts = await postsRepository.findAllPosts();
+  const foundPosts = await postsService.findAllPosts();
   res.json(postMapping(foundPosts));
 });
 
 postsRouter.get("/:id", async (req: Request, res: Response) => {
   try {
-    const foundPost = await postsRepository.findPostById(
+    const foundPost = await postsService.findPostById(
       new ObjectId(req.params.id)
     );
     if (foundPost) {
@@ -38,7 +38,7 @@ postsRouter.post(
   blogIdCheckMiddleware,
   errorCheckMiddleware,
   async (req: Request, res: Response) => {
-    const newPost = await postsRepository.createNewPost(
+    const newPost = await postsService.createNewPost(
       req.body.title,
       req.body.shortDescription,
       req.body.content,
@@ -58,7 +58,7 @@ postsRouter.put(
   errorCheckMiddleware,
   async (req: Request, res: Response) => {
     try {
-      const isUpdated = await postsRepository.updatePost(
+      const isUpdated = await postsService.updatePost(
         new ObjectId(req.params.id),
         req.body.title,
         req.body.shortDescription,
@@ -66,7 +66,7 @@ postsRouter.put(
         req.body.blogId
       );
       if (isUpdated) {
-        const updatedPost = await postsRepository.findPostById(req.body.id);
+        const updatedPost = await postsService.findPostById(req.body.id);
         res.status(204).json(updatedPost);
       } else {
         res.sendStatus(404);
@@ -83,7 +83,7 @@ postsRouter.delete(
   basicAuthMiddleware,
   async (req: Request, res: Response) => {
     try {
-      const isDeleted = await postsRepository.deletePost(
+      const isDeleted = await postsService.deletePost(
         new ObjectId(req.params.id)
       );
       if (isDeleted) {
@@ -102,7 +102,7 @@ postsRouter.delete(
   "/",
   basicAuthMiddleware,
   async (req: Request, res: Response) => {
-    const isDeleted = await postsRepository.deleteAll();
+    const isDeleted = await postsService.deleteAll();
     if (isDeleted) {
       res.sendStatus(204);
     } else {
