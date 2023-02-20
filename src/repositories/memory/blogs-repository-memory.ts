@@ -1,15 +1,15 @@
-import { BlogMemoryModel } from "../../models/BlogMemoryModel";
+import { MemoryBlogModel } from "../../models/memory/MemoryBlogModel";
 
-const blogs: BlogMemoryModel[] = [];
+const blogs: MemoryBlogModel[] = [];
 
 export const blogsRepository = {
   // Return all blogs
-  async findAllBlogs(): Promise<BlogMemoryModel[]> {
+  async findAllBlogs(): Promise<MemoryBlogModel[]> {
     return blogs;
   },
 
   // Return blog by ID
-  async findBlogById(id: string): Promise<BlogMemoryModel> {
+  async findBlogById(id: string): Promise<MemoryBlogModel> {
     return blogs.find((blog) => blog?.id === id);
   },
 
@@ -19,7 +19,7 @@ export const blogsRepository = {
     name: string,
     description: string,
     websiteUrl: string
-  ): Promise<BlogMemoryModel> {
+  ): Promise<MemoryBlogModel> {
     const newBlog = {
       id: id,
       name: name,

@@ -1,9 +1,8 @@
-import { BlogMongoModelNoId } from "../models/BlogMongoModelNoId";
+import { MongoBlogModelWithId } from "../models/mongodb/MongoBlogModel";
 
-export const blogMapping = (array: Array<BlogMongoModelNoId>) => {
+export const blogMapping = (array: Array<MongoBlogModelWithId>) => {
   return array.map((el) => {
     return {
-      // @ts-ignore
       id: el._id,
       name: el.name,
       description: el.description,

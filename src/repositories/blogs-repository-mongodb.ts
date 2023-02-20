@@ -1,17 +1,21 @@
 import { blogsCollection } from "./_mongodb-connect";
-import { BlogMongoModelNoId } from "../../models/BlogMongoModelNoId";
+import {
+  MongoBlogModel,
+  MongoBlogModelWithId,
+  MongoBlogModelWithStringId,
+} from "../models/mongodb/MongoBlogModel";
 import { ObjectId } from "mongodb";
 
 export const blogsRepository = {
   // Return all blogs
-  async findAllBlogs(): Promise<BlogMongoModelNoId[]> {
+  async findAllBlogs(): Promise<MongoBlogModelWithId[]> {
     return blogsCollection.find({}).toArray();
   },
 
   // Return blog by ID
   async findBlogById(
     _id: ObjectId
-  ): Promise<boolean | (BlogMongoModelNoId & { id: string })> {
+  ): Promise<boolean | MongoBlogModelWithStringId> {
     const foundBlog = await blogsCollection.findOne({ _id });
 
     if (!foundBlog) {
@@ -30,8 +34,8 @@ export const blogsRepository = {
 
   // Create new blog
   async createNewBlog(
-    newBlog: BlogMongoModelNoId
-  ): Promise<BlogMongoModelNoId & { id: string }> {
+    newBlog: MongoBlogModel
+  ): Promise<MongoBlogModelWithStringId> {
     const insertedBlog = await blogsCollection.insertOne(newBlog);
 
     return {

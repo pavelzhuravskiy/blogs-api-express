@@ -2,7 +2,7 @@ import express from "express";
 import { blogsRouter } from "./routers/blogs-router";
 import { postsRouter } from "./routers/posts-router";
 import { testingRouter } from "./routers/testing-router";
-import { runDB } from "./repositories/mongodb/_mongodb-connect";
+import { runDB } from "./repositories/_mongodb-connect";
 
 export const app = express();
 const port = process.env.PORT || 5000;

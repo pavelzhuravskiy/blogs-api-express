@@ -1,6 +1,6 @@
 import { MongoClient } from "mongodb";
-import { PostMongoModelNoId } from "../../models/PostMongoModelNoId";
-import { BlogMongoModelNoId } from "../../models/BlogMongoModelNoId";
+import { MongoPostModel } from "../models/mongodb/MongoPostModel";
+import { MongoBlogModel } from "../models/mongodb/MongoBlogModel";
 import * as dotenv from "dotenv";
 
 dotenv.config();
@@ -15,9 +15,9 @@ const client = new MongoClient(uri);
 
 const blogsAndPostsDB = client.db();
 export const blogsCollection =
-  blogsAndPostsDB.collection<BlogMongoModelNoId>("blogs");
+  blogsAndPostsDB.collection<MongoBlogModel>("blogs");
 export const postsCollection =
-  blogsAndPostsDB.collection<PostMongoModelNoId>("posts");
+  blogsAndPostsDB.collection<MongoPostModel>("posts");
 
 export async function runDB() {
   try {

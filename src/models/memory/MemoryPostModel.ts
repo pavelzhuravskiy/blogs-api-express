@@ -1,4 +1,4 @@
-export type PostMemoryModel =
+export type MemoryPostModel =
   | {
       id: string;
       title: string;

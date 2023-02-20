@@ -1,17 +1,20 @@
-import { PostMongoModelNoId } from "../models/PostMongoModelNoId";
+import {
+  MongoPostModel,
+  MongoPostModelWithId,
+} from "../models/mongodb/MongoPostModel";
 import { ObjectId } from "mongodb";
-import { postsRepository } from "../repositories/mongodb/posts-repository-mongodb";
+import { postsRepository } from "../repositories/posts-repository-mongodb";
 
 export const postsService = {
   // Return all posts
-  async findAllPosts(): Promise<PostMongoModelNoId[]> {
+  async findAllPosts(): Promise<MongoPostModelWithId[]> {
     return postsRepository.findAllPosts();
   },
 
   // Return post by ID
   async findPostById(
     _id: ObjectId
-  ): Promise<boolean | (PostMongoModelNoId & { id: string })> {
+  ): Promise<boolean | (MongoPostModel & { id: string })> {
     return postsRepository.findPostById(_id);
   },
 
@@ -23,7 +26,7 @@ export const postsService = {
     blogId: string,
     blogName: string,
     createdAt: string
-  ): Promise<boolean | (PostMongoModelNoId & { id: string })> {
+  ): Promise<boolean | (MongoPostModel & { id: string })> {
     const newPost = {
       title: title,
       shortDescription: shortDescription,

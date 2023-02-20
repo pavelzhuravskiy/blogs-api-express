@@ -1,17 +1,21 @@
 import { postsCollection } from "./_mongodb-connect";
-import { PostMongoModelNoId } from "../../models/PostMongoModelNoId";
+import {
+  MongoPostModel,
+  MongoPostModelWithId,
+  MongoPostModelWithStringId,
+} from "../models/mongodb/MongoPostModel";
 import { ObjectId } from "mongodb";
 
 export const postsRepository = {
   // Return all posts
-  async findAllPosts(): Promise<PostMongoModelNoId[]> {
+  async findAllPosts(): Promise<MongoPostModelWithId[]> {
     return postsCollection.find({}).toArray();
   },
 
   // Return post by ID
   async findPostById(
     _id: ObjectId
-  ): Promise<boolean | (PostMongoModelNoId & { id: string })> {
+  ): Promise<boolean | MongoPostModelWithStringId> {
     const foundPost = await postsCollection.findOne({ _id });
 
     if (!foundPost) {
@@ -31,8 +35,8 @@ export const postsRepository = {
 
   // Create new post
   async createNewPost(
-    newPost: PostMongoModelNoId
-  ): Promise<boolean | (PostMongoModelNoId & { id: string })> {
+    newPost: MongoPostModel
+  ): Promise<boolean | MongoPostModelWithStringId> {
     const insertedPost = await postsCollection.insertOne(newPost);
 
     return {

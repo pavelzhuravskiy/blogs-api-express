@@ -1,7 +1,7 @@
 import request from "supertest";
 import { app } from "../../src";
-import { blogsRepository } from "../../src/repositories/mongodb/blogs-repository-mongodb";
-import { postsRepository } from "../../src/repositories/mongodb/posts-repository-mongodb";
+import { blogsRepository } from "../../src/repositories/blogs-repository-mongodb";
+import { postsRepository } from "../../src/repositories/posts-repository-mongodb";
 import { ObjectId } from "mongodb";
 
 beforeAll(async () => {
@@ -248,7 +248,6 @@ describe("Blogs and posts testing", () => {
     // Trying to update a blog
 
     const blogs = await foundBlogs();
-    // @ts-ignore
     const blogId = blogs[0]._id.toString();
 
     const updating = await request(app)
@@ -264,7 +263,6 @@ describe("Blogs and posts testing", () => {
 
   it("should return blog by ID with updated data", async () => {
     const blogs = await foundBlogs();
-    // @ts-ignore
     const blogId = blogs[0]._id.toString();
 
     const response = await request(app).get("/blogs/" + blogId);
@@ -315,7 +313,6 @@ describe("Blogs and posts testing", () => {
     // Returning all blogs
 
     const blogs = await foundBlogs();
-    // @ts-ignore
     const blogId = blogs[0]._id.toString();
     const blogName = blogs[0].name;
 
@@ -371,7 +368,6 @@ describe("Blogs and posts testing", () => {
     // Trying to create a post without title
 
     const blogs = await foundBlogs();
-    // @ts-ignore
     const blogId = blogs[0]._id.toString();
 
     const posting = await request(app)
@@ -394,7 +390,6 @@ describe("Blogs and posts testing", () => {
     // Trying to create a post with incorrect title type
 
     const blogs = await foundBlogs();
-    // @ts-ignore
     const blogId = blogs[0]._id.toString();
 
     const posting = await request(app)
@@ -418,7 +413,6 @@ describe("Blogs and posts testing", () => {
     // Trying to create a post with incorrect title length
 
     const blogs = await foundBlogs();
-    // @ts-ignore
     const blogId = blogs[0]._id.toString();
 
     const posting = await request(app)
@@ -442,7 +436,6 @@ describe("Blogs and posts testing", () => {
     // Trying to create a post without short description
 
     const blogs = await foundBlogs();
-    // @ts-ignore
     const blogId = blogs[0]._id.toString();
 
     const posting = await request(app)
@@ -465,7 +458,6 @@ describe("Blogs and posts testing", () => {
     // Trying to create a post with incorrect short description type
 
     const blogs = await foundBlogs();
-    // @ts-ignore
     const blogId = blogs[0]._id.toString();
 
     const posting = await request(app)
@@ -489,7 +481,6 @@ describe("Blogs and posts testing", () => {
     // Trying to create a post with incorrect short description length
 
     const blogs = await foundBlogs();
-    // @ts-ignore
     const blogId = blogs[0]._id.toString();
 
     const posting = await request(app)
@@ -514,7 +505,6 @@ describe("Blogs and posts testing", () => {
     // Trying to create a post without content
 
     const blogs = await foundBlogs();
-    // @ts-ignore
     const blogId = blogs[0]._id.toString();
 
     const posting = await request(app)
@@ -537,7 +527,6 @@ describe("Blogs and posts testing", () => {
     // Trying to create a post with incorrect content type
 
     const blogs = await foundBlogs();
-    // @ts-ignore
     const blogId = blogs[0]._id.toString();
 
     const posting = await request(app)
@@ -561,7 +550,6 @@ describe("Blogs and posts testing", () => {
     // Trying to create a post with incorrect content length
 
     const blogs = await foundBlogs();
-    // @ts-ignore
     const blogId = blogs[0]._id.toString();
 
     const posting = await request(app)
@@ -588,9 +576,7 @@ describe("Blogs and posts testing", () => {
     const blogs = await foundBlogs();
     const posts = await foundPosts();
 
-    // @ts-ignore
     const blogId = blogs[0]._id.toString();
-    // @ts-ignore
     const postId = posts[0]._id.toString();
 
     const updating = await request(app)
@@ -609,10 +595,8 @@ describe("Blogs and posts testing", () => {
     const blogs = await foundBlogs();
     const posts = await foundPosts();
 
-    // @ts-ignore
     const blogId = blogs[0]._id.toString();
     const blogName = blogs[0].name;
-    // @ts-ignore
     const postId = posts[0]._id.toString();
 
     const response = await request(app).get("/posts/" + postId);
@@ -637,7 +621,6 @@ describe("Blogs and posts testing", () => {
     // Trying to update a post
 
     const blogs = await foundBlogs();
-    // @ts-ignore
     const blogId = blogs[0]._id.toString();
 
     const updating = await request(app)
@@ -661,7 +644,6 @@ describe("Blogs and posts testing", () => {
 
   it("should delete post by ID", async () => {
     const posts = await foundPosts();
-    // @ts-ignore
     const postId = posts[0]._id.toString();
 
     const response = await request(app)
@@ -672,7 +654,6 @@ describe("Blogs and posts testing", () => {
 
   it("should delete blog by ID", async () => {
     const blogs = await foundBlogs();
-    // @ts-ignore
     const blogId = blogs[0]._id.toString();
 
     const response = await request(app)

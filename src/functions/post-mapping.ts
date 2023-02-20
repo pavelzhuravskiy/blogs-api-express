@@ -1,9 +1,8 @@
-import { PostMongoModelNoId } from "../models/PostMongoModelNoId";
+import { MongoPostModelWithId } from "../models/mongodb/MongoPostModel";
 
-export const postMapping = (array: Array<PostMongoModelNoId>) => {
+export const postMapping = (array: Array<MongoPostModelWithId>) => {
   return array.map((el) => {
     return {
-      // @ts-ignore
       id: el._id,
       title: el.title,
       shortDescription: el.shortDescription,

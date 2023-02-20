@@ -1,17 +1,20 @@
-import { blogsRepository } from "../repositories/mongodb/blogs-repository-mongodb";
-import { BlogMongoModelNoId } from "../models/BlogMongoModelNoId";
+import { blogsRepository } from "../repositories/blogs-repository-mongodb";
+import {
+  MongoBlogModel,
+  MongoBlogModelWithId,
+} from "../models/mongodb/MongoBlogModel";
 import { ObjectId } from "mongodb";
 
 export const blogsService = {
   // Return all blogs
-  async findAllBlogs(): Promise<BlogMongoModelNoId[]> {
+  async findAllBlogs(): Promise<MongoBlogModelWithId[]> {
     return blogsRepository.findAllBlogs();
   },
 
   // Return blog by ID
   async findBlogById(
     _id: ObjectId
-  ): Promise<boolean | (BlogMongoModelNoId & { id: string })> {
+  ): Promise<boolean | (MongoBlogModel & { id: string })> {
     return blogsRepository.findBlogById(_id);
   },
 
@@ -22,7 +25,7 @@ export const blogsService = {
     websiteUrl: string,
     createdAt: string,
     isMembership: boolean
-  ): Promise<BlogMongoModelNoId> {
+  ): Promise<MongoBlogModel> {
     const newBlog = {
       name: name,
       description: description,
