@@ -1,7 +1,7 @@
 import request from "supertest";
 import { app } from "../../src";
-import { blogsRepository } from "../../src/repositories/blogs-repository-mongodb";
-import { postsRepository } from "../../src/repositories/posts-repository-mongodb";
+import { blogsRepository } from "../../src/repositories/mongodb/mongodb-blogs-repository";
+import { postsRepository } from "../../src/repositories/mongodb/mongodb-posts-repository";
 import { ObjectId } from "mongodb";
 
 beforeAll(async () => {

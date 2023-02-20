@@ -1,6 +1,6 @@
 import { MongoBlogModelWithId } from "../models/mongodb/MongoBlogModel";
 
-export const blogMapping = (array: Array<MongoBlogModelWithId>) => {
+export const blogMapping = (array: MongoBlogModelWithId[]) => {
   return array.map((el) => {
     return {
       id: el._id,

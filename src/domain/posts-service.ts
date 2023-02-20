@@ -3,7 +3,7 @@ import {
   MongoPostModelWithId,
 } from "../models/mongodb/MongoPostModel";
 import { ObjectId } from "mongodb";
-import { postsRepository } from "../repositories/posts-repository-mongodb";
+import { postsRepository } from "../repositories/mongodb/mongodb-posts-repository";
 
 export const postsService = {
   // Return all posts

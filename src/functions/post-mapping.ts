@@ -1,6 +1,6 @@
 import { MongoPostModelWithId } from "../models/mongodb/MongoPostModel";
 
-export const postMapping = (array: Array<MongoPostModelWithId>) => {
+export const postMapping = (array: MongoPostModelWithId[]) => {
   return array.map((el) => {
     return {
       id: el._id,

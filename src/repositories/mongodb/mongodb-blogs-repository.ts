@@ -3,7 +3,7 @@ import {
   MongoBlogModel,
   MongoBlogModelWithId,
   MongoBlogModelWithStringId,
-} from "../models/mongodb/MongoBlogModel";
+} from "../../models/mongodb/MongoBlogModel";
 import { ObjectId } from "mongodb";
 
 export const blogsRepository = {

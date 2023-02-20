@@ -3,7 +3,7 @@ import {
   MongoPostModel,
   MongoPostModelWithId,
   MongoPostModelWithStringId,
-} from "../models/mongodb/MongoPostModel";
+} from "../../models/mongodb/MongoPostModel";
 import { ObjectId } from "mongodb";
 
 export const postsRepository = {

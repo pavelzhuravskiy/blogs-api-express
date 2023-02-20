@@ -1,5 +1,5 @@
 import { body } from "express-validator";
-import { blogsRepository } from "../repositories/blogs-repository-mongodb";
+import { blogsRepository } from "../repositories/mongodb/mongodb-blogs-repository";
 
 export const blogIdCheckMiddleware = body("blogId").custom(async (value) => {
   const validBlogId = await blogsRepository.findAllBlogs();
