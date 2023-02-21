@@ -1,7 +1,6 @@
-import {MongoBlogModelWithId} from "../models/mongodb/MongoBlogModel";
+import { MongoBlogModelWithId } from "../models/mongodb/MongoBlogModel";
 
 export const blogMapping = (array: MongoBlogModelWithId[]) => {
-
   return array.map((blog) => {
     return {
       pagesCount: 0,
@@ -15,7 +14,7 @@ export const blogMapping = (array: MongoBlogModelWithId[]) => {
         websiteUrl: blog.websiteUrl,
         createdAt: blog.createdAt,
         isMembership: blog.isMembership,
-      }
+      },
     };
   });
 };

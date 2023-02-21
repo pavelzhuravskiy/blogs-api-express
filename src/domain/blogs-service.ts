@@ -1,10 +1,8 @@
 import { blogsRepository } from "../repositories/mongodb/mongodb-blogs-repository";
-import {
-  MongoBlogModel,
-  MongoBlogModelWithId,
-  MongoBlogModelWithStringId,
-} from "../models/mongodb/MongoBlogModel";
+import { MongoBlogModel } from "../models/mongodb/MongoBlogModel";
 import { ObjectId } from "mongodb";
+import { MongoBlogModelWithStringId } from "../models/mongodb/MongoBlogModelWithStringId";
+import { MongoBlogModelWithPagination } from "../models/mongodb/MongoBlogModelWithPagination";
 
 export const blogsService = {
   // Return all blogs
@@ -14,7 +12,7 @@ export const blogsService = {
     sortDirection: string,
     pageNumber: number,
     pageSize: number
-  ): Promise<MongoBlogModelWithId[]> {
+  ): Promise<MongoBlogModelWithPagination> {
     return blogsRepository.findBlogs(
       searchNameTerm,
       sortBy,

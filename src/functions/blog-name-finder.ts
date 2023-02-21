@@ -9,7 +9,7 @@ export const blogNameFinder = async (
   const blogs = await blogsRepository.findBlogs(
     req.query.searchNameTerm,
     req.query.sortBy,
-      req.query.sortDirection
+    req.query.sortDirection
   );
   const foundBlog = blogs.find((el) => el._id.toString() === req.body.blogId);
   return foundBlog!.name;

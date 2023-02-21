@@ -1,10 +1,8 @@
 import { blogsCollection } from "./_mongodb-connect";
-import {
-  MongoBlogModel,
-  MongoBlogModelWithId,
-  MongoBlogModelWithStringId,
-} from "../../models/mongodb/MongoBlogModel";
+import { MongoBlogModel } from "../../models/mongodb/MongoBlogModel";
 import { ObjectId } from "mongodb";
+import { MongoBlogModelWithStringId } from "../../models/mongodb/MongoBlogModelWithStringId";
+import { MongoBlogModelWithPagination } from "../../models/mongodb/MongoBlogModelWithPagination";
 
 export const blogsRepository = {
   // Return blogs with filter
@@ -14,8 +12,7 @@ export const blogsRepository = {
     sortDirection: string,
     pageNumber: number,
     pageSize: number
-  ): Promise<MongoBlogModelWithId[]> {
-
+  ): Promise<MongoBlogModelWithPagination> {
     const filter: any = {};
     const sortingField: any = {};
 
@@ -33,12 +30,28 @@ export const blogsRepository = {
       sortingField.createdAt = -1;
     }
 
-    return blogsCollection
-        .find(filter)
-        .sort(sortingField)
-        .skip(pageNumber > 0 ? ( ( pageNumber - 1 ) * pageSize ) : 0)
-        .limit(pageSize > 0 ? +pageSize : 0)
-        .toArray();
+    // Pagination
+
+    const output = await blogsCollection
+      .find(filter)
+      .sort(sortingField)
+      .skip(pageNumber > 0 ? (pageNumber - 1) * pageSize : 0)
+      .limit(pageSize > 0 ? +pageSize : 0)
+      .toArray();
+
+    const outputCount = await blogsCollection.countDocuments(output);
+
+    const pagesCount = Math.ceil(outputCount / pageSize);
+
+    // const pagesCount = // count / pagesize
+
+    return {
+      pagesCount: pagesCount,
+      page: +pageNumber,
+      pageSize: +pageSize,
+      totalCount: outputCount,
+      items: output,
+    };
   },
 
   // Return blog by ID
