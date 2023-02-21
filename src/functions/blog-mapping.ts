@@ -1,14 +1,21 @@
-import { MongoBlogModelWithId } from "../models/mongodb/MongoBlogModel";
+import {MongoBlogModelWithId} from "../models/mongodb/MongoBlogModel";
 
 export const blogMapping = (array: MongoBlogModelWithId[]) => {
-  return array.map((el) => {
+
+  return array.map((blog) => {
     return {
-      id: el._id,
-      name: el.name,
-      description: el.description,
-      websiteUrl: el.websiteUrl,
-      createdAt: el.createdAt,
-      isMembership: el.isMembership,
+      pagesCount: 0,
+      page: 0,
+      pageSize: 0,
+      totalCount: 0,
+      items: {
+        id: blog._id,
+        name: blog.name,
+        description: blog.description,
+        websiteUrl: blog.websiteUrl,
+        createdAt: blog.createdAt,
+        isMembership: blog.isMembership,
+      }
     };
   });
 };

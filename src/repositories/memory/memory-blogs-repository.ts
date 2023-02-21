@@ -4,7 +4,7 @@ const blogs: MemoryBlogModel[] = [];
 
 export const blogsRepository = {
   // Return all blogs
-  async findAllBlogs(): Promise<MemoryBlogModel[]> {
+  async findBlogs(): Promise<MemoryBlogModel[]> {
     return blogs;
   },
 
