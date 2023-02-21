@@ -1,20 +1,20 @@
 import { blogsRepository } from "../repositories/mongodb/mongodb-blogs-repository";
 import {
   MongoBlogModel,
-  MongoBlogModelWithId,
+  MongoBlogModelWithId, MongoBlogModelWithStringId,
 } from "../models/mongodb/MongoBlogModel";
 import { ObjectId } from "mongodb";
 
 export const blogsService = {
   // Return all blogs
-  async findAllBlogs(): Promise<MongoBlogModelWithId[]> {
-    return blogsRepository.findAllBlogs();
+  async findAllBlogs(searchNameTerm: string | null): Promise<MongoBlogModelWithId[]> {
+    return blogsRepository.findBlogs(searchNameTerm);
   },
 
   // Return blog by ID
   async findBlogById(
     _id: ObjectId
-  ): Promise<boolean | (MongoBlogModel & { id: string })> {
+  ): Promise<boolean | (MongoBlogModelWithStringId)> {
     return blogsRepository.findBlogById(_id);
   },
 

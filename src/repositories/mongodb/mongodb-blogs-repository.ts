@@ -7,9 +7,15 @@ import {
 import { ObjectId } from "mongodb";
 
 export const blogsRepository = {
-  // Return all blogs
-  async findAllBlogs(): Promise<MongoBlogModelWithId[]> {
-    return blogsCollection.find({}).toArray();
+  // Return blogs with filter
+  async findBlogs(searchNameTerm: string | null): Promise<MongoBlogModelWithId[]> {
+    const filter: any = {};
+
+    if (searchNameTerm) {
+      filter.name = {$regex: searchNameTerm, $options: "i"}
+    }
+
+    return blogsCollection.find(filter).toArray();
   },
 
   // Return blog by ID

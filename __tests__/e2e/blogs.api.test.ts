@@ -15,7 +15,7 @@ beforeAll(async () => {
 });
 
 const foundBlogs = async () => {
-  return await blogsRepository.findAllBlogs();
+  return await blogsRepository.findBlogs();
 };
 
 const foundPosts = async () => {

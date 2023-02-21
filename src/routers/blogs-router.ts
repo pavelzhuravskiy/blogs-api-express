@@ -5,12 +5,15 @@ import { blogInputValidationMiddleware } from "../middlewares/blogs-input-valida
 import { basicAuthMiddleware } from "../middlewares/basic-auth-middleware";
 import { blogMapping } from "../functions/blog-mapping";
 import { ObjectId } from "mongodb";
+import {RequestWithQuery} from "../models/global/GlobalRequestModel";
+import {MongoBlogQueryModel} from "../models/mongodb/MongoBlogQueryModel";
 
 export const blogsRouter = Router({});
 
-blogsRouter.get("/", async (req: Request, res: Response) => {
-  const foundBlogs = await blogsService.findAllBlogs();
-  res.json(blogMapping(foundBlogs));
+blogsRouter.get("/", async (req:RequestWithQuery<MongoBlogQueryModel>, res: Response) => {
+  const foundBlogs = await blogsService.findAllBlogs(req.query.searchNameTerm);
+    res.json(foundBlogs);
+    // res.json(blogMapping(foundBlogs));
 });
 
 blogsRouter.get("/:id", async (req: Request, res: Response) => {
