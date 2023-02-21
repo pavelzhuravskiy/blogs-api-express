@@ -3,22 +3,26 @@ import { blogsService } from "../domain/blogs-service";
 import { errorCheckMiddleware } from "../middlewares/error-check-middleware";
 import { blogInputValidationMiddleware } from "../middlewares/blogs-input-validation-middleware";
 import { basicAuthMiddleware } from "../middlewares/basic-auth-middleware";
-import { blogMapping } from "../functions/blog-mapping";
 import { ObjectId } from "mongodb";
-import {RequestWithQuery} from "../models/global/GlobalRequestModel";
-import {MongoBlogQueryModel} from "../models/mongodb/MongoBlogQueryModel";
+import { RequestWithQuery } from "../models/global/GlobalRequestModel";
+import { MongoBlogQueryModel } from "../models/mongodb/MongoBlogQueryModel";
 
 export const blogsRouter = Router({});
 
-blogsRouter.get("/", async (req:RequestWithQuery<MongoBlogQueryModel>, res: Response) => {
-  const foundBlogs = await blogsService.findBlogs(
-    req.query.searchNameTerm,
-    req.query.sortBy,
-      req.query.sortDirection
-  );
+blogsRouter.get(
+  "/",
+  async (req: RequestWithQuery<MongoBlogQueryModel>, res: Response) => {
+    const foundBlogs = await blogsService.findBlogs(
+      req.query.searchNameTerm,
+      req.query.sortBy,
+      req.query.sortDirection,
+      req.query.pageNumber,
+      req.query.pageSize
+    );
     res.json(foundBlogs);
     // res.json(blogMapping(foundBlogs));
-});
+  }
+);
 
 blogsRouter.get("/:id", async (req: Request, res: Response) => {
   try {

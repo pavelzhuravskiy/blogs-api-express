@@ -11,7 +11,9 @@ export const blogsRepository = {
   async findBlogs(
     searchNameTerm: string | null,
     sortBy: string,
-    sortDirection: string
+    sortDirection: string,
+    pageNumber: number,
+    pageSize: number
   ): Promise<MongoBlogModelWithId[]> {
 
     const filter: any = {};
@@ -31,7 +33,12 @@ export const blogsRepository = {
       sortingField.createdAt = -1;
     }
 
-    return blogsCollection.find(filter).sort(sortingField).toArray();
+    return blogsCollection
+        .find(filter)
+        .sort(sortingField)
+        .skip(pageNumber > 0 ? ( ( pageNumber - 1 ) * pageSize ) : 0)
+        .limit(pageSize > 0 ? +pageSize : 0)
+        .toArray();
   },
 
   // Return blog by ID

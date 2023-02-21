@@ -676,3 +676,7 @@ describe("Blogs and posts testing", () => {
     expect(blogs.length).toBe(0);
   });
 });
+
+// TODO Проверка фильтра
+// TODO Проверка сортировки
+// TODO Проверка пагинации
