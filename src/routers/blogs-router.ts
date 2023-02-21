@@ -11,7 +11,11 @@ import {MongoBlogQueryModel} from "../models/mongodb/MongoBlogQueryModel";
 export const blogsRouter = Router({});
 
 blogsRouter.get("/", async (req:RequestWithQuery<MongoBlogQueryModel>, res: Response) => {
-  const foundBlogs = await blogsService.findBlogs(req.query.searchNameTerm);
+  const foundBlogs = await blogsService.findBlogs(
+    req.query.searchNameTerm,
+    req.query.sortBy,
+      req.query.sortDirection
+  );
     res.json(foundBlogs);
     // res.json(blogMapping(foundBlogs));
 });

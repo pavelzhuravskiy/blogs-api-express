@@ -7,8 +7,8 @@ import { ObjectId } from "mongodb";
 
 export const blogsService = {
   // Return all blogs
-  async findBlogs(searchNameTerm: string | null): Promise<MongoBlogModelWithId[]> {
-    return blogsRepository.findBlogs(searchNameTerm);
+  async findBlogs(searchNameTerm: string | null, sortBy: string | "createdAt", sortDirection: string): Promise<MongoBlogModelWithId[]> {
+    return blogsRepository.findBlogs(searchNameTerm, sortBy, sortDirection);
   },
 
   // Return blog by ID

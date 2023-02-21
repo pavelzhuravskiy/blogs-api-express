@@ -8,14 +8,30 @@ import { ObjectId } from "mongodb";
 
 export const blogsRepository = {
   // Return blogs with filter
-  async findBlogs(searchNameTerm: string | null): Promise<MongoBlogModelWithId[]> {
+  async findBlogs(
+    searchNameTerm: string | null,
+    sortBy: string,
+    sortDirection: string
+  ): Promise<MongoBlogModelWithId[]> {
+
     const filter: any = {};
+    const sortingField: any = {};
 
     if (searchNameTerm) {
-      filter.name = {$regex: searchNameTerm, $options: "i"}
+      filter.name = { $regex: searchNameTerm, $options: "i" };
     }
 
-    return blogsCollection.find(filter).toArray();
+    if (sortBy === "name" && sortDirection === "desc") {
+      sortingField.name = -1;
+    } else if (sortBy === "name") {
+      sortingField.name = 1;
+    } else if (sortBy === "createdAt" && sortDirection === "asc") {
+      sortingField.createdAt = 1;
+    } else {
+      sortingField.createdAt = -1;
+    }
+
+    return blogsCollection.find(filter).sort(sortingField).toArray();
   },
 
   // Return blog by ID
