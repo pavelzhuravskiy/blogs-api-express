@@ -19,7 +19,7 @@ const foundBlogs = async () => {
 };
 
 const foundPosts = async () => {
-  return await postsRepository.findAllPosts();
+  return await postsRepository.findPosts();
 };
 
 describe("Blogs and posts testing", () => {

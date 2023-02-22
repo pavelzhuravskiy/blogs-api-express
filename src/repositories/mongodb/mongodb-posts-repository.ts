@@ -1,17 +1,42 @@
 import { postsCollection } from "./_mongodb-connect";
-import {
-  MongoPostModel,
-} from "../../models/mongodb/MongoPostModel";
+import { MongoPostModel } from "../../models/mongodb/MongoPostModel";
 import { ObjectId } from "mongodb";
-import {MongoPostModelWithId} from "../../models/mongodb/MongoPostModelWithId";
-import {
-  MongoPostModelWithStringId
-} from "../../models/mongodb/MongoPostModelWithStringId";
+import { MongoPostModelWithStringId } from "../../models/mongodb/MongoPostModelWithStringId";
+import { sortingFunc } from "../../functions/sorting";
+import { MongoPostModelWithPagination } from "../../models/mongodb/MongoPostModelWithPagination";
+import { postMapping } from "../../functions/post-mapping";
 
 export const postsRepository = {
   // Return all posts
-  async findAllPosts(): Promise<MongoPostModelWithId[]> {
-    return postsCollection.find({}).toArray();
+  async findPosts(
+    pageNumber: number,
+    pageSize: number,
+    sortBy: string,
+    sortDirection: string
+  ): Promise<MongoPostModelWithPagination> {
+    const sortingObj: any = {};
+
+    sortingFunc(sortingObj, sortBy, sortDirection);
+
+    // Pagination
+
+    const output = await postsCollection
+      .find()
+      .sort(sortingObj)
+      .skip(+pageNumber > 0 ? (+pageNumber - 1) * +pageSize : 0)
+      .limit(+pageSize > 0 ? +pageSize : 0)
+      .toArray();
+
+    const outputCount = await postsCollection.countDocuments();
+    const pagesCount = Math.ceil(outputCount / +pageSize);
+
+    return {
+      pagesCount: pagesCount | 0,
+      page: +pageNumber | 0,
+      pageSize: +pageSize | 0,
+      totalCount: outputCount,
+      items: postMapping(output),
+    };
   },
 
   // Return post by ID

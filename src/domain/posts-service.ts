@@ -1,39 +1,43 @@
-import {
-  MongoPostModel,
-  MongoPostModelWithId,
-} from "../models/mongodb/MongoPostModel";
 import { ObjectId } from "mongodb";
 import { postsRepository } from "../repositories/mongodb/mongodb-posts-repository";
+import { MongoPostModelWithId } from "../models/mongodb/MongoPostModelWithId";
+import { MongoPostModelWithStringId } from "../models/mongodb/MongoPostModelWithStringId";
+import { MongoPostModelWithPagination } from "../models/mongodb/MongoPostModelWithPagination";
+import { blogsRepository } from "../repositories/mongodb/mongodb-blogs-repository";
 
 export const postsService = {
-  // Return all posts
-  async findAllPosts(): Promise<MongoPostModelWithId[]> {
-    return postsRepository.findAllPosts();
+  // Return posts
+  async findPosts(
+    pageNumber: number,
+    pageSize: number,
+    sortBy: string,
+    sortDirection: string
+  ): Promise<MongoPostModelWithPagination> {
+    return postsRepository.findPosts(
+      pageNumber,
+      pageSize,
+      sortBy,
+      sortDirection
+    );
   },
 
   // Return post by ID
   async findPostById(
     _id: ObjectId
-  ): Promise<boolean | (MongoPostModel & { id: string })> {
+  ): Promise<boolean | MongoPostModelWithStringId> {
     return postsRepository.findPostById(_id);
   },
 
   // Create new post
   async createNewPost(
-    title: string,
-    shortDescription: string,
-    content: string,
-    blogId: string,
-    blogName: string,
-    createdAt: string
-  ): Promise<boolean | (MongoPostModel & { id: string })> {
+    post: MongoPostModelWithId
+  ): Promise<boolean | MongoPostModelWithStringId> {
+    const blog = await blogsRepository.findBlogById(new ObjectId(post.blogId));
+    if (!blog) throw Error("No blog with this id");
     const newPost = {
-      title: title,
-      shortDescription: shortDescription,
-      content: content,
-      blogId: blogId,
-      blogName: blogName,
-      createdAt: createdAt,
+      ...post,
+      blogName: blog.name,
+      createdat: new Date(),
     };
 
     return postsRepository.createNewPost(newPost);

@@ -3,7 +3,8 @@ import { MongoBlogModel } from "../../models/mongodb/MongoBlogModel";
 import { ObjectId } from "mongodb";
 import { MongoBlogModelWithStringId } from "../../models/mongodb/MongoBlogModelWithStringId";
 import { MongoBlogModelWithPagination } from "../../models/mongodb/MongoBlogModelWithPagination";
-import {blogMapping} from "../../functions/blog-mapping";
+import { blogMapping } from "../../functions/blog-mapping";
+import { sortingFunc } from "../../functions/sorting";
 
 export const blogsRepository = {
   // Return blogs with filter
@@ -14,34 +15,25 @@ export const blogsRepository = {
     pageNumber: number,
     pageSize: number
   ): Promise<MongoBlogModelWithPagination> {
-
     const filter: any = {};
-    const sortingField: any = {};
+    const sortingObj: any = {};
 
     if (searchNameTerm) {
       filter.name = { $regex: searchNameTerm, $options: "i" };
     }
 
-    if (sortBy === "name" && sortDirection === "desc") {
-      sortingField.name = -1;
-    } else if (sortBy === "name") {
-      sortingField.name = 1;
-    } else if (sortBy === "createdAt" && sortDirection === "asc") {
-      sortingField.createdAt = 1;
-    } else {
-      sortingField.createdAt = -1;
-    }
+    sortingFunc(sortingObj, sortBy, sortDirection);
 
     // Pagination
 
     const output = await blogsCollection
-        .find(filter)
-        .sort(sortingField)
-        .skip(+pageNumber > 0 ? (+pageNumber - 1) * +pageSize : 0)
-        .limit(+pageSize > 0 ? +pageSize : 0)
-        .toArray()
+      .find(filter)
+      .sort(sortingObj)
+      .skip(+pageNumber > 0 ? (+pageNumber - 1) * +pageSize : 0)
+      .limit(+pageSize > 0 ? +pageSize : 0)
+      .toArray();
 
-    const outputCount = await blogsCollection.countDocuments(filter)
+    const outputCount = await blogsCollection.countDocuments(filter);
     const pagesCount = Math.ceil(outputCount / +pageSize);
 
     return {
@@ -49,14 +41,14 @@ export const blogsRepository = {
       page: +pageNumber | 0,
       pageSize: +pageSize | 0,
       totalCount: outputCount,
-      items: blogMapping(output)
-    }
+      items: blogMapping(output),
+    };
   },
 
   // Return blog by ID
   async findBlogById(
     _id: ObjectId
-  ): Promise<boolean | MongoBlogModelWithStringId> {
+  ): Promise<false | MongoBlogModelWithStringId> {
     const foundBlog = await blogsCollection.findOne({ _id });
 
     if (!foundBlog) {

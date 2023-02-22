@@ -3,17 +3,30 @@ import { postsService } from "../domain/posts-service";
 import { basicAuthMiddleware } from "../middlewares/basic-auth-middleware";
 import { postInputValidationMiddleware } from "../middlewares/posts-input-validation-middleware";
 import { errorCheckMiddleware } from "../middlewares/error-check-middleware";
-import { blogNameFinder } from "../functions/blog-name-finder";
-import { postMapping } from "../functions/post-mapping";
 import { ObjectId } from "mongodb";
 import { blogIdCheckMiddleware } from "../middlewares/blog-id-check-middleware";
+import {
+  RequestWithBodyAndQuery,
+  RequestWithQuery,
+} from "../models/global/GlobalRequestModel";
+import { MongoPostQueryModel } from "../models/mongodb/MongoPostQueryModel";
+import { MongoPostModelWithId } from "../models/mongodb/MongoPostModelWithId";
+import { MongoBlogQueryModel } from "../models/mongodb/MongoBlogQueryModel";
 
 export const postsRouter = Router({});
 
-postsRouter.get("/", async (req: Request, res: Response) => {
-  const foundPosts = await postsService.findAllPosts();
-  res.json(postMapping(foundPosts));
-});
+postsRouter.get(
+  "/",
+  async (req: RequestWithQuery<MongoPostQueryModel>, res: Response) => {
+    const foundPosts = await postsService.findPosts(
+      req.query.pageNumber,
+      req.query.pageSize,
+      req.query.sortBy,
+      req.query.sortDirection
+    );
+    res.json(foundPosts);
+  }
+);
 
 postsRouter.get("/:id", async (req: Request, res: Response) => {
   try {
@@ -33,19 +46,15 @@ postsRouter.get("/:id", async (req: Request, res: Response) => {
 
 postsRouter.post(
   "/",
-  basicAuthMiddleware,
-  postInputValidationMiddleware,
-  blogIdCheckMiddleware,
-  errorCheckMiddleware,
-  async (req: Request, res: Response) => {
-    const newPost = await postsService.createNewPost(
-      req.body.title,
-      req.body.shortDescription,
-      req.body.content,
-      req.body.blogId,
-      await blogNameFinder(req),
-      new Date().toISOString()
-    );
+  //basicAuthMiddleware,
+  //postInputValidationMiddleware,
+  // blogIdCheckMiddleware,
+  //errorCheckMiddleware,
+  async (
+    req: RequestWithBodyAndQuery<MongoPostModelWithId, MongoBlogQueryModel>,
+    res: Response
+  ) => {
+    const newPost = await postsService.createNewPost(req.body);
     res.status(201).json(newPost);
   }
 );

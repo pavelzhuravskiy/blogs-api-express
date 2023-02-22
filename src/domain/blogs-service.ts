@@ -1,41 +1,44 @@
-import { blogsRepository } from "../repositories/mongodb/mongodb-blogs-repository";
-import { MongoBlogModel } from "../models/mongodb/MongoBlogModel";
-import { ObjectId } from "mongodb";
-import { MongoBlogModelWithStringId } from "../models/mongodb/MongoBlogModelWithStringId";
-import { MongoBlogModelWithPagination } from "../models/mongodb/MongoBlogModelWithPagination";
+import {
+  blogsRepository
+} from "../repositories/mongodb/mongodb-blogs-repository";
+import {MongoBlogModel} from "../models/mongodb/MongoBlogModel";
+import {ObjectId} from "mongodb";
+import {
+  MongoBlogModelWithStringId
+} from "../models/mongodb/MongoBlogModelWithStringId";
+import {
+  MongoBlogModelWithPagination
+} from "../models/mongodb/MongoBlogModelWithPagination";
+import {MongoBlogQueryModel} from "../models/mongodb/MongoBlogQueryModel";
 
 export const blogsService = {
-  // Return all blogs
+  // Return blogs
   async findBlogs(
-    searchNameTerm: string | null,
-    sortBy: string,
-    sortDirection: string,
-    pageNumber: number,
-    pageSize: number
-  ): Promise<MongoBlogModelWithPagination> {
+      blog: MongoBlogQueryModel
+  ): Promise<boolean | MongoBlogModelWithPagination> {
     return blogsRepository.findBlogs(
-      searchNameTerm,
-      sortBy,
-      sortDirection,
-      pageNumber,
-      pageSize
+        blog.searchNameTerm,
+        blog.sortBy,
+        blog.sortDirection,
+        blog.pageNumber,
+        blog.pageSize
     );
   },
 
   // Return blog by ID
   async findBlogById(
-    _id: ObjectId
+      _id: ObjectId
   ): Promise<boolean | MongoBlogModelWithStringId> {
     return blogsRepository.findBlogById(_id);
   },
 
   // Create new blog
   async createNewBlog(
-    name: string,
-    description: string,
-    websiteUrl: string,
-    createdAt: string,
-    isMembership: boolean
+      name: string,
+      description: string,
+      websiteUrl: string,
+      createdAt: string,
+      isMembership: boolean
   ): Promise<MongoBlogModel> {
     const newBlog = {
       name: name,
@@ -49,10 +52,10 @@ export const blogsService = {
 
   // Update existing blog
   async updateBlog(
-    _id: ObjectId,
-    name: string,
-    description: string,
-    websiteUrl: string
+      _id: ObjectId,
+      name: string,
+      description: string,
+      websiteUrl: string
   ): Promise<boolean> {
     return blogsRepository.updateBlog(_id, name, description, websiteUrl);
   },

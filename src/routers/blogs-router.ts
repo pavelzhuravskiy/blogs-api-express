@@ -12,13 +12,7 @@ export const blogsRouter = Router({});
 blogsRouter.get(
   "/",
   async (req: RequestWithQuery<MongoBlogQueryModel>, res: Response) => {
-    const foundBlogs = await blogsService.findBlogs(
-      req.query.searchNameTerm,
-      req.query.sortBy,
-      req.query.sortDirection,
-      req.query.pageNumber,
-      req.query.pageSize
-    );
+    const foundBlogs = await blogsService.findBlogs(req.query);
     res.json(foundBlogs);
   }
 );

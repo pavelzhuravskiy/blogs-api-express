@@ -1,15 +1,15 @@
-import { MongoPostModelWithId } from "../models/mongodb/MongoPostModel";
+import {MongoPostModelWithId} from "../models/mongodb/MongoPostModelWithId";
 
 export const postMapping = (array: MongoPostModelWithId[]) => {
-  return array.map((el) => {
+  return array.map((post) => {
     return {
-      id: el._id,
-      title: el.title,
-      shortDescription: el.shortDescription,
-      content: el.content,
-      blogId: el.blogId,
-      blogName: el.blogName,
-      createdAt: el.createdAt,
+      id: post._id.toString(),
+      title: post.title,
+      shortDescription: post.shortDescription,
+      content: post.content,
+      blogId: post.blogId,
+      blogName: post.blogName,
+      createdAt: post.createdAt,
     };
   });
 };

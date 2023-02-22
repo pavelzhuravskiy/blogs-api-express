@@ -4,7 +4,7 @@ const posts: MemoryPostModel[] = [];
 
 export const postsRepository = {
   // Return all posts
-  async findAllPosts(): Promise<MemoryPostModel[]> {
+  async findPosts(): Promise<MemoryPostModel[]> {
     return posts;
   },
 
