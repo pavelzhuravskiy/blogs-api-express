@@ -8,7 +8,7 @@ export const blogsService = {
   // Return all blogs
   async findBlogs(
     searchNameTerm: string | null,
-    sortBy: string | "createdAt",
+    sortBy: string,
     sortDirection: string,
     pageNumber: number,
     pageSize: number

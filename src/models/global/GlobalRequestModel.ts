@@ -1,4 +1,4 @@
 import { Request } from "express";
 
-export type RequestWithQuery<Q> = Request<{}, {}, {}, Q>;
-export type RequestWithBodyAndQuery<B, Q> = Request<{}, {}, B, Q>;
+export type RequestWithQuery<T> = Request<{}, {}, {}, T>;
+export type RequestWithBodyAndQuery<B, T> = Request<{}, {}, B, T>;

@@ -13,6 +13,7 @@ export const blogsRepository = {
     pageNumber: number,
     pageSize: number
   ): Promise<MongoBlogModelWithPagination> {
+
     const filter: any = {};
     const sortingField: any = {};
 
@@ -33,24 +34,21 @@ export const blogsRepository = {
     // Pagination
 
     const output = await blogsCollection
-      .find(filter)
-      .sort(sortingField)
-      .skip(pageNumber > 0 ? (pageNumber - 1) * pageSize : 0)
-      .limit(pageSize > 0 ? +pageSize : 0)
-      .toArray();
+        .find(filter)
+        .sort(sortingField)
+        .skip(+pageNumber > 0 ? (+pageNumber - 1) * +pageSize : 0)
+        .limit(+pageSize > 0 ? +pageSize : 0)
+        .toArray()
 
-    const outputCount = await blogsCollection.countDocuments(output);
-
-    const pagesCount = Math.ceil(outputCount / pageSize);
-
-    // const pagesCount = // count / pagesize
+    const outputCount = await blogsCollection.countDocuments(filter)
+    const pagesCount = Math.ceil(outputCount / +pageSize);
 
     return {
-      pagesCount: pagesCount,
-      page: +pageNumber,
-      pageSize: +pageSize,
+      pagesCount: pagesCount | 0,
+      page: +pageNumber | 0,
+      pageSize: +pageSize | 0,
       totalCount: outputCount,
-      items: output,
+      items: output
     };
   },
 
