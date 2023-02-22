@@ -1,10 +1,12 @@
 import { postsCollection } from "./_mongodb-connect";
 import {
   MongoPostModel,
-  MongoPostModelWithId,
-  MongoPostModelWithStringId,
 } from "../../models/mongodb/MongoPostModel";
 import { ObjectId } from "mongodb";
+import {MongoPostModelWithId} from "../../models/mongodb/MongoPostModelWithId";
+import {
+  MongoPostModelWithStringId
+} from "../../models/mongodb/MongoPostModelWithStringId";
 
 export const postsRepository = {
   // Return all posts

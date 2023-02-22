@@ -3,6 +3,7 @@ import { MongoBlogModel } from "../../models/mongodb/MongoBlogModel";
 import { ObjectId } from "mongodb";
 import { MongoBlogModelWithStringId } from "../../models/mongodb/MongoBlogModelWithStringId";
 import { MongoBlogModelWithPagination } from "../../models/mongodb/MongoBlogModelWithPagination";
+import {blogMapping} from "../../functions/blog-mapping";
 
 export const blogsRepository = {
   // Return blogs with filter
@@ -48,8 +49,8 @@ export const blogsRepository = {
       page: +pageNumber | 0,
       pageSize: +pageSize | 0,
       totalCount: outputCount,
-      items: output
-    };
+      items: blogMapping(output)
+    }
   },
 
   // Return blog by ID

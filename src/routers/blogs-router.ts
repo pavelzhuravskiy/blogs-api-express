@@ -20,7 +20,6 @@ blogsRouter.get(
       req.query.pageSize
     );
     res.json(foundBlogs);
-    // res.json(blogMapping(foundBlogs));
   }
 );
 

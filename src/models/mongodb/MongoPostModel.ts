@@ -1,6 +1,3 @@
-import { MongoIdModel } from "./MongoIdModel";
-import { GlobalIdStringModel } from "../global/GlobalIdStringModel";
-
 export type MongoPostModel = {
   title: string;
   shortDescription: string;
@@ -9,6 +6,3 @@ export type MongoPostModel = {
   blogName: string;
   createdAt: string;
 };
-
-export type MongoPostModelWithId = MongoPostModel & MongoIdModel;
-export type MongoPostModelWithStringId = MongoPostModel & GlobalIdStringModel;

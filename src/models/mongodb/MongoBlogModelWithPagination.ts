@@ -1,9 +1,9 @@
-import { MongoBlogModelWithId } from "./MongoBlogModelWithId";
+import {MongoBlogModelWithStringId} from "./MongoBlogModelWithStringId";
 
 export type MongoBlogModelWithPagination = {
   pagesCount: number;
   pageSize: number;
   page: number;
   totalCount: number;
-  items: MongoBlogModelWithId[];
+  items: MongoBlogModelWithStringId[];
 };
