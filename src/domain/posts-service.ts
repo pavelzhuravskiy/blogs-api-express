@@ -4,20 +4,18 @@ import { MongoPostModelWithId } from "../models/mongodb/MongoPostModelWithId";
 import { MongoPostModelWithStringId } from "../models/mongodb/MongoPostModelWithStringId";
 import { MongoPostModelWithPagination } from "../models/mongodb/MongoPostModelWithPagination";
 import { blogsRepository } from "../repositories/mongodb/mongodb-blogs-repository";
+import {MongoPostQueryModel} from "../models/mongodb/MongoPostQueryModel";
 
 export const postsService = {
   // Return posts
   async findPosts(
-    pageNumber: number,
-    pageSize: number,
-    sortBy: string,
-    sortDirection: string
+      post: MongoPostQueryModel
   ): Promise<MongoPostModelWithPagination> {
     return postsRepository.findPosts(
-      pageNumber,
-      pageSize,
-      sortBy,
-      sortDirection
+      post.pageNumber,
+      post.pageSize,
+      post.sortBy,
+      post.sortDirection
     );
   },
 
@@ -33,13 +31,14 @@ export const postsService = {
     post: MongoPostModelWithId
   ): Promise<boolean | MongoPostModelWithStringId> {
     const blog = await blogsRepository.findBlogById(new ObjectId(post.blogId));
-    if (!blog) throw new Error("No blog with this id");
+    if (!blog) {
+      return false
+    }
     const newPost = {
       ...post,
       blogName: blog.name,
-      createdat: new Date(),
+      createdAt: new Date().toISOString(),
     };
-
     return postsRepository.createNewPost(newPost);
   },
 

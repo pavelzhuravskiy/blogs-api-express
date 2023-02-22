@@ -1,17 +1,12 @@
 import { body } from "express-validator";
-import { blogsRepository } from "../repositories/mongodb/mongodb-blogs-repository";
+import { postsService } from "../domain/posts-service";
 
-export const blogIdCheckMiddleware = body("blogId").custom(async (value) => {
-  const blogs = await blogsRepository.findBlogs(
-    null,
-    "name",
-    "asc",
-    0,
-    0
-  );
-  const isValid = blogs.items.filter((el) => el.id === value);
-  if (isValid.length < 1) {
-    throw new Error("Invalid blogId");
+export const blogIdCheckMiddleware = body("blogId").custom(
+  async (value, { req }) => {
+    const result = await postsService.createNewPost(req.body);
+    if (!result) {
+      throw new Error("Blog with provided ID not found");
+    }
+    return true;
   }
-  return true;
-});
+);

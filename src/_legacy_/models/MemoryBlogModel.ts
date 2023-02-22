@@ -1,3 +1,4 @@
+/*
 export type MemoryBlogModel =
   | {
       id: string;
@@ -5,4 +6,4 @@ export type MemoryBlogModel =
       description: string;
       websiteUrl: string;
     }
-  | undefined;
+  | undefined;*/

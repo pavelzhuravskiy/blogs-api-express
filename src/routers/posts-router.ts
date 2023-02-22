@@ -4,26 +4,18 @@ import { basicAuthMiddleware } from "../middlewares/basic-auth-middleware";
 import { postInputValidationMiddleware } from "../middlewares/posts-input-validation-middleware";
 import { errorCheckMiddleware } from "../middlewares/error-check-middleware";
 import { ObjectId } from "mongodb";
-import { blogIdCheckMiddleware } from "../middlewares/blog-id-check-middleware";
-import {
-  RequestWithBodyAndQuery,
-  RequestWithQuery,
-} from "../models/global/GlobalRequestModel";
+import { RequestWithQuery } from "../models/global/GlobalRequestModel";
 import { MongoPostQueryModel } from "../models/mongodb/MongoPostQueryModel";
-import { MongoPostModelWithId } from "../models/mongodb/MongoPostModelWithId";
-import { MongoBlogQueryModel } from "../models/mongodb/MongoBlogQueryModel";
+import {
+    blogIdCheckMiddleware
+} from "../middlewares/blog-id-check-middleware";
 
 export const postsRouter = Router({});
 
 postsRouter.get(
   "/",
   async (req: RequestWithQuery<MongoPostQueryModel>, res: Response) => {
-    const foundPosts = await postsService.findPosts(
-      req.query.pageNumber,
-      req.query.pageSize,
-      req.query.sortBy,
-      req.query.sortDirection
-    );
+    const foundPosts = await postsService.findPosts(req.query);
     res.json(foundPosts);
   }
 );
@@ -35,8 +27,6 @@ postsRouter.get("/:id", async (req: Request, res: Response) => {
     );
     if (foundPost) {
       res.json(foundPost);
-    } else {
-      res.sendStatus(404);
     }
   } catch (err) {
     console.log(err);
@@ -46,25 +36,26 @@ postsRouter.get("/:id", async (req: Request, res: Response) => {
 
 postsRouter.post(
   "/",
-  //basicAuthMiddleware,
-  //postInputValidationMiddleware,
-  // blogIdCheckMiddleware,
-  //errorCheckMiddleware,
-  async (
-    req: RequestWithBodyAndQuery<MongoPostModelWithId, MongoBlogQueryModel>,
-    res: Response
-  ) => {
-    const newPost = await postsService.createNewPost(req.body);
-    res.status(201).json(newPost);
+  basicAuthMiddleware,
+  postInputValidationMiddleware,
+  blogIdCheckMiddleware,
+  errorCheckMiddleware,
+  async (req: Request, res: Response) => {
+      const newPost = await postsService.createNewPost(req.body);
+      if (newPost) {
+          res.status(201).json(newPost);
+      } else {
+          res.sendStatus(400)
+      }
   }
 );
 
 postsRouter.put(
   "/:id",
-  basicAuthMiddleware,
-  postInputValidationMiddleware,
-  blogIdCheckMiddleware,
-  errorCheckMiddleware,
+  // basicAuthMiddleware,
+  // postInputValidationMiddleware,
+  // blogIdCheckMiddleware,
+  // errorCheckMiddleware,
   async (req: Request, res: Response) => {
     try {
       const isUpdated = await postsService.updatePost(
@@ -77,8 +68,6 @@ postsRouter.put(
       if (isUpdated) {
         const updatedPost = await postsService.findPostById(req.body.id);
         res.status(204).json(updatedPost);
-      } else {
-        res.sendStatus(404);
       }
     } catch (err) {
       console.log(err);
@@ -89,7 +78,7 @@ postsRouter.put(
 
 postsRouter.delete(
   "/:id",
-  basicAuthMiddleware,
+  // basicAuthMiddleware,
   async (req: Request, res: Response) => {
     try {
       const isDeleted = await postsService.deletePost(
@@ -97,8 +86,6 @@ postsRouter.delete(
       );
       if (isDeleted) {
         res.sendStatus(204);
-      } else {
-        res.sendStatus(404);
       }
     } catch (err) {
       console.log(err);
@@ -109,7 +96,7 @@ postsRouter.delete(
 
 postsRouter.delete(
   "/",
-  basicAuthMiddleware,
+  // basicAuthMiddleware,
   async (req: Request, res: Response) => {
     const isDeleted = await postsService.deleteAll();
     if (isDeleted) {

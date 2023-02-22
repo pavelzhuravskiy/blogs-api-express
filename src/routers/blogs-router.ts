@@ -1,11 +1,13 @@
 import { Request, Response, Router } from "express";
 import { blogsService } from "../domain/blogs-service";
-import { errorCheckMiddleware } from "../middlewares/error-check-middleware";
-import { blogInputValidationMiddleware } from "../middlewares/blogs-input-validation-middleware";
-import { basicAuthMiddleware } from "../middlewares/basic-auth-middleware";
 import { ObjectId } from "mongodb";
 import { RequestWithQuery } from "../models/global/GlobalRequestModel";
 import { MongoBlogQueryModel } from "../models/mongodb/MongoBlogQueryModel";
+import {basicAuthMiddleware} from "../middlewares/basic-auth-middleware";
+import {
+    blogInputValidationMiddleware
+} from "../middlewares/blogs-input-validation-middleware";
+import {errorCheckMiddleware} from "../middlewares/error-check-middleware";
 
 export const blogsRouter = Router({});
 
@@ -24,8 +26,6 @@ blogsRouter.get("/:id", async (req: Request, res: Response) => {
     );
     if (foundBlog) {
       res.json(foundBlog);
-    } else {
-      res.sendStatus(404);
     }
   } catch (err) {
     console.log(err);
@@ -39,18 +39,16 @@ blogsRouter.post(
   blogInputValidationMiddleware,
   errorCheckMiddleware,
   async (req: Request, res: Response) => {
-    const newBlog = await blogsService.createNewBlog(
-     req.body
-    );
+    const newBlog = await blogsService.createNewBlog(req.body);
     res.status(201).json(newBlog);
   }
 );
 
 blogsRouter.put(
   "/:id",
-  basicAuthMiddleware,
-  blogInputValidationMiddleware,
-  errorCheckMiddleware,
+  // basicAuthMiddleware,
+  // blogInputValidationMiddleware,
+  // errorCheckMiddleware,
   async (req: Request, res: Response) => {
     try {
       const isUpdated = await blogsService.updateBlog(
@@ -62,8 +60,6 @@ blogsRouter.put(
       if (isUpdated) {
         const updatedBlog = await blogsService.findBlogById(req.body.id);
         res.status(204).json(updatedBlog);
-      } else {
-        res.sendStatus(404);
       }
     } catch (err) {
       console.log(err);
@@ -74,7 +70,7 @@ blogsRouter.put(
 
 blogsRouter.delete(
   "/:id",
-  basicAuthMiddleware,
+  // basicAuthMiddleware,
   async (req: Request, res: Response) => {
     try {
       const isDeleted = await blogsService.deleteBlog(
@@ -82,8 +78,6 @@ blogsRouter.delete(
       );
       if (isDeleted) {
         res.sendStatus(204);
-      } else {
-        res.sendStatus(404);
       }
     } catch (err) {
       console.log(err);
@@ -94,7 +88,7 @@ blogsRouter.delete(
 
 blogsRouter.delete(
   "/",
-  basicAuthMiddleware,
+  // basicAuthMiddleware,
   async (req: Request, res: Response) => {
     const isDeleted = await blogsService.deleteAll();
     if (isDeleted) {

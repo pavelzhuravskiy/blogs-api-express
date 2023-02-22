@@ -1,3 +1,4 @@
+/*
 export type MemoryPostModel =
   | {
       id: string;
@@ -7,4 +8,4 @@ export type MemoryPostModel =
       blogId: string;
       blogName: string;
     }
-  | undefined;
+  | undefined;*/
