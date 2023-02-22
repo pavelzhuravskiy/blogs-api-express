@@ -3,7 +3,7 @@ import { body } from "express-validator";
 const websiteUrlPattern =
   /^https:\/\/([a-zA-Z0-9_-]+\.)+[a-zA-Z0-9_-]+(\/[a-zA-Z0-9_-]+)*\/?$/;
 
-export const blogInputValidationMiddleware = [
+export const validationBlogsInput = [
   body("name")
     .exists()
     .withMessage("Name is required")

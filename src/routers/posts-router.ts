@@ -1,14 +1,12 @@
 import { Request, Response, Router } from "express";
 import { postsService } from "../domain/posts-service";
-import { basicAuthMiddleware } from "../middlewares/basic-auth-middleware";
-import { postInputValidationMiddleware } from "../middlewares/posts-input-validation-middleware";
-import { errorCheckMiddleware } from "../middlewares/error-check-middleware";
+import { authBasic } from "../middlewares/auth-basic";
+import { validationPostsInput } from "../middlewares/validation-posts-input";
+import { validationErrorCheck } from "../middlewares/validation-error-check";
 import { ObjectId } from "mongodb";
 import { RequestWithQuery } from "../models/global/GlobalRequestModel";
 import { MongoPostQueryModel } from "../models/mongodb/MongoPostQueryModel";
-import {
-    blogIdCheckMiddleware
-} from "../middlewares/blog-id-check-middleware";
+import { validationPostsCreation } from "../middlewares/validation-posts-creation";
 
 export const postsRouter = Router({});
 
@@ -36,17 +34,17 @@ postsRouter.get("/:id", async (req: Request, res: Response) => {
 
 postsRouter.post(
   "/",
-  basicAuthMiddleware,
-  postInputValidationMiddleware,
-  blogIdCheckMiddleware,
-  errorCheckMiddleware,
+  authBasic,
+  validationPostsInput,
+  validationPostsCreation,
+  validationErrorCheck,
   async (req: Request, res: Response) => {
-      const newPost = await postsService.createNewPost(req.body);
-      if (newPost) {
-          res.status(201).json(newPost);
-      } else {
-          res.sendStatus(400)
-      }
+    const newPost = await postsService.createNewPost(req.body);
+    if (newPost) {
+      res.status(201).json(newPost);
+    } else {
+      res.sendStatus(400);
+    }
   }
 );
 

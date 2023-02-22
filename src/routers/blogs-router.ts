@@ -3,11 +3,11 @@ import { blogsService } from "../domain/blogs-service";
 import { ObjectId } from "mongodb";
 import { RequestWithQuery } from "../models/global/GlobalRequestModel";
 import { MongoBlogQueryModel } from "../models/mongodb/MongoBlogQueryModel";
-import {basicAuthMiddleware} from "../middlewares/basic-auth-middleware";
+import {authBasic} from "../middlewares/auth-basic";
 import {
-    blogInputValidationMiddleware
-} from "../middlewares/blogs-input-validation-middleware";
-import {errorCheckMiddleware} from "../middlewares/error-check-middleware";
+    validationBlogsInput
+} from "../middlewares/validation-blogs-input";
+import {validationErrorCheck} from "../middlewares/validation-error-check";
 
 export const blogsRouter = Router({});
 
@@ -35,9 +35,9 @@ blogsRouter.get("/:id", async (req: Request, res: Response) => {
 
 blogsRouter.post(
   "/",
-  basicAuthMiddleware,
-  blogInputValidationMiddleware,
-  errorCheckMiddleware,
+  authBasic,
+  validationBlogsInput,
+  validationErrorCheck,
   async (req: Request, res: Response) => {
     const newBlog = await blogsService.createNewBlog(req.body);
     res.status(201).json(newBlog);

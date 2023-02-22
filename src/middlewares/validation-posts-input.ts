@@ -1,6 +1,6 @@
 import { body } from "express-validator";
 
-export const postInputValidationMiddleware = [
+export const validationPostsInput = [
   body("title")
     .exists()
     .withMessage("Title is required")
