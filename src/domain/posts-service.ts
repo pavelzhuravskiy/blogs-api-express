@@ -33,7 +33,7 @@ export const postsService = {
     post: MongoPostModelWithId
   ): Promise<boolean | MongoPostModelWithStringId> {
     const blog = await blogsRepository.findBlogById(new ObjectId(post.blogId));
-    if (!blog) throw Error("No blog with this id");
+    if (!blog) throw new Error("No blog with this id");
     const newPost = {
       ...post,
       blogName: blog.name,

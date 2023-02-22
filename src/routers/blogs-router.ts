@@ -40,11 +40,7 @@ blogsRouter.post(
   errorCheckMiddleware,
   async (req: Request, res: Response) => {
     const newBlog = await blogsService.createNewBlog(
-      req.body.name,
-      req.body.description,
-      req.body.websiteUrl,
-      new Date().toISOString(),
-      false
+     req.body
     );
     res.status(201).json(newBlog);
   }
