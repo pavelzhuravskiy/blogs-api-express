@@ -23,7 +23,12 @@ export const blogsService = {
   async findBlogById(
     _id: ObjectId
   ): Promise<boolean | MongoBlogModelWithStringId> {
-    return blogsRepository.findBlogById(_id);
+    const foundBlog = await blogsRepository.findBlogById(_id);
+    // console.log(`I am foundBlog ==> ${foundBlog}`)
+    if (!foundBlog) {
+      return false
+    }
+    return foundBlog
   },
 
   // Create new blog

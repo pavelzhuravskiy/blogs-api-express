@@ -3,11 +3,10 @@ import { blogsService } from "../domain/blogs-service";
 import { ObjectId } from "mongodb";
 import { RequestWithQuery } from "../models/global/GlobalRequestModel";
 import { MongoBlogQueryModel } from "../models/mongodb/MongoBlogQueryModel";
-import {authBasic} from "../middlewares/auth-basic";
-import {
-    validationBlogsInput
-} from "../middlewares/validation-blogs-input";
-import {validationErrorCheck} from "../middlewares/validation-error-check";
+import { authBasic } from "../middlewares/auth-basic";
+import { validationBlogsInput } from "../middlewares/validation-blogs-input";
+import { validationErrorCheck } from "../middlewares/validation-error-check";
+import { validationBlogsFindById } from "../middlewares/validation-blogs-findbyid";
 
 export const blogsRouter = Router({});
 
@@ -19,19 +18,21 @@ blogsRouter.get(
   }
 );
 
-blogsRouter.get("/:id", async (req: Request, res: Response) => {
-  try {
+blogsRouter.get(
+  "/:id",
+  validationBlogsFindById,
+  validationErrorCheck,
+  async (req: Request, res: Response) => {
     const foundBlog = await blogsService.findBlogById(
       new ObjectId(req.params.id)
     );
     if (foundBlog) {
       res.json(foundBlog);
+    } else {
+      res.sendStatus(404);
     }
-  } catch (err) {
-    console.log(err);
-    res.sendStatus(404);
   }
-});
+);
 
 blogsRouter.post(
   "/",
