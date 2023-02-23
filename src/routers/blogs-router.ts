@@ -41,9 +41,8 @@ blogsRouter.get(
   "/:id/posts",
   validationBlogsFindById,
   validationErrorCheck,
-// @ts-ignore
   async (
-    req: RequestWithParamsAndQuery<GlobalIdStringModel, MongoPostQueryModel>,
+    req: Request & RequestWithParamsAndQuery<GlobalIdStringModel, MongoPostQueryModel>,
     res: Response
   ) => {
     const foundPosts = await postsService.findPostsByBlogId(
