@@ -102,15 +102,15 @@ blogsRouter.delete(
   "/:id",
   authBasic,
   validationBlogsFindByParamId,
+  validationErrorCheck,
   async (req: Request, res: Response) => {
     const isDeleted = await blogsService.deleteBlog(
       new ObjectId(req.params.id)
     );
     if (isDeleted) {
       res.sendStatus(204);
-    } else {
-      res.sendStatus(404);
     }
+
   }
 );
 
