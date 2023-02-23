@@ -5,6 +5,8 @@ export const funcSorting = (obj: any, field: string, direction: string) => {
     return (obj.name = 1);
   } else if (field === "createdAt" && direction === "asc") {
     return (obj.createdAt = 1);
+  } else if (direction === "asc") {
+    return (obj.createdAt = 1);
   } else {
     return (obj.createdAt = -1);
   }
