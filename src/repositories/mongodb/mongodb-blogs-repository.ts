@@ -5,7 +5,7 @@ import { MongoBlogModelWithStringId } from "../../models/mongodb/MongoBlogModelW
 import { MongoBlogModelWithPagination } from "../../models/mongodb/MongoBlogModelWithPagination";
 import { funcBlogMapping } from "../../functions/func-blog-mapping";
 import { funcSorting } from "../../functions/func-sorting";
-import {funcBlogsPagination} from "../../functions/func-blogs-pagination";
+import { funcBlogsPagination } from "../../functions/func-blogs-pagination";
 
 export const blogsRepository = {
   // Return blogs with filter
@@ -13,8 +13,8 @@ export const blogsRepository = {
     searchNameTerm: string | null,
     sortBy: string,
     sortDirection: string,
-    pageNumber: number,
-    pageSize: number
+    pageNumber: number = 1,
+    pageSize: number = 10
   ): Promise<MongoBlogModelWithPagination> {
     const filter: any = {};
     const sortingObj: any = {};
@@ -25,14 +25,19 @@ export const blogsRepository = {
 
     funcSorting(sortingObj, sortBy, sortDirection);
 
-    const output = await funcBlogsPagination(filter, sortingObj, pageNumber, pageSize)
+    const output = await funcBlogsPagination(
+      filter,
+      sortingObj,
+      pageNumber,
+      pageSize
+    );
     const outputCount = await blogsCollection.countDocuments(filter);
     const pagesCount = Math.ceil(outputCount / +pageSize);
 
     return {
       pagesCount: pagesCount | 0,
-      page: +pageNumber | 0,
-      pageSize: +pageSize | 0,
+      page: +pageNumber,
+      pageSize: +pageSize,
       totalCount: outputCount,
       items: funcBlogMapping(output),
     };
