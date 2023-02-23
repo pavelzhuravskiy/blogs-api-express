@@ -1,4 +1,4 @@
-import {MongoPostModelWithStringId} from "./MongoPostModelWithStringId";
+import { MongoPostModelWithStringId } from "./MongoPostModelWithStringId";
 
 export type MongoPostModelWithPagination = {
   pagesCount: number;

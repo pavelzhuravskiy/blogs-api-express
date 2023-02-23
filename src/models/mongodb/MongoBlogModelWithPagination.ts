@@ -1,4 +1,4 @@
-import {MongoBlogModelWithStringId} from "./MongoBlogModelWithStringId";
+import { MongoBlogModelWithStringId } from "./MongoBlogModelWithStringId";
 
 export type MongoBlogModelWithPagination = {
   pagesCount: number;

@@ -110,7 +110,6 @@ blogsRouter.delete(
     if (isDeleted) {
       res.sendStatus(204);
     }
-
   }
 );
 

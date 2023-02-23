@@ -15,11 +15,11 @@ export const validationErrorCheck = (
 
   const result = validationResult(req).formatWith(errorFormatter);
 
-  const idFinder = result.array().find(e => e.field === "id")
+  const idFinder = result.array().find((e) => e.field === "id");
 
   if (idFinder) {
     res.status(404).json({ errorsMessages: result.array() });
-    return
+    return;
   }
 
   if (!result.isEmpty()) {

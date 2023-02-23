@@ -23,11 +23,11 @@ export const blogsRepository = {
     }
 
     if (sortBy) {
-      sortingObj[sortBy] = -1
+      sortingObj[sortBy] = -1;
     }
 
     if (sortDirection === "asc") {
-      sortingObj[sortBy] = 1
+      sortingObj[sortBy] = 1;
     }
 
     const output = await funcBlogsPagination(

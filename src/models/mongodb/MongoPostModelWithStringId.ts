@@ -1,4 +1,4 @@
-import {GlobalIdStringModel} from "../global/GlobalIdStringModel";
-import {MongoPostModel} from "./MongoPostModel";
+import { GlobalIdStringModel } from "../global/GlobalIdStringModel";
+import { MongoPostModel } from "./MongoPostModel";
 
 export type MongoPostModelWithStringId = MongoPostModel & GlobalIdStringModel;

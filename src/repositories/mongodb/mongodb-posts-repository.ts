@@ -12,16 +12,16 @@ export const postsRepository = {
     pageNumber: number = 1,
     pageSize: number = 10,
     sortBy: string = "createdAt",
-    sortDirection: string = "desc",
+    sortDirection: string = "desc"
   ): Promise<MongoPostModelWithPagination> {
     const sortingObj: any = {};
 
     if (sortBy) {
-      sortingObj[sortBy] = -1
+      sortingObj[sortBy] = -1;
     }
 
     if (sortDirection === "asc") {
-      sortingObj[sortBy] = 1
+      sortingObj[sortBy] = 1;
     }
 
     const output = await funcPostsPagination(sortingObj, pageNumber, pageSize);
@@ -64,17 +64,17 @@ export const postsRepository = {
     pageNumber: number = 1,
     pageSize: number = 10,
     sortBy: string = "createdAt",
-    sortDirection: string = "desc",
+    sortDirection: string = "desc"
   ): Promise<MongoPostModelWithPagination> {
     const filter = { blogId: blogId.toString() };
     const sortingObj: any = {};
 
     if (sortBy) {
-      sortingObj[sortBy] = -1
+      sortingObj[sortBy] = -1;
     }
 
     if (sortDirection === "asc") {
-      sortingObj[sortBy] = 1
+      sortingObj[sortBy] = 1;
     }
 
     const output = await funcPostsPagination(
