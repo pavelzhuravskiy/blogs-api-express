@@ -42,7 +42,8 @@ blogsRouter.get(
   validationBlogsFindById,
   validationErrorCheck,
   async (
-    req: Request & RequestWithParamsAndQuery<GlobalIdStringModel, MongoPostQueryModel>,
+    req: Request &
+      RequestWithParamsAndQuery<GlobalIdStringModel, MongoPostQueryModel>,
     res: Response
   ) => {
     const foundPosts = await postsService.findPostsByBlogId(
@@ -107,6 +108,8 @@ blogsRouter.delete(
     );
     if (isDeleted) {
       res.sendStatus(204);
+    } else {
+      res.sendStatus(404);
     }
   }
 );
@@ -115,5 +118,7 @@ blogsRouter.delete("/", authBasic, async (req: Request, res: Response) => {
   const isDeleted = await blogsService.deleteAll();
   if (isDeleted) {
     res.sendStatus(204);
+  } else {
+    res.sendStatus(404);
   }
 });

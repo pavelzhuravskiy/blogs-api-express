@@ -4,15 +4,14 @@ import { ObjectId } from "mongodb";
 import { MongoBlogModelWithStringId } from "../../models/mongodb/MongoBlogModelWithStringId";
 import { MongoBlogModelWithPagination } from "../../models/mongodb/MongoBlogModelWithPagination";
 import { funcBlogMapping } from "../../functions/func-blog-mapping";
-import { funcSorting } from "../../functions/func-sorting";
 import { funcBlogsPagination } from "../../functions/func-blogs-pagination";
 
 export const blogsRepository = {
   // Return blogs with filter
   async findBlogs(
     searchNameTerm: string | null,
-    sortBy: string,
-    sortDirection: string,
+    sortBy: string = "createdAt",
+    sortDirection: string = "desc",
     pageNumber: number = 1,
     pageSize: number = 10
   ): Promise<MongoBlogModelWithPagination> {
@@ -23,7 +22,13 @@ export const blogsRepository = {
       filter.name = { $regex: searchNameTerm, $options: "i" };
     }
 
-    funcSorting(sortingObj, sortBy, sortDirection);
+    if (sortBy) {
+      sortingObj[sortBy] = -1
+    }
+
+    if (sortDirection === "asc") {
+      sortingObj[sortBy] = 1
+    }
 
     const output = await funcBlogsPagination(
       filter,

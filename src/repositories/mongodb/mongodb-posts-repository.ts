@@ -2,7 +2,6 @@ import { postsCollection } from "./_mongodb-connect";
 import { MongoPostModel } from "../../models/mongodb/MongoPostModel";
 import { ObjectId } from "mongodb";
 import { MongoPostModelWithStringId } from "../../models/mongodb/MongoPostModelWithStringId";
-import { funcSorting } from "../../functions/func-sorting";
 import { MongoPostModelWithPagination } from "../../models/mongodb/MongoPostModelWithPagination";
 import { funcPostMapping } from "../../functions/func-post-mapping";
 import { funcPostsPagination } from "../../functions/func-posts-pagination";
@@ -12,12 +11,18 @@ export const postsRepository = {
   async findPosts(
     pageNumber: number = 1,
     pageSize: number = 10,
-    sortBy: string,
-    sortDirection: string
+    sortBy: string = "createdAt",
+    sortDirection: string = "desc",
   ): Promise<MongoPostModelWithPagination> {
     const sortingObj: any = {};
 
-    funcSorting(sortingObj, sortBy, sortDirection);
+    if (sortBy) {
+      sortingObj[sortBy] = -1
+    }
+
+    if (sortDirection === "asc") {
+      sortingObj[sortBy] = 1
+    }
 
     const output = await funcPostsPagination(sortingObj, pageNumber, pageSize);
     const outputCount = await postsCollection.countDocuments();
@@ -58,13 +63,19 @@ export const postsRepository = {
     blogId: ObjectId,
     pageNumber: number = 1,
     pageSize: number = 10,
-    sortBy: string,
-    sortDirection: string
+    sortBy: string = "createdAt",
+    sortDirection: string = "desc",
   ): Promise<MongoPostModelWithPagination> {
     const filter = { blogId: blogId.toString() };
     const sortingObj: any = {};
 
-    funcSorting(sortingObj, sortBy, sortDirection);
+    if (sortBy) {
+      sortingObj[sortBy] = -1
+    }
+
+    if (sortDirection === "asc") {
+      sortingObj[sortBy] = 1
+    }
 
     const output = await funcPostsPagination(
       sortingObj,

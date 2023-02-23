@@ -70,6 +70,8 @@ postsRouter.delete("/:id", authBasic, async (req: Request, res: Response) => {
   const isDeleted = await postsService.deletePost(new ObjectId(req.params.id));
   if (isDeleted) {
     res.sendStatus(204);
+  } else {
+    res.sendStatus(404);
   }
 });
 
@@ -77,5 +79,7 @@ postsRouter.delete("/", authBasic, async (req: Request, res: Response) => {
   const isDeleted = await postsService.deleteAll();
   if (isDeleted) {
     res.sendStatus(204);
+  } else {
+    res.sendStatus(404);
   }
 });
