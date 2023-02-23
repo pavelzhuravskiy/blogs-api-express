@@ -4,12 +4,13 @@ import { MongoPostModelWithId } from "../models/mongodb/MongoPostModelWithId";
 import { MongoPostModelWithStringId } from "../models/mongodb/MongoPostModelWithStringId";
 import { MongoPostModelWithPagination } from "../models/mongodb/MongoPostModelWithPagination";
 import { blogsRepository } from "../repositories/mongodb/mongodb-blogs-repository";
-import {MongoPostQueryModel} from "../models/mongodb/MongoPostQueryModel";
+import { MongoPostQueryModel } from "../models/mongodb/MongoPostQueryModel";
+import { MongoPostModel } from "../models/mongodb/MongoPostModel";
 
 export const postsService = {
   // Return posts
   async findPosts(
-      post: MongoPostQueryModel
+    post: MongoPostQueryModel
   ): Promise<MongoPostModelWithPagination> {
     return postsRepository.findPosts(
       post.pageNumber,
@@ -32,7 +33,7 @@ export const postsService = {
   ): Promise<boolean | MongoPostModelWithStringId> {
     const blog = await blogsRepository.findBlogById(new ObjectId(post.blogId));
     if (!blog) {
-      return false
+      return false;
     }
     const newPost = {
       ...post,
@@ -43,19 +44,13 @@ export const postsService = {
   },
 
   // Update existing post
-  async updatePost(
-    _id: ObjectId,
-    title: string,
-    shortDescription: string,
-    content: string,
-    blogId: string
-  ): Promise<boolean> {
+  async updatePost(_id: ObjectId, post: MongoPostModel): Promise<boolean> {
     return postsRepository.updatePost(
       _id,
-      title,
-      shortDescription,
-      content,
-      blogId
+      post.title,
+      post.shortDescription,
+      post.content,
+      post.blogId
     );
   },
 

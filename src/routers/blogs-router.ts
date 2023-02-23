@@ -26,7 +26,7 @@ blogsRouter.get(
     const foundBlog = await blogsService.findBlogById(
       new ObjectId(req.params.id)
     );
-      res.json(foundBlog);
+    res.json(foundBlog);
   }
 );
 
@@ -43,55 +43,39 @@ blogsRouter.post(
 
 blogsRouter.put(
   "/:id",
-  // basicAuthMiddleware,
-  // blogInputValidationMiddleware,
-  // errorCheckMiddleware,
+  authBasic,
+  validationBlogsFindById,
+  validationBlogsInput,
+  validationErrorCheck,
   async (req: Request, res: Response) => {
-    try {
-      const isUpdated = await blogsService.updateBlog(
-        new ObjectId(req.params.id),
-        req.body.name,
-        req.body.description,
-        req.body.websiteUrl
-      );
-      if (isUpdated) {
-        const updatedBlog = await blogsService.findBlogById(req.body.id);
-        res.status(204).json(updatedBlog);
-      }
-    } catch (err) {
-      console.log(err);
-      res.sendStatus(404);
+    const isUpdated = await blogsService.updateBlog(
+      new ObjectId(req.params.id),
+      req.body
+    );
+    if (isUpdated) {
+      const updatedBlog = await blogsService.findBlogById(req.body.id);
+      res.status(204).json(updatedBlog);
     }
   }
 );
 
 blogsRouter.delete(
   "/:id",
-  // basicAuthMiddleware,
+  authBasic,
+  validationBlogsFindById,
   async (req: Request, res: Response) => {
-    try {
-      const isDeleted = await blogsService.deleteBlog(
-        new ObjectId(req.params.id)
-      );
-      if (isDeleted) {
-        res.sendStatus(204);
-      }
-    } catch (err) {
-      console.log(err);
-      res.sendStatus(404);
+    const isDeleted = await blogsService.deleteBlog(
+      new ObjectId(req.params.id)
+    );
+    if (isDeleted) {
+      res.sendStatus(204);
     }
   }
 );
 
-blogsRouter.delete(
-  "/",
-  // basicAuthMiddleware,
-  async (req: Request, res: Response) => {
-    const isDeleted = await blogsService.deleteAll();
-    if (isDeleted) {
-      res.sendStatus(204);
-    } else {
-      res.sendStatus(404);
-    }
+blogsRouter.delete("/", authBasic, async (req: Request, res: Response) => {
+  const isDeleted = await blogsService.deleteAll();
+  if (isDeleted) {
+    res.sendStatus(204);
   }
-);
+});

@@ -49,57 +49,33 @@ postsRouter.post(
 
 postsRouter.put(
   "/:id",
-  // basicAuthMiddleware,
-  // postInputValidationMiddleware,
-  // blogIdCheckMiddleware,
-  // errorCheckMiddleware,
+  authBasic,
+  validationPostsFindById,
+  validationPostsInput,
+  validationErrorCheck,
   async (req: Request, res: Response) => {
-    try {
-      const isUpdated = await postsService.updatePost(
-        new ObjectId(req.params.id),
-        req.body.title,
-        req.body.shortDescription,
-        req.body.content,
-        req.body.blogId
-      );
-      if (isUpdated) {
-        const updatedPost = await postsService.findPostById(req.body.id);
-        res.status(204).json(updatedPost);
-      }
-    } catch (err) {
-      console.log(err);
-      res.sendStatus(404);
+    const isUpdated = await postsService.updatePost(
+      new ObjectId(req.params.id),
+      req.body
+    );
+
+    if (isUpdated) {
+      const updatedPost = await postsService.findPostById(req.body.id);
+      res.status(204).json(updatedPost);
     }
   }
 );
 
-postsRouter.delete(
-  "/:id",
-  // basicAuthMiddleware,
-  async (req: Request, res: Response) => {
-    try {
-      const isDeleted = await postsService.deletePost(
-        new ObjectId(req.params.id)
-      );
-      if (isDeleted) {
-        res.sendStatus(204);
-      }
-    } catch (err) {
-      console.log(err);
-      res.sendStatus(404);
-    }
+postsRouter.delete("/:id", authBasic, async (req: Request, res: Response) => {
+  const isDeleted = await postsService.deletePost(new ObjectId(req.params.id));
+  if (isDeleted) {
+    res.sendStatus(204);
   }
-);
+});
 
-postsRouter.delete(
-  "/",
-  // basicAuthMiddleware,
-  async (req: Request, res: Response) => {
-    const isDeleted = await postsService.deleteAll();
-    if (isDeleted) {
-      res.sendStatus(204);
-    } else {
-      res.sendStatus(404);
-    }
+postsRouter.delete("/", authBasic, async (req: Request, res: Response) => {
+  const isDeleted = await postsService.deleteAll();
+  if (isDeleted) {
+    res.sendStatus(204);
   }
-);
+});

@@ -24,11 +24,10 @@ export const blogsService = {
     _id: ObjectId
   ): Promise<boolean | MongoBlogModelWithStringId> {
     const foundBlog = await blogsRepository.findBlogById(_id);
-    // console.log(`I am foundBlog ==> ${foundBlog}`)
     if (!foundBlog) {
-      return false
+      return false;
     }
-    return foundBlog
+    return foundBlog;
   },
 
   // Create new blog
@@ -42,13 +41,13 @@ export const blogsService = {
   },
 
   // Update existing blog
-  async updateBlog(
-    _id: ObjectId,
-    name: string,
-    description: string,
-    websiteUrl: string
-  ): Promise<boolean> {
-    return blogsRepository.updateBlog(_id, name, description, websiteUrl);
+  async updateBlog(_id: ObjectId, blog: MongoBlogModel): Promise<boolean> {
+    return blogsRepository.updateBlog(
+      _id,
+      blog.name,
+      blog.description,
+      blog.websiteUrl
+    );
   },
 
   // Delete existing blog
