@@ -33,7 +33,11 @@ blogsRouter.get(
     const foundBlog = await blogsService.findBlogById(
       new ObjectId(req.params.id)
     );
-    res.json(foundBlog);
+    if (foundBlog) {
+      res.json(foundBlog);
+    } else {
+      res.sendStatus(404);
+    }
   }
 );
 
@@ -42,14 +46,19 @@ blogsRouter.get(
   validationBlogsFindById,
   validationErrorCheck,
   async (
-    req: Request & RequestWithParamsAndQuery<GlobalIdStringModel, MongoPostQueryModel>,
+    req: Request &
+      RequestWithParamsAndQuery<GlobalIdStringModel, MongoPostQueryModel>,
     res: Response
   ) => {
     const foundPosts = await postsService.findPostsByBlogId(
       new ObjectId(req.params.id),
       req.query
     );
-    res.json(foundPosts);
+    if (foundPosts) {
+      res.json(foundPosts);
+    } else {
+      res.sendStatus(404);
+    }
   }
 );
 
@@ -75,7 +84,11 @@ blogsRouter.post(
       new ObjectId(req.params.id),
       req.body
     );
-    res.status(201).json(newBlog);
+    if (newBlog) {
+      res.status(201).json(newBlog);
+    } else {
+      res.sendStatus(404);
+    }
   }
 );
 
@@ -93,6 +106,8 @@ blogsRouter.put(
     if (isUpdated) {
       const updatedBlog = await blogsService.findBlogById(req.body.id);
       res.status(204).json(updatedBlog);
+    } else {
+      res.sendStatus(404);
     }
   }
 );
@@ -107,6 +122,8 @@ blogsRouter.delete(
     );
     if (isDeleted) {
       res.sendStatus(204);
+    } else {
+      res.sendStatus(404);
     }
   }
 );

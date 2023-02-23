@@ -13,8 +13,8 @@ export const blogsRepository = {
     searchNameTerm: string | null,
     sortBy: string,
     sortDirection: string,
-    pageNumber: number,
-    pageSize: number
+    pageNumber: number = 1,
+    pageSize: number = 10
   ): Promise<MongoBlogModelWithPagination> {
     const filter: any = {};
     const sortingObj: any = {};
@@ -30,9 +30,9 @@ export const blogsRepository = {
     const pagesCount = Math.ceil(outputCount / +pageSize);
 
     return {
-      pagesCount: pagesCount | 0,
-      page: +pageNumber | 0,
-      pageSize: +pageSize | 0,
+      pagesCount: pagesCount,
+      page: +pageNumber,
+      pageSize: +pageSize,
       totalCount: outputCount,
       items: funcBlogMapping(output),
     };
