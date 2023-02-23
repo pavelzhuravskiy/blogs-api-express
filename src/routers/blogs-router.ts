@@ -32,6 +32,19 @@ blogsRouter.get(
   }
 );
 
+blogsRouter.get(
+    "/:id/posts",
+    validationBlogsFindById,
+    validationErrorCheck,
+    async (req: Request, res: Response) => {
+        const foundBlog = await postsService.findPostById(
+            new ObjectId(req.params.id)
+        );
+        res.json(foundBlog);
+    }
+);
+
+
 blogsRouter.post(
   "/",
   authBasic,

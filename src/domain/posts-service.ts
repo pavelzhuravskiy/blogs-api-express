@@ -27,6 +27,12 @@ export const postsService = {
     return postsRepository.findPostById(_id);
   },
 
+  async findPostsByBlogId(
+      _id: ObjectId
+  ): Promise<boolean | MongoPostModelWithStringId> {
+    return postsRepository.findPostsByBlogId(_id);
+  },
+
   // Create new post
   async createNewPost(
     post: MongoPostModelWithId
@@ -54,6 +60,7 @@ export const postsService = {
     }
     const newPost = {
       ...post,
+      blogId: _id.toString(),
       blogName: blog.name,
       createdAt: new Date().toISOString(),
     };

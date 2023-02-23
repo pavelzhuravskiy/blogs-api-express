@@ -49,6 +49,29 @@ export const postsRepository = {
       return false;
     }
 
+
+    return {
+      id: foundPost._id.toString(),
+      title: foundPost.title,
+      shortDescription: foundPost.shortDescription,
+      content: foundPost.content,
+      blogId: foundPost.blogId,
+      blogName: foundPost.blogName,
+      createdAt: foundPost.createdAt,
+    };
+  },
+
+  // Return posts by blog ID
+  async findPostsByBlogId(
+      _id: ObjectId
+  ): Promise<boolean | MongoPostModelWithStringId> {
+    const foundPost = await postsCollection.findOne({ _id });
+
+    if (!foundPost) {
+      return false;
+    }
+
+
     return {
       id: foundPost._id.toString(),
       title: foundPost.title,
