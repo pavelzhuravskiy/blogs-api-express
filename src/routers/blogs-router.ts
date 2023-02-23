@@ -7,6 +7,8 @@ import { authBasic } from "../middlewares/auth-basic";
 import { validationBlogsInput } from "../middlewares/validation-blogs-input";
 import { validationErrorCheck } from "../middlewares/validation-error-check";
 import { validationBlogsFindById } from "../middlewares/validation-blogs-findbyid";
+import {postsService} from "../domain/posts-service";
+import {validationPostsInput} from "../middlewares/validation-posts-input";
 
 export const blogsRouter = Router({});
 
@@ -40,6 +42,19 @@ blogsRouter.post(
     res.status(201).json(newBlog);
   }
 );
+
+blogsRouter.post(
+    "/:id/posts",
+    authBasic,
+    validationBlogsFindById,
+    validationPostsInput,
+    validationErrorCheck,
+    async (req: Request, res: Response) => {
+        const newBlog = await postsService.createNewPostByBlogId(new ObjectId(req.params.id), req.body);
+        res.status(201).json(newBlog);
+    }
+);
+
 
 blogsRouter.put(
   "/:id",

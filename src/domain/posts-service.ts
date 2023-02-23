@@ -43,6 +43,23 @@ export const postsService = {
     return postsRepository.createNewPost(newPost);
   },
 
+  // Create new post
+  async createNewPostByBlogId(
+      _id: ObjectId,
+      post: MongoPostModelWithId,
+  ): Promise<boolean | MongoPostModelWithStringId> {
+    const blog = await blogsRepository.findBlogById(new ObjectId(_id));
+    if (!blog) {
+      return false;
+    }
+    const newPost = {
+      ...post,
+      blogName: blog.name,
+      createdAt: new Date().toISOString(),
+    };
+    return postsRepository.createNewPost(newPost);
+  },
+
   // Update existing post
   async updatePost(_id: ObjectId, post: MongoPostModel): Promise<boolean> {
     return postsRepository.updatePost(
