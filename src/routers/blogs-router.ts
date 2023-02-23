@@ -9,7 +9,7 @@ import { MongoBlogQueryModel } from "../models/mongodb/MongoBlogQueryModel";
 import { authBasic } from "../middlewares/auth-basic";
 import { validationBlogsInput } from "../middlewares/validation-blogs-input";
 import { validationErrorCheck } from "../middlewares/validation-error-check";
-import { validationBlogsFindById } from "../middlewares/validation-blogs-findbyid";
+import { validationBlogsFindByParamId } from "../middlewares/validation-blogs-find-by-param-id";
 import { postsService } from "../domain/posts-service";
 import { validationPostsInput } from "../middlewares/validation-posts-input";
 import { MongoPostQueryModel } from "../models/mongodb/MongoPostQueryModel";
@@ -27,7 +27,7 @@ blogsRouter.get(
 
 blogsRouter.get(
   "/:id",
-  validationBlogsFindById,
+  validationBlogsFindByParamId,
   validationErrorCheck,
   async (req: Request, res: Response) => {
     const foundBlog = await blogsService.findBlogById(
@@ -39,7 +39,7 @@ blogsRouter.get(
 
 blogsRouter.get(
   "/:id/posts",
-  validationBlogsFindById,
+  validationBlogsFindByParamId,
   validationErrorCheck,
   async (
     req: Request &
@@ -68,7 +68,7 @@ blogsRouter.post(
 blogsRouter.post(
   "/:id/posts",
   authBasic,
-  validationBlogsFindById,
+  validationBlogsFindByParamId,
   validationPostsInput,
   validationErrorCheck,
   async (req: Request, res: Response) => {
@@ -83,7 +83,7 @@ blogsRouter.post(
 blogsRouter.put(
   "/:id",
   authBasic,
-  validationBlogsFindById,
+  validationBlogsFindByParamId,
   validationBlogsInput,
   validationErrorCheck,
   async (req: Request, res: Response) => {
@@ -101,7 +101,7 @@ blogsRouter.put(
 blogsRouter.delete(
   "/:id",
   authBasic,
-  validationBlogsFindById,
+  validationBlogsFindByParamId,
   async (req: Request, res: Response) => {
     const isDeleted = await blogsService.deleteBlog(
       new ObjectId(req.params.id)

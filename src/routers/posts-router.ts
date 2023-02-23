@@ -7,7 +7,7 @@ import { ObjectId } from "mongodb";
 import { RequestWithQuery } from "../models/global/GlobalRequestModel";
 import { MongoPostQueryModel } from "../models/mongodb/MongoPostQueryModel";
 import { validationPostsCreation } from "../middlewares/validation-posts-creation";
-import { validationPostsFindById } from "../middlewares/validation-posts-findbyid";
+import { validationPostsFindByParamId } from "../middlewares/validation-posts-find-by-param-id";
 
 export const postsRouter = Router({});
 
@@ -21,7 +21,7 @@ postsRouter.get(
 
 postsRouter.get(
   "/:id",
-  validationPostsFindById,
+  validationPostsFindByParamId,
   validationErrorCheck,
   async (req: Request, res: Response) => {
     const foundPost = await postsService.findPostById(
@@ -50,8 +50,9 @@ postsRouter.post(
 postsRouter.put(
   "/:id",
   authBasic,
-  validationPostsFindById,
+  validationPostsFindByParamId,
   validationPostsInput,
+  validationPostsCreation,
   validationErrorCheck,
   async (req: Request, res: Response) => {
     const isUpdated = await postsService.updatePost(
