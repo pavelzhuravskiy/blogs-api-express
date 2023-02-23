@@ -1,14 +1,19 @@
 import { Request, Response, Router } from "express";
 import { blogsService } from "../domain/blogs-service";
 import { ObjectId } from "mongodb";
-import { RequestWithQuery } from "../models/global/GlobalRequestModel";
+import {
+  RequestWithParamsAndQuery,
+  RequestWithQuery,
+} from "../models/global/GlobalRequestModel";
 import { MongoBlogQueryModel } from "../models/mongodb/MongoBlogQueryModel";
 import { authBasic } from "../middlewares/auth-basic";
 import { validationBlogsInput } from "../middlewares/validation-blogs-input";
 import { validationErrorCheck } from "../middlewares/validation-error-check";
 import { validationBlogsFindById } from "../middlewares/validation-blogs-findbyid";
-import {postsService} from "../domain/posts-service";
-import {validationPostsInput} from "../middlewares/validation-posts-input";
+import { postsService } from "../domain/posts-service";
+import { validationPostsInput } from "../middlewares/validation-posts-input";
+import { MongoPostQueryModel } from "../models/mongodb/MongoPostQueryModel";
+import { GlobalIdStringModel } from "../models/global/GlobalIdStringModel";
 
 export const blogsRouter = Router({});
 
@@ -33,17 +38,21 @@ blogsRouter.get(
 );
 
 blogsRouter.get(
-    "/:id/posts",
-    validationBlogsFindById,
-    validationErrorCheck,
-    async (req: Request, res: Response) => {
-        const foundBlog = await postsService.findPostById(
-            new ObjectId(req.params.id)
-        );
-        res.json(foundBlog);
-    }
+  "/:id/posts",
+  validationBlogsFindById,
+  validationErrorCheck,
+// @ts-ignore
+  async (
+    req: RequestWithParamsAndQuery<GlobalIdStringModel, MongoPostQueryModel>,
+    res: Response
+  ) => {
+    const foundPosts = await postsService.findPostsByBlogId(
+      new ObjectId(req.params.id),
+      req.query
+    );
+    res.json(foundPosts);
+  }
 );
-
 
 blogsRouter.post(
   "/",
@@ -57,17 +66,19 @@ blogsRouter.post(
 );
 
 blogsRouter.post(
-    "/:id/posts",
-    authBasic,
-    validationBlogsFindById,
-    validationPostsInput,
-    validationErrorCheck,
-    async (req: Request, res: Response) => {
-        const newBlog = await postsService.createNewPostByBlogId(new ObjectId(req.params.id), req.body);
-        res.status(201).json(newBlog);
-    }
+  "/:id/posts",
+  authBasic,
+  validationBlogsFindById,
+  validationPostsInput,
+  validationErrorCheck,
+  async (req: Request, res: Response) => {
+    const newBlog = await postsService.createNewPostByBlogId(
+      new ObjectId(req.params.id),
+      req.body
+    );
+    res.status(201).json(newBlog);
+  }
 );
-
 
 blogsRouter.put(
   "/:id",

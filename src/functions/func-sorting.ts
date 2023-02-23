@@ -1,4 +1,4 @@
-export const sortingFunc = (obj: any, field: string, direction: string) => {
+export const funcSorting = (obj: any, field: string, direction: string) => {
   if (field === "name" && direction === "desc") {
     return (obj.name = -1);
   } else if (field === "name") {

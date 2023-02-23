@@ -27,10 +27,19 @@ export const postsService = {
     return postsRepository.findPostById(_id);
   },
 
+  // Return all posts by Blog ID
+
   async findPostsByBlogId(
-      _id: ObjectId
-  ): Promise<boolean | MongoPostModelWithStringId> {
-    return postsRepository.findPostsByBlogId(_id);
+    blogId: ObjectId,
+    post: MongoPostQueryModel
+  ): Promise<MongoPostModelWithPagination> {
+    return postsRepository.findPostsByBlogId(
+      blogId,
+      post.pageNumber,
+      post.pageSize,
+      post.sortBy,
+      post.sortDirection
+    );
   },
 
   // Create new post
@@ -51,8 +60,8 @@ export const postsService = {
 
   // Create new post
   async createNewPostByBlogId(
-      _id: ObjectId,
-      post: MongoPostModelWithId,
+    _id: ObjectId,
+    post: MongoPostModelWithId
   ): Promise<boolean | MongoPostModelWithStringId> {
     const blog = await blogsRepository.findBlogById(new ObjectId(_id));
     if (!blog) {

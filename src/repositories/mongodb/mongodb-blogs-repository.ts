@@ -3,8 +3,9 @@ import { MongoBlogModel } from "../../models/mongodb/MongoBlogModel";
 import { ObjectId } from "mongodb";
 import { MongoBlogModelWithStringId } from "../../models/mongodb/MongoBlogModelWithStringId";
 import { MongoBlogModelWithPagination } from "../../models/mongodb/MongoBlogModelWithPagination";
-import { blogMapping } from "../../functions/blog-mapping";
-import { sortingFunc } from "../../functions/sorting";
+import { funcBlogMapping } from "../../functions/func-blog-mapping";
+import { funcSorting } from "../../functions/func-sorting";
+import {funcBlogsPagination} from "../../functions/func-blogs-pagination";
 
 export const blogsRepository = {
   // Return blogs with filter
@@ -22,17 +23,9 @@ export const blogsRepository = {
       filter.name = { $regex: searchNameTerm, $options: "i" };
     }
 
-    sortingFunc(sortingObj, sortBy, sortDirection);
+    funcSorting(sortingObj, sortBy, sortDirection);
 
-    // Pagination
-
-    const output = await blogsCollection
-      .find(filter)
-      .sort(sortingObj)
-      .skip(+pageNumber > 0 ? (+pageNumber - 1) * +pageSize : 0)
-      .limit(+pageSize > 0 ? +pageSize : 0)
-      .toArray();
-
+    const output = await funcBlogsPagination(filter, sortingObj, pageNumber, pageSize)
     const outputCount = await blogsCollection.countDocuments(filter);
     const pagesCount = Math.ceil(outputCount / +pageSize);
 
@@ -41,7 +34,7 @@ export const blogsRepository = {
       page: +pageNumber | 0,
       pageSize: +pageSize | 0,
       totalCount: outputCount,
-      items: blogMapping(output),
+      items: funcBlogMapping(output),
     };
   },
 

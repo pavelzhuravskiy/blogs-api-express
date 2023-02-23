@@ -2,9 +2,10 @@ import { postsCollection } from "./_mongodb-connect";
 import { MongoPostModel } from "../../models/mongodb/MongoPostModel";
 import { ObjectId } from "mongodb";
 import { MongoPostModelWithStringId } from "../../models/mongodb/MongoPostModelWithStringId";
-import { sortingFunc } from "../../functions/sorting";
+import { funcSorting } from "../../functions/func-sorting";
 import { MongoPostModelWithPagination } from "../../models/mongodb/MongoPostModelWithPagination";
-import { postMapping } from "../../functions/post-mapping";
+import { funcPostMapping } from "../../functions/func-post-mapping";
+import { funcPostsPagination } from "../../functions/func-posts-pagination";
 
 export const postsRepository = {
   // Return all posts
@@ -16,17 +17,9 @@ export const postsRepository = {
   ): Promise<MongoPostModelWithPagination> {
     const sortingObj: any = {};
 
-    sortingFunc(sortingObj, sortBy, sortDirection);
+    funcSorting(sortingObj, sortBy, sortDirection);
 
-    // Pagination
-
-    const output = await postsCollection
-      .find()
-      .sort(sortingObj)
-      .skip(+pageNumber > 0 ? (+pageNumber - 1) * +pageSize : 0)
-      .limit(+pageSize > 0 ? +pageSize : 0)
-      .toArray();
-
+    const output = await funcPostsPagination(sortingObj, pageNumber, pageSize);
     const outputCount = await postsCollection.countDocuments();
     const pagesCount = Math.ceil(outputCount / +pageSize);
 
@@ -35,7 +28,7 @@ export const postsRepository = {
       page: +pageNumber | 0,
       pageSize: +pageSize | 0,
       totalCount: outputCount,
-      items: postMapping(output),
+      items: funcPostMapping(output),
     };
   },
 
@@ -48,7 +41,6 @@ export const postsRepository = {
     if (!foundPost) {
       return false;
     }
-
 
     return {
       id: foundPost._id.toString(),
@@ -63,23 +55,27 @@ export const postsRepository = {
 
   // Return posts by blog ID
   async findPostsByBlogId(
-      _id: ObjectId
-  ): Promise<boolean | MongoPostModelWithStringId> {
-    const foundPost = await postsCollection.findOne({ _id });
+    blogId: ObjectId,
+    pageNumber: number,
+    pageSize: number,
+    sortBy: string,
+    sortDirection: string
+  ): Promise<MongoPostModelWithPagination> {
+    const filter = { blogId: blogId.toString() };
+    const sortingObj: any = {};
 
-    if (!foundPost) {
-      return false;
-    }
+    funcSorting(sortingObj, sortBy, sortDirection);
 
+    const output = await funcPostsPagination(sortingObj, pageNumber, pageSize, filter);
+    const outputCount = await postsCollection.countDocuments(filter);
+    const pagesCount = Math.ceil(outputCount / +pageSize);
 
     return {
-      id: foundPost._id.toString(),
-      title: foundPost.title,
-      shortDescription: foundPost.shortDescription,
-      content: foundPost.content,
-      blogId: foundPost.blogId,
-      blogName: foundPost.blogName,
-      createdAt: foundPost.createdAt,
+      pagesCount: pagesCount | 0,
+      page: +pageNumber | 0,
+      pageSize: +pageSize | 0,
+      totalCount: outputCount,
+      items: funcPostMapping(output),
     };
   },
 
