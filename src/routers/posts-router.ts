@@ -7,6 +7,7 @@ import { ObjectId } from "mongodb";
 import { RequestWithQuery } from "../models/global/GlobalRequestModel";
 import { MongoPostQueryModel } from "../models/mongodb/MongoPostQueryModel";
 import { validationPostsCreation } from "../middlewares/validation-posts-creation";
+import { validationPostsFindById } from "../middlewares/validation-posts-findbyid";
 
 export const postsRouter = Router({});
 
@@ -18,19 +19,17 @@ postsRouter.get(
   }
 );
 
-postsRouter.get("/:id", async (req: Request, res: Response) => {
-  try {
+postsRouter.get(
+  "/:id",
+  validationPostsFindById,
+  validationErrorCheck,
+  async (req: Request, res: Response) => {
     const foundPost = await postsService.findPostById(
       new ObjectId(req.params.id)
     );
-    if (foundPost) {
-      res.json(foundPost);
-    }
-  } catch (err) {
-    console.log(err);
-    res.sendStatus(404);
+    res.json(foundPost);
   }
-});
+);
 
 postsRouter.post(
   "/",

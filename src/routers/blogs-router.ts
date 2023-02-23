@@ -26,11 +26,7 @@ blogsRouter.get(
     const foundBlog = await blogsService.findBlogById(
       new ObjectId(req.params.id)
     );
-    if (foundBlog) {
       res.json(foundBlog);
-    } else {
-      res.sendStatus(404);
-    }
   }
 );
 
