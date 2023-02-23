@@ -10,8 +10,8 @@ import { funcPostsPagination } from "../../functions/func-posts-pagination";
 export const postsRepository = {
   // Return all posts
   async findPosts(
-    pageNumber: number = 1,
-    pageSize: number = 10,
+    pageNumber: number,
+    pageSize: number,
     sortBy: string,
     sortDirection: string
   ): Promise<MongoPostModelWithPagination> {
@@ -24,9 +24,9 @@ export const postsRepository = {
     const pagesCount = Math.ceil(outputCount / +pageSize);
 
     return {
-      pagesCount: pagesCount,
-      page: +pageNumber,
-      pageSize: +pageSize,
+      pagesCount: pagesCount | 0,
+      page: +pageNumber | 0,
+      pageSize: +pageSize | 0,
       totalCount: outputCount,
       items: funcPostMapping(output),
     };
@@ -56,8 +56,8 @@ export const postsRepository = {
   // Return posts by blog ID
   async findPostsByBlogId(
     blogId: ObjectId,
-    pageNumber: number = 1,
-    pageSize: number = 10,
+    pageNumber: number,
+    pageSize: number,
     sortBy: string,
     sortDirection: string
   ): Promise<MongoPostModelWithPagination> {
@@ -71,9 +71,9 @@ export const postsRepository = {
     const pagesCount = Math.ceil(outputCount / +pageSize);
 
     return {
-      pagesCount: pagesCount,
-      page: +pageNumber,
-      pageSize: +pageSize,
+      pagesCount: pagesCount | 0,
+      page: +pageNumber | 0,
+      pageSize: +pageSize | 0,
       totalCount: outputCount,
       items: funcPostMapping(output),
     };

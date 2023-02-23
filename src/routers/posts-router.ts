@@ -27,11 +27,7 @@ postsRouter.get(
     const foundPost = await postsService.findPostById(
       new ObjectId(req.params.id)
     );
-    if (foundPost) {
-      res.json(foundPost);
-    } else {
-      res.sendStatus(404);
-    }
+    res.json(foundPost);
   }
 );
 
@@ -43,15 +39,19 @@ postsRouter.post(
   validationErrorCheck,
   async (req: Request, res: Response) => {
     const newPost = await postsService.createNewPost(req.body);
-    res.status(201).json(newPost);
+    if (newPost) {
+      res.status(201).json(newPost);
+    } else {
+      res.sendStatus(400);
+    }
   }
 );
 
 postsRouter.put(
   "/:id",
   authBasic,
-  validationPostsInput,
   validationPostsFindById,
+  validationPostsInput,
   validationErrorCheck,
   async (req: Request, res: Response) => {
     const isUpdated = await postsService.updatePost(
@@ -62,8 +62,6 @@ postsRouter.put(
     if (isUpdated) {
       const updatedPost = await postsService.findPostById(req.body.id);
       res.status(204).json(updatedPost);
-    } else {
-      res.sendStatus(404);
     }
   }
 );
@@ -72,8 +70,6 @@ postsRouter.delete("/:id", authBasic, async (req: Request, res: Response) => {
   const isDeleted = await postsService.deletePost(new ObjectId(req.params.id));
   if (isDeleted) {
     res.sendStatus(204);
-  } else {
-    res.sendStatus(404);
   }
 });
 
