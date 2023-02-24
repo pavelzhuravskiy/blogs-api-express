@@ -9,7 +9,7 @@ import { funcBlogsPagination } from "../../functions/func-blogs-pagination";
 export const blogsRepository = {
   // Return blogs with filter
   async findBlogs(
-    searchNameTerm: string | null,
+    searchNameTerm?: string,
     sortBy: string = "createdAt",
     sortDirection: string = "desc",
     pageNumber: number = 1,
@@ -40,7 +40,7 @@ export const blogsRepository = {
     const pagesCount = Math.ceil(outputCount / +pageSize);
 
     return {
-      pagesCount: pagesCount | 0,
+      pagesCount: pagesCount,
       page: +pageNumber,
       pageSize: +pageSize,
       totalCount: outputCount,
