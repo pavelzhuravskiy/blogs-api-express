@@ -2,8 +2,6 @@ import request from "supertest";
 import { app } from "../../src";
 import { blogsRepository } from "../../src/repositories/mongodb/mongodb-blogs-repository";
 import { postsRepository } from "../../src/repositories/mongodb/mongodb-posts-repository";
-import { runTestDB } from "../../src/repositories/mongodb/_mongodb-test-connect";
-import { ObjectId } from "mongodb";
 
 // const port = 3000;
 //
@@ -34,11 +32,17 @@ const foundPosts = async () => {
   return await postsRepository.findPosts();
 };
 
-describe("Blogs and posts testing", () => {
+describe("Blogs and posts CRUD operations", () => {
   it("should return all blogs", async () => {
     const response = await request(app).get("/blogs");
     expect(response.status).toBe(200);
-    expect(response.body).toEqual({"items": [], "page": 1, "pageSize": 10, "pagesCount": 0, "totalCount": 0});
+    expect(response.body).toEqual({
+      items: [],
+      page: 1,
+      pageSize: 10,
+      pagesCount: 0,
+      totalCount: 0,
+    });
   });
 
   it("should create new blog", async () => {
@@ -260,7 +264,7 @@ describe("Blogs and posts testing", () => {
     // Trying to update a blog
 
     const blogs = await foundBlogs();
-    const blogId = blogs.items[0].id
+    const blogId = blogs.items[0].id;
 
     const updating = await request(app)
       .put("/blogs/" + blogId)
@@ -275,7 +279,7 @@ describe("Blogs and posts testing", () => {
 
   it("should return blog by ID with updated data", async () => {
     const blogs = await foundBlogs();
-    const blogId = blogs.items[0].id
+    const blogId = blogs.items[0].id;
 
     const response = await request(app).get("/blogs/" + blogId);
     expect(response.status).toBe(200);
@@ -318,14 +322,20 @@ describe("Blogs and posts testing", () => {
   it("should return all posts", async () => {
     const response = await request(app).get("/posts");
     expect(response.status).toBe(200);
-    expect(response.body).toEqual({"items": [], "page": 1, "pageSize": 10, "pagesCount": 0, "totalCount": 0});
+    expect(response.body).toEqual({
+      items: [],
+      page: 1,
+      pageSize: 10,
+      pagesCount: 0,
+      totalCount: 0,
+    });
   });
 
   it("should create new post", async () => {
     // Returning all blogs
 
     const blogs = await foundBlogs();
-    const blogId = blogs.items[0].id
+    const blogId = blogs.items[0].id;
     const blogName = blogs.items[0].name;
 
     // Trying to create a post
@@ -380,7 +390,7 @@ describe("Blogs and posts testing", () => {
     // Trying to create a post without title
 
     const blogs = await foundBlogs();
-    const blogId = blogs.items[0].id
+    const blogId = blogs.items[0].id;
 
     const posting = await request(app)
       .post("/posts")
@@ -402,7 +412,7 @@ describe("Blogs and posts testing", () => {
     // Trying to create a post with incorrect title type
 
     const blogs = await foundBlogs();
-    const blogId = blogs.items[0].id
+    const blogId = blogs.items[0].id;
 
     const posting = await request(app)
       .post("/posts")
@@ -425,7 +435,7 @@ describe("Blogs and posts testing", () => {
     // Trying to create a post with incorrect title length
 
     const blogs = await foundBlogs();
-    const blogId = blogs.items[0].id
+    const blogId = blogs.items[0].id;
 
     const posting = await request(app)
       .post("/posts")
@@ -448,7 +458,7 @@ describe("Blogs and posts testing", () => {
     // Trying to create a post without short description
 
     const blogs = await foundBlogs();
-    const blogId = blogs.items[0].id
+    const blogId = blogs.items[0].id;
 
     const posting = await request(app)
       .post("/posts")
@@ -470,7 +480,7 @@ describe("Blogs and posts testing", () => {
     // Trying to create a post with incorrect short description type
 
     const blogs = await foundBlogs();
-    const blogId = blogs.items[0].id
+    const blogId = blogs.items[0].id;
 
     const posting = await request(app)
       .post("/posts")
@@ -493,7 +503,7 @@ describe("Blogs and posts testing", () => {
     // Trying to create a post with incorrect short description length
 
     const blogs = await foundBlogs();
-    const blogId = blogs.items[0].id
+    const blogId = blogs.items[0].id;
 
     const posting = await request(app)
       .post("/posts")
@@ -517,7 +527,7 @@ describe("Blogs and posts testing", () => {
     // Trying to create a post without content
 
     const blogs = await foundBlogs();
-    const blogId = blogs.items[0].id
+    const blogId = blogs.items[0].id;
 
     const posting = await request(app)
       .post("/posts")
@@ -539,7 +549,7 @@ describe("Blogs and posts testing", () => {
     // Trying to create a post with incorrect content type
 
     const blogs = await foundBlogs();
-    const blogId = blogs.items[0].id
+    const blogId = blogs.items[0].id;
 
     const posting = await request(app)
       .post("/posts")
@@ -562,7 +572,7 @@ describe("Blogs and posts testing", () => {
     // Trying to create a post with incorrect content length
 
     const blogs = await foundBlogs();
-    const blogId = blogs.items[0].id
+    const blogId = blogs.items[0].id;
 
     const posting = await request(app)
       .post("/posts")
@@ -588,8 +598,8 @@ describe("Blogs and posts testing", () => {
     const blogs = await foundBlogs();
     const posts = await foundPosts();
 
-    const blogId = blogs.items[0].id
-    const postId = posts.items[0].id
+    const blogId = blogs.items[0].id;
+    const postId = posts.items[0].id;
 
     const updating = await request(app)
       .put("/posts/" + postId)
@@ -607,9 +617,9 @@ describe("Blogs and posts testing", () => {
     const blogs = await foundBlogs();
     const posts = await foundPosts();
 
-    const blogId = blogs.items[0].id
+    const blogId = blogs.items[0].id;
     const blogName = blogs.items[0].name;
-    const postId = posts.items[0].id
+    const postId = posts.items[0].id;
 
     const response = await request(app).get("/posts/" + postId);
     expect(response.status).toBe(200);
@@ -633,7 +643,7 @@ describe("Blogs and posts testing", () => {
     // Trying to update a post
 
     const blogs = await foundBlogs();
-    const blogId = blogs.items[0].id
+    const blogId = blogs.items[0].id;
 
     const updating = await request(app)
       .put("/posts/-100")
@@ -656,7 +666,7 @@ describe("Blogs and posts testing", () => {
 
   it("should delete post by ID", async () => {
     const posts = await foundPosts();
-    const postId = posts.items[0].id
+    const postId = posts.items[0].id;
 
     const response = await request(app)
       .delete("/posts/" + postId)
@@ -666,7 +676,7 @@ describe("Blogs and posts testing", () => {
 
   it("should delete blog by ID", async () => {
     const blogs = await foundBlogs();
-    const blogId = blogs.items[0].id
+    const blogId = blogs.items[0].id;
 
     const response = await request(app)
       .delete("/blogs/" + blogId)
@@ -689,7 +699,95 @@ describe("Blogs and posts testing", () => {
   });
 });
 
-// TODO FIx
+describe("Blogs and posts pagination", () => {
+  it("should return correct blogs pagination output", async function () {
+    // Create 20 new blogs
+    let i = 0;
+    while (i < 20) {
+      const posting = await request(app)
+        .post("/blogs")
+        .send({
+          name: `Test Name ${i}`,
+          description: "Test Description",
+          websiteUrl: "https://github.com/pavelzhuravskiy",
+        })
+        .set("Authorization", "Basic YWRtaW46cXdlcnR5");
+      expect(posting.status).toBe(201);
+      i++;
+    }
+    // Checking result by returning created blog
+
+    const blogs = await foundBlogs();
+    const testName = blogs.items[0].name;
+    expect(blogs.items[0]).toStrictEqual({
+      id: expect.any(String),
+      name: testName,
+      description: "Test Description",
+      websiteUrl: "https://github.com/pavelzhuravskiy",
+      createdAt: expect.any(String),
+      isMembership: false,
+    });
+
+    // Checking pagination
+
+    const response = await request(app).get("/blogs");
+    const blogsWithQuery = await blogsRepository.findBlogs(null, "", "", 2, 5);
+    expect(response.status).toBe(200);
+    expect(blogsWithQuery.pagesCount).toBe(4);
+    expect(blogsWithQuery.page).toBe(2);
+    expect(blogsWithQuery.pageSize).toBe(5);
+    expect(blogsWithQuery.totalCount).toBe(20);
+    expect(blogsWithQuery.items.length).toBe(5);
+  });
+  it("should return correct posts pagination output", async function () {
+    // Returning all blogs
+
+    const blogs = await foundBlogs();
+    const blogId = blogs.items[0].id;
+    const blogName = blogs.items[0].name;
+
+    // Create 20 new posts
+    let i = 0;
+    while (i < 20) {
+      const posting = await request(app)
+        .post("/posts")
+        .send({
+          title: `Test title ${i}`,
+          shortDescription: "Test Short Description",
+          content: "Test content",
+          blogId: blogId,
+        })
+        .set("Authorization", "Basic YWRtaW46cXdlcnR5");
+      expect(posting.status).toBe(201);
+      i++;
+    }
+    // Checking result by returning created blog
+
+    const posts = await foundPosts();
+
+    expect(posts.items[0]).toStrictEqual({
+      id: expect.any(String),
+      title: "Test title 19",
+      shortDescription: "Test Short Description",
+      content: "Test content",
+      blogId: blogId,
+      blogName: blogName,
+      createdAt: expect.any(String),
+    });
+
+    // Checking pagination
+
+    const response = await request(app).get("/posts");
+    const postsWithQuery = await postsRepository.findPosts(2, 5);
+    expect(response.status).toBe(200);
+    expect(postsWithQuery.pagesCount).toBe(4);
+    expect(postsWithQuery.page).toBe(2);
+    expect(postsWithQuery.pageSize).toBe(5);
+    expect(postsWithQuery.totalCount).toBe(20);
+    expect(postsWithQuery.items.length).toBe(5);
+  });
+});
+
 // TODO Pagination
 // TODO Filter
 // TODO Sorting
