@@ -1077,6 +1077,70 @@ describe("Blogs and posts pagination", () => {
   });
 });
 
-// TODO Pagination
-// TODO Filter
-// TODO Sorting
+describe("Posts linked to blogs through URI param", () => {
+    it("should create new post for exact blog", async () => {
+
+        // Creating blog
+
+        // Trying to create a blog
+
+        const postingBlog = await request(app)
+            .post("/blogs")
+            .send({
+                name: "Test Blog Name",
+                description: "Test Description",
+                websiteUrl: "https://github.com/pavelzhuravskiy",
+            })
+            .set("Authorization", "Basic YWRtaW46cXdlcnR5");
+        expect(postingBlog.status).toBe(201);
+
+        // Returning all blogs
+
+        const blogs = await foundBlogs();
+        const blogId = blogs.items[0].id;
+        const blogName = blogs.items[0].name;
+
+        // Trying to create a post
+
+        const posting = await request(app)
+            .post("/blogs/" + blogId + "/posts")
+            .send({
+                title: "Test title",
+                shortDescription: "Test Short Description",
+                content: "Test content",
+                blogId: blogId,
+            })
+            .set("Authorization", "Basic YWRtaW46cXdlcnR5");
+        expect(posting.status).toBe(201);
+
+        // Checking result by returning created post
+
+        const posts = await foundPosts();
+        const postId = posts.items[0].id
+
+        expect(posts.items[0]).toStrictEqual({
+            id: expect.any(String),
+            title: "Test title",
+            shortDescription: "Test Short Description",
+            content: "Test content",
+            blogId: blogId,
+            blogName: blogName,
+            createdAt: expect.any(String),
+        });
+
+        // Checking that post is available through blog URI param
+
+        const response = await request(app).get("/blogs/" + blogId);
+        expect(response.status).toBe(200);
+        expect(posts.items[0]).toStrictEqual({
+            id: postId,
+            title: "Test title",
+            shortDescription: "Test Short Description",
+            content: "Test content",
+            blogId: blogId,
+            blogName: blogName,
+            createdAt: expect.any(String),
+        });
+
+    });
+})
