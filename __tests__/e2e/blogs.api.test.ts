@@ -24,125 +24,110 @@ beforeAll(async () => {
     .set("Authorization", "Basic YWRtaW46cXdlcnR5");
 });
 
-const foundBlogs = async () => {
+const foundBlogsObj = async () => {
   return await blogsRepository.findBlogs(null);
 };
 
-const foundPosts = async () => {
+const foundPostsObj = async () => {
   return await postsRepository.findPosts();
+};
+
+const emptyBlog = {
+  items: [],
+  page: 1,
+  pageSize: 10,
+  pagesCount: 0,
+  totalCount: 0,
+};
+
+const newBlog = {
+  id: expect.any(String),
+  name: "Test Blog Name",
+  description: "Test Description",
+  websiteUrl: "https://github.com/pavelzhuravskiy",
+  createdAt: expect.any(String),
+  isMembership: false,
+};
+
+const blogCreator = async (
+  uri: string = "/blogs",
+  blogName: any = "Test Blog Name",
+  blogDescription: any = "Test Description",
+  blogWebsiteUrl: any = "https://github.com/pavelzhuravskiy"
+) => {
+  return request(app)
+    .post(uri)
+    .send({
+      name: blogName,
+      description: blogDescription,
+      websiteUrl: blogWebsiteUrl,
+    })
+    .set("Authorization", "Basic YWRtaW46cXdlcnR5");
+};
+
+const blogGetter = async () => {
+  return request(app).get("/blogs");
 };
 
 describe("Blogs and posts CRUD operations", () => {
   it("should return all blogs", async () => {
-    const response = await request(app).get("/blogs");
+    const response = await blogGetter();
     expect(response.status).toBe(200);
-    expect(response.body).toEqual({
-      items: [],
-      page: 1,
-      pageSize: 10,
-      pagesCount: 0,
-      totalCount: 0,
-    });
+    expect(response.body).toEqual(emptyBlog);
   });
 
   it("should create new blog", async () => {
     // Trying to create a blog
 
-    const posting = await request(app)
-      .post("/blogs")
-      .send({
-        name: "Test Blog Name",
-        description: "Test Description",
-        websiteUrl: "https://github.com/pavelzhuravskiy",
-      })
-      .set("Authorization", "Basic YWRtaW46cXdlcnR5");
-    expect(posting.status).toBe(201);
+    const response = await blogCreator();
+    expect(response.status).toBe(201);
 
     // Checking result by returning created blog
 
-    const blogs = await foundBlogs();
-    expect(blogs.items[0]).toStrictEqual({
-      id: expect.any(String),
-      name: "Test Blog Name",
-      description: "Test Description",
-      websiteUrl: "https://github.com/pavelzhuravskiy",
-      createdAt: expect.any(String),
-      isMembership: false,
-    });
+    const blogs = await foundBlogsObj();
+    expect(blogs.items[0]).toStrictEqual(newBlog);
   });
 
   it("should NOT create new blog without name", async () => {
     // Trying to create a blog without name
 
-    const posting = await request(app)
-      .post("/blogs")
-      .send({
-        description: "Test Description",
-        websiteUrl: "https://github.com/pavelzhuravskiy",
-      })
-      .set("Authorization", "Basic YWRtaW46cXdlcnR5");
-    expect(posting.status).toBe(400);
+    const response = await blogCreator(undefined, null);
+    expect(response.status).toBe(400);
 
     // Checking result
 
-    const blogs = await foundBlogs();
+    const blogs = await foundBlogsObj();
     expect(blogs.items.length).toBe(1);
   });
 
   it("should NOT create new blog with incorrect name type", async () => {
-    // Trying to create a blog with incorrect name type
+      // Trying to create a blog without name
 
-    const posting = await request(app)
-      .post("/blogs")
-      .send({
-        name: 123,
-        description: "Test Description",
-        websiteUrl: "https://github.com/pavelzhuravskiy",
-      })
-      .set("Authorization", "Basic YWRtaW46cXdlcnR5");
-    expect(posting.status).toBe(400);
+      const response = await blogCreator("/blogs", 123);
+      expect(response.status).toBe(400);
 
-    // Checking result
+      // Checking result
 
-    const blogs = await foundBlogs();
-    expect(blogs.items.length).toBe(1);
+      const blogs = await foundBlogsObj();
+      expect(blogs.items.length).toBe(1);
   });
 
   it("should NOT create new blog with incorrect name length", async () => {
-    // Trying to create a blog with incorrect name length
 
-    const posting = await request(app)
-      .post("/blogs")
-      .send({
-        name: "thisIsALongTestString",
-        description: "Test Description",
-        websiteUrl: "https://github.com/pavelzhuravskiy",
-      })
-      .set("Authorization", "Basic YWRtaW46cXdlcnR5");
-    expect(posting.status).toBe(400);
+      // Trying to create a blog without name
 
-    // Checking result
+      const response = await blogCreator("/blogs", "thisIsALongTestString");
+      expect(response.status).toBe(400);
 
-    const blogs = await foundBlogs();
-    expect(blogs.items.length).toBe(1);
+      // Checking result
+
+      const blogs = await foundBlogsObj();
+      expect(blogs.items.length).toBe(1);
+
   });
 
   it("should NOT create new blog without description", async () => {
-    // Trying to create a blog without description
 
-    const posting = await request(app)
-      .post("/blogs")
-      .send({
-        name: "name",
-        websiteUrl: "https://github.com/pavelzhuravskiy",
-      })
-      .set("Authorization", "Basic YWRtaW46cXdlcnR5");
-    expect(posting.status).toBe(400);
-
-    // Checking result
-
-    const blogs = await foundBlogs();
-    expect(blogs.items.length).toBe(1);
   });
 
   it("should NOT create new blog with incorrect description type", async () => {
@@ -160,7 +145,7 @@ describe("Blogs and posts CRUD operations", () => {
 
     // Checking result
 
-    const blogs = await foundBlogs();
+    const blogs = await foundBlogsObj();
     expect(blogs.items.length).toBe(1);
   });
 
@@ -180,7 +165,7 @@ describe("Blogs and posts CRUD operations", () => {
 
     // Checking result
 
-    const blogs = await foundBlogs();
+    const blogs = await foundBlogsObj();
     expect(blogs.items.length).toBe(1);
   });
 
@@ -198,7 +183,7 @@ describe("Blogs and posts CRUD operations", () => {
 
     // Checking result
 
-    const blogs = await foundBlogs();
+    const blogs = await foundBlogsObj();
     expect(blogs.items.length).toBe(1);
   });
 
@@ -217,7 +202,7 @@ describe("Blogs and posts CRUD operations", () => {
 
     // Checking result
 
-    const blogs = await foundBlogs();
+    const blogs = await foundBlogsObj();
     expect(blogs.items.length).toBe(1);
   });
 
@@ -237,7 +222,7 @@ describe("Blogs and posts CRUD operations", () => {
 
     // Checking result
 
-    const blogs = await foundBlogs();
+    const blogs = await foundBlogsObj();
     expect(blogs.items.length).toBe(1);
   });
 
@@ -256,14 +241,14 @@ describe("Blogs and posts CRUD operations", () => {
 
     // Checking result
 
-    const blogs = await foundBlogs();
+    const blogs = await foundBlogsObj();
     expect(blogs.items.length).toBe(1);
   });
 
   it("should update blog", async () => {
     // Trying to update a blog
 
-    const blogs = await foundBlogs();
+    const blogs = await foundBlogsObj();
     const blogId = blogs.items[0].id;
 
     const updating = await request(app)
@@ -278,7 +263,7 @@ describe("Blogs and posts CRUD operations", () => {
   });
 
   it("should return blog by ID with updated data", async () => {
-    const blogs = await foundBlogs();
+    const blogs = await foundBlogsObj();
     const blogId = blogs.items[0].id;
 
     const response = await request(app).get("/blogs/" + blogId);
@@ -334,7 +319,7 @@ describe("Blogs and posts CRUD operations", () => {
   it("should create new post", async () => {
     // Returning all blogs
 
-    const blogs = await foundBlogs();
+    const blogs = await foundBlogsObj();
     const blogId = blogs.items[0].id;
     const blogName = blogs.items[0].name;
 
@@ -353,7 +338,7 @@ describe("Blogs and posts CRUD operations", () => {
 
     // Checking result by returning created post
 
-    const posts = await foundPosts();
+    const posts = await foundPostsObj();
 
     expect(posts.items[0]).toStrictEqual({
       id: expect.any(String),
@@ -382,14 +367,14 @@ describe("Blogs and posts CRUD operations", () => {
 
     // Checking result
 
-    const posts = await foundPosts();
+    const posts = await foundPostsObj();
     expect(posts.items.length).toBe(1);
   });
 
   it("should NOT create new post without title", async () => {
     // Trying to create a post without title
 
-    const blogs = await foundBlogs();
+    const blogs = await foundBlogsObj();
     const blogId = blogs.items[0].id;
 
     const posting = await request(app)
@@ -404,14 +389,14 @@ describe("Blogs and posts CRUD operations", () => {
 
     // Checking result
 
-    const posts = await foundPosts();
+    const posts = await foundPostsObj();
     expect(posts.items.length).toBe(1);
   });
 
   it("should NOT create new post with incorrect title type", async () => {
     // Trying to create a post with incorrect title type
 
-    const blogs = await foundBlogs();
+    const blogs = await foundBlogsObj();
     const blogId = blogs.items[0].id;
 
     const posting = await request(app)
@@ -427,14 +412,14 @@ describe("Blogs and posts CRUD operations", () => {
 
     // Checking result
 
-    const posts = await foundPosts();
+    const posts = await foundPostsObj();
     expect(posts.items.length).toBe(1);
   });
 
   it("should NOT create new post with incorrect title length", async () => {
     // Trying to create a post with incorrect title length
 
-    const blogs = await foundBlogs();
+    const blogs = await foundBlogsObj();
     const blogId = blogs.items[0].id;
 
     const posting = await request(app)
@@ -450,14 +435,14 @@ describe("Blogs and posts CRUD operations", () => {
 
     // Checking result
 
-    const posts = await foundPosts();
+    const posts = await foundPostsObj();
     expect(posts.items.length).toBe(1);
   });
 
   it("should NOT create new post without short description", async () => {
     // Trying to create a post without short description
 
-    const blogs = await foundBlogs();
+    const blogs = await foundBlogsObj();
     const blogId = blogs.items[0].id;
 
     const posting = await request(app)
@@ -472,14 +457,14 @@ describe("Blogs and posts CRUD operations", () => {
 
     // Checking result
 
-    const posts = await foundPosts();
+    const posts = await foundPostsObj();
     expect(posts.items.length).toBe(1);
   });
 
   it("should NOT create new post with incorrect short description type", async () => {
     // Trying to create a post with incorrect short description type
 
-    const blogs = await foundBlogs();
+    const blogs = await foundBlogsObj();
     const blogId = blogs.items[0].id;
 
     const posting = await request(app)
@@ -495,14 +480,14 @@ describe("Blogs and posts CRUD operations", () => {
 
     // Checking result
 
-    const posts = await foundPosts();
+    const posts = await foundPostsObj();
     expect(posts.items.length).toBe(1);
   });
 
   it("should NOT create new post with incorrect short description length", async () => {
     // Trying to create a post with incorrect short description length
 
-    const blogs = await foundBlogs();
+    const blogs = await foundBlogsObj();
     const blogId = blogs.items[0].id;
 
     const posting = await request(app)
@@ -519,14 +504,14 @@ describe("Blogs and posts CRUD operations", () => {
 
     // Checking result
 
-    const posts = await foundPosts();
+    const posts = await foundPostsObj();
     expect(posts.items.length).toBe(1);
   });
 
   it("should NOT create new post without content", async () => {
     // Trying to create a post without content
 
-    const blogs = await foundBlogs();
+    const blogs = await foundBlogsObj();
     const blogId = blogs.items[0].id;
 
     const posting = await request(app)
@@ -541,14 +526,14 @@ describe("Blogs and posts CRUD operations", () => {
 
     // Checking result
 
-    const posts = await foundPosts();
+    const posts = await foundPostsObj();
     expect(posts.items.length).toBe(1);
   });
 
   it("should NOT create new post with incorrect content type", async () => {
     // Trying to create a post with incorrect content type
 
-    const blogs = await foundBlogs();
+    const blogs = await foundBlogsObj();
     const blogId = blogs.items[0].id;
 
     const posting = await request(app)
@@ -564,14 +549,14 @@ describe("Blogs and posts CRUD operations", () => {
 
     // Checking result
 
-    const posts = await foundPosts();
+    const posts = await foundPostsObj();
     expect(posts.items.length).toBe(1);
   });
 
   it("should NOT create new post with incorrect content length", async () => {
     // Trying to create a post with incorrect content length
 
-    const blogs = await foundBlogs();
+    const blogs = await foundBlogsObj();
     const blogId = blogs.items[0].id;
 
     const posting = await request(app)
@@ -588,15 +573,15 @@ describe("Blogs and posts CRUD operations", () => {
 
     // Checking result
 
-    const posts = await foundPosts();
+    const posts = await foundPostsObj();
     expect(posts.items.length).toBe(1);
   });
 
   it("should update post", async () => {
     // Trying to update a post
 
-    const blogs = await foundBlogs();
-    const posts = await foundPosts();
+    const blogs = await foundBlogsObj();
+    const posts = await foundPostsObj();
 
     const blogId = blogs.items[0].id;
     const postId = posts.items[0].id;
@@ -614,8 +599,8 @@ describe("Blogs and posts CRUD operations", () => {
   });
 
   it("should return post by ID with updated data", async () => {
-    const blogs = await foundBlogs();
-    const posts = await foundPosts();
+    const blogs = await foundBlogsObj();
+    const posts = await foundPostsObj();
 
     const blogId = blogs.items[0].id;
     const blogName = blogs.items[0].name;
@@ -642,7 +627,7 @@ describe("Blogs and posts CRUD operations", () => {
   it("should return 404 when updating not existing post", async () => {
     // Trying to update a post
 
-    const blogs = await foundBlogs();
+    const blogs = await foundBlogsObj();
     const blogId = blogs.items[0].id;
 
     const updating = await request(app)
@@ -665,7 +650,7 @@ describe("Blogs and posts CRUD operations", () => {
   });
 
   it("should delete post by ID", async () => {
-    const posts = await foundPosts();
+    const posts = await foundPostsObj();
     const postId = posts.items[0].id;
 
     const response = await request(app)
@@ -675,7 +660,7 @@ describe("Blogs and posts CRUD operations", () => {
   });
 
   it("should delete blog by ID", async () => {
-    const blogs = await foundBlogs();
+    const blogs = await foundBlogsObj();
     const blogId = blogs.items[0].id;
 
     const response = await request(app)
@@ -685,14 +670,14 @@ describe("Blogs and posts CRUD operations", () => {
   });
 
   it("should return empty post array", async () => {
-    const posts = await foundPosts();
+    const posts = await foundPostsObj();
     const response = await request(app).get("/posts/");
     expect(response.status).toBe(200);
     expect(posts.items.length).toBe(0);
   });
 
   it("should return empty blog array", async () => {
-    const blogs = await foundBlogs();
+    const blogs = await foundBlogsObj();
     const response = await request(app).get("/blogs/");
     expect(response.status).toBe(200);
     expect(blogs.items.length).toBe(0);
@@ -755,7 +740,7 @@ describe("Blogs name filtering", () => {
 
     // Checking result by returning created blog
 
-    const blogs = await foundBlogs();
+    const blogs = await foundBlogsObj();
     expect(blogs.items[0]).toStrictEqual({
       id: expect.any(String),
       name: "Test name 2",
@@ -834,7 +819,7 @@ describe("Blogs and posts sorting", () => {
 
     // Checking result by returning created blog
 
-    const blogs = await foundBlogs();
+    const blogs = await foundBlogsObj();
     expect(blogs.items[0]).toStrictEqual({
       id: expect.any(String),
       name: "Test name 09",
@@ -870,122 +855,125 @@ describe("Blogs and posts sorting", () => {
     expect(blogsWithQueryAsc.items[3].name).toBe("Test name 07");
     expect(blogsWithQueryAsc.items[4].name).toBe("Test name 09");
   });
-    it("should sort posts by any provided field (title for example)", async () => {
+  it("should sort posts by any provided field (title for example)", async () => {
+    // Creating blog
 
-        // Creating blog
+    // Trying to create a blog
 
-        // Trying to create a blog
+    const posting = await request(app)
+      .post("/blogs")
+      .send({
+        name: "Test Blog Name",
+        description: "Test Description",
+        websiteUrl: "https://github.com/pavelzhuravskiy",
+      })
+      .set("Authorization", "Basic YWRtaW46cXdlcnR5");
+    expect(posting.status).toBe(201);
 
-        const posting = await request(app)
-            .post("/blogs")
-            .send({
-                name: "Test Blog Name",
-                description: "Test Description",
-                websiteUrl: "https://github.com/pavelzhuravskiy",
-            })
-            .set("Authorization", "Basic YWRtaW46cXdlcnR5");
-        expect(posting.status).toBe(201);
+    // Returning blog
 
-        // Returning blog
+    const blogs = await foundBlogsObj();
+    const blogId = blogs.items[0].id;
+    const blogName = blogs.items[0].name;
 
-        const blogs = await foundBlogs();
-        const blogId = blogs.items[0].id;
-        const blogName = blogs.items[0].name;
+    // Creating posts
 
-        // Creating posts
+    const posting_01 = await request(app)
+      .post("/posts")
+      .send({
+        title: "Test title 03",
+        shortDescription: "Test Short Description",
+        content: "Test content",
+        blogId: blogId,
+      })
+      .set("Authorization", "Basic YWRtaW46cXdlcnR5");
+    expect(posting_01.status).toBe(201);
 
-        const posting_01 = await request(app)
-            .post("/posts")
-            .send({
-                title: "Test title 03",
-                shortDescription: "Test Short Description",
-                content: "Test content",
-                blogId: blogId,
-            })
-            .set("Authorization", "Basic YWRtaW46cXdlcnR5");
-        expect(posting_01.status).toBe(201);
+    const posting_02 = await request(app)
+      .post("/posts")
+      .send({
+        title: "Test title 06",
+        shortDescription: "Test Short Description",
+        content: "Test content",
+        blogId: blogId,
+      })
+      .set("Authorization", "Basic YWRtaW46cXdlcnR5");
+    expect(posting_02.status).toBe(201);
 
-        const posting_02 = await request(app)
-            .post("/posts")
-            .send({
-                title: "Test title 06",
-                shortDescription: "Test Short Description",
-                content: "Test content",
-                blogId: blogId,
-            })
-            .set("Authorization", "Basic YWRtaW46cXdlcnR5");
-        expect(posting_02.status).toBe(201);
+    const posting_03 = await request(app)
+      .post("/posts")
+      .send({
+        title: "Test title 01",
+        shortDescription: "Test Short Description",
+        content: "Test content",
+        blogId: blogId,
+      })
+      .set("Authorization", "Basic YWRtaW46cXdlcnR5");
+    expect(posting_03.status).toBe(201);
 
-        const posting_03 = await request(app)
-            .post("/posts")
-            .send({
-                title: "Test title 01",
-                shortDescription: "Test Short Description",
-                content: "Test content",
-                blogId: blogId,
-            })
-            .set("Authorization", "Basic YWRtaW46cXdlcnR5");
-        expect(posting_03.status).toBe(201);
+    const posting_04 = await request(app)
+      .post("/posts")
+      .send({
+        title: "Test title 05",
+        shortDescription: "Test Short Description",
+        content: "Test content",
+        blogId: blogId,
+      })
+      .set("Authorization", "Basic YWRtaW46cXdlcnR5");
+    expect(posting_04.status).toBe(201);
 
-        const posting_04 = await request(app)
-            .post("/posts")
-            .send({
-                title: "Test title 05",
-                shortDescription: "Test Short Description",
-                content: "Test content",
-                blogId: blogId,
-            })
-            .set("Authorization", "Basic YWRtaW46cXdlcnR5");
-        expect(posting_04.status).toBe(201);
+    const posting_05 = await request(app)
+      .post("/posts")
+      .send({
+        title: "Test title 08",
+        shortDescription: "Test Short Description",
+        content: "Test content",
+        blogId: blogId,
+      })
+      .set("Authorization", "Basic YWRtaW46cXdlcnR5");
+    expect(posting_05.status).toBe(201);
 
-        const posting_05 = await request(app)
-            .post("/posts")
-            .send({
-                title: "Test title 08",
-                shortDescription: "Test Short Description",
-                content: "Test content",
-                blogId: blogId,
-            })
-            .set("Authorization", "Basic YWRtaW46cXdlcnR5");
-        expect(posting_05.status).toBe(201);
+    // Checking result by returning created post
 
-        // Checking result by returning created post
+    const posts = await foundPostsObj();
 
-        const posts = await foundPosts();
-
-        expect(posts.items[0]).toStrictEqual({
-            id: expect.any(String),
-            title: "Test title 08",
-            shortDescription: "Test Short Description",
-            content: "Test content",
-            blogId: blogId,
-            blogName: blogName,
-            createdAt: expect.any(String),
-        });
-
-
-        // Applying and checking descending sorting
-
-        const response = await request(app).get("/posts");
-        const postsWithQuery = await postsRepository.findPosts(1, 10, "title");
-        expect(response.status).toBe(200);
-        expect(postsWithQuery.items[0].title).toBe("Test title 08");
-        expect(postsWithQuery.items[1].title).toBe("Test title 06");
-        expect(postsWithQuery.items[2].title).toBe("Test title 05");
-        expect(postsWithQuery.items[3].title).toBe("Test title 03");
-        expect(postsWithQuery.items[4].title).toBe("Test title 01");
-
-        // Applying and checking ascending sorting
-
-        const response2 = await request(app).get("/posts");
-        const postsWithQueryAsc = await postsRepository.findPosts(1, 10, "title", "asc");
-        expect(response2.status).toBe(200);
-        expect(postsWithQueryAsc.items[0].title).toBe("Test title 01");
-        expect(postsWithQueryAsc.items[1].title).toBe("Test title 03");
-        expect(postsWithQueryAsc.items[2].title).toBe("Test title 05");
-        expect(postsWithQueryAsc.items[3].title).toBe("Test title 06");
-        expect(postsWithQueryAsc.items[4].title).toBe("Test title 08");
+    expect(posts.items[0]).toStrictEqual({
+      id: expect.any(String),
+      title: "Test title 08",
+      shortDescription: "Test Short Description",
+      content: "Test content",
+      blogId: blogId,
+      blogName: blogName,
+      createdAt: expect.any(String),
     });
+
+    // Applying and checking descending sorting
+
+    const response = await request(app).get("/posts");
+    const postsWithQuery = await postsRepository.findPosts(1, 10, "title");
+    expect(response.status).toBe(200);
+    expect(postsWithQuery.items[0].title).toBe("Test title 08");
+    expect(postsWithQuery.items[1].title).toBe("Test title 06");
+    expect(postsWithQuery.items[2].title).toBe("Test title 05");
+    expect(postsWithQuery.items[3].title).toBe("Test title 03");
+    expect(postsWithQuery.items[4].title).toBe("Test title 01");
+
+    // Applying and checking ascending sorting
+
+    const response2 = await request(app).get("/posts");
+    const postsWithQueryAsc = await postsRepository.findPosts(
+      1,
+      10,
+      "title",
+      "asc"
+    );
+    expect(response2.status).toBe(200);
+    expect(postsWithQueryAsc.items[0].title).toBe("Test title 01");
+    expect(postsWithQueryAsc.items[1].title).toBe("Test title 03");
+    expect(postsWithQueryAsc.items[2].title).toBe("Test title 05");
+    expect(postsWithQueryAsc.items[3].title).toBe("Test title 06");
+    expect(postsWithQueryAsc.items[4].title).toBe("Test title 08");
+  });
 });
 
 describe("Blogs and posts pagination", () => {
@@ -1006,7 +994,7 @@ describe("Blogs and posts pagination", () => {
     }
     // Checking result by returning created blog
 
-    const blogs = await foundBlogs();
+    const blogs = await foundBlogsObj();
     const testName = blogs.items[0].name;
     expect(blogs.items[0]).toStrictEqual({
       id: expect.any(String),
@@ -1031,7 +1019,7 @@ describe("Blogs and posts pagination", () => {
   it("should return correct posts pagination output", async () => {
     // Returning all blogs
 
-    const blogs = await foundBlogs();
+    const blogs = await foundBlogsObj();
     const blogId = blogs.items[0].id;
     const blogName = blogs.items[0].name;
 
@@ -1052,7 +1040,7 @@ describe("Blogs and posts pagination", () => {
     }
     // Checking result by returning created post
 
-    const posts = await foundPosts();
+    const posts = await foundPostsObj();
 
     expect(posts.items[0]).toStrictEqual({
       id: expect.any(String),
@@ -1078,69 +1066,67 @@ describe("Blogs and posts pagination", () => {
 });
 
 describe("Posts linked to blogs through URI param", () => {
-    it("should create new post for exact blog", async () => {
+  it("should create new post for exact blog", async () => {
+    // Creating blog
 
-        // Creating blog
+    // Trying to create a blog
 
-        // Trying to create a blog
+    const postingBlog = await request(app)
+      .post("/blogs")
+      .send({
+        name: "Test Blog Name",
+        description: "Test Description",
+        websiteUrl: "https://github.com/pavelzhuravskiy",
+      })
+      .set("Authorization", "Basic YWRtaW46cXdlcnR5");
+    expect(postingBlog.status).toBe(201);
 
-        const postingBlog = await request(app)
-            .post("/blogs")
-            .send({
-                name: "Test Blog Name",
-                description: "Test Description",
-                websiteUrl: "https://github.com/pavelzhuravskiy",
-            })
-            .set("Authorization", "Basic YWRtaW46cXdlcnR5");
-        expect(postingBlog.status).toBe(201);
+    // Returning all blogs
 
-        // Returning all blogs
+    const blogs = await foundBlogsObj();
+    const blogId = blogs.items[0].id;
+    const blogName = blogs.items[0].name;
 
-        const blogs = await foundBlogs();
-        const blogId = blogs.items[0].id;
-        const blogName = blogs.items[0].name;
+    // Trying to create a post
 
-        // Trying to create a post
+    const posting = await request(app)
+      .post("/blogs/" + blogId + "/posts")
+      .send({
+        title: "Test title",
+        shortDescription: "Test Short Description",
+        content: "Test content",
+        blogId: blogId,
+      })
+      .set("Authorization", "Basic YWRtaW46cXdlcnR5");
+    expect(posting.status).toBe(201);
 
-        const posting = await request(app)
-            .post("/blogs/" + blogId + "/posts")
-            .send({
-                title: "Test title",
-                shortDescription: "Test Short Description",
-                content: "Test content",
-                blogId: blogId,
-            })
-            .set("Authorization", "Basic YWRtaW46cXdlcnR5");
-        expect(posting.status).toBe(201);
+    // Checking result by returning created post
 
-        // Checking result by returning created post
+    const posts = await foundPostsObj();
+    const postId = posts.items[0].id;
 
-        const posts = await foundPosts();
-        const postId = posts.items[0].id
-
-        expect(posts.items[0]).toStrictEqual({
-            id: expect.any(String),
-            title: "Test title",
-            shortDescription: "Test Short Description",
-            content: "Test content",
-            blogId: blogId,
-            blogName: blogName,
-            createdAt: expect.any(String),
-        });
-
-        // Checking that post is available through blog URI param
-
-        const response = await request(app).get("/blogs/" + blogId);
-        expect(response.status).toBe(200);
-        expect(posts.items[0]).toStrictEqual({
-            id: postId,
-            title: "Test title",
-            shortDescription: "Test Short Description",
-            content: "Test content",
-            blogId: blogId,
-            blogName: blogName,
-            createdAt: expect.any(String),
-        });
-
+    expect(posts.items[0]).toStrictEqual({
+      id: expect.any(String),
+      title: "Test title",
+      shortDescription: "Test Short Description",
+      content: "Test content",
+      blogId: blogId,
+      blogName: blogName,
+      createdAt: expect.any(String),
     });
-})
+
+    // Checking that post is available through blog URI param
+
+    const response = await request(app).get("/blogs/" + blogId);
+    expect(response.status).toBe(200);
+    expect(posts.items[0]).toStrictEqual({
+      id: postId,
+      title: "Test title",
+      shortDescription: "Test Short Description",
+      content: "Test content",
+      blogId: blogId,
+      blogName: blogName,
+      createdAt: expect.any(String),
+    });
+  });
+});
