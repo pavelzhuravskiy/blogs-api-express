@@ -699,8 +699,87 @@ describe("Blogs and posts CRUD operations", () => {
   });
 });
 
+describe("Blogs name filtering", () => {
+    it("should return filtered blog names", async () => {
+      // Creating blogs
+
+      const posting_01 = await request(app)
+        .post("/blogs")
+        .send({
+          name: "Ivan",
+          description: "Test Description",
+          websiteUrl: "https://github.com/pavelzhuravskiy",
+        })
+        .set("Authorization", "Basic YWRtaW46cXdlcnR5");
+      expect(posting_01.status).toBe(201);
+
+        const posting_02 = await request(app)
+            .post("/blogs")
+            .send({
+                name: "DiVan",
+                description: "Test Description",
+                websiteUrl: "https://github.com/pavelzhuravskiy",
+            })
+            .set("Authorization", "Basic YWRtaW46cXdlcnR5");
+        expect(posting_02.status).toBe(201);
+
+        const posting_03 = await request(app)
+            .post("/blogs")
+            .send({
+                name: "JanClod Vandam",
+                description: "Test Description",
+                websiteUrl: "https://github.com/pavelzhuravskiy",
+            })
+            .set("Authorization", "Basic YWRtaW46cXdlcnR5");
+        expect(posting_03.status).toBe(201);
+
+        const posting_04 = await request(app)
+            .post("/blogs")
+            .send({
+                name: "Test name 1",
+                description: "Test Description",
+                websiteUrl: "https://github.com/pavelzhuravskiy",
+            })
+            .set("Authorization", "Basic YWRtaW46cXdlcnR5");
+        expect(posting_04.status).toBe(201);
+
+        const posting_05 = await request(app)
+            .post("/blogs")
+            .send({
+                name: "Test name 2",
+                description: "Test Description",
+                websiteUrl: "https://github.com/pavelzhuravskiy",
+            })
+            .set("Authorization", "Basic YWRtaW46cXdlcnR5");
+        expect(posting_05.status).toBe(201);
+
+      // Checking result by returning created blog
+
+      const blogs = await foundBlogs();
+      expect(blogs.items[0]).toStrictEqual({
+        id: expect.any(String),
+        name: "Test name 2",
+        description: "Test Description",
+        websiteUrl: "https://github.com/pavelzhuravskiy",
+        createdAt: expect.any(String),
+        isMembership: false,
+      });
+
+      // Applying and checking filter
+
+        const response = await request(app).get("/blogs");
+        const blogsWithQuery = await blogsRepository.findBlogs("va");
+        expect(response.status).toBe(200);
+        expect(blogsWithQuery.totalCount).toBe(3);
+        expect(blogsWithQuery.items.length).toBe(3);
+        expect(blogsWithQuery.items[0].name).toBe("JanClod Vandam")
+        expect(blogsWithQuery.items[1].name).toBe("DiVan")
+        expect(blogsWithQuery.items[2].name).toBe("Ivan")
+    });
+})
+
 describe("Blogs and posts pagination", () => {
-  it("should return correct blogs pagination output", async function () {
+  it("should return correct blogs pagination output", async () => {
     // Create 20 new blogs
     let i = 0;
     while (i < 20) {
@@ -739,7 +818,7 @@ describe("Blogs and posts pagination", () => {
     expect(blogsWithQuery.totalCount).toBe(20);
     expect(blogsWithQuery.items.length).toBe(5);
   });
-  it("should return correct posts pagination output", async function () {
+  it("should return correct posts pagination output", async () => {
     // Returning all blogs
 
     const blogs = await foundBlogs();
