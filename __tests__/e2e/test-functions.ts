@@ -148,6 +148,11 @@ export const firstPostId = async () => {
   return (await foundPostsObj()).items[0].id;
 };
 
+// Find second post
+export const secondPost = async () => {
+  return (await foundPostsObj()).items[1];
+};
+
 // Create new post
 export const postCreator = async (
   uri: string = postsURI,
