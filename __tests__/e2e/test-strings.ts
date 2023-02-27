@@ -8,24 +8,31 @@ export const postsURI = "/posts/";
 export const invalidURI = "/-100/";
 
 // Blog creation strings
-export const blogNameString = "Test Name";
-export const blogDescriptionString = "Test Description";
+export const blogNameString = "Test name";
+export const blogDescriptionString = "Test description";
 export const blogWebsiteUrlString = "https://someurl.com/test";
 
 // Blog updating strings
 export const blogNewNameString = "New name";
-export const blogNewDescriptionString = "New Description";
+export const blogNewDescriptionString = "New description";
 export const blogNewWebsiteUrlString = "https://someurl.com/new";
+
+// Blog names for filter check
+export const blogFilterString01 = "Ivan"
+export const blogFilterString02 = "DiVan"
+export const blogFilterString03 = "JanClod Vandam"
+export const blogFilterString04 = "Test name 1"
+export const blogFilterString05 = "Test name 2"
 
 // Post creation strings
 export const postTitleString = "Test title";
-export const postShortDescriptionString = "Test Short Description";
+export const postShortDescriptionString = "Test short description";
 export const postContentString = "Test content";
 
 // Post updating strings
-export const postNewTitleString = "Test title";
-export const postNewShortDescriptionString = "Test Short Description";
-export const postNewContentString = "Test content";
+export const postNewTitleString = "New title";
+export const postNewShortDescriptionString = "New short description";
+export const postNewContentString = "New content";
 
 // Long strings
 export const longString17 = "Lorem ipsum dolor";

@@ -8,7 +8,7 @@ import {
   firstBlog,
   firstBlogId,
   firstPost,
-  firstPostId,
+  firstPostId, foundBlogsObj,
   getter,
   getterWithId,
   postCreator,
@@ -20,6 +20,10 @@ import {
 import {
   basicAuthKey,
   basicAuthValue,
+  blogFilterString01,
+  blogFilterString02,
+  blogFilterString03,
+  blogFilterString04, blogFilterString05,
   blogNameString,
   blogNewDescriptionString,
   blogNewNameString,
@@ -461,5 +465,36 @@ describe("Posts 404 errors checks", () => {
   it("should return 404 when deleting not existing post", async () => {
     const response = await eraser(postsURI + invalidURI);
     expect(response.status).toBe(404);
+  });
+});
+
+describe("Blogs name filtering", () => {
+  it("should return blogs with filter", async () => {
+    // Trying to create 5 blogs
+    await blogCreator(undefined, blogFilterString01);
+    await blogCreator(undefined, blogFilterString02);
+    await blogCreator(undefined, blogFilterString03);
+    await blogCreator(undefined, blogFilterString04);
+    const lastBlogResponse = await blogCreator(undefined, blogFilterString05);
+
+    expect(lastBlogResponse.status).toBe(201);
+
+    // Checking result by returning blogs array length
+    const length = await blogsLength();
+    expect(length).toBe(5);
+
+    // Applying and checking filter
+
+    const response = await getter(blogsURI);
+    expect(response.status).toBe(200);
+
+    const blogsWithQuery = await foundBlogsObj("va");
+    expect(blogsWithQuery.totalCount).toBe(3);
+    expect(blogsWithQuery.items.length).toBe(3);
+
+    // Default sorting for blogs ==> createdAt, desc
+    expect(blogsWithQuery.items[0].name).toBe(blogFilterString03);
+    expect(blogsWithQuery.items[1].name).toBe(blogFilterString02);
+    expect(blogsWithQuery.items[2].name).toBe(blogFilterString01);
   });
 });
