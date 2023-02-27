@@ -1,4 +1,4 @@
-import { app } from "../../src";
+import {app} from "../../src";
 import request from "supertest";
 import {
   basicAuthKey,
@@ -18,8 +18,12 @@ import {
   postsURI,
   postTitleString,
 } from "./test-strings";
-import { blogsRepository } from "../../src/repositories/mongodb/mongodb-blogs-repository";
-import { postsRepository } from "../../src/repositories/mongodb/mongodb-posts-repository";
+import {
+  blogsRepository
+} from "../../src/repositories/mongodb/mongodb-blogs-repository";
+import {
+  postsRepository
+} from "../../src/repositories/mongodb/mongodb-posts-repository";
 
 // ---------- UNIVERSAL FUNCTIONS FOR BLOGS AND POSTS ----------
 
@@ -168,11 +172,6 @@ export const firstPost = async () => {
 // Find first post ID
 export const firstPostId = async () => {
   return (await foundPostsObj()).items[0].id;
-};
-
-// Find second post
-export const secondPost = async () => {
-  return (await foundPostsObj()).items[1];
 };
 
 // Create new post

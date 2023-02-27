@@ -17,7 +17,6 @@ import {
   postReturner,
   postsLength,
   postUpdater,
-  secondPost,
 } from "./test-functions";
 import {
   basicAuthKey,
@@ -39,20 +38,21 @@ import {
   longString39,
   longString508,
   postContentString,
+  postNewContentString,
+  postNewShortDescriptionString,
   postNewTitleString,
   postShortDescriptionString,
   postsURI,
   postTitleString,
-  sortingString07,
   sortingString02,
-  sortingString09,
   sortingString04,
   sortingString05,
+  sortingString07,
+  sortingString09,
 } from "./test-strings";
-import { emptyOutput } from "./test-objects";
+import {emptyOutput} from "./test-objects";
 import request from "supertest";
-import { app } from "../../src";
-import { blogsRepository } from "../../src/repositories/mongodb/mongodb-blogs-repository";
+import {app} from "../../src";
 
 // const port = 3000;
 //
@@ -149,31 +149,13 @@ describe("Posts CRUD operations", () => {
     const returnedPost = await postReturner();
     expect(post).toStrictEqual(returnedPost);
   });
-  it("should create new post for exact blog", async () => {
-    // Finding blogId
-    const blogId = await firstBlogId();
-
-    // Trying to create a post
-    const response = await postCreator(blogsURI + blogId + postsURI);
-    expect(response.status).toBe(201);
-
-    // Checking result by returning created post
-    const post = await secondPost();
-    const returnedPost = await postReturner();
-    expect(post).toStrictEqual(returnedPost);
-
-    // Checking that post is available through blog URI param
-    const check = await getter(blogsURI + blogId);
-    expect(check.status).toBe(200);
-    expect(post).toStrictEqual(returnedPost);
-  });
   it("should update post", async () => {
     // Trying to update a post
     const response = await postUpdater();
     expect(response.status).toBe(204);
   });
   it("should return post by ID with updated data", async () => {
-    // Trying to get blog by ID
+    // Trying to get post by ID
     const postId = await firstPostId();
     const response = await getterWithId(postsURI, postId);
     expect(response.status).toBe(200);
@@ -183,24 +165,51 @@ describe("Posts CRUD operations", () => {
     const returnedPost = await postReturner(
       undefined,
       postNewTitleString,
-      postShortDescriptionString,
-      postContentString
+      postNewShortDescriptionString,
+      postNewContentString
     );
     expect(post).toStrictEqual(returnedPost);
   });
-  it("should delete both posts", async () => {
+  it("should delete post by ID", async () => {
     // Trying to delete both posts
-    let i = 0;
-    while (i < 2) {
-      const postId = await firstPostId();
-      const response = await eraserWithId(postsURI, postId);
-      expect(response.status).toBe(204);
-      i++;
-    }
+    const postId = await firstPostId();
+    const response = await eraserWithId(postsURI, postId);
+    expect(response.status).toBe(204);
 
     // Checking result by returning blogs array length
     const length = await postsLength();
     expect(length).toBe(0);
+  });
+});
+
+describe("Posts inside blog CR operations", () => {
+  it("should create new blog for testing", async () => {
+    // Trying to create a blog
+    const response = await blogCreator();
+    expect(response.status).toBe(201);
+
+    // Checking result by returning created blog
+    const blog = await firstBlog();
+    const returnedBlog = await blogReturner();
+    expect(blog).toStrictEqual(returnedBlog);
+  });
+  it("should create new post for exact blog", async () => {
+    // Finding blogId
+    const blogId = await firstBlogId();
+
+    // Trying to create a post
+    const response = await postCreator(blogsURI + blogId + postsURI);
+    expect(response.status).toBe(201);
+
+    // Checking result by returning created post
+    const post = await firstPost();
+    const returnedPost = await postReturner();
+    expect(post).toStrictEqual(returnedPost);
+
+    // Checking that post is available through blog URI param
+    const check = await getter(blogsURI + blogId);
+    expect(check.status).toBe(200);
+    expect(post).toStrictEqual(returnedPost);
   });
 });
 
@@ -597,5 +606,66 @@ describe("Posts sorting", () => {
     expect(postsWithQueryAsc.items[2].title).toBe(sortingString05);
     expect(postsWithQueryAsc.items[3].title).toBe(sortingString07);
     expect(postsWithQueryAsc.items[4].title).toBe(sortingString09);
+  });
+});
+
+describe("Blogs pagination", () => {
+  it("should return correct blogs pagination output", async () => {
+    // Trying to create 20 blogs
+    let i = 0;
+    while (i < 20) {
+      const response = await blogCreator(undefined, `Test name ${i}`);
+      expect(response.status).toBe(201);
+      i++;
+    }
+
+    // Checking pagination
+    const check = await getter(blogsURI);
+    expect(check.status).toBe(200);
+
+    const blogsWithQuery = await foundBlogsObj(
+      undefined,
+      undefined,
+      undefined,
+      2,
+      5
+    );
+    expect(blogsWithQuery.pagesCount).toBe(4);
+    expect(blogsWithQuery.page).toBe(2);
+    expect(blogsWithQuery.pageSize).toBe(5);
+    expect(blogsWithQuery.totalCount).toBe(20);
+    expect(blogsWithQuery.items.length).toBe(5);
+  });
+});
+
+describe("Posts pagination", () => {
+  it("should create new blog for testing", async () => {
+    // Trying to create a blog
+    const response = await blogCreator();
+    expect(response.status).toBe(201);
+
+    // Checking result by returning created blog
+    const blog = await firstBlog();
+    const returnedBlog = await blogReturner();
+    expect(blog).toStrictEqual(returnedBlog);
+  });
+  it("should return correct posts pagination output", async () => {
+    // Trying to create 20 posts
+    let i = 0;
+    while (i < 20) {
+      const response = await postCreator(undefined, `Test title ${i}`);
+      expect(response.status).toBe(201);
+      i++;
+    }
+
+    // Checking pagination
+    const check = await getter(postsURI);
+    expect(check.status).toBe(200);
+    const postsWithQuery = await foundPostsObj(2, 5);
+    expect(postsWithQuery.pagesCount).toBe(4);
+    expect(postsWithQuery.page).toBe(2);
+    expect(postsWithQuery.pageSize).toBe(5);
+    expect(postsWithQuery.totalCount).toBe(20);
+    expect(postsWithQuery.items.length).toBe(5);
   });
 });
