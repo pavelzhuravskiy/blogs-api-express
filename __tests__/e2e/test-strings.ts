@@ -24,6 +24,13 @@ export const blogFilterString03 = "JanClod Vandam"
 export const blogFilterString04 = "Test name 1"
 export const blogFilterString05 = "Test name 2"
 
+// Names for sorting check
+export const sortingString07 = "Test 07"
+export const sortingString02 = "Test 02"
+export const sortingString04 = "Test 04"
+export const sortingString05 = "Test 05"
+export const sortingString09 = "Test 09"
+
 // Post creation strings
 export const postTitleString = "Test title";
 export const postShortDescriptionString = "Test short description";

@@ -8,7 +8,9 @@ import {
   firstBlog,
   firstBlogId,
   firstPost,
-  firstPostId, foundBlogsObj,
+  firstPostId,
+  foundBlogsObj,
+  foundPostsObj,
   getter,
   getterWithId,
   postCreator,
@@ -23,7 +25,8 @@ import {
   blogFilterString01,
   blogFilterString02,
   blogFilterString03,
-  blogFilterString04, blogFilterString05,
+  blogFilterString04,
+  blogFilterString05,
   blogNameString,
   blogNewDescriptionString,
   blogNewNameString,
@@ -40,10 +43,16 @@ import {
   postShortDescriptionString,
   postsURI,
   postTitleString,
+  sortingString07,
+  sortingString02,
+  sortingString09,
+  sortingString04,
+  sortingString05,
 } from "./test-strings";
 import { emptyOutput } from "./test-objects";
 import request from "supertest";
 import { app } from "../../src";
+import { blogsRepository } from "../../src/repositories/mongodb/mongodb-blogs-repository";
 
 // const port = 3000;
 //
@@ -496,5 +505,97 @@ describe("Blogs name filtering", () => {
     expect(blogsWithQuery.items[0].name).toBe(blogFilterString03);
     expect(blogsWithQuery.items[1].name).toBe(blogFilterString02);
     expect(blogsWithQuery.items[2].name).toBe(blogFilterString01);
+  });
+});
+
+describe("Blogs sorting", () => {
+  it("should sort blogs by any field (name for testing)", async () => {
+    // Trying to create 5 blogs
+    await blogCreator(undefined, sortingString07);
+    await blogCreator(undefined, sortingString02);
+    await blogCreator(undefined, sortingString04);
+    await blogCreator(undefined, sortingString05);
+    const lastBlogResponse = await blogCreator(undefined, sortingString09);
+
+    expect(lastBlogResponse.status).toBe(201);
+
+    // Checking result by returning blogs array length
+    const length = await blogsLength();
+    expect(length).toBe(5);
+
+    const response = await getter(blogsURI);
+    expect(response.status).toBe(200);
+
+    // Applying and checking descending sorting
+    const blogsWithQueryDesc = await foundBlogsObj(undefined, "name");
+    expect(blogsWithQueryDesc.items[0].name).toBe(sortingString09);
+    expect(blogsWithQueryDesc.items[1].name).toBe(sortingString07);
+    expect(blogsWithQueryDesc.items[2].name).toBe(sortingString05);
+    expect(blogsWithQueryDesc.items[3].name).toBe(sortingString04);
+    expect(blogsWithQueryDesc.items[4].name).toBe(sortingString02);
+
+    // Applying and checking ascending sorting
+    const blogsWithQueryAsc = await foundBlogsObj(undefined, "name", "asc");
+    expect(response.status).toBe(200);
+    expect(blogsWithQueryAsc.items[0].name).toBe(sortingString02);
+    expect(blogsWithQueryAsc.items[1].name).toBe(sortingString04);
+    expect(blogsWithQueryAsc.items[2].name).toBe(sortingString05);
+    expect(blogsWithQueryAsc.items[3].name).toBe(sortingString07);
+    expect(blogsWithQueryAsc.items[4].name).toBe(sortingString09);
+  });
+});
+
+describe("Posts sorting", () => {
+  it("should create new blog for testing", async () => {
+    // Trying to create a blog
+    const response = await blogCreator();
+    expect(response.status).toBe(201);
+
+    // Checking result by returning created blog
+    const blog = await firstBlog();
+    const returnedBlog = await blogReturner();
+    expect(blog).toStrictEqual(returnedBlog);
+  });
+  it("should sort posts by any field (title for testing)", async () => {
+    // Trying to create 5 posts
+    await postCreator(undefined, sortingString07);
+    await postCreator(undefined, sortingString02);
+    await postCreator(undefined, sortingString04);
+    await postCreator(undefined, sortingString05);
+    const lastBlogResponse = await postCreator(undefined, sortingString09);
+
+    expect(lastBlogResponse.status).toBe(201);
+
+    // Checking result by returning blogs array length
+    const length = await postsLength();
+    expect(length).toBe(5);
+
+    const response = await getter(postsURI);
+    expect(response.status).toBe(200);
+
+    // Applying and checking descending sorting
+    const postsWithQueryDesc = await foundPostsObj(
+      undefined,
+      undefined,
+      "title"
+    );
+    expect(postsWithQueryDesc.items[0].title).toBe(sortingString09);
+    expect(postsWithQueryDesc.items[1].title).toBe(sortingString07);
+    expect(postsWithQueryDesc.items[2].title).toBe(sortingString05);
+    expect(postsWithQueryDesc.items[3].title).toBe(sortingString04);
+    expect(postsWithQueryDesc.items[4].title).toBe(sortingString02);
+
+    // Applying and checking descending sorting
+    const postsWithQueryAsc = await foundPostsObj(
+      undefined,
+      undefined,
+      "title",
+      "asc"
+    );
+    expect(postsWithQueryAsc.items[0].title).toBe(sortingString02);
+    expect(postsWithQueryAsc.items[1].title).toBe(sortingString04);
+    expect(postsWithQueryAsc.items[2].title).toBe(sortingString05);
+    expect(postsWithQueryAsc.items[3].title).toBe(sortingString07);
+    expect(postsWithQueryAsc.items[4].title).toBe(sortingString09);
   });
 });

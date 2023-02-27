@@ -48,8 +48,20 @@ export const eraserWithId = (uri: string, id: string) => {
 // ---------- BLOGS FUNCTIONS ----------
 
 // Find blogs in repository
-export const foundBlogsObj = async (searchNameTerm: string | null = null) => {
-  return await blogsRepository.findBlogs(searchNameTerm);
+export const foundBlogsObj = async (
+  searchNameTerm: null | string = null,
+  sortBy: string = "createdAt",
+  sortDirection: string = "desc",
+  pageNumber: number = 1,
+  pageSize: number = 10
+) => {
+  return await blogsRepository.findBlogs(
+    searchNameTerm,
+    sortBy,
+    sortDirection,
+    pageNumber,
+    pageSize
+  );
 };
 
 // Find blogs array length
@@ -129,8 +141,18 @@ export const blogUpdater = async (
 // ---------- POSTS FUNCTIONS ----------
 
 // Find posts in repository
-export const foundPostsObj = async () => {
-  return await postsRepository.findPosts();
+export const foundPostsObj = async (
+  pageNumber: number = 1,
+  pageSize: number = 10,
+  sortBy: string = "createdAt",
+  sortDirection: string = "desc"
+) => {
+  return await postsRepository.findPosts(
+    pageNumber,
+    pageSize,
+    sortBy,
+    sortDirection
+  );
 };
 
 // Find posts array length
