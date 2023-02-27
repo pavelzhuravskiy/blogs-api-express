@@ -1,0 +1,209 @@
+import { app } from "../../src";
+import request from "supertest";
+import {
+  basicAuthKey,
+  basicAuthValue,
+  blogDescriptionString,
+  blogNameString,
+  blogNewDescriptionString,
+  blogNewNameString,
+  blogNewWebsiteUrlString,
+  blogsURI,
+  blogWebsiteUrlString,
+  postContentString,
+  postNewContentString,
+  postNewShortDescriptionString,
+  postNewTitleString,
+  postShortDescriptionString,
+  postsURI,
+  postTitleString,
+} from "./test-strings";
+import { blogsRepository } from "../../src/repositories/mongodb/mongodb-blogs-repository";
+import { postsRepository } from "../../src/repositories/mongodb/mongodb-posts-repository";
+
+// ---------- UNIVERSAL FUNCTIONS FOR BLOGS AND POSTS ----------
+
+// Get all blogs or posts
+export const getter = (uri: string) => {
+  return request(app).get(uri);
+};
+
+// Get blog or post by id
+export const getterWithId = (uri: string, id: string) => {
+  return request(app).get(uri + id);
+};
+
+// Delete all blogs or posts
+export const eraser = (uri: string) => {
+  return request(app).delete(uri).set(basicAuthKey, basicAuthValue);
+};
+
+// Delete blog or post by id
+export const eraserWithId = (uri: string, id: string) => {
+  return request(app)
+    .delete(uri + id)
+    .set(basicAuthKey, basicAuthValue);
+};
+
+// ---------- BLOGS FUNCTIONS ----------
+
+// Find blogs in repository
+export const foundBlogsObj = async (searchNameTerm: string | null = null) => {
+  return await blogsRepository.findBlogs(searchNameTerm);
+};
+
+// Find blogs array length
+export const blogsLength = async () => {
+  return (await foundBlogsObj()).items.length;
+};
+
+// Find first blog
+export const firstBlog = async () => {
+  return (await foundBlogsObj()).items[0];
+};
+
+// Find first blog ID
+export const firstBlogId = async () => {
+  return (await foundBlogsObj()).items[0].id;
+};
+
+// Find first blog name
+export const firstBlogName = async () => {
+  return (await foundBlogsObj()).items[0].name;
+};
+
+// Create new blog
+export const blogCreator = async (
+  uri: string = blogsURI,
+  name: any = blogNameString,
+  description: any = blogDescriptionString,
+  websiteUrl: any = blogWebsiteUrlString
+) => {
+  return request(app)
+    .post(uri)
+    .send({
+      name,
+      description,
+      websiteUrl,
+    })
+    .set(basicAuthKey, basicAuthValue);
+};
+
+// Return new blog
+export const blogReturner = async (
+  id: string = expect.any(String),
+  name: string = blogNameString,
+  description: string = blogDescriptionString,
+  websiteUrl: string = blogWebsiteUrlString,
+  createdAt: string = expect.any(String),
+  isMembership: boolean = false
+) => {
+  return {
+    id,
+    name,
+    description,
+    websiteUrl,
+    createdAt,
+    isMembership,
+  };
+};
+
+// Update blog
+export const blogUpdater = async (
+  uri: string = blogsURI,
+  name: any = blogNewNameString,
+  description: any = blogNewDescriptionString,
+  websiteUrl: any = blogNewWebsiteUrlString
+) => {
+  const blogId = await firstBlogId();
+  return request(app)
+    .put(uri + blogId)
+    .send({
+      name,
+      description,
+      websiteUrl,
+    })
+    .set(basicAuthKey, basicAuthValue);
+};
+
+// ---------- POSTS FUNCTIONS ----------
+
+// Find posts in repository
+export const foundPostsObj = async () => {
+  return await postsRepository.findPosts();
+};
+
+// Find posts array length
+export const postsLength = async () => {
+  return (await foundPostsObj()).items.length;
+};
+
+// Find first post
+export const firstPost = async () => {
+  return (await foundPostsObj()).items[0];
+};
+
+// Find first post ID
+export const firstPostId = async () => {
+  return (await foundPostsObj()).items[0].id;
+};
+
+// Create new post
+export const postCreator = async (
+  uri: string = postsURI,
+  title: any = postTitleString,
+  shortDescription: any = postShortDescriptionString,
+  content: any = postContentString
+) => {
+  const blogId = await firstBlogId();
+  return request(app)
+    .post(uri)
+    .send({
+      title,
+      shortDescription,
+      content,
+      blogId,
+    })
+    .set(basicAuthKey, basicAuthValue);
+};
+
+// Return new post
+export const postReturner = async (
+  id: string = expect.any(String),
+  title: string = postTitleString,
+  shortDescription: string = postShortDescriptionString,
+  content: string = postContentString,
+  createdAt: string = expect.any(String)
+) => {
+  const blogId = await firstBlogId();
+  const blogName = await firstBlogName();
+  return {
+    id,
+    title,
+    shortDescription,
+    content,
+    blogId,
+    blogName,
+    createdAt,
+  };
+};
+
+// Update post
+export const postUpdater = async (
+  uri: string = postsURI,
+  title: string = postNewTitleString,
+  shortDescription: string = postNewShortDescriptionString,
+  content: string = postNewContentString
+) => {
+  const postId = await firstPostId();
+  const blogId = await firstBlogId();
+  return request(app)
+    .put(uri + postId)
+    .send({
+      title,
+      shortDescription,
+      content,
+      blogId,
+    })
+    .set(basicAuthKey, basicAuthValue);
+};
