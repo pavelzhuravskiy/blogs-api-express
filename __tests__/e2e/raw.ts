@@ -2,37 +2,6 @@
 
 
 
-//
-//
-//
-// });
-//
-// it("should return 404 when getting not existing blog", async () => {
-//   const response = await request(app).get("/blogs/-100");
-//   expect(response.status).toBe(404);
-// });
-//
-// it("should return 404 when updating not existing blog", async () => {
-//   // Trying to update a blog
-//
-//   const updating = await request(app)
-//     .put("/blogs/-100")
-//     .send({
-//       name: "New name",
-//       description: "New Description",
-//       websiteUrl: "https://github.com/somenewurl",
-//     })
-//     .set("Authorization", "Basic YWRtaW46cXdlcnR5");
-//   expect(updating.status).toBe(404);
-// });
-//
-// it("should return 404 when deleting not existing blog", async () => {
-//   const response = await request(app)
-//     .delete("/blogs/-100")
-//     .set("Authorization", "Basic YWRtaW46cXdlcnR5");
-//   expect(response.status).toBe(404);
-// });
-
 
 
 

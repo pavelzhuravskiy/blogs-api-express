@@ -14,26 +14,32 @@ import {
   postCreator,
   postReturner,
   postsLength,
-  postUpdater, secondPost,
+  postUpdater,
+  secondPost,
 } from "./test-functions";
 import {
-  basicAuthKey, basicAuthValue,
+  basicAuthKey,
+  basicAuthValue,
   blogNameString,
   blogNewDescriptionString,
   blogNewNameString,
   blogNewWebsiteUrlString,
-  blogsURI, longString1013,
+  blogsURI,
+  invalidURI,
+  longString1013,
   longString109,
-  longString17, longString39,
+  longString17,
+  longString39,
   longString508,
   postContentString,
   postNewTitleString,
   postShortDescriptionString,
-  postsURI, postTitleString,
+  postsURI,
+  postTitleString,
 } from "./test-strings";
 import { emptyOutput } from "./test-objects";
 import request from "supertest";
-import {app} from "../../src";
+import { app } from "../../src";
 
 // const port = 3000;
 //
@@ -105,7 +111,7 @@ describe("Blogs CRUD operations", () => {
 });
 
 describe("Posts CRUD operations", () => {
-  it("should create new blog for posts testing", async () => {
+  it("should create new blog for testing", async () => {
     // Trying to create a blog
     const response = await blogCreator();
     expect(response.status).toBe(201);
@@ -146,7 +152,7 @@ describe("Posts CRUD operations", () => {
     // Checking that post is available through blog URI param
     const check = await getter(blogsURI + blogId);
     expect(check.status).toBe(200);
-    expect(post).toStrictEqual(returnedPost)
+    expect(post).toStrictEqual(returnedPost);
   });
   it("should update post", async () => {
     // Trying to update a post
@@ -171,12 +177,12 @@ describe("Posts CRUD operations", () => {
   });
   it("should delete both posts", async () => {
     // Trying to delete both posts
-    let i = 0
+    let i = 0;
     while (i < 2) {
       const postId = await firstPostId();
       const response = await eraserWithId(postsURI, postId);
       expect(response.status).toBe(204);
-      i++
+      i++;
     }
 
     // Checking result by returning blogs array length
@@ -275,10 +281,10 @@ describe("Blogs validations", () => {
   it("should NOT create new blog with incorrect website URL format", async () => {
     // Trying to create a blog with incorrect website URL format
     const response = await blogCreator(
-        undefined,
-        undefined,
-        undefined,
-        longString17
+      undefined,
+      undefined,
+      undefined,
+      longString17
     );
     expect(response.status).toBe(400);
 
@@ -373,7 +379,12 @@ describe("Posts validations", () => {
   });
   it("should NOT create new post with incorrect content length", async () => {
     // Trying to create a post with incorrect content length
-    const response = await postCreator(undefined, undefined, undefined, longString1013);
+    const response = await postCreator(
+      undefined,
+      undefined,
+      undefined,
+      longString1013
+    );
     expect(response.status).toBe(400);
 
     // Checking result
@@ -383,14 +394,14 @@ describe("Posts validations", () => {
   it("should NOT create new post with incorrect blogId", async () => {
     // Trying to create a post with incorrect blogId
     const response = await request(app)
-    .post(postsURI)
-    .send({
-      title: postTitleString,
-      shortDescription: postShortDescriptionString,
-      content: postContentString,
-      blogId: "someString",
-    })
-    .set(basicAuthKey, basicAuthValue);
+      .post(postsURI)
+      .send({
+        title: postTitleString,
+        shortDescription: postShortDescriptionString,
+        content: postContentString,
+        blogId: "someString",
+      })
+      .set(basicAuthKey, basicAuthValue);
     expect(response.status).toBe(400);
 
     // Checking result
@@ -400,5 +411,55 @@ describe("Posts validations", () => {
 });
 
 describe("Blogs 404 errors checks", () => {
+  it("should create new blog for testing", async () => {
+    // Trying to create a blog
+    const response = await blogCreator();
+    expect(response.status).toBe(201);
 
+    // Checking result by returning created blog
+    const blog = await firstBlog();
+    const returnedBlog = await blogReturner();
+    expect(blog).toStrictEqual(returnedBlog);
+  });
+  it("should return 404 when getting not existing blog", async () => {
+    const response = await getter(blogsURI + invalidURI);
+    expect(response.status).toBe(404);
+  });
+  it("should return 404 when getting posts of not existing blog", async () => {
+    const response = await getter(blogsURI + invalidURI + postsURI);
+    expect(response.status).toBe(404);
+  });
+  it("should return 404 when updating not existing blog", async () => {
+    const response = await blogUpdater(blogsURI + invalidURI);
+    expect(response.status).toBe(404);
+  });
+  it("should return 404 when deleting not existing blog", async () => {
+    const response = await eraser(blogsURI + invalidURI);
+    expect(response.status).toBe(404);
+  });
+});
+
+describe("Posts 404 errors checks", () => {
+  it("should create new blog for testing", async () => {
+    // Trying to create a blog
+    const response = await blogCreator();
+    expect(response.status).toBe(201);
+
+    // Checking result by returning created blog
+    const blog = await firstBlog();
+    const returnedBlog = await blogReturner();
+    expect(blog).toStrictEqual(returnedBlog);
+  });
+  it("should return 404 when getting not existing post", async () => {
+    const response = await getter(postsURI + invalidURI);
+    expect(response.status).toBe(404);
+  });
+  it("should return 404 when updating not existing post", async () => {
+    const response = await blogUpdater(postsURI + invalidURI);
+    expect(response.status).toBe(404);
+  });
+  it("should return 404 when deleting not existing post", async () => {
+    const response = await eraser(postsURI + invalidURI);
+    expect(response.status).toBe(404);
+  });
 });

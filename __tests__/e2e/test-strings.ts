@@ -5,6 +5,7 @@ export const basicAuthValue = "Basic YWRtaW46cXdlcnR5";
 // URIs
 export const blogsURI = "/blogs/";
 export const postsURI = "/posts/";
+export const invalidURI = "/-100/";
 
 // Blog creation strings
 export const blogNameString = "Test Name";
