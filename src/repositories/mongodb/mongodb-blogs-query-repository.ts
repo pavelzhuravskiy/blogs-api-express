@@ -2,7 +2,7 @@ import { blogsCollection } from "./_mongodb-connect";
 import { MongoBlogModelWithPagination } from "../../models/mongodb/MongoBlogModelWithPagination";
 import { funcBlogMapping } from "../../functions/func-blog-mapping";
 import { funcBlogsPagination } from "../../functions/func-blogs-pagination";
-import {ObjectId} from "mongodb";
+import {Document, ObjectId, Sort} from "mongodb";
 import {
   MongoBlogModelWithStringId
 } from "../../models/mongodb/MongoBlogModelWithStringId";
@@ -16,8 +16,8 @@ export const blogsQueryRepository = {
     pageNumber: number = 1,
     pageSize: number = 10
   ): Promise<MongoBlogModelWithPagination> {
-    const filter: any = {};
-    const sortingObj: any = {};
+    const filter: Document = {};
+    const sortingObj: Sort = {};
 
     if (searchNameTerm) {
       filter.name = { $regex: searchNameTerm, $options: "i" };

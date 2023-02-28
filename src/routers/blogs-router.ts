@@ -26,8 +26,8 @@ blogsRouter.get(
       req.query.searchNameTerm,
       req.query.sortBy,
       req.query.sortDirection,
-      req.query.pageNumber,
-      req.query.pageSize
+      Number(req.query.pageNumber),
+      Number(req.query.pageSize)
     );
     res.json(foundBlogs);
   }
@@ -54,7 +54,7 @@ blogsRouter.get(
       RequestWithParamsAndQuery<GlobalIdStringModel, MongoPostQueryModel>,
     res: Response
   ) => {
-    const foundPosts = await postsQueryRepository.findPostsByBlogId(
+    const foundPosts = await postsQueryRepository.findPosts(
       new ObjectId(req.params.id),
       req.query.pageNumber,
       req.query.pageSize,

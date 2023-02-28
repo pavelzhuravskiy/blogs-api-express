@@ -1,5 +1,5 @@
 import { postsCollection } from "./_mongodb-connect";
-import { ObjectId } from "mongodb";
+import {Document, ObjectId, Sort} from "mongodb";
 import { MongoPostModelWithStringId } from "../../models/mongodb/MongoPostModelWithStringId";
 import { MongoPostModelWithPagination } from "../../models/mongodb/MongoPostModelWithPagination";
 import { funcPostMapping } from "../../functions/func-post-mapping";
@@ -8,12 +8,18 @@ import { funcPostsPagination } from "../../functions/func-posts-pagination";
 export const postsQueryRepository = {
   // Return all posts
   async findPosts(
+    blogId?: ObjectId,
     pageNumber: number = 1,
     pageSize: number = 10,
     sortBy: string = "createdAt",
-    sortDirection: string = "desc"
+    sortDirection: string = "desc",
   ): Promise<MongoPostModelWithPagination> {
-    const sortingObj: any = {};
+    const filter: Document = {};
+    const sortingObj: Sort = {};
+
+    if (blogId) {
+      filter.name = {blogId: blogId.toString()}
+    }
 
     if (sortBy) {
       sortingObj[sortBy] = -1;
@@ -25,12 +31,15 @@ export const postsQueryRepository = {
 
     const output = await funcPostsPagination(sortingObj, pageNumber, pageSize);
     const outputCount = await postsCollection.countDocuments();
-    const pagesCount = Math.ceil(outputCount / +pageSize);
+    const pagesCount = Math.ceil(outputCount / pageSize);
+
+    console.log(pageNumber)
+    console.log(pageSize)
 
     return {
       pagesCount: pagesCount,
-      page: +pageNumber,
-      pageSize: +pageSize,
+      page: pageNumber,
+      pageSize: pageSize,
       totalCount: outputCount,
       items: funcPostMapping(output),
     };
@@ -65,7 +74,7 @@ export const postsQueryRepository = {
     sortBy: string = "createdAt",
     sortDirection: string = "desc"
   ): Promise<MongoPostModelWithPagination> {
-    const filter = { blogId: blogId.toString() };
+    const filter = { blogId: blogId.toString() }; // Todo FIX
     const sortingObj: any = {};
 
     if (sortBy) {
@@ -75,6 +84,8 @@ export const postsQueryRepository = {
     if (sortDirection === "asc") {
       sortingObj[sortBy] = 1;
     }
+
+    // Todo
 
     const output = await funcPostsPagination(
       sortingObj,
