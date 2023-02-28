@@ -582,8 +582,7 @@ describe("Posts sorting", () => {
     const postsWithQueryDesc = await foundPostsObj(
       undefined,
       undefined,
-      undefined,
-        "title"
+      "title"
     );
     expect(postsWithQueryDesc.items[0].title).toBe(sortingString09);
     expect(postsWithQueryDesc.items[1].title).toBe(sortingString07);
@@ -593,7 +592,6 @@ describe("Posts sorting", () => {
 
     // Applying and checking descending sorting
     const postsWithQueryAsc = await foundPostsObj(
-      undefined,
       undefined,
       undefined,
       "title",
@@ -661,7 +659,7 @@ describe("Posts pagination", () => {
     // Checking pagination
     const check = await getter(postsURI);
     expect(check.status).toBe(200);
-    const postsWithQuery = await foundPostsObj(undefined, 2, 5);
+    const postsWithQuery = await foundPostsObj(2, 5);
     expect(postsWithQuery.pagesCount).toBe(4);
     expect(postsWithQuery.page).toBe(2);
     expect(postsWithQuery.pageSize).toBe(5);

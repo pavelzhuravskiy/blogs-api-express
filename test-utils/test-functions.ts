@@ -20,7 +20,6 @@ import {
 } from "./test-strings";
 import { blogsQueryRepository } from "../src/repositories/mongodb/mongodb-blogs-query-repository";
 import { postsQueryRepository } from "../src/repositories/mongodb/mongodb-posts-query-repository";
-import { ObjectId } from "mongodb";
 
 // ---------- BEFORE ALL FUNCTIONS ----------
 
@@ -150,14 +149,12 @@ export const blogUpdater = async (
 
 // Find posts in repository
 export const foundPostsObj = async (
-  blogId?: ObjectId,
   pageNumber: number = 1,
   pageSize: number = 10,
   sortBy: string = "createdAt",
   sortDirection: string = "desc"
 ) => {
   return await postsQueryRepository.findPosts(
-    blogId,
     pageNumber,
     pageSize,
     sortBy,

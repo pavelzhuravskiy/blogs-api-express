@@ -16,9 +16,8 @@ postsRouter.get(
   "/",
   async (req: RequestWithQuery<MongoPostQueryModel>, res: Response) => {
     const foundPosts = await postsQueryRepository.findPosts(
-      new ObjectId(),
-      Number(req.query.pageNumber),
-      Number(req.query.pageSize),
+      req.query.pageNumber,
+      req.query.pageSize,
       req.query.sortBy,
       req.query.sortDirection
     );
