@@ -1,10 +1,12 @@
 import { param } from "express-validator";
-import { blogsService } from "../domain/blogs-service";
 import { ObjectId } from "mongodb";
+import {
+    blogsQueryRepository
+} from "../repositories/mongodb/mongodb-blogs-query-repository";
 
 export const validationBlogsFindByParamId = param("id").custom(
   async (value) => {
-    const result = await blogsService.findBlogById(new ObjectId(value));
+    const result = await blogsQueryRepository.findBlogById(new ObjectId(value));
     if (!result) {
       throw new Error("ID not found");
     }

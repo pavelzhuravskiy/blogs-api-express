@@ -1,35 +1,8 @@
 import { blogsRepository } from "../repositories/mongodb/mongodb-blogs-repository";
 import { MongoBlogModel } from "../models/mongodb/MongoBlogModel";
 import { ObjectId } from "mongodb";
-import { MongoBlogModelWithStringId } from "../models/mongodb/MongoBlogModelWithStringId";
-import { MongoBlogModelWithPagination } from "../models/mongodb/MongoBlogModelWithPagination";
-import { MongoBlogQueryModel } from "../models/mongodb/MongoBlogQueryModel";
 
 export const blogsService = {
-  // Return blogs
-  async findBlogs(
-    blog: MongoBlogQueryModel
-  ): Promise<boolean | MongoBlogModelWithPagination> {
-    return blogsRepository.findBlogs(
-      blog.searchNameTerm,
-      blog.sortBy,
-      blog.sortDirection,
-      blog.pageNumber,
-      blog.pageSize
-    );
-  },
-
-  // Return blog by ID
-  async findBlogById(
-    _id: ObjectId
-  ): Promise<boolean | MongoBlogModelWithStringId> {
-    const foundBlog = await blogsRepository.findBlogById(_id);
-    if (!foundBlog) {
-      return false;
-    }
-    return foundBlog;
-  },
-
   // Create new blog
   async createNewBlog(blog: MongoBlogModel): Promise<MongoBlogModel> {
     const newBlog = {

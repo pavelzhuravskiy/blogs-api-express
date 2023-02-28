@@ -1,10 +1,12 @@
 import { param } from "express-validator";
 import { ObjectId } from "mongodb";
-import { postsService } from "../domain/posts-service";
+import {
+    postsQueryRepository
+} from "../repositories/mongodb/mongodb-posts-query-repository";
 
 export const validationPostsFindByParamId = param("id").custom(
   async (value) => {
-    const result = await postsService.findPostById(new ObjectId(value));
+    const result = await postsQueryRepository.findPostById(new ObjectId(value));
     if (!result) {
       throw new Error("ID not found");
     }

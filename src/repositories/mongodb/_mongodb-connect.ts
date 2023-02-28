@@ -5,13 +5,16 @@ import * as dotenv from "dotenv";
 
 dotenv.config();
 
-const uri = process.env.MONGO_URI; /*|| "mongodb://0.0.0.0:27017"*/ // Local connection
+const uri =
+  process.env.NODE_ENV === "test"
+    ? "mongodb://0.0.0.0:27017"
+    : process.env.MONGO_URI; // Local connection
 
 if (!uri) {
   throw new Error("URI not found");
 }
 
-const client = new MongoClient(uri);
+export const client = new MongoClient(uri);
 
 const blogsAndPostsDB = client.db();
 export const blogsCollection =

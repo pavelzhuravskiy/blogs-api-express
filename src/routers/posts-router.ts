@@ -8,13 +8,14 @@ import { RequestWithQuery } from "../models/global/GlobalRequestModel";
 import { MongoPostQueryModel } from "../models/mongodb/MongoPostQueryModel";
 import { validationPostsCreation } from "../middlewares/validation-posts-creation";
 import { validationPostsFindByParamId } from "../middlewares/validation-posts-find-by-param-id";
+import { postsQueryRepository } from "../repositories/mongodb/mongodb-posts-query-repository";
 
 export const postsRouter = Router({});
 
 postsRouter.get(
   "/",
   async (req: RequestWithQuery<MongoPostQueryModel>, res: Response) => {
-    const foundPosts = await postsService.findPosts(req.query);
+    const foundPosts = await postsQueryRepository.findPosts();
     res.json(foundPosts);
   }
 );
@@ -24,7 +25,7 @@ postsRouter.get(
   validationPostsFindByParamId,
   validationErrorCheck,
   async (req: Request, res: Response) => {
-    const foundPost = await postsService.findPostById(
+    const foundPost = await postsQueryRepository.findPostById(
       new ObjectId(req.params.id)
     );
     res.json(foundPost);
@@ -57,7 +58,7 @@ postsRouter.put(
     );
 
     if (isUpdated) {
-      const updatedPost = await postsService.findPostById(req.body.id);
+      const updatedPost = await postsQueryRepository.findPostById(req.body.id);
       res.status(204).json(updatedPost);
     }
   }
