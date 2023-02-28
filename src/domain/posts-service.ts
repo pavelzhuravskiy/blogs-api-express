@@ -2,51 +2,17 @@ import { ObjectId } from "mongodb";
 import { postsRepository } from "../repositories/mongodb/mongodb-posts-repository";
 import { MongoPostModelWithId } from "../models/mongodb/MongoPostModelWithId";
 import { MongoPostModelWithStringId } from "../models/mongodb/MongoPostModelWithStringId";
-import { MongoPostModelWithPagination } from "../models/mongodb/MongoPostModelWithPagination";
-import { blogsRepository } from "../repositories/mongodb/mongodb-blogs-repository";
-import { MongoPostQueryModel } from "../models/mongodb/MongoPostQueryModel";
 import { MongoPostModel } from "../models/mongodb/MongoPostModel";
+import {
+  blogsQueryRepository
+} from "../repositories/mongodb/mongodb-blogs-query-repository";
 
 export const postsService = {
-  // Return posts
-  async findPosts(
-    post: MongoPostQueryModel
-  ): Promise<MongoPostModelWithPagination> {
-    return postsRepository.findPosts(
-      post.pageNumber,
-      post.pageSize,
-      post.sortBy,
-      post.sortDirection
-    );
-  },
-
-  // Return post by ID
-  async findPostById(
-    _id: ObjectId
-  ): Promise<boolean | MongoPostModelWithStringId> {
-    return postsRepository.findPostById(_id);
-  },
-
-  // Return all posts by Blog ID
-
-  async findPostsByBlogId(
-    blogId: ObjectId,
-    post: MongoPostQueryModel
-  ): Promise<MongoPostModelWithPagination> {
-    return postsRepository.findPostsByBlogId(
-      blogId,
-      post.pageNumber,
-      post.pageSize,
-      post.sortBy,
-      post.sortDirection
-    );
-  },
-
   // Create new post
   async createNewPost(
     post: MongoPostModelWithId
   ): Promise<boolean | MongoPostModelWithStringId> {
-    const blog = await blogsRepository.findBlogById(new ObjectId(post.blogId));
+    const blog = await blogsQueryRepository.findBlogById(new ObjectId(post.blogId));
     if (!blog) {
       return false;
     }
@@ -63,7 +29,7 @@ export const postsService = {
     _id: ObjectId,
     post: MongoPostModelWithId
   ): Promise<boolean | MongoPostModelWithStringId> {
-    const blog = await blogsRepository.findBlogById(new ObjectId(_id));
+    const blog = await blogsQueryRepository.findBlogById(new ObjectId(_id));
     if (!blog) {
       return false;
     }

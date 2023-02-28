@@ -14,13 +14,21 @@ import { postsService } from "../domain/posts-service";
 import { validationPostsInput } from "../middlewares/validation-posts-input";
 import { MongoPostQueryModel } from "../models/mongodb/MongoPostQueryModel";
 import { GlobalIdStringModel } from "../models/global/GlobalIdStringModel";
+import { blogsQueryRepository } from "../repositories/mongodb/mongodb-blogs-query-repository";
+import { postsQueryRepository } from "../repositories/mongodb/mongodb-posts-query-repository";
 
 export const blogsRouter = Router({});
 
 blogsRouter.get(
   "/",
   async (req: RequestWithQuery<MongoBlogQueryModel>, res: Response) => {
-    const foundBlogs = await blogsService.findBlogs(req.query);
+    const foundBlogs = await blogsQueryRepository.findBlogs(
+      req.query.searchNameTerm,
+      req.query.sortBy,
+      req.query.sortDirection,
+      req.query.pageNumber,
+      req.query.pageSize
+    );
     res.json(foundBlogs);
   }
 );
@@ -30,7 +38,7 @@ blogsRouter.get(
   validationBlogsFindByParamId,
   validationErrorCheck,
   async (req: Request, res: Response) => {
-    const foundBlog = await blogsService.findBlogById(
+    const foundBlog = await blogsQueryRepository.findBlogById(
       new ObjectId(req.params.id)
     );
     res.json(foundBlog);
@@ -46,9 +54,12 @@ blogsRouter.get(
       RequestWithParamsAndQuery<GlobalIdStringModel, MongoPostQueryModel>,
     res: Response
   ) => {
-    const foundPosts = await postsService.findPostsByBlogId(
+    const foundPosts = await postsQueryRepository.findPostsByBlogId(
       new ObjectId(req.params.id),
-      req.query
+      req.query.pageNumber,
+      req.query.pageSize,
+      req.query.sortBy,
+      req.query.sortDirection
     );
     res.json(foundPosts);
   }
@@ -92,7 +103,7 @@ blogsRouter.put(
       req.body
     );
     if (isUpdated) {
-      const updatedBlog = await blogsService.findBlogById(req.body.id);
+      const updatedBlog = await blogsQueryRepository.findBlogById(req.body.id);
       res.status(204).json(updatedBlog);
     }
   }

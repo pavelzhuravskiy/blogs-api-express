@@ -1,4 +1,4 @@
-import {app} from "../../src";
+import { app } from "../src";
 import request from "supertest";
 import {
   basicAuthKey,
@@ -18,14 +18,17 @@ import {
   postsURI,
   postTitleString,
 } from "./test-strings";
-import {
-  blogsRepository
-} from "../../src/repositories/mongodb/mongodb-blogs-repository";
-import {
-  postsRepository
-} from "../../src/repositories/mongodb/mongodb-posts-repository";
+import { blogsQueryRepository } from "../src/repositories/mongodb/mongodb-blogs-query-repository";
+import { postsQueryRepository } from "../src/repositories/mongodb/mongodb-posts-query-repository";
 
-// ---------- UNIVERSAL FUNCTIONS FOR BLOGS AND POSTS ----------
+// ---------- BEFORE ALL FUNCTIONS ----------
+
+export const beforeAllFunc = async () => {
+  await eraser(blogsURI);
+  await eraser(postsURI);
+};
+
+// ---------- UNIVERSAL FUNCTIONS ----------
 
 // Get all blogs or posts
 export const getter = (uri: string) => {
@@ -59,7 +62,7 @@ export const foundBlogsObj = async (
   pageNumber: number = 1,
   pageSize: number = 10
 ) => {
-  return await blogsRepository.findBlogs(
+  return await blogsQueryRepository.findBlogs(
     searchNameTerm,
     sortBy,
     sortDirection,
@@ -151,7 +154,7 @@ export const foundPostsObj = async (
   sortBy: string = "createdAt",
   sortDirection: string = "desc"
 ) => {
-  return await postsRepository.findPosts(
+  return await postsQueryRepository.findPosts(
     pageNumber,
     pageSize,
     sortBy,
