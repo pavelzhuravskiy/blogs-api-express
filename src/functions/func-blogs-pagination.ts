@@ -1,8 +1,9 @@
 import { blogsCollection } from "../repositories/mongodb/_mongodb-connect";
+import { Document, Sort } from "mongodb";
 
 export const funcBlogsPagination = async (
-  filter: any,
-  sortingObj: any,
+  filter: Document,
+  sortingObj: Sort,
   pageNumber: number,
   pageSize: number
 ) => {
