@@ -27,7 +27,6 @@ import {
   blogFilterString03,
   blogFilterString04,
   blogFilterString05,
-  blogNameString,
   blogNewDescriptionString,
   blogNewNameString,
   blogNewWebsiteUrlString,
@@ -233,7 +232,7 @@ describe("Blogs validations", () => {
   });
   it("should NOT create new blog without description", async () => {
     // Trying to create a blog without description
-    const response = await blogCreator(undefined, blogNameString, null);
+    const response = await blogCreator(undefined, undefined, null);
     expect(response.status).toBe(400);
 
     // Checking result
@@ -242,7 +241,7 @@ describe("Blogs validations", () => {
   });
   it("should NOT create new blog with incorrect description type", async () => {
     // Trying to create a blog with incorrect description type
-    const response = await blogCreator(undefined, blogNameString, 123);
+    const response = await blogCreator(undefined, undefined, 123);
     expect(response.status).toBe(400);
 
     // Checking result
