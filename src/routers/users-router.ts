@@ -17,6 +17,8 @@ import { GlobalIdStringModel } from "../models/global/GlobalIdStringModel";
 import { blogsQueryRepository } from "../repositories/mongodb/mongodb-blogs-query-repository";
 import { postsQueryRepository } from "../repositories/mongodb/mongodb-posts-query-repository";
 import { usersQueryRepository } from "../repositories/mongodb/mongodb-users-query-repository";
+import { validationUsersInput } from "../middlewares/validation-users-input";
+import {usersService} from "../domain/users-service";
 
 export const usersRouter = Router({});
 
@@ -35,16 +37,16 @@ usersRouter.get(
   }
 );
 
-// blogsRouter.post(
-//   "/",
-//   authBasic,
-//   validationBlogsInput,
-//   validationErrorCheck,
-//   async (req: Request, res: Response) => {
-//     const newBlog = await blogsService.createNewBlog(req.body);
-//     res.status(201).json(newBlog);
-//   }
-// );
+usersRouter.post(
+  "/",
+  // authBasic,
+  validationUsersInput,
+  validationErrorCheck,
+  async (req: Request, res: Response) => {
+    const newUser = await usersService.createNewUser(req.body);
+    res.status(201).json(newUser);
+  }
+);
 //
 // blogsRouter.delete(
 //   "/:id",

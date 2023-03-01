@@ -24,8 +24,8 @@ export const usersQueryRepository = {
       sortDirection,
       pageNumber,
       pageSize,
-      blogsCollection,
-      funcBlogMapping
+      blogsCollection, // TODO Change
+      funcBlogMapping // TODO Change
     );
   },
 };

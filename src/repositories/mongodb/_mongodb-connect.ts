@@ -2,6 +2,7 @@ import { MongoClient } from "mongodb";
 import { MongoPostModel } from "../../models/mongodb/MongoPostModel";
 import { MongoBlogModel } from "../../models/mongodb/MongoBlogModel";
 import * as dotenv from "dotenv";
+import { MongoUserModel } from "../../models/mongodb/MongoUserModel";
 
 dotenv.config();
 
@@ -21,6 +22,8 @@ export const blogsCollection =
   blogsAndPostsDB.collection<MongoBlogModel>("blogs");
 export const postsCollection =
   blogsAndPostsDB.collection<MongoPostModel>("posts");
+export const userCollection =
+  blogsAndPostsDB.collection<MongoUserModel>("blogs");
 
 export async function runDB() {
   try {
