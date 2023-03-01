@@ -155,6 +155,7 @@ export const foundPostsObj = async (
   sortDirection: string = "desc"
 ) => {
   return await postsQueryRepository.findPosts(
+    null,
     pageNumber,
     pageSize,
     sortBy,

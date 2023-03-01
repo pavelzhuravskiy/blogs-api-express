@@ -1,19 +1,25 @@
 import { postsCollection } from "./_mongodb-connect";
-import { ObjectId } from "mongodb";
+import { Document, ObjectId, Sort } from "mongodb";
 import { MongoPostModelWithStringId } from "../../models/mongodb/MongoPostModelWithStringId";
 import { MongoPostModelWithPagination } from "../../models/mongodb/MongoPostModelWithPagination";
 import { funcPostMapping } from "../../functions/func-post-mapping";
 import { funcPostsPagination } from "../../functions/func-posts-pagination";
 
 export const postsQueryRepository = {
-  // Return all posts
+  // Return posts
   async findPosts(
+    blogId: ObjectId | null = null,
     pageNumber: number = 1,
     pageSize: number = 10,
     sortBy: string = "createdAt",
     sortDirection: string = "desc"
   ): Promise<MongoPostModelWithPagination> {
-    const sortingObj: any = {};
+    const filter: Document = {};
+    const sortingObj: Sort = {};
+
+    if (blogId) {
+      filter.blogId = blogId.toString();
+    }
 
     if (sortBy) {
       sortingObj[sortBy] = -1;
@@ -23,8 +29,13 @@ export const postsQueryRepository = {
       sortingObj[sortBy] = 1;
     }
 
-    const output = await funcPostsPagination(sortingObj, pageNumber, pageSize);
-    const outputCount = await postsCollection.countDocuments();
+    const output = await funcPostsPagination(
+      sortingObj,
+      pageNumber,
+      pageSize,
+      filter
+    );
+    const outputCount = await postsCollection.countDocuments(filter);
     const pagesCount = Math.ceil(outputCount / +pageSize);
 
     return {
@@ -56,42 +67,4 @@ export const postsQueryRepository = {
       createdAt: foundPost.createdAt,
     };
   },
-
-  // Return posts by blog ID
-  async findPostsByBlogId(
-    blogId: ObjectId,
-    pageNumber: number = 1,
-    pageSize: number = 10,
-    sortBy: string = "createdAt",
-    sortDirection: string = "desc"
-  ): Promise<MongoPostModelWithPagination> {
-    const filter = { blogId: blogId.toString() };
-    const sortingObj: any = {};
-
-    if (sortBy) {
-      sortingObj[sortBy] = -1;
-    }
-
-    if (sortDirection === "asc") {
-      sortingObj[sortBy] = 1;
-    }
-
-    const output = await funcPostsPagination(
-      sortingObj,
-      pageNumber,
-      pageSize,
-      filter
-    );
-    const outputCount = await postsCollection.countDocuments(filter);
-    const pagesCount = Math.ceil(outputCount / +pageSize);
-
-    return {
-      pagesCount: pagesCount,
-      page: +pageNumber,
-      pageSize: +pageSize,
-      totalCount: outputCount,
-      items: funcPostMapping(output),
-    };
-  },
-
 };
