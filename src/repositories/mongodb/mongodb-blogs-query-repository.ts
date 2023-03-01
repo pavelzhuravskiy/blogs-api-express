@@ -1,7 +1,7 @@
 import { blogsCollection } from "./_mongodb-connect";
 import { MongoBlogModelWithPagination } from "../../models/mongodb/MongoBlogModelWithPagination";
 import { funcBlogMapping } from "../../functions/func-blog-mapping";
-import { funcBlogsPagination } from "../../functions/func-blogs-pagination";
+import { funcPagination } from "../../functions/func-pagination";
 import { Document, ObjectId, Sort } from "mongodb";
 import { MongoBlogModelWithStringId } from "../../models/mongodb/MongoBlogModelWithStringId";
 
@@ -29,11 +29,12 @@ export const blogsQueryRepository = {
       sortingObj[sortBy] = 1;
     }
 
-    const output = await funcBlogsPagination(
+    const output = await funcPagination(
       filter,
       sortingObj,
       pageNumber,
-      pageSize
+      pageSize,
+      blogsCollection
     );
     const outputCount = await blogsCollection.countDocuments(filter);
     const pagesCount = Math.ceil(outputCount / +pageSize);

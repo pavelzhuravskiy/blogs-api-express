@@ -3,7 +3,7 @@ import { Document, ObjectId, Sort } from "mongodb";
 import { MongoPostModelWithStringId } from "../../models/mongodb/MongoPostModelWithStringId";
 import { MongoPostModelWithPagination } from "../../models/mongodb/MongoPostModelWithPagination";
 import { funcPostMapping } from "../../functions/func-post-mapping";
-import { funcPostsPagination } from "../../functions/func-posts-pagination";
+import { funcPagination } from "../../functions/func-pagination";
 
 export const postsQueryRepository = {
   // Return posts
@@ -29,11 +29,12 @@ export const postsQueryRepository = {
       sortingObj[sortBy] = 1;
     }
 
-    const output = await funcPostsPagination(
+    const output = await funcPagination(
+      filter,
       sortingObj,
       pageNumber,
       pageSize,
-      filter
+      postsCollection
     );
     const outputCount = await postsCollection.countDocuments(filter);
     const pagesCount = Math.ceil(outputCount / +pageSize);

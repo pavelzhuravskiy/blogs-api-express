@@ -1,13 +1,13 @@
-import { blogsCollection } from "../repositories/mongodb/_mongodb-connect";
 import { Document, Sort } from "mongodb";
 
-export const funcBlogsPagination = async (
+export const funcPagination = async (
   filter: Document,
   sortingObj: Sort,
   pageNumber: number,
-  pageSize: number
+  pageSize: number,
+  collection: Document
 ) => {
-  return await blogsCollection
+  return await collection
     .find(filter)
     .sort(sortingObj)
     .skip(+pageNumber > 0 ? (+pageNumber - 1) * +pageSize : 0)
