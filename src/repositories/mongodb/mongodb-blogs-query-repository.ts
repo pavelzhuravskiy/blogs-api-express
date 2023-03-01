@@ -1,51 +1,29 @@
 import { blogsCollection } from "./_mongodb-connect";
 import { MongoBlogModelWithPagination } from "../../models/mongodb/MongoBlogModelWithPagination";
 import { funcBlogMapping } from "../../functions/func-blog-mapping";
-import { funcPagination } from "../../functions/func-pagination";
-import { Document, ObjectId, Sort } from "mongodb";
+import { ObjectId } from "mongodb";
 import { MongoBlogModelWithStringId } from "../../models/mongodb/MongoBlogModelWithStringId";
+import { funcFindWithQuery } from "../../functions/func-find-with-query";
 
 export const blogsQueryRepository = {
-  // Return blogs with filter
+  // Return blogs with query
   async findBlogs(
-    searchNameTerm: null | string = null,
-    sortBy: string = "createdAt",
-    sortDirection: string = "desc",
-    pageNumber: number = 1,
-    pageSize: number = 10
+    searchNameTerm: null | string,
+    sortBy: string,
+    sortDirection: string,
+    pageNumber: number,
+    pageSize: number
   ): Promise<MongoBlogModelWithPagination> {
-    const filter: Document = {};
-    const sortingObj: Sort = {};
-
-    if (searchNameTerm) {
-      filter.name = { $regex: searchNameTerm, $options: "i" };
-    }
-
-    if (sortBy) {
-      sortingObj[sortBy] = -1;
-    }
-
-    if (sortDirection === "asc") {
-      sortingObj[sortBy] = 1;
-    }
-
-    const output = await funcPagination(
-      filter,
-      sortingObj,
+    return funcFindWithQuery(
+      undefined,
+      searchNameTerm,
+      sortBy,
+      sortDirection,
       pageNumber,
       pageSize,
-      blogsCollection
+      blogsCollection,
+      funcBlogMapping
     );
-    const outputCount = await blogsCollection.countDocuments(filter);
-    const pagesCount = Math.ceil(outputCount / +pageSize);
-
-    return {
-      pagesCount: pagesCount,
-      page: +pageNumber,
-      pageSize: +pageSize,
-      totalCount: outputCount,
-      items: funcBlogMapping(output),
-    };
   },
 
   // Return blog by ID

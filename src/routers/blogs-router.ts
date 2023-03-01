@@ -56,10 +56,11 @@ blogsRouter.get(
   ) => {
     const foundPosts = await postsQueryRepository.findPosts(
       new ObjectId(req.params.id),
-      req.query.pageNumber,
-      req.query.pageSize,
+      null,
       req.query.sortBy,
-      req.query.sortDirection
+      req.query.sortDirection,
+      req.query.pageNumber,
+      req.query.pageSize
     );
     res.json(foundPosts);
   }

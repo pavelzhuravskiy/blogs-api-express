@@ -500,7 +500,7 @@ describe("Blogs name filtering", () => {
     const response = await getter(blogsURI);
     expect(response.status).toBe(200);
 
-    const blogsWithQuery = await foundBlogsObj("va");
+    const blogsWithQuery = await foundBlogsObj(undefined, "va");
     expect(blogsWithQuery.totalCount).toBe(3);
     expect(blogsWithQuery.items.length).toBe(3);
 
@@ -531,7 +531,11 @@ describe("Blogs sorting", () => {
     expect(response.status).toBe(200);
 
     // Applying and checking descending sorting
-    const blogsWithQueryDesc = await foundBlogsObj(undefined, "name");
+    const blogsWithQueryDesc = await foundBlogsObj(
+      undefined,
+      undefined,
+      "name"
+    );
     expect(blogsWithQueryDesc.items[0].name).toBe(sortingString09);
     expect(blogsWithQueryDesc.items[1].name).toBe(sortingString07);
     expect(blogsWithQueryDesc.items[2].name).toBe(sortingString05);
@@ -539,7 +543,12 @@ describe("Blogs sorting", () => {
     expect(blogsWithQueryDesc.items[4].name).toBe(sortingString02);
 
     // Applying and checking ascending sorting
-    const blogsWithQueryAsc = await foundBlogsObj(undefined, "name", "asc");
+    const blogsWithQueryAsc = await foundBlogsObj(
+      undefined,
+      undefined,
+      "name",
+      "asc"
+    );
     expect(response.status).toBe(200);
     expect(blogsWithQueryAsc.items[0].name).toBe(sortingString02);
     expect(blogsWithQueryAsc.items[1].name).toBe(sortingString04);
@@ -624,6 +633,7 @@ describe("Blogs pagination", () => {
       undefined,
       undefined,
       undefined,
+      undefined,
       2,
       5
     );
@@ -659,7 +669,14 @@ describe("Posts pagination", () => {
     // Checking pagination
     const check = await getter(postsURI);
     expect(check.status).toBe(200);
-    const postsWithQuery = await foundPostsObj(2, 5);
+    const postsWithQuery = await foundPostsObj(
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      2,
+      5
+    );
     expect(postsWithQuery.pagesCount).toBe(4);
     expect(postsWithQuery.page).toBe(2);
     expect(postsWithQuery.pageSize).toBe(5);

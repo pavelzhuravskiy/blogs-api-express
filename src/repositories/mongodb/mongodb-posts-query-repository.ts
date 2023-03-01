@@ -1,51 +1,30 @@
 import { postsCollection } from "./_mongodb-connect";
-import { Document, ObjectId, Sort } from "mongodb";
+import { ObjectId } from "mongodb";
 import { MongoPostModelWithStringId } from "../../models/mongodb/MongoPostModelWithStringId";
-import { MongoPostModelWithPagination } from "../../models/mongodb/MongoPostModelWithPagination";
 import { funcPostMapping } from "../../functions/func-post-mapping";
-import { funcPagination } from "../../functions/func-pagination";
+import { MongoBlogModelWithPagination } from "../../models/mongodb/MongoBlogModelWithPagination";
+import { funcFindWithQuery } from "../../functions/func-find-with-query";
 
 export const postsQueryRepository = {
-  // Return posts
+  // Return blogs with query
   async findPosts(
-    blogId: ObjectId | null = null,
-    pageNumber: number = 1,
-    pageSize: number = 10,
-    sortBy: string = "createdAt",
-    sortDirection: string = "desc"
-  ): Promise<MongoPostModelWithPagination> {
-    const filter: Document = {};
-    const sortingObj: Sort = {};
-
-    if (blogId) {
-      filter.blogId = blogId.toString();
-    }
-
-    if (sortBy) {
-      sortingObj[sortBy] = -1;
-    }
-
-    if (sortDirection === "asc") {
-      sortingObj[sortBy] = 1;
-    }
-
-    const output = await funcPagination(
-      filter,
-      sortingObj,
+    blogId: ObjectId | null,
+    searchNameTerm: null | string,
+    sortBy: string,
+    sortDirection: string,
+    pageNumber: number,
+    pageSize: number,
+  ): Promise<MongoBlogModelWithPagination> {
+    return funcFindWithQuery(
+      blogId,
+      searchNameTerm,
+      sortBy,
+      sortDirection,
       pageNumber,
       pageSize,
-      postsCollection
+      postsCollection,
+      funcPostMapping
     );
-    const outputCount = await postsCollection.countDocuments(filter);
-    const pagesCount = Math.ceil(outputCount / +pageSize);
-
-    return {
-      pagesCount: pagesCount,
-      page: +pageNumber,
-      pageSize: +pageSize,
-      totalCount: outputCount,
-      items: funcPostMapping(output),
-    };
   },
 
   // Return post by ID

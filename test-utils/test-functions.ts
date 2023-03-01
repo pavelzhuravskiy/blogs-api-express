@@ -18,8 +18,14 @@ import {
   postsURI,
   postTitleString,
 } from "./test-strings";
-import { blogsQueryRepository } from "../src/repositories/mongodb/mongodb-blogs-query-repository";
-import { postsQueryRepository } from "../src/repositories/mongodb/mongodb-posts-query-repository";
+import { funcFindWithQuery } from "../src/functions/func-find-with-query";
+import { ObjectId } from "mongodb";
+import {
+  blogsCollection,
+  postsCollection
+} from "../src/repositories/mongodb/_mongodb-connect";
+import { funcBlogMapping } from "../src/functions/func-blog-mapping";
+import {funcPostMapping} from "../src/functions/func-post-mapping";
 
 // ---------- BEFORE ALL FUNCTIONS ----------
 
@@ -56,18 +62,22 @@ export const eraserWithId = (uri: string, id: string) => {
 
 // Find blogs in repository
 export const foundBlogsObj = async (
+  blogId: ObjectId | null = null,
   searchNameTerm: null | string = null,
   sortBy: string = "createdAt",
   sortDirection: string = "desc",
   pageNumber: number = 1,
   pageSize: number = 10
 ) => {
-  return await blogsQueryRepository.findBlogs(
+  return await funcFindWithQuery(
+    blogId,
     searchNameTerm,
     sortBy,
     sortDirection,
     pageNumber,
-    pageSize
+    pageSize,
+    blogsCollection,
+    funcBlogMapping
   );
 };
 
@@ -149,17 +159,22 @@ export const blogUpdater = async (
 
 // Find posts in repository
 export const foundPostsObj = async (
-  pageNumber: number = 1,
-  pageSize: number = 10,
-  sortBy: string = "createdAt",
-  sortDirection: string = "desc"
+    blogId: ObjectId | null = null,
+    searchNameTerm: null | string = null,
+    sortBy: string = "createdAt",
+    sortDirection: string = "desc",
+    pageNumber: number = 1,
+    pageSize: number = 10
 ) => {
-  return await postsQueryRepository.findPosts(
-    null,
-    pageNumber,
-    pageSize,
-    sortBy,
-    sortDirection
+  return await funcFindWithQuery(
+      blogId,
+      searchNameTerm,
+      sortBy,
+      sortDirection,
+      pageNumber,
+      pageSize,
+      postsCollection,
+      funcPostMapping
   );
 };
 
