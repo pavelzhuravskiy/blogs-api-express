@@ -22,10 +22,10 @@ import { funcFindWithQuery } from "../src/functions/func-find-with-query";
 import { ObjectId } from "mongodb";
 import {
   blogsCollection,
-  postsCollection
+  postsCollection,
 } from "../src/repositories/mongodb/_mongodb-connect";
 import { funcBlogMapping } from "../src/functions/func-blog-mapping";
-import {funcPostMapping} from "../src/functions/func-post-mapping";
+import { funcPostMapping } from "../src/functions/func-post-mapping";
 
 // ---------- BEFORE ALL FUNCTIONS ----------
 
@@ -62,7 +62,7 @@ export const eraserWithId = (uri: string, id: string) => {
 
 // Find blogs in repository
 export const foundBlogsObj = async (
-  blogId: ObjectId | null = null,
+  blogId: null | ObjectId = null,
   searchNameTerm: null | string = null,
   sortBy: string = "createdAt",
   sortDirection: string = "desc",
@@ -72,6 +72,8 @@ export const foundBlogsObj = async (
   return await funcFindWithQuery(
     blogId,
     searchNameTerm,
+    undefined,
+    undefined,
     sortBy,
     sortDirection,
     pageNumber,
@@ -159,22 +161,24 @@ export const blogUpdater = async (
 
 // Find posts in repository
 export const foundPostsObj = async (
-    blogId: ObjectId | null = null,
-    searchNameTerm: null | string = null,
-    sortBy: string = "createdAt",
-    sortDirection: string = "desc",
-    pageNumber: number = 1,
-    pageSize: number = 10
+  blogId: null | ObjectId = null,
+  searchNameTerm: null | string = null,
+  sortBy: string = "createdAt",
+  sortDirection: string = "desc",
+  pageNumber: number = 1,
+  pageSize: number = 10
 ) => {
   return await funcFindWithQuery(
-      blogId,
-      searchNameTerm,
-      sortBy,
-      sortDirection,
-      pageNumber,
-      pageSize,
-      postsCollection,
-      funcPostMapping
+    blogId,
+    searchNameTerm,
+    undefined,
+    undefined,
+    sortBy,
+    sortDirection,
+    pageNumber,
+    pageSize,
+    postsCollection,
+    funcPostMapping
   );
 };
 

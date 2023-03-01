@@ -18,6 +18,8 @@ export const postsQueryRepository = {
     return funcFindWithQuery(
       blogId,
       searchNameTerm,
+      undefined,
+      undefined,
       sortBy,
       sortDirection,
       pageNumber,

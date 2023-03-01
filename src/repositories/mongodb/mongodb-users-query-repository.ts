@@ -5,10 +5,11 @@ import { ObjectId } from "mongodb";
 import { MongoBlogModelWithStringId } from "../../models/mongodb/MongoBlogModelWithStringId";
 import { funcFindWithQuery } from "../../functions/func-find-with-query";
 
-export const blogsQueryRepository = {
-  // Return blogs with query
-  async findBlogs(
-    searchNameTerm: null | string,
+export const usersQueryRepository = {
+  // Return users with query
+  async findUsers(
+    searchLoginTerm: null | string,
+    searchEmailTerm: null | string,
     sortBy: string,
     sortDirection: string,
     pageNumber: number,
@@ -16,9 +17,9 @@ export const blogsQueryRepository = {
   ): Promise<MongoBlogModelWithPagination> {
     return funcFindWithQuery(
       undefined,
-      searchNameTerm,
       undefined,
-      undefined,
+      searchLoginTerm,
+      searchEmailTerm,
       sortBy,
       sortDirection,
       pageNumber,
@@ -26,25 +27,5 @@ export const blogsQueryRepository = {
       blogsCollection,
       funcBlogMapping
     );
-  },
-
-  // Return blog by ID
-  async findBlogById(
-    _id: ObjectId
-  ): Promise<false | MongoBlogModelWithStringId> {
-    const foundBlog = await blogsCollection.findOne({ _id });
-
-    if (!foundBlog) {
-      return false;
-    }
-
-    return {
-      id: foundBlog._id.toString(),
-      name: foundBlog.name,
-      description: foundBlog.description,
-      websiteUrl: foundBlog.websiteUrl,
-      createdAt: foundBlog.createdAt,
-      isMembership: foundBlog.isMembership,
-    };
   },
 };

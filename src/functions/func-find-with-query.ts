@@ -2,15 +2,16 @@ import { funcPagination } from "./func-pagination";
 import { Document, ObjectId, Sort } from "mongodb";
 
 export const funcFindWithQuery = async (
-  blogId: ObjectId | null = null,
+  blogId: null | ObjectId = null,
   searchNameTerm: null | string = null,
+  searchLoginTerm: null | string = null,
+  searchEmailTerm: null | string = null,
   sortBy: string = "createdAt",
   sortDirection: string = "desc",
   pageNumber: number = 1,
   pageSize: number = 10,
   collection: Document,
   mapping: Function
-
 ) => {
   const filter: Document = {};
   const sortingObj: Sort = {};

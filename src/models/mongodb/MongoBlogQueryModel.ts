@@ -1,5 +1,7 @@
 export type MongoBlogQueryModel = {
-  searchNameTerm: string | null;
+  searchNameTerm: null | string;
+  searchLoginTerm: string| null;
+  searchEmailTerm: null | string;
   sortBy: string;
   sortDirection: string;
   pageNumber: number;

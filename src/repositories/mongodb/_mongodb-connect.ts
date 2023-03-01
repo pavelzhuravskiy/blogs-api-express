@@ -7,8 +7,8 @@ dotenv.config();
 
 const uri =
   process.env.NODE_ENV === "test"
-    ? "mongodb://0.0.0.0:27017"
-    : process.env.MONGO_URI; // Local connection
+    ? "mongodb://0.0.0.0:27017" // Local connection for tests
+    : process.env.MONGO_URI; // Remote connection
 
 if (!uri) {
   throw new Error("URI not found");
