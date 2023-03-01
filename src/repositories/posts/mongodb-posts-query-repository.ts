@@ -2,8 +2,10 @@ import { postsCollection } from "../global/_mongodb-connect";
 import { ObjectId } from "mongodb";
 import { MongoPostModelWithStringId } from "../../models/posts/MongoPostModelWithStringId";
 import { funcPostMapping } from "../../functions/posts/func-post-mapping";
-import { MongoBlogModelWithPagination } from "../../models/blogs/MongoBlogModelWithPagination";
 import { funcFindWithQuery } from "../../functions/global/func-find-with-query";
+import {
+  MongoPostModelWithPagination
+} from "../../models/posts/MongoPostModelWithPagination";
 
 export const postsQueryRepository = {
   // Return blogs with query
@@ -14,7 +16,7 @@ export const postsQueryRepository = {
     sortDirection: string,
     pageNumber: number,
     pageSize: number,
-  ): Promise<MongoBlogModelWithPagination> {
+  ): Promise<MongoPostModelWithPagination> {
     return funcFindWithQuery(
       blogId,
       searchNameTerm,

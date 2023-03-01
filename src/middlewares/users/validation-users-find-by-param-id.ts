@@ -1,9 +1,6 @@
 import { param } from "express-validator";
 import { ObjectId } from "mongodb";
 import {
-    blogsQueryRepository
-} from "../../repositories/blogs/mongodb-blogs-query-repository";
-import {
     usersQueryRepository
 } from "../../repositories/users/mongodb-users-query-repository";
 

@@ -14,6 +14,7 @@ export const funcFindWithQuery = async (
   mapping: Function
 ) => {
   const filter: Document = {};
+
   const sortingObj: Sort = {};
 
   if (blogId) {
@@ -22,6 +23,18 @@ export const funcFindWithQuery = async (
 
   if (searchNameTerm) {
     filter.name = { $regex: searchNameTerm, $options: "i" };
+  }
+
+  if (searchLoginTerm || searchEmailTerm) {
+    filter.$or = [];
+
+    if (searchLoginTerm) {
+      filter.$or.push({ login: { $regex: searchLoginTerm, $options: "i" } });
+    }
+
+    if (searchEmailTerm) {
+      filter.$or.push({ email: { $regex: searchEmailTerm, $options: "i" } });
+    }
   }
 
   if (sortBy) {

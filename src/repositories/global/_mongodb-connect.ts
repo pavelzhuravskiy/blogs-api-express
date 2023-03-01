@@ -23,7 +23,7 @@ export const blogsCollection =
 export const postsCollection =
   blogsAndPostsDB.collection<MongoPostModel>("posts");
 export const userCollection =
-  blogsAndPostsDB.collection<MongoUserModel>("blogs");
+  blogsAndPostsDB.collection<MongoUserModel>("users");
 
 export async function runDB() {
   try {

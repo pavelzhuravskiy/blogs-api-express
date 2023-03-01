@@ -1,11 +1,11 @@
-import { blogsCollection, userCollection } from "../global/_mongodb-connect";
-import { MongoBlogModelWithPagination } from "../../models/blogs/MongoBlogModelWithPagination";
-import { funcBlogMapping } from "../../functions/blogs/func-blog-mapping";
+import { userCollection } from "../global/_mongodb-connect";
 import { ObjectId } from "mongodb";
-import { MongoBlogModelWithStringId } from "../../models/blogs/MongoBlogModelWithStringId";
 import { funcFindWithQuery } from "../../functions/global/func-find-with-query";
 import { funcUserMapping } from "../../functions/users/func-user-mapping";
 import { MongoUserModelWithStringId } from "../../models/users/MongoUserModelWithStringId";
+import {
+  MongoUserModelWithPagination
+} from "../../models/blogs/MongoUserModelWithPagination";
 
 export const usersQueryRepository = {
   // Return users with query
@@ -16,7 +16,7 @@ export const usersQueryRepository = {
     sortDirection: string,
     pageNumber: number,
     pageSize: number
-  ): Promise<MongoBlogModelWithPagination> {
+  ): Promise<MongoUserModelWithPagination> {
     return funcFindWithQuery(
       undefined,
       undefined,
@@ -26,8 +26,8 @@ export const usersQueryRepository = {
       sortDirection,
       pageNumber,
       pageSize,
-      userCollection, // TODO Change
-      funcUserMapping // TODO Change
+      userCollection,
+      funcUserMapping
     );
   },
 

@@ -1,7 +1,5 @@
-import {blogsCollection, userCollection} from "../global/_mongodb-connect";
-import { MongoBlogModel } from "../../models/blogs/MongoBlogModel";
+import {userCollection} from "../global/_mongodb-connect";
 import { ObjectId } from "mongodb";
-import { MongoBlogModelWithStringId } from "../../models/blogs/MongoBlogModelWithStringId";
 import {MongoUserModel} from "../../models/users/MongoUserModel";
 import {
   MongoUserModelWithStringId

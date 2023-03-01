@@ -1,5 +1,3 @@
-import { blogsRepository } from "../repositories/blogs/mongodb-blogs-repository";
-import { MongoBlogModel } from "../models/blogs/MongoBlogModel";
 import { ObjectId } from "mongodb";
 import {MongoUserModel} from "../models/users/MongoUserModel";
 import {
