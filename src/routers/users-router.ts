@@ -18,7 +18,9 @@ import { blogsQueryRepository } from "../repositories/blogs/mongodb-blogs-query-
 import { postsQueryRepository } from "../repositories/posts/mongodb-posts-query-repository";
 import { usersQueryRepository } from "../repositories/users/mongodb-users-query-repository";
 import { validationUsersInput } from "../middlewares/users/validation-users-input";
-import {usersService} from "../domain/users-service";
+import { usersService } from "../domain/users-service";
+import { blogsRouter } from "./blogs-router";
+import { validationUsersFindByParamId } from "../middlewares/users/validation-users-find-by-param-id";
 
 export const usersRouter = Router({});
 
@@ -37,6 +39,18 @@ usersRouter.get(
   }
 );
 
+usersRouter.get(
+  "/:id",
+  validationUsersFindByParamId,
+  validationErrorCheck,
+  async (req: Request, res: Response) => {
+    const foundUser = await usersQueryRepository.findUserById(
+      new ObjectId(req.params.id)
+    );
+    res.json(foundUser);
+  }
+);
+
 usersRouter.post(
   "/",
   // authBasic,
@@ -47,18 +61,18 @@ usersRouter.post(
     res.status(201).json(newUser);
   }
 );
-//
-// blogsRouter.delete(
-//   "/:id",
-//   authBasic,
-//   validationBlogsFindByParamId,
-//   validationErrorCheck,
-//   async (req: Request, res: Response) => {
-//     const isDeleted = await blogsService.deleteBlog(
-//       new ObjectId(req.params.id)
-//     );
-//     if (isDeleted) {
-//       res.sendStatus(204);
-//     }
-//   }
-// );
+
+usersRouter.delete(
+  "/:id",
+  // authBasic,
+  validationUsersFindByParamId,
+  validationErrorCheck,
+  async (req: Request, res: Response) => {
+    const isDeleted = await usersService.deleteUser(
+      new ObjectId(req.params.id)
+    );
+    if (isDeleted) {
+      res.sendStatus(204);
+    }
+  }
+);

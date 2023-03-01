@@ -27,10 +27,10 @@ export const usersService = {
   //   );
   // },
   //
-  // // Delete existing blog
-  // async deleteBlog(_id: ObjectId): Promise<boolean> {
-  //   return blogsRepository.deleteBlog(_id);
-  // },
+  // Delete existing blog
+  async deleteUser(_id: ObjectId): Promise<boolean> {
+    return usersRepository.deleteUser(_id);
+  },
   //
   // // Delete all blogs
   // async deleteAll(): Promise<boolean> {

@@ -42,11 +42,11 @@ export const usersRepository = {
   //   return result.matchedCount === 1;
   // },
   //
-  // // Delete existing blog
-  // async deleteBlog(_id: ObjectId): Promise<boolean> {
-  //   const result = await blogsCollection.deleteOne({ _id });
-  //   return result.deletedCount === 1;
-  // },
+  // Delete existing user
+  async deleteUser(_id: ObjectId): Promise<boolean> {
+    const result = await userCollection.deleteOne({ _id });
+    return result.deletedCount === 1;
+  },
   //
   // // Delete all blogs
   // async deleteAll(): Promise<boolean> {
