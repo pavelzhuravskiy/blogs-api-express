@@ -1,11 +1,11 @@
-import {blogsCollection, userCollection} from "./_mongodb-connect";
-import { MongoBlogModel } from "../../models/mongodb/MongoBlogModel";
+import {blogsCollection, userCollection} from "../global/_mongodb-connect";
+import { MongoBlogModel } from "../../models/blogs/MongoBlogModel";
 import { ObjectId } from "mongodb";
-import { MongoBlogModelWithStringId } from "../../models/mongodb/MongoBlogModelWithStringId";
-import {MongoUserModel} from "../../models/mongodb/MongoUserModel";
+import { MongoBlogModelWithStringId } from "../../models/blogs/MongoBlogModelWithStringId";
+import {MongoUserModel} from "../../models/users/MongoUserModel";
 import {
   MongoUserModelWithStringId
-} from "../../models/mongodb/MongoUserModelWithStringId";
+} from "../../models/users/MongoUserModelWithStringId";
 
 export const usersRepository = {
   // Create new user

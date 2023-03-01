@@ -1,7 +1,7 @@
-import { postsCollection } from "./_mongodb-connect";
-import { MongoPostModel } from "../../models/mongodb/MongoPostModel";
+import { postsCollection } from "../global/_mongodb-connect";
+import { MongoPostModel } from "../../models/posts/MongoPostModel";
 import { ObjectId } from "mongodb";
-import { MongoPostModelWithStringId } from "../../models/mongodb/MongoPostModelWithStringId";
+import { MongoPostModelWithStringId } from "../../models/posts/MongoPostModelWithStringId";
 
 export const postsRepository = {
   // Create new post

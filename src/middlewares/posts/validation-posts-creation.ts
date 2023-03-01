@@ -2,7 +2,7 @@ import { body } from "express-validator";
 import { ObjectId } from "mongodb";
 import {
   blogsQueryRepository
-} from "../repositories/mongodb/mongodb-blogs-query-repository";
+} from "../../repositories/blogs/mongodb-blogs-query-repository";
 
 export const validationPostsCreation = body("blogId").custom(async (value) => {
   const result = await blogsQueryRepository.findBlogById(new ObjectId(value));

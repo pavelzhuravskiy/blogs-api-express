@@ -1,11 +1,11 @@
 import { ObjectId } from "mongodb";
-import { postsRepository } from "../repositories/mongodb/mongodb-posts-repository";
-import { MongoPostModelWithId } from "../models/mongodb/MongoPostModelWithId";
-import { MongoPostModelWithStringId } from "../models/mongodb/MongoPostModelWithStringId";
-import { MongoPostModel } from "../models/mongodb/MongoPostModel";
+import { postsRepository } from "../repositories/posts/mongodb-posts-repository";
+import { MongoPostModelWithId } from "../models/posts/MongoPostModelWithId";
+import { MongoPostModelWithStringId } from "../models/posts/MongoPostModelWithStringId";
+import { MongoPostModel } from "../models/posts/MongoPostModel";
 import {
   blogsQueryRepository
-} from "../repositories/mongodb/mongodb-blogs-query-repository";
+} from "../repositories/blogs/mongodb-blogs-query-repository";
 
 export const postsService = {
   // Create new post

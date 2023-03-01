@@ -1,10 +1,10 @@
-import { blogsRepository } from "../repositories/mongodb/mongodb-blogs-repository";
-import { MongoBlogModel } from "../models/mongodb/MongoBlogModel";
+import { blogsRepository } from "../repositories/blogs/mongodb-blogs-repository";
+import { MongoBlogModel } from "../models/blogs/MongoBlogModel";
 import { ObjectId } from "mongodb";
-import {MongoUserModel} from "../models/mongodb/MongoUserModel";
+import {MongoUserModel} from "../models/users/MongoUserModel";
 import {
   usersRepository
-} from "../repositories/mongodb/mongodb-users-repository";
+} from "../repositories/users/mongodb-users-repository";
 
 export const usersService = {
   // Create new blog

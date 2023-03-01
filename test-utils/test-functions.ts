@@ -18,14 +18,14 @@ import {
   postsURI,
   postTitleString,
 } from "./test-strings";
-import { funcFindWithQuery } from "../src/functions/func-find-with-query";
+import { funcFindWithQuery } from "../src/functions/global/func-find-with-query";
 import { ObjectId } from "mongodb";
 import {
   blogsCollection,
   postsCollection,
-} from "../src/repositories/mongodb/_mongodb-connect";
-import { funcBlogMapping } from "../src/functions/func-blog-mapping";
-import { funcPostMapping } from "../src/functions/func-post-mapping";
+} from "../src/repositories/global/_mongodb-connect";
+import { funcBlogMapping } from "../src/functions/blogs/func-blog-mapping";
+import { funcPostMapping } from "../src/functions/posts/func-post-mapping";
 
 // ---------- BEFORE ALL FUNCTIONS ----------
 

@@ -53,7 +53,7 @@ import {
 import { emptyOutput } from "../../test-utils/test-objects";
 import request from "supertest";
 import { app } from "../../src";
-import { client } from "../../src/repositories/mongodb/_mongodb-connect";
+import { client } from "../../src/repositories/global/_mongodb-connect";
 
 afterAll(async () => {
   await client.close();

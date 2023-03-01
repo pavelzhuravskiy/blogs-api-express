@@ -1,7 +1,7 @@
-import { blogsCollection } from "./_mongodb-connect";
-import { MongoBlogModel } from "../../models/mongodb/MongoBlogModel";
+import { blogsCollection } from "../global/_mongodb-connect";
+import { MongoBlogModel } from "../../models/blogs/MongoBlogModel";
 import { ObjectId } from "mongodb";
-import { MongoBlogModelWithStringId } from "../../models/mongodb/MongoBlogModelWithStringId";
+import { MongoBlogModelWithStringId } from "../../models/blogs/MongoBlogModelWithStringId";
 
 export const blogsRepository = {
   // Create new blog

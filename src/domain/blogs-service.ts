@@ -1,5 +1,5 @@
-import { blogsRepository } from "../repositories/mongodb/mongodb-blogs-repository";
-import { MongoBlogModel } from "../models/mongodb/MongoBlogModel";
+import { blogsRepository } from "../repositories/blogs/mongodb-blogs-repository";
+import { MongoBlogModel } from "../models/blogs/MongoBlogModel";
 import { ObjectId } from "mongodb";
 
 export const blogsService = {

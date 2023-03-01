@@ -1,6 +1,6 @@
 import { Request, Response, Router } from "express";
-import { blogsRepository } from "../repositories/mongodb/mongodb-blogs-repository";
-import { postsRepository } from "../repositories/mongodb/mongodb-posts-repository";
+import { blogsRepository } from "../repositories/blogs/mongodb-blogs-repository";
+import { postsRepository } from "../repositories/posts/mongodb-posts-repository";
 
 export const testingRouter = Router({});
 

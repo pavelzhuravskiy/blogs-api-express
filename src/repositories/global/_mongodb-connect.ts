@@ -1,8 +1,8 @@
 import { MongoClient } from "mongodb";
-import { MongoPostModel } from "../../models/mongodb/MongoPostModel";
-import { MongoBlogModel } from "../../models/mongodb/MongoBlogModel";
+import { MongoPostModel } from "../../models/posts/MongoPostModel";
+import { MongoBlogModel } from "../../models/blogs/MongoBlogModel";
 import * as dotenv from "dotenv";
-import { MongoUserModel } from "../../models/mongodb/MongoUserModel";
+import { MongoUserModel } from "../../models/users/MongoUserModel";
 
 dotenv.config();
 

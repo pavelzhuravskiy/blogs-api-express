@@ -1,14 +1,14 @@
 import { Request, Response, Router } from "express";
 import { postsService } from "../domain/posts-service";
-import { authBasic } from "../middlewares/auth-basic";
-import { validationPostsInput } from "../middlewares/validation-posts-input";
-import { validationErrorCheck } from "../middlewares/validation-error-check";
+import { authBasic } from "../middlewares/global/auth-basic";
+import { validationPostsInput } from "../middlewares/posts/validation-posts-input";
+import { validationErrorCheck } from "../middlewares/global/validation-error-check";
 import { ObjectId } from "mongodb";
 import { RequestWithQuery } from "../models/global/GlobalRequestModel";
-import { MongoPostQueryModel } from "../models/mongodb/MongoPostQueryModel";
-import { validationPostsCreation } from "../middlewares/validation-posts-creation";
-import { validationPostsFindByParamId } from "../middlewares/validation-posts-find-by-param-id";
-import { postsQueryRepository } from "../repositories/mongodb/mongodb-posts-query-repository";
+import { MongoPostQueryModel } from "../models/posts/MongoPostQueryModel";
+import { validationPostsCreation } from "../middlewares/posts/validation-posts-creation";
+import { validationPostsFindByParamId } from "../middlewares/posts/validation-posts-find-by-param-id";
+import { postsQueryRepository } from "../repositories/posts/mongodb-posts-query-repository";
 
 export const postsRouter = Router({});
 
