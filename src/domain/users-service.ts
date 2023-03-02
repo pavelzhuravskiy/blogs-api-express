@@ -3,9 +3,6 @@ import { MongoUserModel } from "../models/users/MongoUserModel";
 import { usersRepository } from "../repositories/users/mongodb-users-repository";
 import bcrypt from "bcrypt";
 import { usersQueryRepository } from "../repositories/users/mongodb-users-query-repository";
-import {
-  MongoUserModelWithPassword
-} from "../models/users/MongoUserModelWithPassword";
 
 export const usersService = {
   // Create new user
@@ -28,7 +25,7 @@ export const usersService = {
   async checkCredentials(
     loginOrEmail: string,
     password: string
-  ) /*: Promise<boolean | MongoUserModelWithPassword>*/ {
+  ): Promise<boolean> {
     const user = await usersQueryRepository.findUserByLoginOrEmail(
       loginOrEmail
     );

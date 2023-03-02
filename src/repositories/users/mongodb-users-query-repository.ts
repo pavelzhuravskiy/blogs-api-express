@@ -4,10 +4,7 @@ import { funcFindManyWithQuery } from "../../functions/global/func-find-many-wit
 import { funcUserMapping } from "../../functions/users/func-user-mapping";
 import { MongoUserModelWithStringId } from "../../models/users/MongoUserModelWithStringId";
 import { MongoUserModelWithPagination } from "../../models/users/MongoUserModelWithPagination";
-import { MongoUserModelWithPasswordAndStringId } from "../../models/users/MongoUserModelWithPasswordAndStringId";
 import { MongoUserModelWithPassword } from "../../models/users/MongoUserModelWithPassword";
-import { MongoIdModel } from "../../models/global/MongoIdModel";
-import { MongoUserModel } from "../../models/users/MongoUserModel";
 
 export const usersQueryRepository = {
   // Return users with query
@@ -51,16 +48,11 @@ export const usersQueryRepository = {
     };
   },
 
-  async findUserByLoginOrEmail(loginOrEmail: string)/*: Promise<boolean | MongoUserModelWithPassword>*/ {
-    const foundUser = await userCollection.findOne({
+  async findUserByLoginOrEmail(
+    loginOrEmail: string
+  ): Promise<MongoUserModelWithPassword | null> {
+    return await userCollection.findOne({
       $or: [{ login: loginOrEmail }, { email: loginOrEmail }],
     });
-
-    if (!foundUser) {
-      return false
-    }
-
-    return foundUser
   },
-
 };

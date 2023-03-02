@@ -7,23 +7,11 @@ import { usersQueryRepository } from "../repositories/users/mongodb-users-query-
 import { validationUsersInput } from "../middlewares/users/validation-users-input";
 import { usersService } from "../domain/users-service";
 import { validationUsersFindByParamId } from "../middlewares/users/validation-users-find-by-param-id";
+import { validationUserUniqueLogin } from "../middlewares/users/validation-user-unique-login";
+import { validationUserUniqueEmail } from "../middlewares/users/validation-user-unique-email";
+import {authBasic} from "../middlewares/global/auth-basic";
 
 export const usersRouter = Router({});
-
-
-// TODO Remove test endpoint
-
-// usersRouter.get(
-//     "/test",
-//     // validationUsersFindByParamId,
-//     // validationErrorCheck,
-//     async (req: Request, res: Response) => {
-//         const foundUser = await usersQueryRepository.findUserByLoginOrEmail(
-//             req.body.loginOrEmail
-//         );
-//         res.json(foundUser);
-//     }
-// );
 
 usersRouter.get(
   "/",
@@ -54,7 +42,9 @@ usersRouter.get(
 
 usersRouter.post(
   "/",
-  // authBasic,
+  authBasic,
+  validationUserUniqueLogin,
+  validationUserUniqueEmail,
   validationUsersInput,
   validationErrorCheck,
   async (req: Request, res: Response) => {
@@ -69,7 +59,7 @@ usersRouter.post(
 
 usersRouter.delete(
   "/:id",
-  // authBasic,
+  authBasic,
   validationUsersFindByParamId,
   validationErrorCheck,
   async (req: Request, res: Response) => {
