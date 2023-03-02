@@ -18,7 +18,7 @@ import {
   postsURI,
   postTitleString,
 } from "./test-strings";
-import { funcFindWithQuery } from "../src/functions/global/func-find-with-query";
+import { funcFindManyWithQuery } from "../src/functions/global/func-find-many-with-query";
 import { ObjectId } from "mongodb";
 import {
   blogsCollection,
@@ -69,7 +69,7 @@ export const foundBlogsObj = async (
   pageNumber: number = 1,
   pageSize: number = 10
 ) => {
-  return await funcFindWithQuery(
+  return await funcFindManyWithQuery(
     blogId,
     searchNameTerm,
     undefined,
@@ -168,7 +168,7 @@ export const foundPostsObj = async (
   pageNumber: number = 1,
   pageSize: number = 10
 ) => {
-  return await funcFindWithQuery(
+  return await funcFindManyWithQuery(
     blogId,
     searchNameTerm,
     undefined,

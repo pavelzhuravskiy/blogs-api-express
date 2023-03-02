@@ -3,7 +3,7 @@ import { MongoBlogModelWithPagination } from "../../models/blogs/MongoBlogModelW
 import { funcBlogMapping } from "../../functions/blogs/func-blog-mapping";
 import { ObjectId } from "mongodb";
 import { MongoBlogModelWithStringId } from "../../models/blogs/MongoBlogModelWithStringId";
-import { funcFindWithQuery } from "../../functions/global/func-find-with-query";
+import { funcFindManyWithQuery } from "../../functions/global/func-find-many-with-query";
 
 export const blogsQueryRepository = {
   // Return blogs with query
@@ -14,7 +14,7 @@ export const blogsQueryRepository = {
     pageNumber: number,
     pageSize: number
   ): Promise<MongoBlogModelWithPagination> {
-    return funcFindWithQuery(
+    return funcFindManyWithQuery(
       undefined,
       searchNameTerm,
       undefined,

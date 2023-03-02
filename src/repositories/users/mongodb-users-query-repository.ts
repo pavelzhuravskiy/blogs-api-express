@@ -1,11 +1,13 @@
 import { userCollection } from "../global/_mongodb-connect";
 import { ObjectId } from "mongodb";
-import { funcFindWithQuery } from "../../functions/global/func-find-with-query";
+import { funcFindManyWithQuery } from "../../functions/global/func-find-many-with-query";
 import { funcUserMapping } from "../../functions/users/func-user-mapping";
 import { MongoUserModelWithStringId } from "../../models/users/MongoUserModelWithStringId";
-import {
-  MongoUserModelWithPagination
-} from "../../models/users/MongoUserModelWithPagination";
+import { MongoUserModelWithPagination } from "../../models/users/MongoUserModelWithPagination";
+import { MongoUserModelWithPasswordAndStringId } from "../../models/users/MongoUserModelWithPasswordAndStringId";
+import { MongoUserModelWithPassword } from "../../models/users/MongoUserModelWithPassword";
+import { MongoIdModel } from "../../models/global/MongoIdModel";
+import { MongoUserModel } from "../../models/users/MongoUserModel";
 
 export const usersQueryRepository = {
   // Return users with query
@@ -17,7 +19,7 @@ export const usersQueryRepository = {
     pageNumber: number,
     pageSize: number
   ): Promise<MongoUserModelWithPagination> {
-    return funcFindWithQuery(
+    return funcFindManyWithQuery(
       undefined,
       undefined,
       searchLoginTerm,
@@ -48,4 +50,17 @@ export const usersQueryRepository = {
       createdAt: foundUser.createdAt,
     };
   },
+
+  async findUserByLoginOrEmail(loginOrEmail: string)/*: Promise<boolean | MongoUserModelWithPassword>*/ {
+    const foundUser = await userCollection.findOne({
+      $or: [{ login: loginOrEmail }, { email: loginOrEmail }],
+    });
+
+    if (!foundUser) {
+      return false
+    }
+
+    return foundUser
+  },
+
 };

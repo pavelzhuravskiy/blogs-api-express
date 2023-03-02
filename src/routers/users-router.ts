@@ -10,6 +10,21 @@ import { validationUsersFindByParamId } from "../middlewares/users/validation-us
 
 export const usersRouter = Router({});
 
+
+// TODO Remove test endpoint
+
+// usersRouter.get(
+//     "/test",
+//     // validationUsersFindByParamId,
+//     // validationErrorCheck,
+//     async (req: Request, res: Response) => {
+//         const foundUser = await usersQueryRepository.findUserByLoginOrEmail(
+//             req.body.loginOrEmail
+//         );
+//         res.json(foundUser);
+//     }
+// );
+
 usersRouter.get(
   "/",
   async (req: RequestWithQuery<MongoBlogQueryModel>, res: Response) => {

@@ -2,7 +2,7 @@ import { postsCollection } from "../global/_mongodb-connect";
 import { ObjectId } from "mongodb";
 import { MongoPostModelWithStringId } from "../../models/posts/MongoPostModelWithStringId";
 import { funcPostMapping } from "../../functions/posts/func-post-mapping";
-import { funcFindWithQuery } from "../../functions/global/func-find-with-query";
+import { funcFindManyWithQuery } from "../../functions/global/func-find-many-with-query";
 import {
   MongoPostModelWithPagination
 } from "../../models/posts/MongoPostModelWithPagination";
@@ -17,7 +17,7 @@ export const postsQueryRepository = {
     pageNumber: number,
     pageSize: number,
   ): Promise<MongoPostModelWithPagination> {
-    return funcFindWithQuery(
+    return funcFindManyWithQuery(
       blogId,
       searchNameTerm,
       undefined,

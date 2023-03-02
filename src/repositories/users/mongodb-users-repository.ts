@@ -4,17 +4,24 @@ import {MongoUserModel} from "../../models/users/MongoUserModel";
 import {
   MongoUserModelWithStringId
 } from "../../models/users/MongoUserModelWithStringId";
+import {
+  MongoUserModelWithPassword
+} from "../../models/users/MongoUserModelWithPassword";
+import {
+  MongoUserModelWithPasswordAndStringId
+} from "../../models/users/MongoUserModelWithPasswordAndStringId";
 
 export const usersRepository = {
   // Create new user
   async createNewUser(
-    user: MongoUserModel
-  ): Promise<MongoUserModelWithStringId> {
+    user: MongoUserModelWithPassword
+  ): Promise<MongoUserModelWithPasswordAndStringId> { // TODO Change IT TO MongoUserModelWithStringId
     const insertedUser = await userCollection.insertOne(user);
 
     return {
       id: insertedUser.insertedId.toString(),
       login: user.login,
+      password: user.password, // TODO Remove it after change
       email: user.email,
       createdAt: user.createdAt
     };

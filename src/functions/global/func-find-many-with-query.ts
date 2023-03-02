@@ -1,7 +1,7 @@
 import { funcPagination } from "./func-pagination";
 import { Document, ObjectId, Sort } from "mongodb";
 
-export const funcFindWithQuery = async (
+export const funcFindManyWithQuery = async (
   blogId: null | ObjectId = null,
   searchNameTerm: null | string = null,
   searchLoginTerm: null | string = null,

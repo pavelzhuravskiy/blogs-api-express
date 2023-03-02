@@ -2,6 +2,10 @@ import { ObjectId } from "mongodb";
 import { MongoUserModel } from "../models/users/MongoUserModel";
 import { usersRepository } from "../repositories/users/mongodb-users-repository";
 import bcrypt from "bcrypt";
+import { usersQueryRepository } from "../repositories/users/mongodb-users-query-repository";
+import {
+  MongoUserModelWithPassword
+} from "../models/users/MongoUserModelWithPassword";
 
 export const usersService = {
   // Create new user
@@ -19,6 +23,19 @@ export const usersService = {
       isMembership: false,
     };
     return usersRepository.createNewUser(newUser);
+  },
+
+  async checkCredentials(
+    loginOrEmail: string,
+    password: string
+  ) /*: Promise<boolean | MongoUserModelWithPassword>*/ {
+    const user = await usersQueryRepository.findUserByLoginOrEmail(
+      loginOrEmail
+    );
+    if (!user) {
+      return false;
+    }
+    return bcrypt.compareSync(password, user.password);
   },
 
   async deleteUser(_id: ObjectId): Promise<boolean> {
