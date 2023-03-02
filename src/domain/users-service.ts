@@ -5,33 +5,18 @@ import {
 } from "../repositories/users/mongodb-users-repository";
 
 export const usersService = {
-  // Create new blog
+  // Create new user
   async createNewUser(user: MongoUserModel): Promise<MongoUserModel> {
-    const newBlog = {
+    const newUser = {
       ...user,
       createdAt: new Date().toISOString(),
       isMembership: false,
     };
-    return usersRepository.createNewUser(newBlog);
+    return usersRepository.createNewUser(newUser);
   },
 
-  // // Update existing blog
-  // async updateBlog(_id: ObjectId, blog: MongoBlogModel): Promise<boolean> {
-  //   return blogsRepository.updateBlog(
-  //     _id,
-  //     blog.name,
-  //     blog.description,
-  //     blog.websiteUrl
-  //   );
-  // },
-  //
-  // Delete existing blog
   async deleteUser(_id: ObjectId): Promise<boolean> {
     return usersRepository.deleteUser(_id);
   },
-  //
-  // // Delete all blogs
-  // async deleteAll(): Promise<boolean> {
-  //   return blogsRepository.deleteAll();
-  // },
+
 };

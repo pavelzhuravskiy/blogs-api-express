@@ -20,35 +20,9 @@ export const usersRepository = {
     };
   },
 
-  // // Update existing blog
-  // async updateBlog(
-  //   _id: ObjectId,
-  //   name: string,
-  //   description: string,
-  //   websiteUrl: string
-  // ): Promise<boolean> {
-  //   const result = await blogsCollection.updateOne(
-  //     { _id },
-  //     {
-  //       $set: {
-  //         name: name,
-  //         description: description,
-  //         websiteUrl: websiteUrl,
-  //       },
-  //     }
-  //   );
-  //   return result.matchedCount === 1;
-  // },
-  //
   // Delete existing user
   async deleteUser(_id: ObjectId): Promise<boolean> {
     const result = await userCollection.deleteOne({ _id });
     return result.deletedCount === 1;
   },
-  //
-  // // Delete all blogs
-  // async deleteAll(): Promise<boolean> {
-  //   await blogsCollection.deleteMany({});
-  //   return (await blogsCollection.countDocuments()) === 0;
-  // },
 };

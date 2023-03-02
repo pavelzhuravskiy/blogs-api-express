@@ -1,4 +1,4 @@
-import { MongoUserModelWithId } from "../../models/blogs/MongoUserModelWithId";
+import { MongoUserModelWithId } from "../../models/users/MongoUserModelWithId";
 
 export const funcUserMapping = (array: MongoUserModelWithId[]) => {
   return array.map((user) => {

@@ -5,7 +5,7 @@ import { funcUserMapping } from "../../functions/users/func-user-mapping";
 import { MongoUserModelWithStringId } from "../../models/users/MongoUserModelWithStringId";
 import {
   MongoUserModelWithPagination
-} from "../../models/blogs/MongoUserModelWithPagination";
+} from "../../models/users/MongoUserModelWithPagination";
 
 export const usersQueryRepository = {
   // Return users with query

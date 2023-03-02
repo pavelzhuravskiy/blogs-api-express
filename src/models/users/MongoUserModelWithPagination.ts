@@ -1,4 +1,4 @@
-import { MongoUserModelWithStringId } from "../users/MongoUserModelWithStringId";
+import { MongoUserModelWithStringId } from "./MongoUserModelWithStringId";
 
 export type MongoUserModelWithPagination = {
   pagesCount: number;
