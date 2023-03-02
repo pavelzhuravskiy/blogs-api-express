@@ -1,14 +1,20 @@
 import { ObjectId } from "mongodb";
-import {MongoUserModel} from "../models/users/MongoUserModel";
-import {
-  usersRepository
-} from "../repositories/users/mongodb-users-repository";
+import { MongoUserModel } from "../models/users/MongoUserModel";
+import { usersRepository } from "../repositories/users/mongodb-users-repository";
+import bcrypt from "bcrypt";
 
 export const usersService = {
   // Create new user
-  async createNewUser(user: MongoUserModel): Promise<MongoUserModel> {
+  async createNewUser(
+    login: string,
+    password: string,
+    email: string
+  ): Promise<MongoUserModel> {
+    const hash = bcrypt.hashSync(password, 10);
     const newUser = {
-      ...user,
+      login,
+      password: hash,
+      email,
       createdAt: new Date().toISOString(),
       isMembership: false,
     };
@@ -18,5 +24,4 @@ export const usersService = {
   async deleteUser(_id: ObjectId): Promise<boolean> {
     return usersRepository.deleteUser(_id);
   },
-
 };

@@ -16,7 +16,7 @@ export const usersRepository = {
       id: insertedUser.insertedId.toString(),
       login: user.login,
       email: user.email,
-      createdAt: user.createdAt,
+      createdAt: user.createdAt
     };
   },
 

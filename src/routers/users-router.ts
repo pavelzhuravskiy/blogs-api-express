@@ -1,8 +1,6 @@
 import { Request, Response, Router } from "express";
 import { ObjectId } from "mongodb";
-import {
-  RequestWithQuery,
-} from "../models/global/GlobalRequestModel";
+import { RequestWithQuery } from "../models/global/GlobalRequestModel";
 import { MongoBlogQueryModel } from "../models/blogs/MongoBlogQueryModel";
 import { validationErrorCheck } from "../middlewares/global/validation-error-check";
 import { usersQueryRepository } from "../repositories/users/mongodb-users-query-repository";
@@ -45,7 +43,11 @@ usersRouter.post(
   validationUsersInput,
   validationErrorCheck,
   async (req: Request, res: Response) => {
-    const newUser = await usersService.createNewUser(req.body);
+    const newUser = await usersService.createNewUser(
+      req.body.login,
+      req.body.password,
+      req.body.email
+    );
     res.status(201).json(newUser);
   }
 );
