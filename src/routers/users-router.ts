@@ -9,7 +9,7 @@ import { usersService } from "../domain/users-service";
 import { validationUsersFindByParamId } from "../middlewares/users/validation-users-find-by-param-id";
 import { validationUserUniqueLogin } from "../middlewares/users/validation-user-unique-login";
 import { validationUserUniqueEmail } from "../middlewares/users/validation-user-unique-email";
-import {authBasic} from "../middlewares/global/auth-basic";
+import { authBasic } from "../middlewares/global/auth-basic";
 
 export const usersRouter = Router({});
 
@@ -25,18 +25,6 @@ usersRouter.get(
       req.query.pageSize
     );
     res.json(foundBlogs);
-  }
-);
-
-usersRouter.get(
-  "/:id",
-  validationUsersFindByParamId,
-  validationErrorCheck,
-  async (req: Request, res: Response) => {
-    const foundUser = await usersQueryRepository.findUserById(
-      new ObjectId(req.params.id)
-    );
-    res.json(foundUser);
   }
 );
 
@@ -71,3 +59,12 @@ usersRouter.delete(
     }
   }
 );
+
+usersRouter.delete("/", authBasic, async (req: Request, res: Response) => {
+  const isDeleted = await usersService.deleteAll();
+  if (isDeleted) {
+    res.sendStatus(204);
+  } else {
+    res.sendStatus(404);
+  }
+});

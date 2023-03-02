@@ -22,6 +22,7 @@ export const usersService = {
     return usersRepository.createNewUser(newUser);
   },
 
+  // Credentials check
   async checkCredentials(
     loginOrEmail: string,
     password: string
@@ -35,7 +36,13 @@ export const usersService = {
     return bcrypt.compareSync(password, user.password);
   },
 
+  // Delete user by ID
   async deleteUser(_id: ObjectId): Promise<boolean> {
     return usersRepository.deleteUser(_id);
+  },
+
+  // Delete all posts
+  async deleteAll(): Promise<boolean> {
+    return usersRepository.deleteAll();
   },
 };

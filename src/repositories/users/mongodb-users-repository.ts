@@ -23,4 +23,10 @@ export const usersRepository = {
     const result = await userCollection.deleteOne({ _id });
     return result.deletedCount === 1;
   },
+
+  // Delete all users
+  async deleteAll(): Promise<boolean> {
+    await userCollection.deleteMany({});
+    return (await userCollection.countDocuments()) === 0;
+  },
 };
