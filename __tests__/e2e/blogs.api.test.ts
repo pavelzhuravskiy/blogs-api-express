@@ -17,7 +17,13 @@ import {
   postCreator,
   postReturner,
   postsLength,
-  postUpdater, userCreator, firstUser, userReturner, firstUserId, usersLength,
+  postUpdater,
+  userCreator,
+  firstUser,
+  userReturner,
+  firstUserId,
+  usersLength,
+  foundUsersObj,
 } from "../../test-utils/test-functions";
 import {
   basicAuthKey,
@@ -30,7 +36,8 @@ import {
   blogNewDescriptionString,
   blogNewNameString,
   blogNewWebsiteUrlString,
-  blogsURI, spaceString,
+  blogsURI,
+  spaceString,
   invalidURI,
   longString1013,
   longString109,
@@ -48,7 +55,18 @@ import {
   sortingString04,
   sortingString05,
   sortingString07,
-  sortingString09, usersURI,
+  sortingString09,
+  usersURI,
+  userLoginFilterString01,
+  userLoginFilterString02,
+  userLoginFilterString03,
+  userLoginFilterString04,
+  userLoginFilterString05,
+  userEmailFilterString01,
+  userEmailFilterString02,
+  userEmailFilterString03,
+  userEmailFilterString04,
+  userEmailFilterString05,
 } from "../../test-utils/test-strings";
 import { emptyOutput } from "../../test-utils/test-objects";
 import request from "supertest";
@@ -482,10 +500,7 @@ describe("Users validations", () => {
   });
   it("should NOT create new user with incorrect login format", async () => {
     // Trying to create login with incorrect website URL format
-    const response = await userCreator(
-        undefined,
-        spaceString
-    );
+    const response = await userCreator(undefined, spaceString);
     expect(response.status).toBe(400);
 
     // Checking result
@@ -540,10 +555,10 @@ describe("Users validations", () => {
   it("should NOT create new user with incorrect email format", async () => {
     // Trying to create user with incorrect email format
     const response = await userCreator(
-        undefined,
-        undefined,
-        undefined,
-        spaceString
+      undefined,
+      undefined,
+      undefined,
+      spaceString
     );
     expect(response.status).toBe(400);
 
@@ -656,6 +671,79 @@ describe("Blogs name filtering", () => {
     expect(blogsWithQuery.items[0].name).toBe(blogFilterString03);
     expect(blogsWithQuery.items[1].name).toBe(blogFilterString02);
     expect(blogsWithQuery.items[2].name).toBe(blogFilterString01);
+  });
+});
+
+describe("Users login and email filtering", () => {
+  beforeAll(eraseAll);
+  it("should return users with login filter", async () => {
+    // Trying to create 5 users
+    await userCreator(
+      undefined,
+      userLoginFilterString01,
+      undefined,
+      userEmailFilterString01
+    );
+    await userCreator(
+      undefined,
+      userLoginFilterString02,
+      undefined,
+      userEmailFilterString02
+    );
+    await userCreator(
+      undefined,
+      userLoginFilterString03,
+      undefined,
+      userEmailFilterString03
+    );
+    await userCreator(
+      undefined,
+      userLoginFilterString04,
+      undefined,
+      userEmailFilterString04
+    );
+    const lastUserResponse = await userCreator(
+      undefined,
+      userLoginFilterString05,
+      undefined,
+      userEmailFilterString05
+    );
+
+    expect(lastUserResponse.status).toBe(201);
+
+    // Checking result by returning users array length
+    const length = await usersLength();
+    expect(length).toBe(5);
+
+    // Applying and checking login filter
+
+    const response = await getter(usersURI);
+    expect(response.status).toBe(200);
+
+    const usersWithQuery = await foundUsersObj("A");
+    expect(usersWithQuery.totalCount).toBe(2);
+    expect(usersWithQuery.items.length).toBe(2);
+
+    // Default sorting for users ==> createdAt, desc
+    expect(usersWithQuery.items[0].login).toBe(userLoginFilterString04);
+    expect(usersWithQuery.items[1].login).toBe(userLoginFilterString02);
+
+  });
+  it("should return users with email filter", async () => {
+
+    // Applying and checking login filter
+
+    const response = await getter(usersURI);
+    expect(response.status).toBe(200);
+
+    const usersWithQuery = await foundUsersObj(undefined, "N");
+    expect(usersWithQuery.totalCount).toBe(2);
+    expect(usersWithQuery.items.length).toBe(2);
+
+    // Default sorting for users ==> createdAt, desc
+    expect(usersWithQuery.items[0].email).toBe(userEmailFilterString04);
+    expect(usersWithQuery.items[1].email).toBe(userEmailFilterString02);
+
   });
 });
 
