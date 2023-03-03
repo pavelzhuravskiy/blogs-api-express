@@ -3,9 +3,7 @@ import { ObjectId } from "mongodb";
 import { MongoPostModelWithStringId } from "../../models/posts/MongoPostModelWithStringId";
 import { funcPostMapping } from "../../functions/posts/func-post-mapping";
 import { funcFindManyWithQuery } from "../../functions/global/func-find-many-with-query";
-import {
-  MongoPostModelWithPagination
-} from "../../models/posts/MongoPostModelWithPagination";
+import { MongoPostModelWithPagination } from "../../models/posts/MongoPostModelWithPagination";
 
 export const postsQueryRepository = {
   // Return blogs with query
@@ -15,7 +13,7 @@ export const postsQueryRepository = {
     sortBy: string,
     sortDirection: string,
     pageNumber: number,
-    pageSize: number,
+    pageSize: number
   ): Promise<MongoPostModelWithPagination> {
     return funcFindManyWithQuery(
       blogId,

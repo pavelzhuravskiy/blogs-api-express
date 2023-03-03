@@ -23,7 +23,8 @@ import {
   userReturner,
   firstUserId,
   usersLength,
-  foundUsersObj, authentication,
+  foundUsersObj,
+  authentication,
 } from "../../test-utils/test-functions";
 import {
   basicAuthKey,
@@ -66,7 +67,8 @@ import {
   userEmailFilterString02,
   userEmailFilterString03,
   userEmailFilterString04,
-  userEmailFilterString05, userEmailString,
+  userEmailFilterString05,
+  userEmailString,
 } from "../../test-utils/test-strings";
 import { emptyOutput } from "../../test-utils/test-objects";
 import request from "supertest";
@@ -111,14 +113,14 @@ describe("Testing delete operation", () => {
   });
   it("should delete everything", async () => {
     // Trying to delete everything
-    const blogsResponse = await eraser(blogsURI)
-    expect(blogsResponse.status).toBe(204)
+    const blogsResponse = await eraser(blogsURI);
+    expect(blogsResponse.status).toBe(204);
 
-    const postsResponse = await eraser(postsURI)
-    expect(postsResponse.status).toBe(204)
+    const postsResponse = await eraser(postsURI);
+    expect(postsResponse.status).toBe(204);
 
-    const usersResponse = await eraser(usersURI)
-    expect(usersResponse.status).toBe(204)
+    const usersResponse = await eraser(usersURI);
+    expect(usersResponse.status).toBe(204);
 
     // Checking result by returning arrays lengths
     const lengthOfBlogs = await blogsLength();
@@ -128,7 +130,6 @@ describe("Testing delete operation", () => {
     expect(lengthOfBlogs).toBe(0);
     expect(lengthOfPosts).toBe(0);
     expect(lengthOfUsers).toBe(0);
-
   });
 });
 
@@ -258,10 +259,10 @@ describe("Blogs validations", () => {
   it("should NOT create new blog with incorrect website URL length", async () => {
     // Trying to create a blog with incorrect website URL length
     const response = await blogCreator(
-        undefined,
-        undefined,
-        undefined,
-        longString109
+      undefined,
+      undefined,
+      undefined,
+      longString109
     );
     expect(response.status).toBe(400);
 
@@ -272,10 +273,10 @@ describe("Blogs validations", () => {
   it("should NOT create new blog with incorrect website URL format", async () => {
     // Trying to create a blog with incorrect website URL format
     const response = await blogCreator(
-        undefined,
-        undefined,
-        undefined,
-        longString17
+      undefined,
+      undefined,
+      undefined,
+      longString17
     );
     expect(response.status).toBe(400);
 
@@ -365,9 +366,9 @@ describe("Blogs sorting", () => {
 
     // Applying and checking descending sorting
     const blogsWithQueryDesc = await foundBlogsObj(
-        undefined,
-        undefined,
-        "name"
+      undefined,
+      undefined,
+      "name"
     );
     expect(blogsWithQueryDesc.items[0].name).toBe(sortingString09);
     expect(blogsWithQueryDesc.items[1].name).toBe(sortingString07);
@@ -377,10 +378,10 @@ describe("Blogs sorting", () => {
 
     // Applying and checking ascending sorting
     const blogsWithQueryAsc = await foundBlogsObj(
-        undefined,
-        undefined,
-        "name",
-        "asc"
+      undefined,
+      undefined,
+      "name",
+      "asc"
     );
     expect(response.status).toBe(200);
     expect(blogsWithQueryAsc.items[0].name).toBe(sortingString02);
@@ -406,12 +407,12 @@ describe("Blogs pagination", () => {
     expect(check.status).toBe(200);
 
     const blogsWithQuery = await foundBlogsObj(
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        2,
-        5
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      2,
+      5
     );
     expect(blogsWithQuery.pagesCount).toBe(4);
     expect(blogsWithQuery.page).toBe(2);
@@ -598,10 +599,10 @@ describe("Posts validations", () => {
   it("should NOT create new post with incorrect content length", async () => {
     // Trying to create a post with incorrect content length
     const response = await postCreator(
-        undefined,
-        undefined,
-        undefined,
-        longString1013
+      undefined,
+      undefined,
+      undefined,
+      longString1013
     );
     expect(response.status).toBe(400);
 
@@ -612,14 +613,14 @@ describe("Posts validations", () => {
   it("should NOT create new post with incorrect blogId", async () => {
     // Trying to create a post with incorrect blogId
     const response = await request(app)
-        .post(postsURI)
-        .send({
-          title: postTitleString,
-          shortDescription: postShortDescriptionString,
-          content: postContentString,
-          blogId: "someString",
-        })
-        .set(basicAuthKey, basicAuthValue);
+      .post(postsURI)
+      .send({
+        title: postTitleString,
+        shortDescription: postShortDescriptionString,
+        content: postContentString,
+        blogId: "someString",
+      })
+      .set(basicAuthKey, basicAuthValue);
     expect(response.status).toBe(400);
 
     // Checking result
@@ -683,9 +684,9 @@ describe("Posts sorting", () => {
 
     // Applying and checking descending sorting
     const postsWithQueryDesc = await foundPostsObj(
-        undefined,
-        undefined,
-        "title"
+      undefined,
+      undefined,
+      "title"
     );
     expect(postsWithQueryDesc.items[0].title).toBe(sortingString09);
     expect(postsWithQueryDesc.items[1].title).toBe(sortingString07);
@@ -695,10 +696,10 @@ describe("Posts sorting", () => {
 
     // Applying and checking descending sorting
     const postsWithQueryAsc = await foundPostsObj(
-        undefined,
-        undefined,
-        "title",
-        "asc"
+      undefined,
+      undefined,
+      "title",
+      "asc"
     );
     expect(postsWithQueryAsc.items[0].title).toBe(sortingString02);
     expect(postsWithQueryAsc.items[1].title).toBe(sortingString04);
@@ -732,12 +733,12 @@ describe("Posts pagination", () => {
     const check = await getter(postsURI);
     expect(check.status).toBe(200);
     const postsWithQuery = await foundPostsObj(
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        2,
-        5
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      2,
+      5
     );
     expect(postsWithQuery.pagesCount).toBe(4);
     expect(postsWithQuery.page).toBe(2);
@@ -1089,7 +1090,10 @@ describe("Authentication operation", () => {
   });
   it("should NOT log in user with incorrect credentials", async () => {
     // Trying to authenticate with incorrect login (email)
-    const incorrectLoginResponse = await authentication(undefined, longString17);
+    const incorrectLoginResponse = await authentication(
+      undefined,
+      longString17
+    );
     expect(incorrectLoginResponse.status).toBe(401);
   });
 });

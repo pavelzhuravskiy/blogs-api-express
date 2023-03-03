@@ -3,9 +3,7 @@ import { MongoPostModel } from "../../models/posts/MongoPostModel";
 import { MongoBlogModel } from "../../models/blogs/MongoBlogModel";
 import * as dotenv from "dotenv";
 import { MongoUserModel } from "../../models/users/MongoUserModel";
-import {
-  MongoUserModelWithPassword
-} from "../../models/users/MongoUserModelWithPassword";
+import { MongoUserModelWithPassword } from "../../models/users/MongoUserModelWithPassword";
 
 dotenv.config();
 

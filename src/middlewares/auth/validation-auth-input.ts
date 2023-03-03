@@ -12,5 +12,5 @@ export const validationAuthInput = [
     .withMessage("Password is required")
     .bail()
     .isString()
-    .withMessage("Type of password must be string")
+    .withMessage("Type of password must be string"),
 ];

@@ -3,16 +3,16 @@ import { postsRepository } from "../repositories/posts/mongodb-posts-repository"
 import { MongoPostModelWithId } from "../models/posts/MongoPostModelWithId";
 import { MongoPostModelWithStringId } from "../models/posts/MongoPostModelWithStringId";
 import { MongoPostModel } from "../models/posts/MongoPostModel";
-import {
-  blogsQueryRepository
-} from "../repositories/blogs/mongodb-blogs-query-repository";
+import { blogsQueryRepository } from "../repositories/blogs/mongodb-blogs-query-repository";
 
 export const postsService = {
   // Create new post
   async createNewPost(
     post: MongoPostModelWithId
   ): Promise<boolean | MongoPostModelWithStringId> {
-    const blog = await blogsQueryRepository.findBlogById(new ObjectId(post.blogId));
+    const blog = await blogsQueryRepository.findBlogById(
+      new ObjectId(post.blogId)
+    );
     if (!blog) {
       return false;
     }

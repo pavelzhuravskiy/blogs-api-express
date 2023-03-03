@@ -333,17 +333,17 @@ export const userReturner = async (
 
 // User authentication
 export const authentication = async (
-    uri: string = authURI,
-    loginOrEmail: any = userLoginString,
-    password: any = userPasswordString,
+  uri: string = authURI,
+  loginOrEmail: any = userLoginString,
+  password: any = userPasswordString
 ) => {
   return request(app)
-      .post(uri)
-      .send({
-        loginOrEmail,
-        password,
-      })
-      .set(basicAuthKey, basicAuthValue);
+    .post(uri)
+    .send({
+      loginOrEmail,
+      password,
+    })
+    .set(basicAuthKey, basicAuthValue);
 };
 
 // ---------- ERASER FUNCTION ----------
