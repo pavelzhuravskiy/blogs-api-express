@@ -30,7 +30,7 @@ import {
   blogNewDescriptionString,
   blogNewNameString,
   blogNewWebsiteUrlString,
-  blogsURI,
+  blogsURI, spaceString,
   invalidURI,
   longString1013,
   longString109,
@@ -447,6 +447,108 @@ describe("Posts validations", () => {
 
     // Checking result
     const length = await postsLength();
+    expect(length).toBe(0);
+  });
+});
+
+describe("Users validations", () => {
+  beforeAll(eraseAll);
+  it("should NOT create new user without login", async () => {
+    // Trying to create user without login
+    const response = await userCreator(undefined, null);
+    expect(response.status).toBe(400);
+
+    // Checking result
+    const length = await usersLength();
+    expect(length).toBe(0);
+  });
+  it("should NOT create new user with incorrect login type", async () => {
+    // Trying to create user with incorrect name type
+    const response = await userCreator(undefined, 123);
+    expect(response.status).toBe(400);
+
+    // Checking result
+    const length = await usersLength();
+    expect(length).toBe(0);
+  });
+  it("should NOT create new user with incorrect login length", async () => {
+    // Trying to create user with incorrect login length
+    const response = await userCreator(undefined, longString17);
+    expect(response.status).toBe(400);
+
+    // Checking result
+    const length = await usersLength();
+    expect(length).toBe(0);
+  });
+  it("should NOT create new user with incorrect login format", async () => {
+    // Trying to create login with incorrect website URL format
+    const response = await userCreator(
+        undefined,
+        spaceString
+    );
+    expect(response.status).toBe(400);
+
+    // Checking result
+    const length = await usersLength();
+    expect(length).toBe(0);
+  });
+  it("should NOT create new user without password", async () => {
+    // Trying to create user without password
+    const response = await userCreator(undefined, undefined, null);
+    expect(response.status).toBe(400);
+
+    // Checking result
+    const length = await usersLength();
+    expect(length).toBe(0);
+  });
+  it("should NOT create new user with incorrect password type", async () => {
+    // Trying to create a blog with incorrect password type
+    const response = await userCreator(undefined, undefined, 123);
+    expect(response.status).toBe(400);
+
+    // Checking result
+    const length = await usersLength();
+    expect(length).toBe(0);
+  });
+  it("should NOT create new user with incorrect password length", async () => {
+    // Trying to create a blog with incorrect password length
+    const response = await userCreator(undefined, undefined, longString39);
+    expect(response.status).toBe(400);
+
+    // Checking result
+    const length = await usersLength();
+    expect(length).toBe(0);
+  });
+  it("should NOT create new user without email", async () => {
+    // Trying to create user without email
+    const response = await userCreator(undefined, undefined, undefined, null);
+    expect(response.status).toBe(400);
+
+    // Checking result
+    const length = await usersLength();
+    expect(length).toBe(0);
+  });
+  it("should NOT create new user with incorrect email type", async () => {
+    // Trying to create user with incorrect email type
+    const response = await userCreator(undefined, undefined, undefined, 123);
+    expect(response.status).toBe(400);
+
+    // Checking result
+    const length = await usersLength();
+    expect(length).toBe(0);
+  });
+  it("should NOT create new user with incorrect email format", async () => {
+    // Trying to create user with incorrect email format
+    const response = await userCreator(
+        undefined,
+        undefined,
+        undefined,
+        spaceString
+    );
+    expect(response.status).toBe(400);
+
+    // Checking result
+    const length = await usersLength();
     expect(length).toBe(0);
   });
 });
