@@ -34,14 +34,6 @@ import { funcBlogMapping } from "../src/functions/blogs/func-blog-mapping";
 import { funcPostMapping } from "../src/functions/posts/func-post-mapping";
 import { funcUserMapping } from "../src/functions/users/func-user-mapping";
 
-// ---------- BEFORE ALL FUNCTIONS ----------
-
-export const eraseAll = async () => {
-  await eraser(blogsURI);
-  await eraser(postsURI);
-  await eraser(usersURI);
-};
-
 // ---------- UNIVERSAL FUNCTIONS ----------
 
 // Get all blogs or posts
@@ -352,4 +344,12 @@ export const authentication = async (
         password,
       })
       .set(basicAuthKey, basicAuthValue);
+};
+
+// ---------- ERASER FUNCTION ----------
+
+export const eraseAll = async () => {
+  await eraser(blogsURI);
+  await eraser(postsURI);
+  await eraser(usersURI);
 };
