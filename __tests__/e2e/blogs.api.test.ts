@@ -609,6 +609,24 @@ describe("Posts 404 errors checks", () => {
   });
 });
 
+describe("Users 404 errors checks", () => {
+  beforeAll(eraseAll);
+  it("should create new user for testing", async () => {
+    // Trying to create user
+    const response = await userCreator();
+    expect(response.status).toBe(201);
+
+    // Checking result by returning created user
+    const user = await firstUser();
+    const returnedUser = await userReturner();
+    expect(user).toStrictEqual(returnedUser);
+  });
+  it("should return 404 when deleting not existing blog", async () => {
+    const response = await eraser(usersURI + invalidURI);
+    expect(response.status).toBe(404);
+  });
+});
+
 describe("Blogs name filtering", () => {
   beforeAll(eraseAll);
   it("should return blogs with filter", async () => {
