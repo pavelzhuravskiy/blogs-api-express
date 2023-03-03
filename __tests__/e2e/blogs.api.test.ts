@@ -850,6 +850,78 @@ describe("Posts sorting", () => {
   });
 });
 
+describe("Users sorting", () => {
+  beforeAll(eraseAll);
+  it("should sort users by any field (login for testing)", async () => {
+    // Trying to create 5 users
+    await userCreator(
+        undefined,
+        userLoginFilterString03,
+        undefined,
+        userEmailFilterString03
+    );
+    await userCreator(
+        undefined,
+        userLoginFilterString04,
+        undefined,
+        userEmailFilterString04
+    );
+    await userCreator(
+        undefined,
+        userLoginFilterString02,
+        undefined,
+        userEmailFilterString02
+    );
+    await userCreator(
+        undefined,
+        userLoginFilterString05,
+        undefined,
+        userEmailFilterString05
+    );
+    const lastUserResponse = await userCreator(
+        undefined,
+        userLoginFilterString01,
+        undefined,
+        userEmailFilterString01
+    );
+
+    expect(lastUserResponse.status).toBe(201);
+
+    // Checking result by returning users array length
+    const length = await usersLength();
+    expect(length).toBe(5);
+
+    const response = await getter(usersURI);
+    expect(response.status).toBe(200);
+
+    // Applying and checking descending sorting
+    const usersWithQueryDesc = await foundUsersObj(
+        undefined,
+        undefined,
+        "login"
+    );
+    expect(usersWithQueryDesc.items[0].login).toBe(userLoginFilterString01);
+    expect(usersWithQueryDesc.items[1].login).toBe(userLoginFilterString05);
+    expect(usersWithQueryDesc.items[2].login).toBe(userLoginFilterString04);
+    expect(usersWithQueryDesc.items[3].login).toBe(userLoginFilterString02);
+    expect(usersWithQueryDesc.items[4].login).toBe(userLoginFilterString03);
+
+    // Applying and checking ascending sorting
+    const usersWithQueryAsc = await foundUsersObj(
+        undefined,
+        undefined,
+        "login",
+        "asc"
+    );
+    expect(response.status).toBe(200);
+    expect(usersWithQueryAsc.items[0].login).toBe(userLoginFilterString03);
+    expect(usersWithQueryAsc.items[1].login).toBe(userLoginFilterString02);
+    expect(usersWithQueryAsc.items[2].login).toBe(userLoginFilterString04);
+    expect(usersWithQueryAsc.items[3].login).toBe(userLoginFilterString05);
+    expect(usersWithQueryAsc.items[4].login).toBe(userLoginFilterString01);
+  });
+});
+
 describe("Blogs pagination", () => {
   beforeAll(eraseAll);
   it("should return correct blogs pagination output", async () => {
