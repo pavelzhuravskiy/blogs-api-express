@@ -727,10 +727,8 @@ describe("Users login and email filtering", () => {
     // Default sorting for users ==> createdAt, desc
     expect(usersWithQuery.items[0].login).toBe(userLoginFilterString04);
     expect(usersWithQuery.items[1].login).toBe(userLoginFilterString02);
-
   });
   it("should return users with email filter", async () => {
-
     // Applying and checking login filter
 
     const response = await getter(usersURI);
@@ -743,7 +741,6 @@ describe("Users login and email filtering", () => {
     // Default sorting for users ==> createdAt, desc
     expect(usersWithQuery.items[0].email).toBe(userEmailFilterString04);
     expect(usersWithQuery.items[1].email).toBe(userEmailFilterString02);
-
   });
 });
 
@@ -855,34 +852,34 @@ describe("Users sorting", () => {
   it("should sort users by any field (login for testing)", async () => {
     // Trying to create 5 users
     await userCreator(
-        undefined,
-        userLoginFilterString03,
-        undefined,
-        userEmailFilterString03
+      undefined,
+      userLoginFilterString03,
+      undefined,
+      userEmailFilterString03
     );
     await userCreator(
-        undefined,
-        userLoginFilterString04,
-        undefined,
-        userEmailFilterString04
+      undefined,
+      userLoginFilterString04,
+      undefined,
+      userEmailFilterString04
     );
     await userCreator(
-        undefined,
-        userLoginFilterString02,
-        undefined,
-        userEmailFilterString02
+      undefined,
+      userLoginFilterString02,
+      undefined,
+      userEmailFilterString02
     );
     await userCreator(
-        undefined,
-        userLoginFilterString05,
-        undefined,
-        userEmailFilterString05
+      undefined,
+      userLoginFilterString05,
+      undefined,
+      userEmailFilterString05
     );
     const lastUserResponse = await userCreator(
-        undefined,
-        userLoginFilterString01,
-        undefined,
-        userEmailFilterString01
+      undefined,
+      userLoginFilterString01,
+      undefined,
+      userEmailFilterString01
     );
 
     expect(lastUserResponse.status).toBe(201);
@@ -896,9 +893,9 @@ describe("Users sorting", () => {
 
     // Applying and checking descending sorting
     const usersWithQueryDesc = await foundUsersObj(
-        undefined,
-        undefined,
-        "login"
+      undefined,
+      undefined,
+      "login"
     );
     expect(usersWithQueryDesc.items[0].login).toBe(userLoginFilterString01);
     expect(usersWithQueryDesc.items[1].login).toBe(userLoginFilterString05);
@@ -908,10 +905,10 @@ describe("Users sorting", () => {
 
     // Applying and checking ascending sorting
     const usersWithQueryAsc = await foundUsersObj(
-        undefined,
-        undefined,
-        "login",
-        "asc"
+      undefined,
+      undefined,
+      "login",
+      "asc"
     );
     expect(response.status).toBe(200);
     expect(usersWithQueryAsc.items[0].login).toBe(userLoginFilterString03);
@@ -990,5 +987,41 @@ describe("Posts pagination", () => {
     expect(postsWithQuery.pageSize).toBe(5);
     expect(postsWithQuery.totalCount).toBe(20);
     expect(postsWithQuery.items.length).toBe(5);
+  }, 30000);
+});
+
+describe("Users pagination", () => {
+  beforeAll(eraseAll);
+  it("should return correct blogs pagination output", async () => {
+    // Trying to create 20 users
+    let i = 0;
+    while (i < 20) {
+      const response = await userCreator(
+        undefined,
+        `login${i}`,
+        undefined,
+        `addr${i}@test.com`
+      );
+      expect(response.status).toBe(201);
+      i++;
+    }
+
+    // Checking pagination
+    const check = await getter(usersURI);
+    expect(check.status).toBe(200);
+
+    const usersWithQuery = await foundUsersObj(
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      2,
+      5
+    );
+    expect(usersWithQuery.pagesCount).toBe(4);
+    expect(usersWithQuery.page).toBe(2);
+    expect(usersWithQuery.pageSize).toBe(5);
+    expect(usersWithQuery.totalCount).toBe(20);
+    expect(usersWithQuery.items.length).toBe(5);
   }, 30000);
 });
