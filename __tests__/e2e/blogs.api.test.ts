@@ -1025,3 +1025,58 @@ describe("Users pagination", () => {
     expect(usersWithQuery.items.length).toBe(5);
   }, 30000);
 });
+
+describe("Testing delete operation", () => {
+  beforeAll(eraseAll);
+  it("should create new blog", async () => {
+    // Trying to create a blog
+    const response = await blogCreator();
+    expect(response.status).toBe(201);
+
+    // Checking result by returning created blog
+    const blog = await firstBlog();
+    const returnedBlog = await blogReturner();
+    expect(blog).toStrictEqual(returnedBlog);
+  });
+  it("should create new post", async () => {
+    // Trying to create a post
+    const response = await postCreator();
+    expect(response.status).toBe(201);
+
+    // Checking result by returning created post
+    const post = await firstPost();
+    const returnedPost = await postReturner();
+    expect(post).toStrictEqual(returnedPost);
+  });
+  it("should create new user", async () => {
+    // Trying to create user
+    const response = await userCreator();
+    expect(response.status).toBe(201);
+
+    // Checking result by returning created user
+    const user = await firstUser();
+    const returnedUser = await userReturner();
+    expect(user).toStrictEqual(returnedUser);
+  });
+  it("should delete everything", async () => {
+    // Trying to delete everything
+    const response_blogs = await eraser(blogsURI)
+    expect(response_blogs.status).toBe(204)
+
+    const response_posts = await eraser(postsURI)
+    expect(response_posts.status).toBe(204)
+
+    const response_users = await eraser(usersURI)
+    expect(response_users.status).toBe(204)
+
+    // Checking result by returning arrays lengths
+    const lengthOfBlogs = await blogsLength();
+    const lengthOfPosts = await postsLength();
+    const lengthOfUsers = await usersLength();
+
+    expect(lengthOfBlogs).toBe(0);
+    expect(lengthOfPosts).toBe(0);
+    expect(lengthOfUsers).toBe(0);
+
+  });
+});
