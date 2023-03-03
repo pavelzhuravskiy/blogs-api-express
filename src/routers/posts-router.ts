@@ -5,16 +5,16 @@ import { validationPostsInput } from "../middlewares/posts/validation-posts-inpu
 import { validationErrorCheck } from "../middlewares/global/validation-error-check";
 import { ObjectId } from "mongodb";
 import { RequestWithQuery } from "../models/global/GlobalRequestModel";
-import { MongoPostQueryModel } from "../models/posts/MongoPostQueryModel";
 import { validationPostsCreation } from "../middlewares/posts/validation-posts-creation";
 import { validationPostsFindByParamId } from "../middlewares/posts/validation-posts-find-by-param-id";
 import { postsQueryRepository } from "../repositories/posts/mongodb-posts-query-repository";
+import { GlobalQueryModel } from "../models/global/GlobalQueryModel";
 
 export const postsRouter = Router({});
 
 postsRouter.get(
   "/",
-  async (req: RequestWithQuery<MongoPostQueryModel>, res: Response) => {
+  async (req: RequestWithQuery<GlobalQueryModel>, res: Response) => {
     const foundPosts = await postsQueryRepository.findPosts(
       null,
       null,

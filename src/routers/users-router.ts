@@ -1,7 +1,7 @@
 import { Request, Response, Router } from "express";
 import { ObjectId } from "mongodb";
 import { RequestWithQuery } from "../models/global/GlobalRequestModel";
-import { MongoBlogQueryModel } from "../models/blogs/MongoBlogQueryModel";
+import { GlobalQueryModel } from "../models/global/GlobalQueryModel";
 import { validationErrorCheck } from "../middlewares/global/validation-error-check";
 import { usersQueryRepository } from "../repositories/users/mongodb-users-query-repository";
 import { validationUsersInput } from "../middlewares/users/validation-users-input";
@@ -15,7 +15,7 @@ export const usersRouter = Router({});
 
 usersRouter.get(
   "/",
-  async (req: RequestWithQuery<MongoBlogQueryModel>, res: Response) => {
+  async (req: RequestWithQuery<GlobalQueryModel>, res: Response) => {
     const foundBlogs = await usersQueryRepository.findUsers(
       req.query.searchLoginTerm,
       req.query.searchEmailTerm,

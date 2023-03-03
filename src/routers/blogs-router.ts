@@ -5,14 +5,13 @@ import {
   RequestWithParamsAndQuery,
   RequestWithQuery,
 } from "../models/global/GlobalRequestModel";
-import { MongoBlogQueryModel } from "../models/blogs/MongoBlogQueryModel";
+import { GlobalQueryModel } from "../models/global/GlobalQueryModel";
 import { authBasic } from "../middlewares/global/auth-basic";
 import { validationBlogsInput } from "../middlewares/blogs/validation-blogs-input";
 import { validationErrorCheck } from "../middlewares/global/validation-error-check";
 import { validationBlogsFindByParamId } from "../middlewares/blogs/validation-blogs-find-by-param-id";
 import { postsService } from "../domain/posts-service";
 import { validationPostsInput } from "../middlewares/posts/validation-posts-input";
-import { MongoPostQueryModel } from "../models/posts/MongoPostQueryModel";
 import { GlobalIdStringModel } from "../models/global/GlobalIdStringModel";
 import { blogsQueryRepository } from "../repositories/blogs/mongodb-blogs-query-repository";
 import { postsQueryRepository } from "../repositories/posts/mongodb-posts-query-repository";
@@ -21,7 +20,7 @@ export const blogsRouter = Router({});
 
 blogsRouter.get(
   "/",
-  async (req: RequestWithQuery<MongoBlogQueryModel>, res: Response) => {
+  async (req: RequestWithQuery<GlobalQueryModel>, res: Response) => {
     const foundBlogs = await blogsQueryRepository.findBlogs(
       req.query.searchNameTerm,
       req.query.sortBy,
@@ -51,7 +50,7 @@ blogsRouter.get(
   validationErrorCheck,
   async (
     req: Request &
-      RequestWithParamsAndQuery<GlobalIdStringModel, MongoPostQueryModel>,
+      RequestWithParamsAndQuery<GlobalIdStringModel, GlobalQueryModel>,
     res: Response
   ) => {
     const foundPosts = await postsQueryRepository.findPosts(

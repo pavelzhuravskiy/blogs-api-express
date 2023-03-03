@@ -1,6 +1,6 @@
-export type MongoBlogQueryModel = {
+export type GlobalQueryModel = {
   searchNameTerm: null | string;
-  searchLoginTerm: string| null;
+  searchLoginTerm: null | string;
   searchEmailTerm: null | string;
   sortBy: string;
   sortDirection: string;
