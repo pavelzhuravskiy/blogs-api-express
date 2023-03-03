@@ -17,21 +17,28 @@ import {
   postShortDescriptionString,
   postsURI,
   postTitleString,
+  userEmailString,
+  userLoginString,
+  userPasswordString,
+  usersURI,
 } from "./test-strings";
 import { funcFindManyWithQuery } from "../src/functions/global/func-find-many-with-query";
 import { ObjectId } from "mongodb";
 import {
   blogsCollection,
   postsCollection,
+  userCollection,
 } from "../src/repositories/global/_mongodb-connect";
 import { funcBlogMapping } from "../src/functions/blogs/func-blog-mapping";
 import { funcPostMapping } from "../src/functions/posts/func-post-mapping";
+import { funcUserMapping } from "../src/functions/users/func-user-mapping";
 
 // ---------- BEFORE ALL FUNCTIONS ----------
 
-export const beforeAllFunc = async () => {
+export const eraseAll = async () => {
   await eraser(blogsURI);
   await eraser(postsURI);
+  await eraser(usersURI);
 };
 
 // ---------- UNIVERSAL FUNCTIONS ----------
@@ -255,4 +262,81 @@ export const postUpdater = async (
       blogId,
     })
     .set(basicAuthKey, basicAuthValue);
+};
+
+// ---------- USERS FUNCTIONS ----------
+
+// Find users in repository
+export const foundUsersObj = async (
+  searchLoginTerm: null | string = null,
+  searchEmailTerm: null | string = null,
+  sortBy: string = "createdAt",
+  sortDirection: string = "desc",
+  pageNumber: number = 1,
+  pageSize: number = 10
+) => {
+  return funcFindManyWithQuery(
+    undefined,
+    undefined,
+    searchLoginTerm,
+    searchEmailTerm,
+    sortBy,
+    sortDirection,
+    pageNumber,
+    pageSize,
+    userCollection,
+    funcUserMapping
+  );
+};
+
+// Find users array length
+export const usersLength = async () => {
+  return (await foundUsersObj()).items.length;
+};
+
+// Find first user
+export const firstUser = async () => {
+  return (await foundUsersObj()).items[0];
+};
+
+// Find first user ID
+export const firstUserId = async () => {
+  return (await foundUsersObj()).items[0].id;
+};
+
+// Find first user name
+export const firstUserName = async () => {
+  return (await foundUsersObj()).items[0].name;
+};
+
+// Create new user
+export const userCreator = async (
+  uri: string = usersURI,
+  login: any = userLoginString,
+  password: any = userPasswordString,
+  email: any = userEmailString
+) => {
+  return request(app)
+    .post(uri)
+    .send({
+      login,
+      password,
+      email,
+    })
+    .set(basicAuthKey, basicAuthValue);
+};
+
+// Return new user
+export const userReturner = async (
+  id: string = expect.any(String),
+  login: string = userLoginString,
+  email: string = userEmailString,
+  createdAt: string = expect.any(String)
+) => {
+  return {
+    id,
+    login,
+    email,
+    createdAt,
+  };
 };

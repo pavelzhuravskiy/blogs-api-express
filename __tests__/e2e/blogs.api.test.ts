@@ -1,5 +1,5 @@
 import {
-  beforeAllFunc,
+  eraseAll,
   blogCreator,
   blogReturner,
   blogsLength,
@@ -17,7 +17,7 @@ import {
   postCreator,
   postReturner,
   postsLength,
-  postUpdater,
+  postUpdater, userCreator, firstUser, userReturner, firstUserId, usersLength,
 } from "../../test-utils/test-functions";
 import {
   basicAuthKey,
@@ -48,7 +48,7 @@ import {
   sortingString04,
   sortingString05,
   sortingString07,
-  sortingString09,
+  sortingString09, usersURI,
 } from "../../test-utils/test-strings";
 import { emptyOutput } from "../../test-utils/test-objects";
 import request from "supertest";
@@ -60,7 +60,7 @@ afterAll(async () => {
 });
 
 describe("Blogs CRUD operations", () => {
-  beforeAll(beforeAllFunc);
+  beforeAll(eraseAll);
   it("should return all blogs", async () => {
     const response = await getter(blogsURI);
     expect(response.status).toBe(200);
@@ -110,7 +110,7 @@ describe("Blogs CRUD operations", () => {
 });
 
 describe("Posts CRUD operations", () => {
-  beforeAll(beforeAllFunc);
+  beforeAll(eraseAll);
   it("should create new blog for testing", async () => {
     // Trying to create a blog
     const response = await blogCreator();
@@ -170,7 +170,7 @@ describe("Posts CRUD operations", () => {
 });
 
 describe("Posts inside blog CR operations", () => {
-  beforeAll(beforeAllFunc);
+  beforeAll(eraseAll);
   it("should create new blog for testing", async () => {
     // Trying to create a blog
     const response = await blogCreator();
@@ -201,8 +201,37 @@ describe("Posts inside blog CR operations", () => {
   });
 });
 
+describe("Users CRD operations", () => {
+  beforeAll(eraseAll);
+  it("should return all users", async () => {
+    const response = await getter(usersURI);
+    expect(response.status).toBe(200);
+    expect(response.body).toEqual(emptyOutput);
+  });
+  it("should create new user", async () => {
+    // Trying to create user
+    const response = await userCreator();
+    expect(response.status).toBe(201);
+
+    // Checking result by returning created user
+    const user = await firstUser();
+    const returnedUser = await userReturner();
+    expect(user).toStrictEqual(returnedUser);
+  });
+  it("should delete blog by ID", async () => {
+    // Trying to delete user
+    const userId = await firstUserId();
+    const response = await eraserWithId(usersURI, userId);
+    expect(response.status).toBe(204);
+
+    // Checking result by returning users array length
+    const length = await usersLength();
+    expect(length).toBe(0);
+  });
+});
+
 describe("Blogs validations", () => {
-  beforeAll(beforeAllFunc);
+  beforeAll(eraseAll);
   it("should NOT create new blog without name", async () => {
     // Trying to create a blog without name
     const response = await blogCreator(undefined, null);
@@ -306,7 +335,7 @@ describe("Blogs validations", () => {
 });
 
 describe("Posts validations", () => {
-  beforeAll(beforeAllFunc);
+  beforeAll(eraseAll);
   it("should create new blog for posts testing", async () => {
     // Trying to create a blog
     const response = await blogCreator();
@@ -423,7 +452,7 @@ describe("Posts validations", () => {
 });
 
 describe("Blogs 404 errors checks", () => {
-  beforeAll(beforeAllFunc);
+  beforeAll(eraseAll);
   it("should create new blog for testing", async () => {
     // Trying to create a blog
     const response = await blogCreator();
@@ -453,7 +482,7 @@ describe("Blogs 404 errors checks", () => {
 });
 
 describe("Posts 404 errors checks", () => {
-  beforeAll(beforeAllFunc);
+  beforeAll(eraseAll);
   it("should create new blog for testing", async () => {
     // Trying to create a blog
     const response = await blogCreator();
@@ -479,7 +508,7 @@ describe("Posts 404 errors checks", () => {
 });
 
 describe("Blogs name filtering", () => {
-  beforeAll(beforeAllFunc);
+  beforeAll(eraseAll);
   it("should return blogs with filter", async () => {
     // Trying to create 5 blogs
     await blogCreator(undefined, blogFilterString01);
@@ -511,7 +540,7 @@ describe("Blogs name filtering", () => {
 });
 
 describe("Blogs sorting", () => {
-  beforeAll(beforeAllFunc);
+  beforeAll(eraseAll);
   it("should sort blogs by any field (name for testing)", async () => {
     // Trying to create 5 blogs
     await blogCreator(undefined, sortingString07);
@@ -558,7 +587,7 @@ describe("Blogs sorting", () => {
 });
 
 describe("Posts sorting", () => {
-  beforeAll(beforeAllFunc);
+  beforeAll(eraseAll);
   it("should create new blog for testing", async () => {
     // Trying to create a blog
     const response = await blogCreator();
@@ -614,7 +643,7 @@ describe("Posts sorting", () => {
 });
 
 describe("Blogs pagination", () => {
-  beforeAll(beforeAllFunc);
+  beforeAll(eraseAll);
   it("should return correct blogs pagination output", async () => {
     // Trying to create 20 blogs
     let i = 0;
@@ -645,7 +674,7 @@ describe("Blogs pagination", () => {
 });
 
 describe("Posts pagination", () => {
-  beforeAll(beforeAllFunc);
+  beforeAll(eraseAll);
   it("should create new blog for testing", async () => {
     // Trying to create a blog
     const response = await blogCreator();

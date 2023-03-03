@@ -5,6 +5,7 @@ export const basicAuthValue = "Basic YWRtaW46cXdlcnR5";
 // URIs
 export const blogsURI = "/blogs/";
 export const postsURI = "/posts/";
+export const usersURI = "/users/";
 export const invalidURI = "/-100/";
 
 // Blog creation strings
@@ -40,6 +41,11 @@ export const postContentString = "Test content";
 export const postNewTitleString = "New title";
 export const postNewShortDescriptionString = "New short description";
 export const postNewContentString = "New content";
+
+// User creation strings
+export const userLoginString = "login";
+export const userPasswordString = "password";
+export const userEmailString = "login@test.com";
 
 // Long strings
 export const longString17 = "Lorem ipsum dolor";
