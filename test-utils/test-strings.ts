@@ -6,6 +6,7 @@ export const basicAuthValue = "Basic YWRtaW46cXdlcnR5";
 export const blogsURI = "/blogs/";
 export const postsURI = "/posts/";
 export const usersURI = "/users/";
+export const authURI = "/auth/login";
 export const invalidURI = "/-100/";
 
 // Blog creation strings

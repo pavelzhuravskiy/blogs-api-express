@@ -1,6 +1,7 @@
 import { app } from "../src";
 import request from "supertest";
 import {
+  authURI,
   basicAuthKey,
   basicAuthValue,
   blogDescriptionString,
@@ -304,11 +305,6 @@ export const firstUserId = async () => {
   return (await foundUsersObj()).items[0].id;
 };
 
-// Find first user name
-export const firstUserName = async () => {
-  return (await foundUsersObj()).items[0].name;
-};
-
 // Create new user
 export const userCreator = async (
   uri: string = usersURI,
@@ -339,4 +335,21 @@ export const userReturner = async (
     email,
     createdAt,
   };
+};
+
+// ---------- AUTH FUNCTIONS ----------
+
+// User authentication
+export const authentication = async (
+    uri: string = authURI,
+    loginOrEmail: any = userLoginString,
+    password: any = userPasswordString,
+) => {
+  return request(app)
+      .post(uri)
+      .send({
+        loginOrEmail,
+        password,
+      })
+      .set(basicAuthKey, basicAuthValue);
 };
