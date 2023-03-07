@@ -83,11 +83,11 @@ blogsRouter.post(
   validationPostsInput,
   validationErrorCheck,
   async (req: Request, res: Response) => {
-    const newBlog = await postsService.createNewPostByBlogId(
+    const newPost = await postsService.createNewPostByBlogId(
       new ObjectId(req.params.id),
       req.body
     );
-    res.status(201).json(newBlog);
+    res.status(201).json(newPost);
   }
 );
 

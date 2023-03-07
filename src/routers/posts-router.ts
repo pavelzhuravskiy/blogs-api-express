@@ -86,6 +86,25 @@ postsRouter.delete(
   }
 );
 
+// Comments section start
+
+postsRouter.post(
+    "/:id/comments",
+    // authBasic,
+    // validationBlogsFindByParamId,
+    // validationPostsInput,
+    // validationErrorCheck,
+    async (req: Request, res: Response) => {
+        const newComment = await postsService.createNewCommentByPostId(
+            new ObjectId(req.params.id),
+            req.body
+        );
+        res.status(201).json(newComment);
+    }
+);
+
+// Comments section end
+
 postsRouter.delete("/", authBasic, async (req: Request, res: Response) => {
   const isDeleted = await postsService.deleteAll();
   if (isDeleted) {
