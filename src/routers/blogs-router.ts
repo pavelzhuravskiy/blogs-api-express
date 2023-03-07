@@ -6,15 +6,15 @@ import {
   RequestWithQuery,
 } from "../models/global/GlobalRequestModel";
 import { GlobalQueryModel } from "../models/global/GlobalQueryModel";
-import { authBasic } from "../middlewares/global/auth-basic";
-import { validationBlogsInput } from "../middlewares/blogs/validation-blogs-input";
-import { validationErrorCheck } from "../middlewares/global/validation-error-check";
-import { validationBlogsFindByParamId } from "../middlewares/blogs/validation-blogs-find-by-param-id";
+import { authBasic } from "../middlewares/auth/auth-basic";
+import { validationBlogsInput } from "../middlewares/validations/validation-blogs-input";
+import { validationErrorCheck } from "../middlewares/validations/_validation-error-check";
+import { validationBlogsFindByParamId } from "../middlewares/validations/validation-blogs-find-by-param-id";
 import { postsService } from "../domain/posts-service";
-import { validationPostsInput } from "../middlewares/posts/validation-posts-input";
+import { validationPostsInput } from "../middlewares/validations/validation-posts-input";
 import { GlobalIdStringModel } from "../models/global/GlobalIdStringModel";
-import { blogsQueryRepository } from "../repositories/blogs/mongodb-blogs-query-repository";
-import { postsQueryRepository } from "../repositories/posts/mongodb-posts-query-repository";
+import { blogsQueryRepository } from "../repositories/mongodb-blogs-query-repository";
+import { postsQueryRepository } from "../repositories/mongodb-posts-query-repository";
 
 export const blogsRouter = Router({});
 

@@ -1,15 +1,15 @@
 import { ObjectId } from "mongodb";
-import { postsRepository } from "../repositories/posts/mongodb-posts-repository";
+import { postsRepository } from "../repositories/mongodb-posts-repository";
 import { MongoPostModelWithId } from "../models/posts/MongoPostModelWithId";
 import { MongoPostModelWithStringId } from "../models/posts/MongoPostModelWithStringId";
 import { MongoPostModel } from "../models/posts/MongoPostModel";
-import { blogsQueryRepository } from "../repositories/blogs/mongodb-blogs-query-repository";
+import { blogsQueryRepository } from "../repositories/mongodb-blogs-query-repository";
 import {
   MongoCommentModelWithStringId
 } from "../models/comments/MongoCommentModelWithStringId";
 import {
   postsQueryRepository
-} from "../repositories/posts/mongodb-posts-query-repository";
+} from "../repositories/mongodb-posts-query-repository";
 import {MongoCommentModel} from "../models/comments/MongoCommentModel";
 
 export const postsService = {

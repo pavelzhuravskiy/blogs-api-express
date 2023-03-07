@@ -2,14 +2,14 @@ import { Request, Response, Router } from "express";
 import { ObjectId } from "mongodb";
 import { RequestWithQuery } from "../models/global/GlobalRequestModel";
 import { GlobalQueryModel } from "../models/global/GlobalQueryModel";
-import { validationErrorCheck } from "../middlewares/global/validation-error-check";
-import { usersQueryRepository } from "../repositories/users/mongodb-users-query-repository";
-import { validationUsersInput } from "../middlewares/users/validation-users-input";
+import { validationErrorCheck } from "../middlewares/validations/_validation-error-check";
+import { usersQueryRepository } from "../repositories/mongodb-users-query-repository";
+import { validationUsersInput } from "../middlewares/validations/validation-users-input";
 import { usersService } from "../domain/users-service";
-import { validationUsersFindByParamId } from "../middlewares/users/validation-users-find-by-param-id";
-import { validationUserUniqueLogin } from "../middlewares/users/validation-user-unique-login";
-import { validationUserUniqueEmail } from "../middlewares/users/validation-user-unique-email";
-import { authBasic } from "../middlewares/global/auth-basic";
+import { validationUsersFindByParamId } from "../middlewares/validations/validation-users-find-by-param-id";
+import { validationUsersUniqueLogin } from "../middlewares/validations/validation-users-unique-login";
+import { validationUsersUniqueEmail } from "../middlewares/validations/validation-users-unique-email";
+import { authBasic } from "../middlewares/auth/auth-basic";
 
 export const usersRouter = Router({});
 
@@ -31,8 +31,8 @@ usersRouter.get(
 usersRouter.post(
   "/",
   authBasic,
-  validationUserUniqueLogin,
-  validationUserUniqueEmail,
+  validationUsersUniqueLogin,
+  validationUsersUniqueEmail,
   validationUsersInput,
   validationErrorCheck,
   async (req: Request, res: Response) => {

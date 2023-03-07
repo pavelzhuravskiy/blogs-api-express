@@ -1,7 +1,7 @@
-import { userCollection } from "../global/_mongodb-connect";
+import { userCollection } from "./_mongodb-connect";
 import { ObjectId } from "mongodb";
-import { MongoUserModelWithStringId } from "../../models/users/MongoUserModelWithStringId";
-import { MongoUserModelWithPassword } from "../../models/users/MongoUserModelWithPassword";
+import { MongoUserModelWithStringId } from "../models/users/MongoUserModelWithStringId";
+import { MongoUserModelWithPassword } from "../models/users/MongoUserModelWithPassword";
 
 export const usersRepository = {
   // Create new user

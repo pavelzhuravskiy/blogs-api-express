@@ -1,10 +1,10 @@
-import { userCollection } from "../global/_mongodb-connect";
+import { userCollection } from "./_mongodb-connect";
 import { ObjectId } from "mongodb";
-import { funcFindManyWithQuery } from "../../functions/global/func-find-many-with-query";
-import { funcUserMapping } from "../../functions/users/func-user-mapping";
-import { MongoUserModelWithStringId } from "../../models/users/MongoUserModelWithStringId";
-import { MongoUserModelWithPagination } from "../../models/users/MongoUserModelWithPagination";
-import { MongoUserModelWithPassword } from "../../models/users/MongoUserModelWithPassword";
+import { funcFindManyWithQuery } from "../functions/global/func-find-many-with-query";
+import { funcUserMapping } from "../functions/mappings/func-user-mapping";
+import { MongoUserModelWithStringId } from "../models/users/MongoUserModelWithStringId";
+import { MongoUserModelWithPagination } from "../models/users/MongoUserModelWithPagination";
+import { MongoUserModelWithPassword } from "../models/users/MongoUserModelWithPassword";
 
 export const usersQueryRepository = {
   // Return users with query

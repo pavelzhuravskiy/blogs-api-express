@@ -1,11 +1,11 @@
-import {commentsCollection, postsCollection} from "../global/_mongodb-connect";
-import { MongoPostModel } from "../../models/posts/MongoPostModel";
+import {commentsCollection, postsCollection} from "./_mongodb-connect";
+import { MongoPostModel } from "../models/posts/MongoPostModel";
 import { ObjectId } from "mongodb";
-import { MongoPostModelWithStringId } from "../../models/posts/MongoPostModelWithStringId";
-import {MongoCommentModel} from "../../models/comments/MongoCommentModel";
+import { MongoPostModelWithStringId } from "../models/posts/MongoPostModelWithStringId";
+import {MongoCommentModel} from "../models/comments/MongoCommentModel";
 import {
   MongoCommentModelWithStringId
-} from "../../models/comments/MongoCommentModelWithStringId";
+} from "../models/comments/MongoCommentModelWithStringId";
 
 export const postsRepository = {
   // Create new post

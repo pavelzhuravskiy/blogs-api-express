@@ -1,19 +1,22 @@
 import { Request, Response, Router } from "express";
 import { postsService } from "../domain/posts-service";
-import { authBasic } from "../middlewares/global/auth-basic";
-import { validationPostsInput } from "../middlewares/posts/validation-posts-input";
-import { validationErrorCheck } from "../middlewares/global/validation-error-check";
+import { authBasic } from "../middlewares/auth/auth-basic";
+import { validationPostsInput } from "../middlewares/validations/validation-posts-input";
+import { validationErrorCheck } from "../middlewares/validations/_validation-error-check";
 import { ObjectId } from "mongodb";
 import {
   RequestWithParamsAndQuery,
   RequestWithQuery,
 } from "../models/global/GlobalRequestModel";
-import { validationPostsCreation } from "../middlewares/posts/validation-posts-creation";
-import { validationPostsFindByParamId } from "../middlewares/posts/validation-posts-find-by-param-id";
-import { postsQueryRepository } from "../repositories/posts/mongodb-posts-query-repository";
+import { validationPostsCreation } from "../middlewares/validations/validation-posts-creation";
+import { validationPostsFindByParamId } from "../middlewares/validations/validation-posts-find-by-param-id";
+import { postsQueryRepository } from "../repositories/mongodb-posts-query-repository";
 import { GlobalQueryModel } from "../models/global/GlobalQueryModel";
-import { ValidationCommentsInput } from "../middlewares/posts/validation-comments-input";
+import { ValidationCommentsInput } from "../middlewares/validations/validation-comments-input";
 import { GlobalIdStringModel } from "../models/global/GlobalIdStringModel";
+import {
+    commentsQueryRepository
+} from "../repositories/mongodb-comments-query-repository";
 
 export const postsRouter = Router({});
 
@@ -102,7 +105,7 @@ postsRouter.get(
       RequestWithParamsAndQuery<GlobalIdStringModel, GlobalQueryModel>,
     res: Response
   ) => {
-    const foundComments = await postsQueryRepository.findComments(
+    const foundComments = await commentsQueryRepository.findComments(
       new ObjectId(req.params.id),
       null,
       req.query.sortBy,

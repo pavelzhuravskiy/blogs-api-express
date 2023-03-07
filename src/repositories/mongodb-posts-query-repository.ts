@@ -1,10 +1,9 @@
-import {commentsCollection, postsCollection} from "../global/_mongodb-connect";
+import { postsCollection } from "./_mongodb-connect";
 import { ObjectId } from "mongodb";
-import { MongoPostModelWithStringId } from "../../models/posts/MongoPostModelWithStringId";
-import { funcPostMapping } from "../../functions/posts/func-post-mapping";
-import { funcFindManyWithQuery } from "../../functions/global/func-find-many-with-query";
-import { MongoPostModelWithPagination } from "../../models/posts/MongoPostModelWithPagination";
-import {funcCommentsMapping} from "../../functions/posts/func-comments-mapping";
+import { MongoPostModelWithStringId } from "../models/posts/MongoPostModelWithStringId";
+import { funcPostMapping } from "../functions/mappings/func-post-mapping";
+import { funcFindManyWithQuery } from "../functions/global/func-find-many-with-query";
+import { MongoPostModelWithPagination } from "../models/posts/MongoPostModelWithPagination";
 
 export const postsQueryRepository = {
   // Return posts with query
@@ -50,28 +49,4 @@ export const postsQueryRepository = {
       createdAt: foundPost.createdAt,
     };
   },
-
-  // Return posts with query
-  async findComments(
-      blogId: ObjectId | null,
-      searchNameTerm: null | string,
-      sortBy: string,
-      sortDirection: string,
-      pageNumber: number,
-      pageSize: number
-  ): Promise<MongoPostModelWithPagination> {
-    return funcFindManyWithQuery(
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        sortBy,
-        sortDirection,
-        pageNumber,
-        pageSize,
-        commentsCollection,
-        funcCommentsMapping
-    );
-  },
-
 };

@@ -1,6 +1,6 @@
 import { param } from "express-validator";
 import { ObjectId } from "mongodb";
-import { usersQueryRepository } from "../../repositories/users/mongodb-users-query-repository";
+import { usersQueryRepository } from "../../repositories/mongodb-users-query-repository";
 
 export const validationUsersFindByParamId = param("id").custom(
   async (value) => {

@@ -29,10 +29,10 @@ import {
   blogsCollection,
   postsCollection,
   userCollection,
-} from "../src/repositories/global/_mongodb-connect";
-import { funcBlogMapping } from "../src/functions/blogs/func-blog-mapping";
-import { funcPostMapping } from "../src/functions/posts/func-post-mapping";
-import { funcUserMapping } from "../src/functions/users/func-user-mapping";
+} from "../src/repositories/_mongodb-connect";
+import { funcBlogMapping } from "../src/functions/mappings/func-blog-mapping";
+import { funcPostMapping } from "../src/functions/mappings/func-post-mapping";
+import { funcUserMapping } from "../src/functions/mappings/func-user-mapping";
 
 // ---------- UNIVERSAL FUNCTIONS ----------
 

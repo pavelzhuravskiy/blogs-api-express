@@ -1,9 +1,9 @@
-import { blogsCollection } from "../global/_mongodb-connect";
-import { MongoBlogModelWithPagination } from "../../models/blogs/MongoBlogModelWithPagination";
-import { funcBlogMapping } from "../../functions/blogs/func-blog-mapping";
+import { blogsCollection } from "./_mongodb-connect";
+import { MongoBlogModelWithPagination } from "../models/blogs/MongoBlogModelWithPagination";
+import { funcBlogMapping } from "../functions/mappings/func-blog-mapping";
 import { ObjectId } from "mongodb";
-import { MongoBlogModelWithStringId } from "../../models/blogs/MongoBlogModelWithStringId";
-import { funcFindManyWithQuery } from "../../functions/global/func-find-many-with-query";
+import { MongoBlogModelWithStringId } from "../models/blogs/MongoBlogModelWithStringId";
+import { funcFindManyWithQuery } from "../functions/global/func-find-many-with-query";
 
 export const blogsQueryRepository = {
   // Return blogs with query
