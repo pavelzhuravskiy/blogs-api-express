@@ -3,6 +3,8 @@ import { validationErrorCheck } from "../middlewares/validations/_validation-err
 import { ObjectId } from "mongodb";
 import { validationCommentsFindByParamId } from "../middlewares/validations/validation-comments-find-by-param-id";
 import { commentsQueryRepository } from "../repositories/mongodb-comments-query-repository";
+import { commentsService } from "../domain/comments-service";
+import { ValidationCommentsInput } from "../middlewares/validations/validation-comments-input";
 
 export const commentsRouter = Router({});
 
@@ -15,6 +17,27 @@ commentsRouter.get(
       new ObjectId(req.params.id)
     );
     res.json(foundComment);
+  }
+);
+
+commentsRouter.put(
+  "/:id",
+  // authBasic,
+  validationCommentsFindByParamId,
+  ValidationCommentsInput,
+  validationErrorCheck,
+  async (req: Request, res: Response) => {
+    const isUpdated = await commentsService.updateComment(
+      new ObjectId(req.params.id),
+      req.body
+    );
+
+    if (isUpdated) {
+      const updatedComment = await commentsQueryRepository.findCommentById(
+        req.body.id
+      );
+      res.status(204).json(updatedComment);
+    }
   }
 );
 
@@ -50,25 +73,7 @@ commentsRouter.get(
 //   }
 // );
 //
-// postsRouter.put(
-//   "/:id",
-//   authBasic,
-//   validationPostsFindByParamId,
-//   validationPostsInput,
-//   validationPostsCreation,
-//   validationErrorCheck,
-//   async (req: Request, res: Response) => {
-//     const isUpdated = await postsService.updatePost(
-//       new ObjectId(req.params.id),
-//       req.body
-//     );
-//
-//     if (isUpdated) {
-//       const updatedPost = await postsQueryRepository.findPostById(req.body.id);
-//       res.status(204).json(updatedPost);
-//     }
-//   }
-// );
+
 //
 // postsRouter.delete(
 //   "/:id",

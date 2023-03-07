@@ -76,6 +76,8 @@ blogsRouter.post(
   }
 );
 
+// Post creation start
+
 blogsRouter.post(
   "/:id/posts",
   authBasic,
@@ -90,6 +92,8 @@ blogsRouter.post(
     res.status(201).json(newPost);
   }
 );
+
+// Post creation end
 
 blogsRouter.put(
   "/:id",

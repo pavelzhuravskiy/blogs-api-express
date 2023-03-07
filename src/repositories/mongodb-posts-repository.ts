@@ -1,11 +1,7 @@
-import {commentsCollection, postsCollection} from "./_mongodb-connect";
+import { postsCollection } from "./_mongodb-connect";
 import { MongoPostModel } from "../models/posts/MongoPostModel";
 import { ObjectId } from "mongodb";
 import { MongoPostModelWithStringId } from "../models/posts/MongoPostModelWithStringId";
-import {MongoCommentModel} from "../models/comments/MongoCommentModel";
-import {
-  MongoCommentModelWithStringId
-} from "../models/comments/MongoCommentModelWithStringId";
 
 export const postsRepository = {
   // Create new post
@@ -52,23 +48,6 @@ export const postsRepository = {
   async deletePost(_id: ObjectId): Promise<boolean> {
     const result = await postsCollection.deleteOne({ _id });
     return result.deletedCount === 1;
-  },
-
-  // Create new comment
-  async createNewComment(
-      newComment: MongoCommentModel
-  ): Promise<boolean | MongoCommentModelWithStringId> {
-    const insertedComment = await commentsCollection.insertOne(newComment);
-
-    return {
-      id: insertedComment.insertedId.toString(),
-      content: newComment.content,
-      commentatorInfo: {
-        userId: newComment.commentatorInfo.userId,
-        userLogin: newComment.commentatorInfo.userLogin,
-      },
-      createdAt: newComment.createdAt
-    };
   },
 
   // Delete all posts

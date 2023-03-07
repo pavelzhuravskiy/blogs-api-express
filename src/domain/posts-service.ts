@@ -4,13 +4,6 @@ import { MongoPostModelWithId } from "../models/posts/MongoPostModelWithId";
 import { MongoPostModelWithStringId } from "../models/posts/MongoPostModelWithStringId";
 import { MongoPostModel } from "../models/posts/MongoPostModel";
 import { blogsQueryRepository } from "../repositories/mongodb-blogs-query-repository";
-import {
-  MongoCommentModelWithStringId
-} from "../models/comments/MongoCommentModelWithStringId";
-import {
-  postsQueryRepository
-} from "../repositories/mongodb-posts-query-repository";
-import {MongoCommentModel} from "../models/comments/MongoCommentModel";
 
 export const postsService = {
   // Create new post
@@ -47,26 +40,6 @@ export const postsService = {
       createdAt: new Date().toISOString(),
     };
     return postsRepository.createNewPost(newPost);
-  },
-
-  // Create new comment
-  async createNewCommentByPostId(
-      _id: ObjectId,
-      content: MongoCommentModel
-  ): Promise<boolean | MongoCommentModelWithStringId> {
-    const post = await postsQueryRepository.findPostById(new ObjectId(_id));
-    if (!post) {
-      return false;
-    }
-    const newComment = {
-      ...content,
-      commentatorInfo: {
-        userId: "someId", // TODO Fix
-        userLogin: "someLogin" // TODO Fix
-      },
-      createdAt: new Date().toISOString()
-    };
-    return postsRepository.createNewComment(newComment);
   },
 
   // Update existing post

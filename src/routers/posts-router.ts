@@ -17,6 +17,7 @@ import { GlobalIdStringModel } from "../models/global/GlobalIdStringModel";
 import {
     commentsQueryRepository
 } from "../repositories/mongodb-comments-query-repository";
+import {commentsService} from "../domain/comments-service";
 
 export const postsRouter = Router({});
 
@@ -124,7 +125,7 @@ postsRouter.post(
   ValidationCommentsInput,
   validationErrorCheck,
   async (req: Request, res: Response) => {
-    const newComment = await postsService.createNewCommentByPostId(
+    const newComment = await commentsService.createNewCommentByPostId(
       new ObjectId(req.params.id),
       req.body
     );
