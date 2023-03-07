@@ -120,7 +120,7 @@ postsRouter.get(
 
 postsRouter.post(
   "/:id/comments",
-  // authBasic,
+  // TODO Bearer Auth,
   validationPostsFindByParamId,
   ValidationCommentsInput,
   validationErrorCheck,

@@ -33,4 +33,10 @@ export const commentsRepository = {
     );
     return result.matchedCount === 1;
   },
+
+  // Delete existing comment
+  async deleteComment(_id: ObjectId): Promise<boolean> {
+    const result = await commentsCollection.deleteOne({ _id });
+    return result.deletedCount === 1;
+  },
 };

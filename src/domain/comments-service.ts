@@ -32,4 +32,9 @@ export const commentsService = {
   ): Promise<boolean> {
     return commentsRepository.updateComment(_id, comment.content);
   },
+
+  // Delete existing comment
+  async deleteComment(_id: ObjectId): Promise<boolean> {
+    return commentsRepository.deleteComment(_id);
+  },
 };
