@@ -1097,3 +1097,26 @@ describe("Authentication operation", () => {
     expect(incorrectLoginResponse.status).toBe(401);
   });
 });
+describe("Authentication validations", () => {
+  beforeAll(eraseAll);
+  it("should NOT authenticate without login (email)", async () => {
+    // Trying to authenticate without login (email)
+    const response = await authentication(undefined, null);
+    expect(response.status).toBe(400);
+  });
+  it("should NOT authenticate with incorrect login (email) type", async () => {
+    // Trying to authenticate with incorrect login (email) type
+    const response = await authentication(undefined, 123);
+    expect(response.status).toBe(400);
+  });
+  it("should NOT authenticate without password", async () => {
+    // Trying to authenticate without password
+    const response = await authentication(undefined, undefined, null);
+    expect(response.status).toBe(400);
+  });
+  it("should NOT authenticate with incorrect password type", async () => {
+    // Trying to authenticate without password
+    const response = await authentication(undefined, undefined, 123);
+    expect(response.status).toBe(400);
+  });
+});
