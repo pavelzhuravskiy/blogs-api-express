@@ -1,4 +1,4 @@
-export type MongoCommentsModel = {
+export type MongoCommentModel = {
   content: string;
   "commentatorInfo": {
     "userId": string,

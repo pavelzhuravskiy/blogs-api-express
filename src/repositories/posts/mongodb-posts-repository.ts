@@ -2,7 +2,7 @@ import {commentsCollection, postsCollection} from "../global/_mongodb-connect";
 import { MongoPostModel } from "../../models/posts/MongoPostModel";
 import { ObjectId } from "mongodb";
 import { MongoPostModelWithStringId } from "../../models/posts/MongoPostModelWithStringId";
-import {MongoCommentsModel} from "../../models/comments/MongoCommentsModel";
+import {MongoCommentModel} from "../../models/comments/MongoCommentModel";
 import {
   MongoCommentModelWithStringId
 } from "../../models/comments/MongoCommentModelWithStringId";
@@ -56,7 +56,7 @@ export const postsRepository = {
 
   // Create new comment
   async createNewComment(
-      newComment: MongoCommentsModel
+      newComment: MongoCommentModel
   ): Promise<boolean | MongoCommentModelWithStringId> {
     const insertedComment = await commentsCollection.insertOne(newComment);
 

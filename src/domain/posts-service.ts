@@ -10,7 +10,7 @@ import {
 import {
   postsQueryRepository
 } from "../repositories/posts/mongodb-posts-query-repository";
-import {MongoCommentsModel} from "../models/comments/MongoCommentsModel";
+import {MongoCommentModel} from "../models/comments/MongoCommentModel";
 
 export const postsService = {
   // Create new post
@@ -52,7 +52,7 @@ export const postsService = {
   // Create new comment
   async createNewCommentByPostId(
       _id: ObjectId,
-      content: MongoCommentsModel
+      content: MongoCommentModel
   ): Promise<boolean | MongoCommentModelWithStringId> {
     const post = await postsQueryRepository.findPostById(new ObjectId(_id));
     if (!post) {

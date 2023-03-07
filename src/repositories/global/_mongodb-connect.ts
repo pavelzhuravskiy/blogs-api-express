@@ -3,7 +3,7 @@ import { MongoPostModel } from "../../models/posts/MongoPostModel";
 import { MongoBlogModel } from "../../models/blogs/MongoBlogModel";
 import * as dotenv from "dotenv";
 import { MongoUserModelWithPassword } from "../../models/users/MongoUserModelWithPassword";
-import { MongoCommentsModel } from "../../models/comments/MongoCommentsModel";
+import { MongoCommentModel } from "../../models/comments/MongoCommentModel";
 
 dotenv.config();
 
@@ -26,7 +26,7 @@ export const postsCollection =
 export const userCollection =
   blogsAndPostsDB.collection<MongoUserModelWithPassword>("users");
 export const commentsCollection =
-  blogsAndPostsDB.collection<MongoCommentsModel>("comments");
+  blogsAndPostsDB.collection<MongoCommentModel>("comments");
 
 export async function runDB() {
   try {

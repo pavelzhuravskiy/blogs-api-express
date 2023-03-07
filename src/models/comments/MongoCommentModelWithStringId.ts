@@ -1,5 +1,5 @@
 import { GlobalIdStringModel } from "../global/GlobalIdStringModel";
-import { MongoCommentsModel } from "./MongoCommentsModel";
+import { MongoCommentModel } from "./MongoCommentModel";
 
-export type MongoCommentModelWithStringId = MongoCommentsModel &
+export type MongoCommentModelWithStringId = MongoCommentModel &
   GlobalIdStringModel;
