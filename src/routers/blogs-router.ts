@@ -49,17 +49,15 @@ blogsRouter.get(
   validationBlogsFindByParamId,
   validationErrorCheck,
   async (
-    req: Request &
-      RequestWithParamsAndQuery<GlobalIdStringModel, GlobalQueryModel>,
+    req: RequestWithParamsAndQuery<GlobalIdStringModel, GlobalQueryModel>,
     res: Response
   ) => {
     const foundPosts = await postsQueryRepository.findPosts(
-      new ObjectId(req.params.id),
-      null,
       req.query.sortBy,
       req.query.sortDirection,
       req.query.pageNumber,
-      req.query.pageSize
+      req.query.pageSize,
+      new ObjectId(req.params.id),
     );
     res.json(foundPosts);
   }

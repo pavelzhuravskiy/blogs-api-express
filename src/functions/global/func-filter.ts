@@ -1,0 +1,32 @@
+import { Document, ObjectId } from "mongodb";
+
+export const funcFilter = async (
+  blogId: null | ObjectId = null,
+  searchNameTerm: null | string = null,
+  searchLoginTerm: null | string = null,
+  searchEmailTerm: null | string = null
+) => {
+  const filter: Document = {};
+
+  if (blogId) {
+    filter.blogId = blogId.toString();
+  }
+
+  if (searchNameTerm) {
+    filter.name = { $regex: searchNameTerm, $options: "i" };
+  }
+
+  if (searchLoginTerm || searchEmailTerm) {
+    filter.$or = [];
+
+    if (searchLoginTerm) {
+      filter.$or.push({ login: { $regex: searchLoginTerm, $options: "i" } });
+    }
+
+    if (searchEmailTerm) {
+      filter.$or.push({ email: { $regex: searchEmailTerm, $options: "i" } });
+    }
+  }
+
+  return filter;
+};

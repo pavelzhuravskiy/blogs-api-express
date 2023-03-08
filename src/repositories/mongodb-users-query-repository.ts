@@ -1,32 +1,52 @@
-import { userCollection } from "./_mongodb-connect";
+import { blogsCollection, usersCollection } from "./_mongodb-connect";
 import { ObjectId } from "mongodb";
 import { funcFindManyWithQuery } from "../functions/global/func-find-many-with-query";
 import { funcUserMapping } from "../functions/mappings/func-user-mapping";
 import { MongoUserModelWithStringId } from "../models/users/MongoUserModelWithStringId";
 import { MongoUserModelWithPagination } from "../models/users/MongoUserModelWithPagination";
 import { MongoUserModelWithPassword } from "../models/users/MongoUserModelWithPassword";
+import { MongoBlogModelWithPagination } from "../models/blogs/MongoBlogModelWithPagination";
+import { funcFilter } from "../functions/global/func-filter";
+import { funcPagination } from "../functions/global/func-pagination";
+import { funcSorting } from "../functions/global/func-sorting";
+import { funcOutput } from "../functions/global/func-output";
+import { funcBlogMapping } from "../functions/mappings/func-blog-mapping";
 
 export const usersQueryRepository = {
   // Return users with query
   async findUsers(
-    searchLoginTerm: null | string,
-    searchEmailTerm: null | string,
+    searchLoginTerm: string,
+    searchEmailTerm: string,
     sortBy: string,
     sortDirection: string,
-    pageNumber: number,
-    pageSize: number
+    pageNumber: string,
+    pageSize: string
   ): Promise<MongoUserModelWithPagination> {
-    return funcFindManyWithQuery(
+    // Filter
+    const usersFilter = await funcFilter(
       undefined,
       undefined,
       searchLoginTerm,
-      searchEmailTerm,
-      sortBy,
-      sortDirection,
-      pageNumber,
-      pageSize,
-      userCollection,
-      funcUserMapping
+      searchEmailTerm
+    );
+
+    // Pagination
+    const usersPagination = await funcPagination(
+      await funcSorting(sortBy, sortDirection),
+      Number(pageNumber) || 1,
+      Number(pageSize) || 10,
+      usersCollection,
+      usersFilter
+    );
+
+    // Output
+    return funcOutput(
+      Number(pageNumber) || 1,
+      Number(pageSize) || 10,
+      usersPagination,
+      usersCollection,
+      funcUserMapping,
+      usersFilter
     );
   },
 
@@ -34,7 +54,7 @@ export const usersQueryRepository = {
   async findUserById(
     _id: ObjectId
   ): Promise<false | MongoUserModelWithStringId> {
-    const foundUser = await userCollection.findOne({ _id });
+    const foundUser = await usersCollection.findOne({ _id });
 
     if (!foundUser) {
       return false;
@@ -51,7 +71,7 @@ export const usersQueryRepository = {
   async findUserByLoginOrEmail(
     loginOrEmail: string
   ): Promise<MongoUserModelWithPassword | null> {
-    return await userCollection.findOne({
+    return await usersCollection.findOne({
       $or: [{ login: loginOrEmail }, { email: loginOrEmail }],
     });
   },

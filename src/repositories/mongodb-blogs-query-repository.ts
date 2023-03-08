@@ -3,28 +3,40 @@ import { MongoBlogModelWithPagination } from "../models/blogs/MongoBlogModelWith
 import { funcBlogMapping } from "../functions/mappings/func-blog-mapping";
 import { ObjectId } from "mongodb";
 import { MongoBlogModelWithStringId } from "../models/blogs/MongoBlogModelWithStringId";
-import { funcFindManyWithQuery } from "../functions/global/func-find-many-with-query";
+import { funcFilter } from "../functions/global/func-filter";
+import { funcSorting } from "../functions/global/func-sorting";
+import { funcPagination } from "../functions/global/func-pagination";
+import { funcOutput } from "../functions/global/func-output";
 
 export const blogsQueryRepository = {
   // Return blogs with query
   async findBlogs(
-    searchNameTerm: null | string,
+    searchNameTerm: string,
     sortBy: string,
     sortDirection: string,
-    pageNumber: number,
-    pageSize: number
+    pageNumber: string,
+    pageSize: string
   ): Promise<MongoBlogModelWithPagination> {
-    return funcFindManyWithQuery(
-      undefined,
-      searchNameTerm,
-      undefined,
-      undefined,
-      sortBy,
-      sortDirection,
-      pageNumber,
-      pageSize,
+    // Filter
+    const blogsFilter = await funcFilter(undefined, searchNameTerm);
+
+    // Pagination
+    const blogsPagination = await funcPagination(
+      await funcSorting(sortBy, sortDirection),
+      Number(pageNumber) || 1,
+      Number(pageSize) || 10,
       blogsCollection,
-      funcBlogMapping
+      blogsFilter
+    );
+
+    // Output
+    return funcOutput(
+      Number(pageNumber) || 1,
+      Number(pageSize) || 10,
+      blogsPagination,
+      blogsCollection,
+      funcBlogMapping,
+      blogsFilter
     );
   },
 

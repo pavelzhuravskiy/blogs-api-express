@@ -28,7 +28,7 @@ import { ObjectId } from "mongodb";
 import {
   blogsCollection,
   postsCollection,
-  userCollection,
+  usersCollection,
 } from "../src/repositories/_mongodb-connect";
 import { funcBlogMapping } from "../src/functions/mappings/func-blog-mapping";
 import { funcPostMapping } from "../src/functions/mappings/func-post-mapping";
@@ -277,7 +277,7 @@ export const foundUsersObj = async (
     sortDirection,
     pageNumber,
     pageSize,
-    userCollection,
+    usersCollection,
     funcUserMapping
   );
 };

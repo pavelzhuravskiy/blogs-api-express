@@ -11,7 +11,7 @@ export const usersService = {
     password: string,
     email: string
   ): Promise<MongoUserModel> {
-    const hash = bcrypt.hashSync(password, 10);
+    const hash = await bcrypt.hash(password, 10);
     const newUser = {
       login,
       password: hash,
@@ -33,7 +33,7 @@ export const usersService = {
     if (!user) {
       return false;
     }
-    return bcrypt.compareSync(password, user.password);
+    return await bcrypt.compare(password, user.password);
   },
 
   // Delete user by ID

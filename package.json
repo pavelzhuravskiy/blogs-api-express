@@ -6,7 +6,7 @@
   "scripts": {
     "watch": "tsc -w",
     "dev": "nodemon --inspect dist/index.js",
-    "test": "NODE_ENV=test jest --runInBand --detectOpenHandles --coverage --collectCoverageFrom=\"./src/**\""
+    "test": "jest --runInBand --detectOpenHandles --coverage --collectCoverageFrom=\"./src/**\""
   },
   "dependencies": {
     "@types/bcrypt": "^5.0.0",

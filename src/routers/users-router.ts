@@ -31,7 +31,7 @@ usersRouter.get(
 usersRouter.post(
   "/",
   authBasic,
-  validationUsersUniqueLogin,
+  validationUsersUniqueLogin("login"),
   validationUsersUniqueEmail,
   validationUsersInput,
   validationErrorCheck,

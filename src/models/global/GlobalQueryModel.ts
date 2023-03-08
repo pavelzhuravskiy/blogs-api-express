@@ -1,9 +1,9 @@
 export type GlobalQueryModel = {
-  searchNameTerm: null | string;
-  searchLoginTerm: null | string;
-  searchEmailTerm: null | string;
+  searchNameTerm: string;
+  searchLoginTerm: string;
+  searchEmailTerm: string;
   sortBy: string;
   sortDirection: string;
-  pageNumber: number;
-  pageSize: number;
+  pageNumber: string;
+  pageSize: string;
 };

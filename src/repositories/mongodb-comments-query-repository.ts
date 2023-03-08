@@ -1,34 +1,48 @@
-import { commentsCollection } from "./_mongodb-connect";
+import { commentsCollection, postsCollection } from "./_mongodb-connect";
 import { ObjectId } from "mongodb";
 import { funcFindManyWithQuery } from "../functions/global/func-find-many-with-query";
 import { MongoPostModelWithPagination } from "../models/posts/MongoPostModelWithPagination";
 import { funcCommentsMapping } from "../functions/mappings/func-comments-mapping";
 import { MongoCommentModelWithStringId } from "../models/comments/MongoCommentModelWithStringId";
+import { funcFilter } from "../functions/global/func-filter";
+import { funcPagination } from "../functions/global/func-pagination";
+import { funcSorting } from "../functions/global/func-sorting";
+import { funcOutput } from "../functions/global/func-output";
+import { funcPostMapping } from "../functions/mappings/func-post-mapping";
+import { MongoCommentsModelWithPagination } from "../models/comments/MongoCommentsModelWithPagination";
 
 export const commentsQueryRepository = {
   // Return comments with query
   async findComments(
-    blogId: ObjectId | null,
-    searchNameTerm: null | string,
     sortBy: string,
     sortDirection: string,
-    pageNumber: number,
-    pageSize: number
-  ): Promise<MongoPostModelWithPagination> {
-    return funcFindManyWithQuery(
-      undefined,
-      undefined,
-      undefined,
-      undefined,
-      sortBy,
-      sortDirection,
-      pageNumber,
-      pageSize,
+    pageNumber: string,
+    pageSize: string,
+    blogId?: ObjectId
+  ): Promise<MongoCommentsModelWithPagination> {
+    // Filter
+    const commentsFilter = await funcFilter(blogId);
+
+    // Pagination
+    const commentsPagination = await funcPagination(
+      await funcSorting(sortBy, sortDirection),
+      Number(pageNumber) || 1,
+      Number(pageSize) || 10,
       commentsCollection,
-      funcCommentsMapping
+      commentsFilter
+    );
+
+    // Output
+    return funcOutput(
+      Number(pageNumber) || 1,
+      Number(pageSize) || 10,
+      commentsPagination,
+      commentsCollection,
+      funcCommentsMapping,
+      commentsFilter
     );
   },
-  // Return comment by ID
+
   async findCommentById(
     _id: ObjectId
   ): Promise<boolean | MongoCommentModelWithStringId> {

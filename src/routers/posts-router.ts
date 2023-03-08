@@ -25,8 +25,6 @@ postsRouter.get(
   "/",
   async (req: RequestWithQuery<GlobalQueryModel>, res: Response) => {
     const foundPosts = await postsQueryRepository.findPosts(
-      null,
-      null,
       req.query.sortBy,
       req.query.sortDirection,
       req.query.pageNumber,
@@ -102,17 +100,15 @@ postsRouter.get(
   validationPostsFindByParamId,
   validationErrorCheck,
   async (
-    req: Request &
-      RequestWithParamsAndQuery<GlobalIdStringModel, GlobalQueryModel>,
+    req: RequestWithParamsAndQuery<GlobalIdStringModel, GlobalQueryModel>,
     res: Response
   ) => {
     const foundComments = await commentsQueryRepository.findComments(
-      new ObjectId(req.params.id),
-      null,
       req.query.sortBy,
       req.query.sortDirection,
       req.query.pageNumber,
-      req.query.pageSize
+      req.query.pageSize,
+      new ObjectId(req.params.id)
     );
     res.json(foundComments);
   }

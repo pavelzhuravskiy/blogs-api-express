@@ -75,6 +75,8 @@ import request from "supertest";
 import { app } from "../../src";
 import { client } from "../../src/repositories/_mongodb-connect";
 
+console.log(process.env)
+
 afterAll(async () => {
   await client.close();
 });

@@ -23,7 +23,7 @@ export const blogsCollection =
   blogsAndPostsDB.collection<MongoBlogModel>("blogs");
 export const postsCollection =
   blogsAndPostsDB.collection<MongoPostModel>("posts");
-export const userCollection =
+export const usersCollection =
   blogsAndPostsDB.collection<MongoUserModelWithPassword>("users");
 export const commentsCollection =
   blogsAndPostsDB.collection<MongoCommentModel>("comments");
