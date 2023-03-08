@@ -1,12 +1,12 @@
-import { commentsCollection } from "./_mongodb-connect";
+import { commentsCollection } from "../_mongodb-connect";
 import { ObjectId } from "mongodb";
-import { funcCommentsMapping } from "../functions/mappings/func-comments-mapping";
-import { MongoCommentModelWithStringId } from "../models/comments/MongoCommentModelWithStringId";
-import { funcFilter } from "../functions/global/func-filter";
-import { funcPagination } from "../functions/global/func-pagination";
-import { funcSorting } from "../functions/global/func-sorting";
-import { funcOutput } from "../functions/global/func-output";
-import { MongoCommentsModelWithPagination } from "../models/comments/MongoCommentsModelWithPagination";
+import { funcCommentsMapping } from "../../functions/mappings/func-comments-mapping";
+import { MongoCommentModelWithStringId } from "../../models/comments/MongoCommentModelWithStringId";
+import { funcFilter } from "../../functions/global/func-filter";
+import { funcPagination } from "../../functions/global/func-pagination";
+import { funcSorting } from "../../functions/global/func-sorting";
+import { funcOutput } from "../../functions/global/func-output";
+import { MongoCommentsModelWithPagination } from "../../models/comments/MongoCommentsModelWithPagination";
 
 export const commentsQueryRepository = {
   // Return comments with query

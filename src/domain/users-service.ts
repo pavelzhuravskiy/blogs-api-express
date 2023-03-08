@@ -2,7 +2,7 @@ import { ObjectId } from "mongodb";
 import { MongoUserModel } from "../models/users/MongoUserModel";
 import { usersRepository } from "../repositories/mongodb-users-repository";
 import bcrypt from "bcrypt";
-import { usersQueryRepository } from "../repositories/mongodb-users-query-repository";
+import { usersQueryRepository } from "../repositories/query-repos/mongodb-users-query-repository";
 
 export const usersService = {
   // Create new user

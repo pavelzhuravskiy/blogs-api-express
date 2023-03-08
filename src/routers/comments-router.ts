@@ -1,10 +1,10 @@
 import { Request, Response, Router } from "express";
 import { validationErrorCheck } from "../middlewares/validations/_validation-error-check";
 import { ObjectId } from "mongodb";
-import { validationCommentsFindByParamId } from "../middlewares/validations/validation-comments-find-by-param-id";
-import { commentsQueryRepository } from "../repositories/mongodb-comments-query-repository";
+import { validationCommentsFindByParamId } from "../middlewares/validations/find-by-id/validation-comments-find-by-param-id";
+import { commentsQueryRepository } from "../repositories/query-repos/mongodb-comments-query-repository";
 import { commentsService } from "../domain/comments-service";
-import { ValidationCommentsInput } from "../middlewares/validations/validation-comments-input";
+import { ValidationCommentsInput } from "../middlewares/validations/input/validation-comments-input";
 
 export const commentsRouter = Router({});
 

@@ -1,7 +1,7 @@
 import { body } from "express-validator";
-import { usersQueryRepository } from "../../repositories/mongodb-users-query-repository";
+import { usersQueryRepository } from "../../repositories/query-repos/mongodb-users-query-repository";
 
-export const validationUsersUniqueLogin = (field: string) =>
+export const validationUserUnique = (field: string) =>
   body(field).custom(async (value) => {
     const result = await usersQueryRepository.findUserByLoginOrEmail(value);
     if (result) {

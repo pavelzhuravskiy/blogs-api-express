@@ -3,7 +3,7 @@ import { postsRepository } from "../repositories/mongodb-posts-repository";
 import { MongoPostModelWithId } from "../models/posts/MongoPostModelWithId";
 import { MongoPostModelWithStringId } from "../models/posts/MongoPostModelWithStringId";
 import { MongoPostModel } from "../models/posts/MongoPostModel";
-import { blogsQueryRepository } from "../repositories/mongodb-blogs-query-repository";
+import { blogsQueryRepository } from "../repositories/query-repos/mongodb-blogs-query-repository";
 
 export const postsService = {
   // Create new post

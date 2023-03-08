@@ -1,13 +1,13 @@
-import { usersCollection } from "./_mongodb-connect";
+import { usersCollection } from "../_mongodb-connect";
 import { ObjectId } from "mongodb";
-import { funcUserMapping } from "../functions/mappings/func-user-mapping";
-import { MongoUserModelWithStringId } from "../models/users/MongoUserModelWithStringId";
-import { MongoUserModelWithPagination } from "../models/users/MongoUserModelWithPagination";
-import { MongoUserModelWithPassword } from "../models/users/MongoUserModelWithPassword";
-import { funcFilter } from "../functions/global/func-filter";
-import { funcPagination } from "../functions/global/func-pagination";
-import { funcSorting } from "../functions/global/func-sorting";
-import { funcOutput } from "../functions/global/func-output";
+import { funcUserMapping } from "../../functions/mappings/func-user-mapping";
+import { MongoUserModelWithStringId } from "../../models/users/MongoUserModelWithStringId";
+import { MongoUserModelWithPagination } from "../../models/users/MongoUserModelWithPagination";
+import { MongoUserModelWithPassword } from "../../models/users/MongoUserModelWithPassword";
+import { funcFilter } from "../../functions/global/func-filter";
+import { funcPagination } from "../../functions/global/func-pagination";
+import { funcSorting } from "../../functions/global/func-sorting";
+import { funcOutput } from "../../functions/global/func-output";
 
 export const usersQueryRepository = {
   // Return users with query

@@ -1,7 +1,7 @@
 import { Request, Response, Router } from "express";
 import { validationErrorCheck } from "../middlewares/validations/_validation-error-check";
 import { usersService } from "../domain/users-service";
-import { validationAuthInput } from "../middlewares/validations/validation-auth-input";
+import { validationAuthInput } from "../middlewares/validations/input/validation-auth-input";
 
 export const authRouter = Router({});
 authRouter.post(

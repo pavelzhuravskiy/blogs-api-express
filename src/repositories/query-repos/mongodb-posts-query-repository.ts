@@ -1,12 +1,12 @@
-import { postsCollection } from "./_mongodb-connect";
+import { postsCollection } from "../_mongodb-connect";
 import { ObjectId } from "mongodb";
-import { MongoPostModelWithStringId } from "../models/posts/MongoPostModelWithStringId";
-import { funcPostMapping } from "../functions/mappings/func-post-mapping";
-import { MongoPostModelWithPagination } from "../models/posts/MongoPostModelWithPagination";
-import { funcSorting } from "../functions/global/func-sorting";
-import { funcPagination } from "../functions/global/func-pagination";
-import { funcOutput } from "../functions/global/func-output";
-import { funcFilter } from "../functions/global/func-filter";
+import { MongoPostModelWithStringId } from "../../models/posts/MongoPostModelWithStringId";
+import { funcPostMapping } from "../../functions/mappings/func-post-mapping";
+import { MongoPostModelWithPagination } from "../../models/posts/MongoPostModelWithPagination";
+import { funcSorting } from "../../functions/global/func-sorting";
+import { funcPagination } from "../../functions/global/func-pagination";
+import { funcOutput } from "../../functions/global/func-output";
+import { funcFilter } from "../../functions/global/func-filter";
 
 export const postsQueryRepository = {
   // Return posts with query

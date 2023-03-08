@@ -1,7 +1,7 @@
 import { Request, Response, Router } from "express";
 import { postsService } from "../domain/posts-service";
 import { authBasic } from "../middlewares/auth/auth-basic";
-import { validationPostsInput } from "../middlewares/validations/validation-posts-input";
+import { validationPostsInput } from "../middlewares/validations/input/validation-posts-input";
 import { validationErrorCheck } from "../middlewares/validations/_validation-error-check";
 import { ObjectId } from "mongodb";
 import {
@@ -9,14 +9,14 @@ import {
   RequestWithQuery,
 } from "../models/global/GlobalRequestModel";
 import { validationPostsCreation } from "../middlewares/validations/validation-posts-creation";
-import { validationPostsFindByParamId } from "../middlewares/validations/validation-posts-find-by-param-id";
-import { postsQueryRepository } from "../repositories/mongodb-posts-query-repository";
+import { validationPostsFindByParamId } from "../middlewares/validations/find-by-id/validation-posts-find-by-param-id";
+import { postsQueryRepository } from "../repositories/query-repos/mongodb-posts-query-repository";
 import { GlobalQueryModel } from "../models/global/GlobalQueryModel";
-import { ValidationCommentsInput } from "../middlewares/validations/validation-comments-input";
+import { ValidationCommentsInput } from "../middlewares/validations/input/validation-comments-input";
 import { GlobalIdStringModel } from "../models/global/GlobalIdStringModel";
 import {
     commentsQueryRepository
-} from "../repositories/mongodb-comments-query-repository";
+} from "../repositories/query-repos/mongodb-comments-query-repository";
 import {commentsService} from "../domain/comments-service";
 
 export const postsRouter = Router({});

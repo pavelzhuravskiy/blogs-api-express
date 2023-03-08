@@ -26,13 +26,13 @@ import {
 import {ObjectId} from "mongodb";
 import {
   blogsQueryRepository
-} from "../src/repositories/mongodb-blogs-query-repository";
+} from "../src/repositories/query-repos/mongodb-blogs-query-repository";
 import {
   postsQueryRepository
-} from "../src/repositories/mongodb-posts-query-repository";
+} from "../src/repositories/query-repos/mongodb-posts-query-repository";
 import {
   usersQueryRepository
-} from "../src/repositories/mongodb-users-query-repository";
+} from "../src/repositories/query-repos/mongodb-users-query-repository";
 
 // ---------- UNIVERSAL FUNCTIONS ----------
 
