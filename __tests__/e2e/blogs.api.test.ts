@@ -75,8 +75,6 @@ import request from "supertest";
 import { app } from "../../src";
 import { client } from "../../src/repositories/_mongodb-connect";
 
-console.log(process.env)
-
 afterAll(async () => {
   await client.close();
 });
@@ -337,7 +335,7 @@ describe("Blogs name filtering", () => {
     const response = await getter(blogsURI);
     expect(response.status).toBe(200);
 
-    const blogsWithQuery = await foundBlogsObj(undefined, "va");
+    const blogsWithQuery = await foundBlogsObj("va");
     expect(blogsWithQuery.totalCount).toBe(3);
     expect(blogsWithQuery.items.length).toBe(3);
 
@@ -367,11 +365,7 @@ describe("Blogs sorting", () => {
     expect(response.status).toBe(200);
 
     // Applying and checking descending sorting
-    const blogsWithQueryDesc = await foundBlogsObj(
-      undefined,
-      undefined,
-      "name"
-    );
+    const blogsWithQueryDesc = await foundBlogsObj(undefined, "name");
     expect(blogsWithQueryDesc.items[0].name).toBe(sortingString09);
     expect(blogsWithQueryDesc.items[1].name).toBe(sortingString07);
     expect(blogsWithQueryDesc.items[2].name).toBe(sortingString05);
@@ -379,12 +373,7 @@ describe("Blogs sorting", () => {
     expect(blogsWithQueryDesc.items[4].name).toBe(sortingString02);
 
     // Applying and checking ascending sorting
-    const blogsWithQueryAsc = await foundBlogsObj(
-      undefined,
-      undefined,
-      "name",
-      "asc"
-    );
+    const blogsWithQueryAsc = await foundBlogsObj(undefined, "name", "asc");
     expect(response.status).toBe(200);
     expect(blogsWithQueryAsc.items[0].name).toBe(sortingString02);
     expect(blogsWithQueryAsc.items[1].name).toBe(sortingString04);
@@ -412,9 +401,8 @@ describe("Blogs pagination", () => {
       undefined,
       undefined,
       undefined,
-      undefined,
-      2,
-      5
+      "2",
+      "5"
     );
     expect(blogsWithQuery.pagesCount).toBe(4);
     expect(blogsWithQuery.page).toBe(2);
@@ -685,11 +673,7 @@ describe("Posts sorting", () => {
     expect(response.status).toBe(200);
 
     // Applying and checking descending sorting
-    const postsWithQueryDesc = await foundPostsObj(
-      undefined,
-      undefined,
-      "title"
-    );
+    const postsWithQueryDesc = await foundPostsObj("title");
     expect(postsWithQueryDesc.items[0].title).toBe(sortingString09);
     expect(postsWithQueryDesc.items[1].title).toBe(sortingString07);
     expect(postsWithQueryDesc.items[2].title).toBe(sortingString05);
@@ -697,12 +681,7 @@ describe("Posts sorting", () => {
     expect(postsWithQueryDesc.items[4].title).toBe(sortingString02);
 
     // Applying and checking descending sorting
-    const postsWithQueryAsc = await foundPostsObj(
-      undefined,
-      undefined,
-      "title",
-      "asc"
-    );
+    const postsWithQueryAsc = await foundPostsObj("title", "asc");
     expect(postsWithQueryAsc.items[0].title).toBe(sortingString02);
     expect(postsWithQueryAsc.items[1].title).toBe(sortingString04);
     expect(postsWithQueryAsc.items[2].title).toBe(sortingString05);
@@ -734,14 +713,7 @@ describe("Posts pagination", () => {
     // Checking pagination
     const check = await getter(postsURI);
     expect(check.status).toBe(200);
-    const postsWithQuery = await foundPostsObj(
-      undefined,
-      undefined,
-      undefined,
-      undefined,
-      2,
-      5
-    );
+    const postsWithQuery = await foundPostsObj(undefined, undefined, "2", "5");
     expect(postsWithQuery.pagesCount).toBe(4);
     expect(postsWithQuery.page).toBe(2);
     expect(postsWithQuery.pageSize).toBe(5);
@@ -1058,8 +1030,8 @@ describe("Users pagination", () => {
       undefined,
       undefined,
       undefined,
-      2,
-      5
+      "2",
+      "5"
     );
     expect(usersWithQuery.pagesCount).toBe(4);
     expect(usersWithQuery.page).toBe(2);

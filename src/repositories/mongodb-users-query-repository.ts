@@ -1,16 +1,13 @@
-import { blogsCollection, usersCollection } from "./_mongodb-connect";
+import { usersCollection } from "./_mongodb-connect";
 import { ObjectId } from "mongodb";
-import { funcFindManyWithQuery } from "../functions/global/func-find-many-with-query";
 import { funcUserMapping } from "../functions/mappings/func-user-mapping";
 import { MongoUserModelWithStringId } from "../models/users/MongoUserModelWithStringId";
 import { MongoUserModelWithPagination } from "../models/users/MongoUserModelWithPagination";
 import { MongoUserModelWithPassword } from "../models/users/MongoUserModelWithPassword";
-import { MongoBlogModelWithPagination } from "../models/blogs/MongoBlogModelWithPagination";
 import { funcFilter } from "../functions/global/func-filter";
 import { funcPagination } from "../functions/global/func-pagination";
 import { funcSorting } from "../functions/global/func-sorting";
 import { funcOutput } from "../functions/global/func-output";
-import { funcBlogMapping } from "../functions/mappings/func-blog-mapping";
 
 export const usersQueryRepository = {
   // Return users with query

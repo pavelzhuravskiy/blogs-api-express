@@ -1,4 +1,4 @@
-import { app } from "../src";
+import {app} from "../src";
 import request from "supertest";
 import {
   authURI,
@@ -23,16 +23,16 @@ import {
   userPasswordString,
   usersURI,
 } from "./test-strings";
-import { funcFindManyWithQuery } from "../src/functions/global/func-find-many-with-query";
-import { ObjectId } from "mongodb";
+import {ObjectId} from "mongodb";
 import {
-  blogsCollection,
-  postsCollection,
-  usersCollection,
-} from "../src/repositories/_mongodb-connect";
-import { funcBlogMapping } from "../src/functions/mappings/func-blog-mapping";
-import { funcPostMapping } from "../src/functions/mappings/func-post-mapping";
-import { funcUserMapping } from "../src/functions/mappings/func-user-mapping";
+  blogsQueryRepository
+} from "../src/repositories/mongodb-blogs-query-repository";
+import {
+  postsQueryRepository
+} from "../src/repositories/mongodb-posts-query-repository";
+import {
+  usersQueryRepository
+} from "../src/repositories/mongodb-users-query-repository";
 
 // ---------- UNIVERSAL FUNCTIONS ----------
 
@@ -62,26 +62,19 @@ export const eraserWithId = (uri: string, id: string) => {
 
 // Find blogs in repository
 export const foundBlogsObj = async (
-  blogId: null | ObjectId = null,
-  searchNameTerm: null | string = null,
+  searchNameTerm: string = "",
   sortBy: string = "createdAt",
   sortDirection: string = "desc",
-  pageNumber: number = 1,
-  pageSize: number = 10
-) => {
-  return await funcFindManyWithQuery(
-    blogId,
+  pageNumber: string = "1",
+  pageSize: string = "10"
+) =>
+  await blogsQueryRepository.findBlogs(
     searchNameTerm,
-    undefined,
-    undefined,
     sortBy,
     sortDirection,
     pageNumber,
-    pageSize,
-    blogsCollection,
-    funcBlogMapping
+    pageSize
   );
-};
 
 // Find blogs array length
 export const blogsLength = async () => {
@@ -161,26 +154,19 @@ export const blogUpdater = async (
 
 // Find posts in repository
 export const foundPostsObj = async (
-  blogId: null | ObjectId = null,
-  searchNameTerm: null | string = null,
   sortBy: string = "createdAt",
   sortDirection: string = "desc",
-  pageNumber: number = 1,
-  pageSize: number = 10
-) => {
-  return await funcFindManyWithQuery(
-    blogId,
-    searchNameTerm,
-    undefined,
-    undefined,
+  pageNumber: string = "1",
+  pageSize: string = "10",
+  blogId?: ObjectId
+) =>
+  await postsQueryRepository.findPosts(
     sortBy,
     sortDirection,
     pageNumber,
     pageSize,
-    postsCollection,
-    funcPostMapping
+    blogId
   );
-};
 
 // Find posts array length
 export const postsLength = async () => {
@@ -261,26 +247,21 @@ export const postUpdater = async (
 
 // Find users in repository
 export const foundUsersObj = async (
-  searchLoginTerm: null | string = null,
-  searchEmailTerm: null | string = null,
+  searchLoginTerm: string = "",
+  searchEmailTerm: string = "",
   sortBy: string = "createdAt",
   sortDirection: string = "desc",
-  pageNumber: number = 1,
-  pageSize: number = 10
-) => {
-  return funcFindManyWithQuery(
-    undefined,
-    undefined,
+  pageNumber: string = "1",
+  pageSize: string = "10"
+) =>
+  await usersQueryRepository.findUsers(
     searchLoginTerm,
     searchEmailTerm,
     sortBy,
     sortDirection,
     pageNumber,
-    pageSize,
-    usersCollection,
-    funcUserMapping
+    pageSize
   );
-};
 
 // Find users array length
 export const usersLength = async () => {
