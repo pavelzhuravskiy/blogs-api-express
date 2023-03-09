@@ -3,4 +3,5 @@ export type MongoUserModelWithPassword = {
   password: string;
   email: string;
   createdAt: string;
+  isMembership: boolean;
 };

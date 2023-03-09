@@ -1,6 +1,6 @@
 import { Request, Response, Router } from "express";
 import { ObjectId } from "mongodb";
-import { RequestWithQuery } from "../models/global/GlobalRequestModel";
+import { RequestWithQuery } from "../types/request-types";
 import { GlobalQueryModel } from "../models/global/GlobalQueryModel";
 import { validationErrorCheck } from "../middlewares/validations/_validation-error-check";
 import { usersQueryRepository } from "../repositories/query-repos/mongodb-users-query-repository";

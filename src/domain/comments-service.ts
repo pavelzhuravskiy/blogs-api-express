@@ -3,22 +3,25 @@ import { MongoCommentModel } from "../models/comments/MongoCommentModel";
 import { MongoCommentModelWithStringId } from "../models/comments/MongoCommentModelWithStringId";
 import { postsQueryRepository } from "../repositories/query-repos/mongodb-posts-query-repository";
 import { commentsRepository } from "../repositories/mongodb-comments-repository";
+import { usersQueryRepository } from "../repositories/query-repos/mongodb-users-query-repository";
 
 export const commentsService = {
   // Create new comment
   async createNewCommentByPostId(
     _id: ObjectId,
-    content: MongoCommentModel
+    content: MongoCommentModel,
+    _userId: ObjectId
   ): Promise<boolean | MongoCommentModelWithStringId> {
     const post = await postsQueryRepository.findPostById(new ObjectId(_id));
     if (!post) {
       return false;
     }
+    const user = await usersQueryRepository.findUserByIdWithMongoId(_userId);
     const newComment = {
       ...content,
       commentatorInfo: {
-        userId: "someId", // TODO Fix
-        userLogin: "someLogin", // TODO Fix
+        userId: user!._id.toString(),
+        userLogin: user!.login,
       },
       createdAt: new Date().toISOString(),
     };

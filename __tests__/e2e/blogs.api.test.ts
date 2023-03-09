@@ -1056,11 +1056,11 @@ describe("Authentication operation", () => {
   it("should log in user with correct credentials", async () => {
     // Trying to authenticate with login
     const loginResponse = await authentication();
-    expect(loginResponse.status).toBe(204);
+    expect(loginResponse.status).toBe(200);
 
     // Trying to authenticate with email
     const response = await authentication(undefined, userEmailString);
-    expect(response.status).toBe(204);
+    expect(response.status).toBe(200);
   });
   it("should NOT log in user with incorrect credentials", async () => {
     // Trying to authenticate with incorrect login (email)

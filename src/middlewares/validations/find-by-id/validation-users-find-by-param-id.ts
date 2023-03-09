@@ -4,7 +4,7 @@ import { usersQueryRepository } from "../../../repositories/query-repos/mongodb-
 
 export const validationUsersFindByParamId = param("id").custom(
   async (value) => {
-    const result = await usersQueryRepository.findUserById(new ObjectId(value));
+    const result = await usersQueryRepository.findUserByIdWithStringId(new ObjectId(value));
     if (!result) {
       throw new Error("ID not found");
     }

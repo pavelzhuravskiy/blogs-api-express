@@ -7,17 +7,16 @@ import { ObjectId } from "mongodb";
 import {
   RequestWithParamsAndQuery,
   RequestWithQuery,
-} from "../models/global/GlobalRequestModel";
+} from "../types/request-types";
 import { validationPostsCreation } from "../middlewares/validations/validation-posts-creation";
 import { validationPostsFindByParamId } from "../middlewares/validations/find-by-id/validation-posts-find-by-param-id";
 import { postsQueryRepository } from "../repositories/query-repos/mongodb-posts-query-repository";
 import { GlobalQueryModel } from "../models/global/GlobalQueryModel";
 import { ValidationCommentsInput } from "../middlewares/validations/input/validation-comments-input";
 import { GlobalIdStringModel } from "../models/global/GlobalIdStringModel";
-import {
-    commentsQueryRepository
-} from "../repositories/query-repos/mongodb-comments-query-repository";
-import {commentsService} from "../domain/comments-service";
+import { commentsQueryRepository } from "../repositories/query-repos/mongodb-comments-query-repository";
+import { commentsService } from "../domain/comments-service";
+import { authBearer } from "../middlewares/auth/auth-bearer";
 
 export const postsRouter = Router({});
 
@@ -116,14 +115,15 @@ postsRouter.get(
 
 postsRouter.post(
   "/:id/comments",
-  // TODO Bearer Auth,
+  authBearer,
   validationPostsFindByParamId,
   ValidationCommentsInput,
   validationErrorCheck,
   async (req: Request, res: Response) => {
     const newComment = await commentsService.createNewCommentByPostId(
       new ObjectId(req.params.id),
-      req.body
+      req.body,
+      req.user!._id
     );
     res.status(201).json(newComment);
   }

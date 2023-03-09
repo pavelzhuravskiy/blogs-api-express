@@ -4,7 +4,7 @@ import { ObjectId } from "mongodb";
 import {
   RequestWithParamsAndQuery,
   RequestWithQuery,
-} from "../models/global/GlobalRequestModel";
+} from "../types/request-types";
 import { GlobalQueryModel } from "../models/global/GlobalQueryModel";
 import { authBasic } from "../middlewares/auth/auth-basic";
 import { validationBlogsInput } from "../middlewares/validations/input/validation-blogs-input";

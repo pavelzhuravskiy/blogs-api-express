@@ -3,11 +3,12 @@ import { ObjectId } from "mongodb";
 import { funcUserMapping } from "../../functions/mappings/func-user-mapping";
 import { MongoUserModelWithStringId } from "../../models/users/MongoUserModelWithStringId";
 import { MongoUserModelWithPagination } from "../../models/users/MongoUserModelWithPagination";
-import { MongoUserModelWithPassword } from "../../models/users/MongoUserModelWithPassword";
 import { funcFilter } from "../../functions/global/func-filter";
 import { funcPagination } from "../../functions/global/func-pagination";
 import { funcSorting } from "../../functions/global/func-sorting";
 import { funcOutput } from "../../functions/global/func-output";
+import { MongoUserModelWithId } from "../../models/users/MongoUserModelWithId";
+import { MongoUserModelWithPasswordWithId } from "../../models/users/MongoUserModelWithPasswordWithId";
 
 export const usersQueryRepository = {
   // Return users with query
@@ -47,14 +48,14 @@ export const usersQueryRepository = {
     );
   },
 
-  // Return user by ID
-  async findUserById(
+  // Return user with string ID
+  async findUserByIdWithStringId(
     _id: ObjectId
-  ): Promise<false | MongoUserModelWithStringId> {
+  ): Promise<MongoUserModelWithStringId | null> {
     const foundUser = await usersCollection.findOne({ _id });
 
     if (!foundUser) {
-      return false;
+      return null;
     }
 
     return {
@@ -65,9 +66,22 @@ export const usersQueryRepository = {
     };
   },
 
+  // Return user with string ID
+  async findUserByIdWithMongoId(
+    _id: ObjectId
+  ): Promise<MongoUserModelWithId | null> {
+    const foundUser = await usersCollection.findOne({ _id });
+
+    if (!foundUser) {
+      return null;
+    }
+
+    return foundUser;
+  },
+
   async findUserByLoginOrEmail(
     loginOrEmail: string
-  ): Promise<MongoUserModelWithPassword | null> {
+  ): Promise<MongoUserModelWithPasswordWithId | null> {
     return await usersCollection.findOne({
       $or: [{ login: loginOrEmail }, { email: loginOrEmail }],
     });
