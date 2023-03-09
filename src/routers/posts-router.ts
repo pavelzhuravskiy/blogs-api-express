@@ -4,16 +4,12 @@ import { authBasic } from "../middlewares/auth/auth-basic";
 import { validationPostsInput } from "../middlewares/validations/input/validation-posts-input";
 import { validationErrorCheck } from "../middlewares/validations/_validation-error-check";
 import { ObjectId } from "mongodb";
-import {
-  RequestWithParamsAndQuery,
-  RequestWithQuery,
-} from "../types/request-types";
+import { RequestWithQuery } from "../types/request-types";
 import { validationPostsCreation } from "../middlewares/validations/validation-posts-creation";
 import { validationPostsFindByParamId } from "../middlewares/validations/find-by-id/validation-posts-find-by-param-id";
 import { postsQueryRepository } from "../repositories/query-repos/mongodb-posts-query-repository";
 import { GlobalQueryModel } from "../models/global/GlobalQueryModel";
 import { ValidationCommentsInput } from "../middlewares/validations/input/validation-comments-input";
-import { GlobalIdStringModel } from "../models/global/GlobalIdStringModel";
 import { commentsQueryRepository } from "../repositories/query-repos/mongodb-comments-query-repository";
 import { commentsService } from "../domain/comments-service";
 import { authBearer } from "../middlewares/auth/auth-bearer";
@@ -99,7 +95,7 @@ postsRouter.get(
   validationPostsFindByParamId,
   validationErrorCheck,
   async (
-    req: RequestWithParamsAndQuery<GlobalIdStringModel, GlobalQueryModel>,
+    req: RequestWithQuery<GlobalQueryModel>,
     res: Response
   ) => {
     const foundComments = await commentsQueryRepository.findComments(
@@ -107,7 +103,6 @@ postsRouter.get(
       req.query.sortDirection,
       req.query.pageNumber,
       req.query.pageSize,
-      new ObjectId(req.params.id)
     );
     res.json(foundComments);
   }

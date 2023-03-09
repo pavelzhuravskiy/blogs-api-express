@@ -2,7 +2,6 @@ import { commentsCollection } from "../_mongodb-connect";
 import { ObjectId } from "mongodb";
 import { funcCommentsMapping } from "../../functions/mappings/func-comments-mapping";
 import { MongoCommentModelWithStringId } from "../../models/comments/MongoCommentModelWithStringId";
-import { funcFilter } from "../../functions/global/func-filter";
 import { funcPagination } from "../../functions/global/func-pagination";
 import { funcSorting } from "../../functions/global/func-sorting";
 import { funcOutput } from "../../functions/global/func-output";
@@ -14,19 +13,14 @@ export const commentsQueryRepository = {
     sortBy: string,
     sortDirection: string,
     pageNumber: string,
-    pageSize: string,
-    blogId?: ObjectId
+    pageSize: string
   ): Promise<MongoCommentsModelWithPagination> {
-    // Filter
-    const commentsFilter = await funcFilter(blogId);
-
     // Pagination
     const commentsPagination = await funcPagination(
       await funcSorting(sortBy, sortDirection),
       Number(pageNumber) || 1,
       Number(pageSize) || 10,
-      commentsCollection,
-      commentsFilter
+      commentsCollection
     );
 
     // Output
@@ -35,8 +29,7 @@ export const commentsQueryRepository = {
       Number(pageSize) || 10,
       commentsPagination,
       commentsCollection,
-      funcCommentsMapping,
-      commentsFilter
+      funcCommentsMapping
     );
   },
 

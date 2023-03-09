@@ -5,6 +5,7 @@ import { validationCommentsFindByParamId } from "../middlewares/validations/find
 import { commentsQueryRepository } from "../repositories/query-repos/mongodb-comments-query-repository";
 import { commentsService } from "../domain/comments-service";
 import { ValidationCommentsInput } from "../middlewares/validations/input/validation-comments-input";
+import {authBearer} from "../middlewares/auth/auth-bearer";
 
 export const commentsRouter = Router({});
 
@@ -22,7 +23,7 @@ commentsRouter.get(
 
 commentsRouter.put(
   "/:id",
-  // TODO Bearer Auth,
+  authBearer,
   validationCommentsFindByParamId,
   ValidationCommentsInput,
   validationErrorCheck,
@@ -43,7 +44,7 @@ commentsRouter.put(
 
 commentsRouter.delete(
   "/:id",
-  // TODO Bearer Auth
+  authBearer,
   validationCommentsFindByParamId,
   validationErrorCheck,
   async (req: Request, res: Response) => {
