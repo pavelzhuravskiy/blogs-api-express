@@ -8,14 +8,14 @@ export const funcOutput = async (
   mapping: Function,
   filter?: Document,
 ) => {
-  const outputCount = await collection.countDocuments(filter);
-  const pagesCount = Math.ceil(outputCount / pageSize);
+  const totalCount = await collection.countDocuments(filter);
+  const pagesCount = Math.ceil(totalCount / pageSize);
 
   return {
     pagesCount: pagesCount,
     page: pageNumber,
     pageSize: pageSize,
-    totalCount: outputCount,
+    totalCount,
     items: mapping(output),
   };
 };

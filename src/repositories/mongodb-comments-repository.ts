@@ -7,7 +7,7 @@ export const commentsRepository = {
   // Create new comment
   async createNewComment(
     newComment: MongoCommentModel
-  ): Promise<boolean | MongoCommentModelWithStringId> {
+  ): Promise<MongoCommentModelWithStringId> {
     const insertedComment = await commentsCollection.insertOne(newComment);
 
     return {
