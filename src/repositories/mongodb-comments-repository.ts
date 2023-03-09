@@ -39,4 +39,10 @@ export const commentsRepository = {
     const result = await commentsCollection.deleteOne({ _id });
     return result.deletedCount === 1;
   },
+
+  // Delete all comments
+  async deleteAll(): Promise<boolean> {
+    await commentsCollection.deleteMany({});
+    return (await commentsCollection.countDocuments()) === 0;
+  },
 };

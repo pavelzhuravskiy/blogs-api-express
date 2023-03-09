@@ -13,6 +13,8 @@ import { ValidationCommentsInput } from "../middlewares/validations/input/valida
 import { commentsQueryRepository } from "../repositories/query-repos/mongodb-comments-query-repository";
 import { commentsService } from "../domain/comments-service";
 import { authBearer } from "../middlewares/auth/auth-bearer";
+import {commentsRouter} from "./comments-router";
+import {commentsRepository} from "../repositories/mongodb-comments-repository";
 
 export const postsRouter = Router({});
 
@@ -123,6 +125,15 @@ postsRouter.post(
     res.status(201).json(newComment);
   }
 );
+
+commentsRouter.delete("/", authBasic, async (req: Request, res: Response) => {
+    const isDeleted = await commentsRepository.deleteAll();
+    if (isDeleted) {
+        res.sendStatus(204);
+    } else {
+        res.sendStatus(404);
+    }
+});
 
 // Comments section end
 
