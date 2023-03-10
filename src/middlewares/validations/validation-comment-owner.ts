@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import { commentsQueryRepository } from "../../repositories/query-repos/mongodb-comments-query-repository";
 import { ObjectId } from "mongodb";
 
-export const validationUserCorrect = async (
+export const validationCommentOwner = async (
   req: Request,
   res: Response,
   next: NextFunction

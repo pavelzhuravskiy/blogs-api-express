@@ -6,7 +6,7 @@ import { commentsQueryRepository } from "../repositories/query-repos/mongodb-com
 import { commentsService } from "../domain/comments-service";
 import { ValidationCommentsInput } from "../middlewares/validations/input/validation-comments-input";
 import { authBearer } from "../middlewares/auth/auth-bearer";
-import { validationUserCorrect } from "../middlewares/validations/validation-user-correct";
+import { validationCommentOwner } from "../middlewares/validations/validation-comment-owner";
 import { authBasic } from "../middlewares/auth/auth-basic";
 
 export const commentsRouter = Router({});
@@ -25,11 +25,11 @@ commentsRouter.get(
 
 commentsRouter.put(
   "/:id",
-  validationCommentsFindByParamId, // 404
-  authBearer, // 401
-  validationUserCorrect, // 403
-  ValidationCommentsInput, // 400
+  validationCommentsFindByParamId,
+  ValidationCommentsInput,
   validationErrorCheck,
+  authBearer,
+  validationCommentOwner,
   async (req: Request, res: Response) => {
     const isUpdated = await commentsService.updateComment(
       new ObjectId(req.params.id),
@@ -48,9 +48,9 @@ commentsRouter.put(
 commentsRouter.delete(
   "/:id",
   validationCommentsFindByParamId, // 404
-  authBearer, // 401
-  validationUserCorrect, // 403
   validationErrorCheck,
+  authBearer, // 401
+  validationCommentOwner, // 403
   async (req: Request, res: Response) => {
     const isDeleted = await commentsService.deleteComment(
       new ObjectId(req.params.id)
