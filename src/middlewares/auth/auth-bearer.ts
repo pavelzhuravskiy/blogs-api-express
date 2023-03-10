@@ -21,4 +21,4 @@ export const authBearer = async (
   } else {
     res.sendStatus(401);
   }
-};
+}
