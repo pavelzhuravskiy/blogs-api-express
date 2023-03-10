@@ -25,6 +25,11 @@ import {
   usersLength,
   foundUsersObj,
   authentication,
+  commentCreator,
+  commentReturner,
+  firstComment,
+  commentUpdater,
+  firstCommentId, commentsLength, eraserWithIdBearer,
 } from "../../test-utils/test-functions";
 import {
   basicAuthKey,
@@ -68,7 +73,7 @@ import {
   userEmailFilterString03,
   userEmailFilterString04,
   userEmailFilterString05,
-  userEmailString,
+  userEmailString, commentsURI, commentNewContentString,
 } from "../../test-utils/test-strings";
 import { emptyOutput } from "../../test-utils/test-objects";
 import request from "supertest";
@@ -461,12 +466,12 @@ describe("Posts CRUD operations", () => {
     expect(post).toStrictEqual(returnedPost);
   });
   it("should delete post by ID", async () => {
-    // Trying to delete both posts
+    // Trying to delete post
     const postId = await firstPostId();
     const response = await eraserWithId(postsURI, postId);
     expect(response.status).toBe(204);
 
-    // Checking result by returning blogs array length
+    // Checking result by returning posts array length
     const length = await postsLength();
     expect(length).toBe(0);
   });
@@ -1039,6 +1044,86 @@ describe("Users pagination", () => {
     expect(usersWithQuery.totalCount).toBe(20);
     expect(usersWithQuery.items.length).toBe(5);
   }, 30000);
+});
+
+describe("Comments CRUD operations", () => {
+  beforeAll(eraseAll);
+  it("should create new blog for testing", async () => {
+    // Trying to create a blog
+    const response = await blogCreator();
+    expect(response.status).toBe(201);
+
+    // Checking result by returning created blog
+    const blog = await firstBlog();
+    const returnedBlog = await blogReturner();
+    expect(blog).toStrictEqual(returnedBlog);
+  });
+  it("should create new post for testing", async () => {
+    // Trying to create a post
+    const response = await postCreator();
+    expect(response.status).toBe(201);
+
+    // Checking result by returning created post
+    const post = await firstPost();
+    const returnedPost = await postReturner();
+    expect(post).toStrictEqual(returnedPost);
+  });
+  it("should return empty array of comments", async () => {
+    const postId = await firstPostId();
+    const response = await getter(postsURI + postId + commentsURI);
+    expect(response.status).toBe(200);
+    expect(response.body).toEqual(emptyOutput);
+  });
+  it("should create new user for testing", async () => {
+    // Trying to create user
+    const response = await userCreator();
+    expect(response.status).toBe(201);
+
+    // Checking result by returning created user
+    const user = await firstUser();
+    const returnedUser = await userReturner();
+    expect(user).toStrictEqual(returnedUser);
+  });
+  it("should create new comment", async () => {
+
+    // Trying to create comment with authenticated user
+    const response = await commentCreator();
+    expect(response.status).toBe(201);
+
+    // Checking result by returning created post
+    const comment = await firstComment();
+    const returnedComment = await commentReturner();
+    expect(comment).toStrictEqual(returnedComment);
+  });
+  it("should update comment", async () => {
+    // Trying to update comment
+    const response = await commentUpdater();
+    expect(response.status).toBe(204);
+  });
+  it("should return comment by ID with updated data", async () => {
+    // Trying to get comment by ID
+    const commentId = await firstCommentId();
+    const response = await getterWithId(commentsURI, commentId);
+    expect(response.status).toBe(200);
+
+    // Checking result by returning updated post
+    const comment = await firstComment();
+    const returnedComment = await commentReturner(
+        undefined,
+        commentNewContentString
+    );
+    expect(comment).toStrictEqual(returnedComment);
+  });
+  it("should delete comment by ID", async () => {
+    // Trying to delete comment
+    const commentId = await firstCommentId();
+    const response = await eraserWithIdBearer(commentsURI, commentId);
+    expect(response.status).toBe(204);
+
+    // Checking result by returning blogs array length
+    const length = await commentsLength();
+    expect(length).toBe(0);
+  });
 });
 
 describe("Authentication operation", () => {

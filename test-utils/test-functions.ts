@@ -11,6 +11,9 @@ import {
   blogNewWebsiteUrlString,
   blogsURI,
   blogWebsiteUrlString,
+  commentContentString,
+  commentNewContentString,
+  commentsURI,
   postContentString,
   postNewContentString,
   postNewShortDescriptionString,
@@ -33,29 +36,55 @@ import {
 import {
   usersQueryRepository
 } from "../src/repositories/query-repos/mongodb-users-query-repository";
+import {
+  commentsQueryRepository
+} from "../src/repositories/query-repos/mongodb-comments-query-repository";
+
+// ---------- AUTH FUNCTIONS ----------
+
+// User authentication
+export const authentication = async (
+    uri: string = authURI,
+    loginOrEmail: any = userLoginString,
+    password: any = userPasswordString
+) => {
+  return request(app).post(uri).send({
+    loginOrEmail,
+    password,
+  });
+};
 
 // ---------- UNIVERSAL FUNCTIONS ----------
 
-// Get all blogs or posts
+// Get all
 export const getter = (uri: string) => {
   return request(app).get(uri);
 };
 
-// Get blog or post by id
+// Get by id
 export const getterWithId = (uri: string, id: string) => {
   return request(app).get(uri + id);
 };
 
-// Delete all blogs or posts
+// Delete all (Basic auth)
 export const eraser = (uri: string) => {
   return request(app).delete(uri).set(basicAuthKey, basicAuthValue);
 };
 
-// Delete blog or post by id
+// Delete by id (Basic auth)
 export const eraserWithId = (uri: string, id: string) => {
   return request(app)
     .delete(uri + id)
     .set(basicAuthKey, basicAuthValue);
+};
+
+// Delete blog or post by id (Bearer auth)
+export const eraserWithIdBearer = async (uri: string, id: string) => {
+  const loginResponse = await authentication();
+  const token = loginResponse.body.accessToken;
+  return request(app)
+      .delete(uri + id)
+      .set(basicAuthKey, `Bearer ${token}`);
 };
 
 // ---------- BLOGS FUNCTIONS ----------
@@ -278,6 +307,11 @@ export const firstUserId = async () => {
   return (await foundUsersObj()).items[0].id;
 };
 
+// Find first user Login
+export const firstUserLogin = async () => {
+  return (await foundUsersObj()).items[0].login;
+};
+
 // Create new user
 export const userCreator = async (
   uri: string = usersURI,
@@ -310,21 +344,85 @@ export const userReturner = async (
   };
 };
 
-// ---------- AUTH FUNCTIONS ----------
+// ---------- COMMENTS FUNCTIONS ----------
 
-// User authentication
-export const authentication = async (
-  uri: string = authURI,
-  loginOrEmail: any = userLoginString,
-  password: any = userPasswordString
+// Find comments in repository
+export const foundCommentsObj = async (
+  sortBy: string = "createdAt",
+  sortDirection: string = "desc",
+  pageNumber: string = "1",
+  pageSize: string = "10"
 ) => {
+  const postId = new ObjectId(await firstPostId());
+  return await commentsQueryRepository.findComments(
+    sortBy,
+    sortDirection,
+    pageNumber,
+    pageSize,
+    postId
+  );
+};
+
+// Find comments array length
+export const commentsLength = async () => {
+  return (await foundCommentsObj()).items.length;
+};
+
+// Find first comment
+export const firstComment = async () => {
+  return (await foundCommentsObj()).items[0];
+};
+
+// Find first comment ID
+export const firstCommentId = async () => {
+  return (await foundCommentsObj()).items[0].id;
+};
+
+// Create new comment
+export const commentCreator = async (content: any = commentContentString) => {
+  const postId = await firstPostId();
+  const loginResponse = await authentication();
+  const token = loginResponse.body.accessToken;
   return request(app)
-    .post(uri)
+    .post(postsURI + postId + commentsURI)
     .send({
-      loginOrEmail,
-      password,
+      content,
     })
-    .set(basicAuthKey, basicAuthValue);
+    .set(basicAuthKey, `Bearer ${token}`);
+};
+
+// Return new comment
+export const commentReturner = async (
+    id: string = expect.any(String),
+    content: string = commentContentString,
+    createdAt: string = expect.any(String)
+) => {
+  const userId = await firstUserId()
+  const userLogin = await firstUserLogin()
+  return {
+    id,
+    content,
+    commentatorInfo: {
+      userId,
+      userLogin
+    },
+    createdAt,
+  };
+};
+
+// Update post
+export const commentUpdater = async (
+    content: string = commentNewContentString
+) => {
+  const commentId = await firstCommentId()
+  const loginResponse = await authentication();
+  const token = loginResponse.body.accessToken;
+  return request(app)
+      .put(commentsURI + commentId)
+      .send({
+        content,
+      })
+      .set(basicAuthKey, `Bearer ${token}`);
 };
 
 // ---------- ERASER FUNCTION ----------

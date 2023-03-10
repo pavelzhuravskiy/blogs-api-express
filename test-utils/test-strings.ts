@@ -6,6 +6,7 @@ export const basicAuthValue = "Basic YWRtaW46cXdlcnR5";
 export const blogsURI = "/blogs/";
 export const postsURI = "/posts/";
 export const usersURI = "/users/";
+export const commentsURI = "/comments/";
 export const authURI = "/auth/login";
 export const invalidURI = "/-100/";
 
@@ -61,6 +62,12 @@ export const userEmailFilterString02 = "elena@test.com";
 export const userEmailFilterString03 = "bob@test.com";
 export const userEmailFilterString04 = "ivan@test.com";
 export const userEmailFilterString05 = "tom@test.com";
+
+// Comment creation strings
+export const commentContentString = "Lorem ipsum dolor sit";
+
+// Comment updating strings
+export const commentNewContentString = "New content for comment";
 
 // Long strings
 export const longString17 = "Lorem ipsum dolor";
