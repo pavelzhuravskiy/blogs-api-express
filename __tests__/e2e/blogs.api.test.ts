@@ -29,7 +29,11 @@ import {
   commentReturner,
   firstComment,
   commentUpdater,
-  firstCommentId, commentsLength, eraserWithIdBearer,
+  firstCommentId,
+  commentsLength,
+  eraserWithIdBearer,
+  invalidCommentCreator,
+  invalidCommentUpdater,
 } from "../../test-utils/test-functions";
 import {
   basicAuthKey,
@@ -73,7 +77,9 @@ import {
   userEmailFilterString03,
   userEmailFilterString04,
   userEmailFilterString05,
-  userEmailString, commentsURI, commentNewContentString,
+  userEmailString,
+  commentsURI,
+  commentNewContentString,
 } from "../../test-utils/test-strings";
 import { emptyOutput } from "../../test-utils/test-objects";
 import request from "supertest";
@@ -187,7 +193,7 @@ describe("Blogs CRUD operations", () => {
     expect(length).toBe(0);
   });
 });
-describe("Blogs validations", () => {
+describe("Blogs input validations", () => {
   beforeAll(eraseAll);
   it("should NOT create new blog without name", async () => {
     // Trying to create a blog without name
@@ -302,19 +308,19 @@ describe("Blogs 404 errors checks", () => {
     const returnedBlog = await blogReturner();
     expect(blog).toStrictEqual(returnedBlog);
   });
-  it("should return 404 when getting not existing blog", async () => {
+  it("should return 404 when getting nonexistent blog", async () => {
     const response = await getter(blogsURI + invalidURI);
     expect(response.status).toBe(404);
   });
-  it("should return 404 when getting posts of not existing blog", async () => {
+  it("should return 404 when getting posts of nonexistent blog", async () => {
     const response = await getter(blogsURI + invalidURI + postsURI);
     expect(response.status).toBe(404);
   });
-  it("should return 404 when updating not existing blog", async () => {
+  it("should return 404 when updating nonexistent blog", async () => {
     const response = await blogUpdater(blogsURI + invalidURI);
     expect(response.status).toBe(404);
   });
-  it("should return 404 when deleting not existing blog", async () => {
+  it("should return 404 when deleting nonexistent blog", async () => {
     const response = await eraser(blogsURI + invalidURI);
     expect(response.status).toBe(404);
   });
@@ -507,7 +513,7 @@ describe("Posts inside blog CR operations", () => {
     expect(post).toStrictEqual(returnedPost);
   });
 });
-describe("Posts validations", () => {
+describe("Posts input validations", () => {
   beforeAll(eraseAll);
   it("should create new blog for posts testing", async () => {
     // Trying to create a blog
@@ -635,15 +641,15 @@ describe("Posts 404 errors checks", () => {
     const returnedBlog = await blogReturner();
     expect(blog).toStrictEqual(returnedBlog);
   });
-  it("should return 404 when getting not existing post", async () => {
+  it("should return 404 when getting nonexistent post", async () => {
     const response = await getter(postsURI + invalidURI);
     expect(response.status).toBe(404);
   });
-  it("should return 404 when updating not existing post", async () => {
+  it("should return 404 when updating nonexistent post", async () => {
     const response = await blogUpdater(postsURI + invalidURI);
     expect(response.status).toBe(404);
   });
-  it("should return 404 when deleting not existing post", async () => {
+  it("should return 404 when deleting nonexistent post", async () => {
     const response = await eraser(postsURI + invalidURI);
     expect(response.status).toBe(404);
   });
@@ -755,7 +761,7 @@ describe("Users CRD operations", () => {
     expect(length).toBe(0);
   });
 });
-describe("Users validations", () => {
+describe("Users input validations", () => {
   beforeAll(eraseAll);
   it("should NOT create new user without login", async () => {
     // Trying to create user without login
@@ -865,7 +871,7 @@ describe("Users 404 errors checks", () => {
     const returnedUser = await userReturner();
     expect(user).toStrictEqual(returnedUser);
   });
-  it("should return 404 when deleting not existing user", async () => {
+  it("should return 404 when deleting nonexistent user", async () => {
     const response = await eraser(usersURI + invalidURI);
     expect(response.status).toBe(404);
   });
@@ -1085,7 +1091,6 @@ describe("Comments CRUD operations", () => {
     expect(user).toStrictEqual(returnedUser);
   });
   it("should create new comment", async () => {
-
     // Trying to create comment with authenticated user
     const response = await commentCreator();
     expect(response.status).toBe(201);
@@ -1109,8 +1114,8 @@ describe("Comments CRUD operations", () => {
     // Checking result by returning updated post
     const comment = await firstComment();
     const returnedComment = await commentReturner(
-        undefined,
-        commentNewContentString
+      undefined,
+      commentNewContentString
     );
     expect(comment).toStrictEqual(returnedComment);
   });
@@ -1123,6 +1128,131 @@ describe("Comments CRUD operations", () => {
     // Checking result by returning blogs array length
     const length = await commentsLength();
     expect(length).toBe(0);
+  });
+});
+describe("Comments input validations", () => {
+  beforeAll(eraseAll);
+  it("should create new blog for testing", async () => {
+    // Trying to create a blog
+    const response = await blogCreator();
+    expect(response.status).toBe(201);
+
+    // Checking result by returning created blog
+    const blog = await firstBlog();
+    const returnedBlog = await blogReturner();
+    expect(blog).toStrictEqual(returnedBlog);
+  });
+  it("should create new post for testing", async () => {
+    // Trying to create a post
+    const response = await postCreator();
+    expect(response.status).toBe(201);
+
+    // Checking result by returning created post
+    const post = await firstPost();
+    const returnedPost = await postReturner();
+    expect(post).toStrictEqual(returnedPost);
+  });
+  it("should return empty array of comments", async () => {
+    const postId = await firstPostId();
+    const response = await getter(postsURI + postId + commentsURI);
+    expect(response.status).toBe(200);
+    expect(response.body).toEqual(emptyOutput);
+  });
+  it("should create new user for testing", async () => {
+    // Trying to create user
+    const response = await userCreator();
+    expect(response.status).toBe(201);
+
+    // Checking result by returning created user
+    const user = await firstUser();
+    const returnedUser = await userReturner();
+    expect(user).toStrictEqual(returnedUser);
+  });
+  it("should NOT create new comment without content", async () => {
+    // Trying to create comment without content
+    const response = await commentCreator(null);
+    expect(response.status).toBe(400);
+
+    // Checking result
+    const length = await commentsLength();
+    expect(length).toBe(0);
+  });
+  it("should NOT create new comment with incorrect content type", async () => {
+    // Trying to create comment with incorrect content type
+    const response = await commentCreator(123);
+    expect(response.status).toBe(400);
+
+    // Checking result
+    const length = await commentsLength();
+    expect(length).toBe(0);
+  });
+  it("should NOT create new comment with incorrect content length", async () => {
+    // Trying to create comment with incorrect content length
+    const response = await commentCreator(longString17);
+    expect(response.status).toBe(400);
+
+    // Checking result
+    const length = await commentsLength();
+    expect(length).toBe(0);
+  });
+});
+describe("Comments 404 errors checks", () => {
+  beforeAll(eraseAll);
+  it("should create new blog for testing", async () => {
+    // Trying to create a blog
+    const response = await blogCreator();
+    expect(response.status).toBe(201);
+
+    // Checking result by returning created blog
+    const blog = await firstBlog();
+    const returnedBlog = await blogReturner();
+    expect(blog).toStrictEqual(returnedBlog);
+  });
+  it("should create new post for testing", async () => {
+    // Trying to create a post
+    const response = await postCreator();
+    expect(response.status).toBe(201);
+
+    // Checking result by returning created post
+    const post = await firstPost();
+    const returnedPost = await postReturner();
+    expect(post).toStrictEqual(returnedPost);
+  });
+  it("should return empty array of comments", async () => {
+    const postId = await firstPostId();
+    const response = await getter(postsURI + postId + commentsURI);
+    expect(response.status).toBe(200);
+    expect(response.body).toEqual(emptyOutput);
+  });
+  it("should create new user for testing", async () => {
+    // Trying to create user
+    const response = await userCreator();
+    expect(response.status).toBe(201);
+
+    // Checking result by returning created user
+    const user = await firstUser();
+    const returnedUser = await userReturner();
+    expect(user).toStrictEqual(returnedUser);
+  });
+  it("should return 404 when getting comments of nonexistent post", async () => {
+    const response = await getter(postsURI + invalidURI + commentsURI);
+    expect(response.status).toBe(404);
+  });
+  it("should return 404 when creating comment of nonexistent post", async () => {
+    const response = await invalidCommentCreator();
+    expect(response.status).toBe(404);
+  });
+  it("should return 404 when getting nonexistent comment", async () => {
+    const response = await getter(commentsURI + invalidURI);
+    expect(response.status).toBe(404);
+  });
+  it("should return 404 when updating nonexistent comment", async () => {
+    const response = await invalidCommentUpdater(commentsURI + invalidURI);
+    expect(response.status).toBe(404);
+  });
+  it("should return 404 when deleting nonexistent comment", async () => {
+    const response = await eraser(commentsURI + invalidURI);
+    expect(response.status).toBe(404);
   });
 });
 
@@ -1156,7 +1286,7 @@ describe("Authentication operation", () => {
     expect(incorrectLoginResponse.status).toBe(401);
   });
 });
-describe("Authentication validations", () => {
+describe("Authentication input validations", () => {
   beforeAll(eraseAll);
   it("should NOT authenticate without login (email)", async () => {
     // Trying to authenticate without login (email)

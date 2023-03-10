@@ -1,10 +1,13 @@
-import { ObjectId } from "mongodb";
-import { postsRepository } from "../repositories/mongodb-posts-repository";
-import { MongoPostModelWithId } from "../models/posts/MongoPostModelWithId";
-import { MongoPostModelWithStringId } from "../models/posts/MongoPostModelWithStringId";
-import { MongoPostModel } from "../models/posts/MongoPostModel";
-import { blogsQueryRepository } from "../repositories/query-repos/mongodb-blogs-query-repository";
-import {commentsRepository} from "../repositories/mongodb-comments-repository";
+import {ObjectId} from "mongodb";
+import {postsRepository} from "../repositories/mongodb-posts-repository";
+import {MongoPostModelWithId} from "../models/posts/MongoPostModelWithId";
+import {
+  MongoPostModelWithStringId
+} from "../models/posts/MongoPostModelWithStringId";
+import {MongoPostModel} from "../models/posts/MongoPostModel";
+import {
+  blogsQueryRepository
+} from "../repositories/query-repos/mongodb-blogs-query-repository";
 
 export const postsService = {
   // Create new post
@@ -56,13 +59,11 @@ export const postsService = {
 
   // Delete existing post
   async deletePost(_id: ObjectId): Promise<boolean> {
-    await commentsRepository.deleteCommentsByPostId(_id)
     return postsRepository.deletePost(_id);
   },
 
   // Delete all posts
   async deleteAll(): Promise<boolean> {
-    await commentsRepository.deleteAll()
     return postsRepository.deleteAll();
   },
 };

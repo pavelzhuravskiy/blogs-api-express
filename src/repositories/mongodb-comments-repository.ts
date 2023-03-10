@@ -40,12 +40,6 @@ export const commentsRepository = {
     return result.deletedCount === 1;
   },
 
-  // Delete all comments by post ID
-  async deleteCommentsByPostId(_id: ObjectId): Promise<boolean> {
-    const result = await commentsCollection.deleteMany({ _id });
-    return result.deletedCount === 1;
-  },
-
   // Delete all comments
   async deleteAll(): Promise<boolean> {
     await commentsCollection.deleteMany({});

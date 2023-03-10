@@ -42,11 +42,6 @@ export const commentsService = {
     return commentsRepository.deleteComment(_id);
   },
 
-  // Delete all comments by post ID
-  async deleteCommentsByPostId(_id: ObjectId): Promise<boolean> {
-    return commentsRepository.deleteCommentsByPostId(_id);
-  },
-
   // Delete all comments
   async deleteAll(): Promise<boolean> {
     return commentsRepository.deleteAll();

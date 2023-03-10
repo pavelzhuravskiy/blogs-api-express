@@ -13,7 +13,7 @@ import {
   blogWebsiteUrlString,
   commentContentString,
   commentNewContentString,
-  commentsURI,
+  commentsURI, invalidURI,
   postContentString,
   postNewContentString,
   postNewShortDescriptionString,
@@ -410,7 +410,7 @@ export const commentReturner = async (
   };
 };
 
-// Update post
+// Update comment
 export const commentUpdater = async (
     content: string = commentNewContentString
 ) => {
@@ -425,10 +425,37 @@ export const commentUpdater = async (
       .set(basicAuthKey, `Bearer ${token}`);
 };
 
-// ---------- ERASER FUNCTION ----------
+// Fail to create new comment (invalid URI)
+export const invalidCommentCreator = async (content: any = commentContentString) => {
+  const loginResponse = await authentication();
+  const token = loginResponse.body.accessToken;
+  return request(app)
+      .post(postsURI + invalidURI + commentsURI)
+      .send({
+        content,
+      })
+      .set(basicAuthKey, `Bearer ${token}`);
+};
+
+// Update comment
+export const invalidCommentUpdater = async (
+    content: string = commentNewContentString
+) => {
+  const loginResponse = await authentication();
+  const token = loginResponse.body.accessToken;
+  console.log(`TEST ==> ${postsURI + invalidURI + commentsURI}`)
+  return request(app)
+      .put(commentsURI + invalidURI)
+      .send({
+        content,
+      })
+      .set(basicAuthKey, `Bearer ${token}`);
+};
+
 
 export const eraseAll = async () => {
   await eraser(blogsURI);
   await eraser(postsURI);
   await eraser(usersURI);
+  await eraser(commentsURI)
 };

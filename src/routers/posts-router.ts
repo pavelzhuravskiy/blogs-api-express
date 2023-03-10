@@ -101,7 +101,7 @@ postsRouter.delete("/", authBasic, async (req: Request, res: Response) => {
   }
 });
 
-// Comments section start
+// ----- Comments section start -----
 
 postsRouter.get(
   "/:id/comments",
@@ -138,19 +138,4 @@ postsRouter.post(
   }
 );
 
-postsRouter.delete(
-  "/:id/comments",
-  authBasic,
-  async (req: Request, res: Response) => {
-    const isDeleted = await commentsService.deleteCommentsByPostId(
-      new ObjectId(req.params.id)
-    );
-    if (isDeleted) {
-      res.sendStatus(204);
-    } else {
-      res.sendStatus(404);
-    }
-  }
-);
-
-// Comments section end
+// ----- Comments section end -----

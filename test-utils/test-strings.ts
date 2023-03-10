@@ -8,7 +8,7 @@ export const postsURI = "/posts/";
 export const usersURI = "/users/";
 export const commentsURI = "/comments/";
 export const authURI = "/auth/login";
-export const invalidURI = "/-100/";
+export const invalidURI = "-100";
 
 // Blog creation strings
 export const blogNameString = "Test name";
