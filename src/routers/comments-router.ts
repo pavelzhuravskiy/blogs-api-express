@@ -47,10 +47,10 @@ commentsRouter.put(
 
 commentsRouter.delete(
   "/:id",
-  validationCommentsFindByParamId, // 404
+  validationCommentsFindByParamId,
   validationErrorCheck,
-  authBearer, // 401
-  validationCommentOwner, // 403
+  authBearer,
+  validationCommentOwner,
   async (req: Request, res: Response) => {
     const isDeleted = await commentsService.deleteComment(
       new ObjectId(req.params.id)

@@ -43,11 +43,11 @@ export const postsQueryRepository = {
   // Return post by ID
   async findPostById(
     _id: ObjectId
-  ): Promise<boolean | MongoPostModelWithStringId> {
+  ): Promise<MongoPostModelWithStringId | null> {
     const foundPost = await postsCollection.findOne({ _id });
 
     if (!foundPost) {
-      return false;
+      return null;
     }
 
     return {

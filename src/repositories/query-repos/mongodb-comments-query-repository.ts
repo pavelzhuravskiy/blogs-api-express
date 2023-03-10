@@ -42,11 +42,11 @@ export const commentsQueryRepository = {
 
   async findCommentById(
     _id: ObjectId
-  ): Promise<false | MongoCommentModelWithStringId> {
+  ): Promise<MongoCommentModelWithStringId | null> {
     const foundComment = await commentsCollection.findOne({ _id });
 
     if (!foundComment) {
-      return false;
+      return null;
     }
 
     return {
