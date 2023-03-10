@@ -1,13 +1,15 @@
 // Credentials
 export const basicAuthKey = "Authorization";
 export const basicAuthValue = "Basic YWRtaW46cXdlcnR5";
+export const invalidAuthValue = "hello";
 
 // URIs
+export const accountURI = "/auth/me";
+export const loginURI = "/auth/login";
 export const blogsURI = "/blogs/";
 export const postsURI = "/posts/";
 export const usersURI = "/users/";
 export const commentsURI = "/comments/";
-export const authURI = "/auth/login";
 export const invalidURI = "-100";
 
 // Blog creation strings

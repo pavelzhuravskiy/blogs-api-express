@@ -1,7 +1,6 @@
-import { app } from "../src";
+import {app} from "../src";
 import request from "supertest";
 import {
-  authURI,
   basicAuthKey,
   basicAuthValue,
   blogDescriptionString,
@@ -14,7 +13,9 @@ import {
   commentContentString,
   commentNewContentString,
   commentsURI,
+  invalidAuthValue,
   invalidURI,
+  loginURI,
   postContentString,
   postNewContentString,
   postNewShortDescriptionString,
@@ -27,17 +28,25 @@ import {
   userPasswordString,
   usersURI,
 } from "./test-strings";
-import { ObjectId } from "mongodb";
-import { blogsQueryRepository } from "../src/repositories/query-repos/mongodb-blogs-query-repository";
-import { postsQueryRepository } from "../src/repositories/query-repos/mongodb-posts-query-repository";
-import { usersQueryRepository } from "../src/repositories/query-repos/mongodb-users-query-repository";
-import { commentsQueryRepository } from "../src/repositories/query-repos/mongodb-comments-query-repository";
+import {ObjectId} from "mongodb";
+import {
+  blogsQueryRepository
+} from "../src/repositories/query-repos/mongodb-blogs-query-repository";
+import {
+  postsQueryRepository
+} from "../src/repositories/query-repos/mongodb-posts-query-repository";
+import {
+  usersQueryRepository
+} from "../src/repositories/query-repos/mongodb-users-query-repository";
+import {
+  commentsQueryRepository
+} from "../src/repositories/query-repos/mongodb-comments-query-repository";
 
 // ---------- AUTH FUNCTIONS ----------
 
 // User authentication
 export const authentication = async (
-  uri: string = authURI,
+  uri: string = loginURI,
   loginOrEmail: any = userLoginString,
   password: any = userPasswordString
 ) => {
@@ -51,7 +60,7 @@ export const authentication = async (
 
 // Get all
 export const getter = (uri: string) => {
-  return request(app).get(uri);
+  return request(app).get(uri).set(basicAuthKey, basicAuthValue);
 };
 
 // Get by id
@@ -65,10 +74,10 @@ export const eraser = (uri: string) => {
 };
 
 // Delete by id (Basic auth)
-export const eraserWithId = (uri: string, id: string) => {
+export const eraserWithId = (uri: string, id: string, authValue: any = basicAuthValue) => {
   return request(app)
     .delete(uri + id)
-    .set(basicAuthKey, basicAuthValue);
+    .set(basicAuthKey, authValue);
 };
 
 // Delete blog or post by id (Bearer auth)
@@ -78,6 +87,11 @@ export const eraserWithIdBearer = async (uri: string, id: string) => {
   return request(app)
     .delete(uri + id)
     .set(basicAuthKey, `Bearer ${token}`);
+};
+
+// Get all (Basic auth with invalid credentials)
+export const getterWithInvalidCredentials = (uri: string) => {
+  return request(app).get(uri).set(basicAuthKey, invalidAuthValue);
 };
 
 // ---------- BLOGS FUNCTIONS ----------
@@ -123,7 +137,8 @@ export const blogCreator = async (
   uri: string = blogsURI,
   name: any = blogNameString,
   description: any = blogDescriptionString,
-  websiteUrl: any = blogWebsiteUrlString
+  websiteUrl: any = blogWebsiteUrlString,
+  authValue: any = basicAuthValue
 ) => {
   return request(app)
     .post(uri)
@@ -132,7 +147,7 @@ export const blogCreator = async (
       description,
       websiteUrl,
     })
-    .set(basicAuthKey, basicAuthValue);
+    .set(basicAuthKey, authValue);
 };
 
 // Return new blog
@@ -159,7 +174,8 @@ export const blogUpdater = async (
   uri: string = blogsURI,
   name: any = blogNewNameString,
   description: any = blogNewDescriptionString,
-  websiteUrl: any = blogNewWebsiteUrlString
+  websiteUrl: any = blogNewWebsiteUrlString,
+  authValue: any = basicAuthValue
 ) => {
   const blogId = await firstBlogId();
   return request(app)
@@ -169,7 +185,7 @@ export const blogUpdater = async (
       description,
       websiteUrl,
     })
-    .set(basicAuthKey, basicAuthValue);
+    .set(basicAuthKey, authValue);
 };
 
 // ---------- POSTS FUNCTIONS ----------
@@ -220,7 +236,8 @@ export const postCreator = async (
   uri: string = postsURI,
   title: any = postTitleString,
   shortDescription: any = postShortDescriptionString,
-  content: any = postContentString
+  content: any = postContentString,
+  authValue: any = basicAuthValue
 ) => {
   const blogId = await firstBlogId();
   return request(app)
@@ -231,7 +248,7 @@ export const postCreator = async (
       content,
       blogId,
     })
-    .set(basicAuthKey, basicAuthValue);
+    .set(basicAuthKey, authValue);
 };
 
 // Return new post
@@ -260,7 +277,8 @@ export const postUpdater = async (
   uri: string = postsURI,
   title: string = postNewTitleString,
   shortDescription: string = postNewShortDescriptionString,
-  content: string = postNewContentString
+  content: string = postNewContentString,
+  authValue: any = basicAuthValue
 ) => {
   const postId = await firstPostId();
   const blogId = await firstBlogId();
@@ -272,7 +290,7 @@ export const postUpdater = async (
       content,
       blogId,
     })
-    .set(basicAuthKey, basicAuthValue);
+    .set(basicAuthKey, authValue);
 };
 
 // ---------- USERS FUNCTIONS ----------
@@ -320,7 +338,8 @@ export const userCreator = async (
   uri: string = usersURI,
   login: any = userLoginString,
   password: any = userPasswordString,
-  email: any = userEmailString
+  email: any = userEmailString,
+  authValue: any = basicAuthValue
 ) => {
   return request(app)
     .post(uri)
@@ -329,7 +348,7 @@ export const userCreator = async (
       password,
       email,
     })
-    .set(basicAuthKey, basicAuthValue);
+    .set(basicAuthKey, authValue);
 };
 
 // Return new user

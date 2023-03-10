@@ -14,6 +14,7 @@ export const usersRouter = Router({});
 
 usersRouter.get(
   "/",
+  authBasic,
   async (req: RequestWithQuery<GlobalQueryModel>, res: Response) => {
     const foundBlogs = await usersQueryRepository.findUsers(
       req.query.searchLoginTerm,
