@@ -35,11 +35,11 @@ commentsRouter.get(
 
 commentsRouter.put(
   "/:id",
-  authBearer,
-  validationUserCorrect,
   validationCommentsFindByParamId,
   ValidationCommentsInput,
   validationErrorCheck,
+  authBearer,
+  validationUserCorrect,
   async (req: Request, res: Response) => {
     const isUpdated = await commentsService.updateComment(
       new ObjectId(req.params.id),
@@ -57,10 +57,10 @@ commentsRouter.put(
 
 commentsRouter.delete(
   "/:id",
-  authBearer,
-  validationUserCorrect,
   validationCommentsFindByParamId,
   validationErrorCheck,
+  authBearer,
+  validationUserCorrect,
   async (req: Request, res: Response) => {
     const isDeleted = await commentsService.deleteComment(
       new ObjectId(req.params.id)
