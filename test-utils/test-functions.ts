@@ -518,4 +518,4 @@ export const eraseAll = async () => {
   await eraser(postsURI);
   await eraser(usersURI);
   await eraser(commentsURI);
-};
+}
