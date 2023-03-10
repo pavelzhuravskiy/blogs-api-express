@@ -18,7 +18,7 @@ export const blogsQueryRepository = {
     pageSize: string
   ): Promise<MongoBlogModelWithPagination> {
     // Filter
-    const blogsFilter = await funcFilter(undefined, searchNameTerm);
+    const blogsFilter = await funcFilter(undefined, undefined, searchNameTerm);
 
     // Pagination
     const blogsPagination = await funcPagination(

@@ -23,6 +23,7 @@ export const commentsService = {
         userId: user!._id.toString(),
         userLogin: user!.login,
       },
+      postId: _id.toString(),
       createdAt: new Date().toISOString(),
     };
     return commentsRepository.createNewComment(newComment);
@@ -41,7 +42,12 @@ export const commentsService = {
     return commentsRepository.deleteComment(_id);
   },
 
-  // Delete all posts
+  // Delete all comments by post ID
+  async deleteCommentsByPostId(_id: ObjectId): Promise<boolean> {
+    return commentsRepository.deleteCommentsByPostId(_id);
+  },
+
+  // Delete all comments
   async deleteAll(): Promise<boolean> {
     return commentsRepository.deleteAll();
   },

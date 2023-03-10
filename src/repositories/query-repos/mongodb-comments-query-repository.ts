@@ -6,6 +6,7 @@ import { funcPagination } from "../../functions/global/func-pagination";
 import { funcSorting } from "../../functions/global/func-sorting";
 import { funcOutput } from "../../functions/global/func-output";
 import { MongoCommentsModelWithPagination } from "../../models/comments/MongoCommentsModelWithPagination";
+import { funcFilter } from "../../functions/global/func-filter";
 
 export const commentsQueryRepository = {
   // Return comments with query
@@ -13,14 +14,19 @@ export const commentsQueryRepository = {
     sortBy: string,
     sortDirection: string,
     pageNumber: string,
-    pageSize: string
+    pageSize: string,
+    postId: ObjectId
   ): Promise<MongoCommentsModelWithPagination> {
+    // Filter
+    const commentsFilter = await funcFilter(undefined, postId);
+
     // Pagination
     const commentsPagination = await funcPagination(
       await funcSorting(sortBy, sortDirection),
       Number(pageNumber) || 1,
       Number(pageSize) || 10,
-      commentsCollection
+      commentsCollection,
+      commentsFilter
     );
 
     // Output
@@ -29,7 +35,8 @@ export const commentsQueryRepository = {
       Number(pageSize) || 10,
       commentsPagination,
       commentsCollection,
-      funcCommentsMapping
+      funcCommentsMapping,
+      commentsFilter
     );
   },
 

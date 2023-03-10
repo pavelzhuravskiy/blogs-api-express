@@ -24,6 +24,7 @@ export const usersQueryRepository = {
     const usersFilter = await funcFilter(
       undefined,
       undefined,
+      undefined,
       searchLoginTerm,
       searchEmailTerm
     );
