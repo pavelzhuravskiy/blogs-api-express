@@ -26,9 +26,9 @@ commentsRouter.get(
 commentsRouter.put(
   "/:id",
   validationCommentsFindByParamId,
+  authBearer,
   ValidationCommentsInput,
   validationErrorCheck,
-  authBearer,
   validationCommentOwner,
   async (req: Request, res: Response) => {
     const isUpdated = await commentsService.updateComment(
