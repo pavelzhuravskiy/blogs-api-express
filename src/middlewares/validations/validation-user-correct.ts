@@ -17,6 +17,5 @@ export const validationUserCorrect = async (
     next();
   } else {
     res.sendStatus(403);
-    return;
   }
 };
