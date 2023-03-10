@@ -1,39 +1,43 @@
 import {
-  eraseAll,
+  authentication,
   blogCreator,
   blogReturner,
   blogsLength,
   blogUpdater,
+  commentCreator,
+  commentCreatorSecondPost,
+  commentReturner,
+  commentsLength,
+  commentsLengthPostTwo,
+  commentUpdater,
+  eraseAll,
   eraser,
   eraserWithId,
+  eraserWithIdBearer,
   firstBlog,
   firstBlogId,
+  firstComment,
+  firstCommentId,
   firstPost,
   firstPostId,
+  firstUser,
+  firstUserId,
   foundBlogsObj,
+  foundCommentsObj,
   foundPostsObj,
+  foundUsersObj,
   getter,
   getterWithId,
+  invalidCommentCreator,
+  invalidCommentUpdater,
   postCreator,
   postReturner,
   postsLength,
   postUpdater,
+  secondPost,
   userCreator,
-  firstUser,
   userReturner,
-  firstUserId,
   usersLength,
-  foundUsersObj,
-  authentication,
-  commentCreator,
-  commentReturner,
-  firstComment,
-  commentUpdater,
-  firstCommentId,
-  commentsLength,
-  eraserWithIdBearer,
-  invalidCommentCreator,
-  invalidCommentUpdater,
 } from "../../test-utils/test-functions";
 import {
   basicAuthKey,
@@ -47,7 +51,13 @@ import {
   blogNewNameString,
   blogNewWebsiteUrlString,
   blogsURI,
-  spaceString,
+  commentContentString01,
+  commentContentString02,
+  commentContentString03,
+  commentContentString04,
+  commentContentString05,
+  commentNewContentString,
+  commentsURI,
   invalidURI,
   longString1013,
   longString109,
@@ -66,25 +76,24 @@ import {
   sortingString05,
   sortingString07,
   sortingString09,
-  usersURI,
-  userLoginFilterString01,
-  userLoginFilterString02,
-  userLoginFilterString03,
-  userLoginFilterString04,
-  userLoginFilterString05,
+  spaceString,
   userEmailFilterString01,
   userEmailFilterString02,
   userEmailFilterString03,
   userEmailFilterString04,
   userEmailFilterString05,
   userEmailString,
-  commentsURI,
-  commentNewContentString,
+  userLoginFilterString01,
+  userLoginFilterString02,
+  userLoginFilterString03,
+  userLoginFilterString04,
+  userLoginFilterString05,
+  usersURI,
 } from "../../test-utils/test-strings";
-import { emptyOutput } from "../../test-utils/test-objects";
+import {emptyOutput} from "../../test-utils/test-objects";
 import request from "supertest";
-import { app } from "../../src";
-import { client } from "../../src/repositories/_mongodb-connect";
+import {app} from "../../src";
+import {client} from "../../src/repositories/_mongodb-connect";
 
 afterAll(async () => {
   await client.close();
@@ -122,6 +131,16 @@ describe("Testing delete operation", () => {
     const returnedUser = await userReturner();
     expect(user).toStrictEqual(returnedUser);
   });
+  it("should create new comment", async () => {
+    // Trying to create comment
+    const response = await commentCreator();
+    expect(response.status).toBe(201);
+
+    // Checking result by returning created comment
+    const comment = await firstComment();
+    const returnedComment = await commentReturner();
+    expect(comment).toStrictEqual(returnedComment);
+  });
   it("should delete everything", async () => {
     // Trying to delete everything
     const blogsResponse = await eraser(blogsURI);
@@ -141,6 +160,60 @@ describe("Testing delete operation", () => {
     expect(lengthOfBlogs).toBe(0);
     expect(lengthOfPosts).toBe(0);
     expect(lengthOfUsers).toBe(0);
+  });
+});
+
+describe("Authentication operation", () => {
+  beforeAll(eraseAll);
+  it("should create new user", async () => {
+    // Trying to create user
+    const response = await userCreator();
+    expect(response.status).toBe(201);
+
+    // Checking result by returning created user
+    const user = await firstUser();
+    const returnedUser = await userReturner();
+    expect(user).toStrictEqual(returnedUser);
+  });
+  it("should log in user with correct credentials", async () => {
+    // Trying to authenticate with login
+    const loginResponse = await authentication();
+    expect(loginResponse.status).toBe(200);
+
+    // Trying to authenticate with email
+    const response = await authentication(undefined, userEmailString);
+    expect(response.status).toBe(200);
+  });
+  it("should NOT log in user with incorrect credentials", async () => {
+    // Trying to authenticate with incorrect login (email)
+    const incorrectLoginResponse = await authentication(
+        undefined,
+        longString17
+    );
+    expect(incorrectLoginResponse.status).toBe(401);
+  });
+});
+describe("Authentication input validations", () => {
+  beforeAll(eraseAll);
+  it("should NOT authenticate without login (email)", async () => {
+    // Trying to authenticate without login (email)
+    const response = await authentication(undefined, null);
+    expect(response.status).toBe(400);
+  });
+  it("should NOT authenticate with incorrect login (email) type", async () => {
+    // Trying to authenticate with incorrect login (email) type
+    const response = await authentication(undefined, 123);
+    expect(response.status).toBe(400);
+  });
+  it("should NOT authenticate without password", async () => {
+    // Trying to authenticate without password
+    const response = await authentication(undefined, undefined, null);
+    expect(response.status).toBe(400);
+  });
+  it("should NOT authenticate with incorrect password type", async () => {
+    // Trying to authenticate without password
+    const response = await authentication(undefined, undefined, 123);
+    expect(response.status).toBe(400);
   });
 });
 
@@ -1074,12 +1147,6 @@ describe("Comments CRUD operations", () => {
     const returnedPost = await postReturner();
     expect(post).toStrictEqual(returnedPost);
   });
-  it("should return empty array of comments", async () => {
-    const postId = await firstPostId();
-    const response = await getter(postsURI + postId + commentsURI);
-    expect(response.status).toBe(200);
-    expect(response.body).toEqual(emptyOutput);
-  });
   it("should create new user for testing", async () => {
     // Trying to create user
     const response = await userCreator();
@@ -1152,12 +1219,6 @@ describe("Comments input validations", () => {
     const returnedPost = await postReturner();
     expect(post).toStrictEqual(returnedPost);
   });
-  it("should return empty array of comments", async () => {
-    const postId = await firstPostId();
-    const response = await getter(postsURI + postId + commentsURI);
-    expect(response.status).toBe(200);
-    expect(response.body).toEqual(emptyOutput);
-  });
   it("should create new user for testing", async () => {
     // Trying to create user
     const response = await userCreator();
@@ -1218,12 +1279,6 @@ describe("Comments 404 errors checks", () => {
     const returnedPost = await postReturner();
     expect(post).toStrictEqual(returnedPost);
   });
-  it("should return empty array of comments", async () => {
-    const postId = await firstPostId();
-    const response = await getter(postsURI + postId + commentsURI);
-    expect(response.status).toBe(200);
-    expect(response.body).toEqual(emptyOutput);
-  });
   it("should create new user for testing", async () => {
     // Trying to create user
     const response = await userCreator();
@@ -1255,10 +1310,38 @@ describe("Comments 404 errors checks", () => {
     expect(response.status).toBe(404);
   });
 });
-
-describe("Authentication operation", () => {
+describe("Comments filtering by post (return all comments)", () => {
   beforeAll(eraseAll);
-  it("should create new user", async () => {
+  it("should create new blog for testing", async () => {
+    // Trying to create a blog
+    const response = await blogCreator();
+    expect(response.status).toBe(201);
+
+    // Checking result by returning created blog
+    const blog = await firstBlog();
+    const returnedBlog = await blogReturner();
+    expect(blog).toStrictEqual(returnedBlog);
+  });
+  it("should create two posts for testing", async () => {
+    // Trying to create two posts
+    let i = 0;
+    while (i < 2) {
+      const response = await postCreator();
+      i++;
+      expect(response.status).toBe(201);
+    }
+
+    // Checking result by returning created posts
+    const postOne = await firstPost();
+    const postTwo = await secondPost();
+    const returnedPost = await postReturner();
+    expect(postOne).toStrictEqual(returnedPost);
+    expect(postTwo).toStrictEqual(returnedPost);
+
+    const length = await postsLength();
+    expect(length).toBe(2);
+  });
+  it("should create new user for testing", async () => {
     // Trying to create user
     const response = await userCreator();
     expect(response.status).toBe(201);
@@ -1268,44 +1351,160 @@ describe("Authentication operation", () => {
     const returnedUser = await userReturner();
     expect(user).toStrictEqual(returnedUser);
   });
-  it("should log in user with correct credentials", async () => {
-    // Trying to authenticate with login
-    const loginResponse = await authentication();
-    expect(loginResponse.status).toBe(200);
+  it("should create new comments for posts", async () => {
+    // Trying to create 4 comments for first post
+    let i = 0;
+    while (i < 4) {
+      const response = await commentCreator();
+      expect(response.status).toBe(201);
+      i++;
+    }
 
-    // Trying to authenticate with email
-    const response = await authentication(undefined, userEmailString);
-    expect(response.status).toBe(200);
-  });
-  it("should NOT log in user with incorrect credentials", async () => {
-    // Trying to authenticate with incorrect login (email)
-    const incorrectLoginResponse = await authentication(
-      undefined,
-      longString17
-    );
-    expect(incorrectLoginResponse.status).toBe(401);
+    // Trying to create 3 comments for second post
+    let j = 0;
+    while (j < 3) {
+      const response = await commentCreatorSecondPost();
+      expect(response.status).toBe(201);
+      j++;
+    }
+
+    // Trying to return comments for first post
+    const firstPost = await firstPostId();
+    const responseOne = await getter(postsURI + firstPost + commentsURI);
+    expect(responseOne.status).toBe(200);
+
+    const lengthOfPostOne = await commentsLength();
+    expect(lengthOfPostOne).toBe(4);
+
+    const lengthOfPostTwo = await commentsLengthPostTwo();
+    expect(lengthOfPostTwo).toBe(3);
   });
 });
-describe("Authentication input validations", () => {
+describe("Comments sorting", () => {
   beforeAll(eraseAll);
-  it("should NOT authenticate without login (email)", async () => {
-    // Trying to authenticate without login (email)
-    const response = await authentication(undefined, null);
-    expect(response.status).toBe(400);
+  it("should create new blog for testing", async () => {
+    // Trying to create a blog
+    const response = await blogCreator();
+    expect(response.status).toBe(201);
+
+    // Checking result by returning created blog
+    const blog = await firstBlog();
+    const returnedBlog = await blogReturner();
+    expect(blog).toStrictEqual(returnedBlog);
   });
-  it("should NOT authenticate with incorrect login (email) type", async () => {
-    // Trying to authenticate with incorrect login (email) type
-    const response = await authentication(undefined, 123);
-    expect(response.status).toBe(400);
+  it("should create new post for testing", async () => {
+    // Trying to create a post
+    const response = await postCreator();
+    expect(response.status).toBe(201);
+
+    // Checking result by returning created post
+    const post = await firstPost();
+    const returnedPost = await postReturner();
+    expect(post).toStrictEqual(returnedPost);
   });
-  it("should NOT authenticate without password", async () => {
-    // Trying to authenticate without password
-    const response = await authentication(undefined, undefined, null);
-    expect(response.status).toBe(400);
+  it("should create new user for testing", async () => {
+    // Trying to create user
+    const response = await userCreator();
+    expect(response.status).toBe(201);
+
+    // Checking result by returning created user
+    const user = await firstUser();
+    const returnedUser = await userReturner();
+    expect(user).toStrictEqual(returnedUser);
   });
-  it("should NOT authenticate with incorrect password type", async () => {
-    // Trying to authenticate without password
-    const response = await authentication(undefined, undefined, 123);
-    expect(response.status).toBe(400);
+  it("should sort comments by any field (content for testing)", async () => {
+    // Trying to create 5 comments
+    await commentCreator(commentContentString01);
+    await commentCreator(commentContentString02);
+    await commentCreator(commentContentString03);
+    await commentCreator(commentContentString04);
+    const lastCommentResponse = await commentCreator(commentContentString05);
+
+    expect(lastCommentResponse.status).toBe(201);
+
+    // Checking result by returning comments array length
+    const length = await commentsLength();
+    expect(length).toBe(5);
+
+    const firstPost = await firstPostId();
+    const response = await getter(postsURI + firstPost + commentsURI);
+    expect(response.status).toBe(200);
+
+    // Applying and checking descending sorting
+    const CommentsWithQueryDesc = await foundCommentsObj("content", undefined);
+    expect(CommentsWithQueryDesc.items[0].content).toBe(commentContentString02);
+    expect(CommentsWithQueryDesc.items[1].content).toBe(commentContentString05);
+    expect(CommentsWithQueryDesc.items[2].content).toBe(commentContentString01);
+    expect(CommentsWithQueryDesc.items[3].content).toBe(commentContentString03);
+    expect(CommentsWithQueryDesc.items[4].content).toBe(commentContentString04);
+
+    // Applying and checking ascending sorting
+    const CommentsWithQueryAsc = await foundCommentsObj("content", "asc");
+    expect(CommentsWithQueryAsc.items[0].content).toBe(commentContentString04);
+    expect(CommentsWithQueryAsc.items[1].content).toBe(commentContentString03);
+    expect(CommentsWithQueryAsc.items[2].content).toBe(commentContentString01);
+    expect(CommentsWithQueryAsc.items[3].content).toBe(commentContentString05);
+    expect(CommentsWithQueryAsc.items[4].content).toBe(commentContentString02);
+
+
   });
+});
+describe("Comments pagination", () => {
+  beforeAll(eraseAll);
+  it("should create new blog for testing", async () => {
+    // Trying to create a blog
+    const response = await blogCreator();
+    expect(response.status).toBe(201);
+
+    // Checking result by returning created blog
+    const blog = await firstBlog();
+    const returnedBlog = await blogReturner();
+    expect(blog).toStrictEqual(returnedBlog);
+  });
+  it("should create new post for testing", async () => {
+    // Trying to create a post
+    const response = await postCreator();
+    expect(response.status).toBe(201);
+
+    // Checking result by returning created post
+    const post = await firstPost();
+    const returnedPost = await postReturner();
+    expect(post).toStrictEqual(returnedPost);
+  });
+  it("should create new user for testing", async () => {
+    // Trying to create user
+    const response = await userCreator();
+    expect(response.status).toBe(201);
+
+    // Checking result by returning created user
+    const user = await firstUser();
+    const returnedUser = await userReturner();
+    expect(user).toStrictEqual(returnedUser);
+  });
+  it("should return correct comments pagination output", async () => {
+    // Trying to create 20 comments
+    let i = 0;
+    while (i < 20) {
+      const response = await commentCreator();
+      expect(response.status).toBe(201);
+      i++;
+    }
+
+    // Checking pagination
+    const firstPost = await firstPostId();
+    const response = await getter(postsURI + firstPost + commentsURI);
+    expect(response.status).toBe(200);
+
+    const commentsWithQuery = await foundCommentsObj(
+        undefined,
+        undefined,
+        "2",
+        "5",
+    );
+    expect(commentsWithQuery.pagesCount).toBe(4);
+    expect(commentsWithQuery.page).toBe(2);
+    expect(commentsWithQuery.pageSize).toBe(5);
+    expect(commentsWithQuery.totalCount).toBe(20);
+    expect(commentsWithQuery.items.length).toBe(5);
+  }, 30000);
 });

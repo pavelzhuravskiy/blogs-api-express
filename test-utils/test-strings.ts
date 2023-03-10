@@ -69,6 +69,13 @@ export const commentContentString = "Lorem ipsum dolor sit";
 // Comment updating strings
 export const commentNewContentString = "New content for comment";
 
+// Comment strings for sorting check
+export const commentContentString01 = "New content 03 for comment";
+export const commentContentString02 = "New content 05 for comment";
+export const commentContentString03 = "New content 02 for comment";
+export const commentContentString04 = "New content 01 for comment";
+export const commentContentString05 = "New content 04 for comment";
+
 // Long strings
 export const longString17 = "Lorem ipsum dolor";
 export const longString39 = "Lorem ipsum dolor sit amet, consectetur";
