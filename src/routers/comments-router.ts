@@ -1,23 +1,13 @@
-import {Request, Response, Router} from "express";
-import {
-    validationErrorCheck
-} from "../middlewares/validations/_validation-error-check";
-import {ObjectId} from "mongodb";
-import {
-    validationCommentsFindByParamId
-} from "../middlewares/validations/find-by-id/validation-comments-find-by-param-id";
-import {
-    commentsQueryRepository
-} from "../repositories/query-repos/mongodb-comments-query-repository";
-import {commentsService} from "../domain/comments-service";
-import {
-    ValidationCommentsInput
-} from "../middlewares/validations/input/validation-comments-input";
-import {authBearer} from "../middlewares/auth/auth-bearer";
-import {
-    validationUserCorrect
-} from "../middlewares/validations/validation-user-correct";
-import {authBasic} from "../middlewares/auth/auth-basic";
+import { Request, Response, Router } from "express";
+import { validationErrorCheck } from "../middlewares/validations/_validation-error-check";
+import { ObjectId } from "mongodb";
+import { validationCommentsFindByParamId } from "../middlewares/validations/find-by-id/validation-comments-find-by-param-id";
+import { commentsQueryRepository } from "../repositories/query-repos/mongodb-comments-query-repository";
+import { commentsService } from "../domain/comments-service";
+import { ValidationCommentsInput } from "../middlewares/validations/input/validation-comments-input";
+import { authBearer } from "../middlewares/auth/auth-bearer";
+import { validationUserCorrect } from "../middlewares/validations/validation-user-correct";
+import { authBasic } from "../middlewares/auth/auth-basic";
 
 export const commentsRouter = Router({});
 
@@ -36,9 +26,9 @@ commentsRouter.get(
 commentsRouter.put(
   "/:id",
   validationCommentsFindByParamId,
-  ValidationCommentsInput,
   validationErrorCheck,
   authBearer,
+  ValidationCommentsInput,
   validationUserCorrect,
   async (req: Request, res: Response) => {
     const isUpdated = await commentsService.updateComment(
@@ -58,9 +48,9 @@ commentsRouter.put(
 commentsRouter.delete(
   "/:id",
   validationCommentsFindByParamId,
+  validationUserCorrect,
   validationErrorCheck,
   authBearer,
-  validationUserCorrect,
   async (req: Request, res: Response) => {
     const isDeleted = await commentsService.deleteComment(
       new ObjectId(req.params.id)
@@ -72,10 +62,10 @@ commentsRouter.delete(
 );
 
 commentsRouter.delete("/", authBasic, async (req: Request, res: Response) => {
-    const isDeleted = await commentsService.deleteAll();
-    if (isDeleted) {
-        res.sendStatus(204);
-    } else {
-        res.sendStatus(404);
-    }
+  const isDeleted = await commentsService.deleteAll();
+  if (isDeleted) {
+    res.sendStatus(204);
+  } else {
+    res.sendStatus(404);
+  }
 });
