@@ -57,7 +57,7 @@ blogsRouter.get(
       req.query.sortDirection,
       req.query.pageNumber,
       req.query.pageSize,
-      new ObjectId(req.params.id),
+      new ObjectId(req.params.id)
     );
     res.json(foundPosts);
   }

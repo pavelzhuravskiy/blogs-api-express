@@ -1,4 +1,4 @@
-import {app} from "../src";
+import { app } from "../src";
 import request from "supertest";
 import {
   basicAuthKey,
@@ -28,19 +28,11 @@ import {
   userPasswordString,
   usersURI,
 } from "./test-strings";
-import {ObjectId} from "mongodb";
-import {
-  blogsQueryRepository
-} from "../src/repositories/query-repos/mongodb-blogs-query-repository";
-import {
-  postsQueryRepository
-} from "../src/repositories/query-repos/mongodb-posts-query-repository";
-import {
-  usersQueryRepository
-} from "../src/repositories/query-repos/mongodb-users-query-repository";
-import {
-  commentsQueryRepository
-} from "../src/repositories/query-repos/mongodb-comments-query-repository";
+import { ObjectId } from "mongodb";
+import { blogsQueryRepository } from "../src/repositories/query-repos/mongodb-blogs-query-repository";
+import { postsQueryRepository } from "../src/repositories/query-repos/mongodb-posts-query-repository";
+import { usersQueryRepository } from "../src/repositories/query-repos/mongodb-users-query-repository";
+import { commentsQueryRepository } from "../src/repositories/query-repos/mongodb-comments-query-repository";
 
 // ---------- AUTH FUNCTIONS ----------
 
@@ -74,15 +66,23 @@ export const eraser = (uri: string) => {
 };
 
 // Delete by id (Basic auth)
-export const eraserWithId = (uri: string, id: string, authValue: any = basicAuthValue) => {
+export const eraserWithId = (
+  uri: string,
+  id: string,
+  authValue: any = basicAuthValue
+) => {
   return request(app)
     .delete(uri + id)
     .set(basicAuthKey, authValue);
 };
 
 // Delete blog or post by id (Bearer auth)
-export const eraserWithIdBearer = async (uri: string, id: string) => {
-  const loginResponse = await authentication();
+export const eraserWithIdBearer = async (
+  uri: string,
+  id: string,
+  loginOrEmail: string = userLoginString
+) => {
+  const loginResponse = await authentication(undefined, loginOrEmail);
   const token = loginResponse.body.accessToken;
   return request(app)
     .delete(uri + id)
@@ -97,7 +97,7 @@ export const getterWithInvalidCredentials = (uri: string) => {
 // ---------- BLOGS FUNCTIONS ----------
 
 // Find blogs in repository
-export const foundBlogsObj = async (
+export const findBlogs = async (
   searchNameTerm: string = "",
   sortBy: string = "createdAt",
   sortDirection: string = "desc",
@@ -114,22 +114,22 @@ export const foundBlogsObj = async (
 
 // Find blogs array length
 export const blogsLength = async () => {
-  return (await foundBlogsObj()).items.length;
+  return (await findBlogs()).items.length;
 };
 
 // Find first blog
 export const firstBlog = async () => {
-  return (await foundBlogsObj()).items[0];
+  return (await findBlogs()).items[0];
 };
 
 // Find first blog ID
 export const firstBlogId = async () => {
-  return (await foundBlogsObj()).items[0].id;
+  return (await findBlogs()).items[0].id;
 };
 
 // Find first blog name
 export const firstBlogName = async () => {
-  return (await foundBlogsObj()).items[0].name;
+  return (await findBlogs()).items[0].name;
 };
 
 // Create new blog
@@ -191,7 +191,7 @@ export const blogUpdater = async (
 // ---------- POSTS FUNCTIONS ----------
 
 // Find posts in repository
-export const foundPostsObj = async (
+export const findPosts = async (
   sortBy: string = "createdAt",
   sortDirection: string = "desc",
   pageNumber: string = "1",
@@ -208,27 +208,27 @@ export const foundPostsObj = async (
 
 // Find posts array length
 export const postsLength = async () => {
-  return (await foundPostsObj()).items.length;
+  return (await findPosts()).items.length;
 };
 
 // Find first post
 export const firstPost = async () => {
-  return (await foundPostsObj()).items[0];
+  return (await findPosts()).items[0];
 };
 
 // Find first post ID
 export const firstPostId = async () => {
-  return (await foundPostsObj()).items[0].id;
+  return (await findPosts()).items[0].id;
 };
 
 // Find second post
 export const secondPost = async () => {
-  return (await foundPostsObj()).items[1];
+  return (await findPosts()).items[1];
 };
 
 // Find second post
 export const secondPostId = async () => {
-  return (await foundPostsObj()).items[1].id;
+  return (await findPosts()).items[1].id;
 };
 
 // Create new post
@@ -296,7 +296,7 @@ export const postUpdater = async (
 // ---------- USERS FUNCTIONS ----------
 
 // Find users in repository
-export const foundUsersObj = async (
+export const findUsers = async (
   searchLoginTerm: string = "",
   searchEmailTerm: string = "",
   sortBy: string = "createdAt",
@@ -315,22 +315,22 @@ export const foundUsersObj = async (
 
 // Find users array length
 export const usersLength = async () => {
-  return (await foundUsersObj()).items.length;
+  return (await findUsers()).items.length;
 };
 
 // Find first user
 export const firstUser = async () => {
-  return (await foundUsersObj()).items[0];
+  return (await findUsers()).items[0];
 };
 
 // Find first user ID
 export const firstUserId = async () => {
-  return (await foundUsersObj()).items[0].id;
+  return (await findUsers()).items[0].id;
 };
 
 // Find first user Login
 export const firstUserLogin = async () => {
-  return (await foundUsersObj()).items[0].login;
+  return (await findUsers()).items[0].login;
 };
 
 // Create new user
@@ -368,15 +368,31 @@ export const userReturner = async (
 
 // ---------- COMMENTS FUNCTIONS ----------
 
-// Find comments in repository
-export const foundCommentsObj = async (
+// Find comments for first post
+export const findComments = async (
   sortBy: string = "createdAt",
   sortDirection: string = "desc",
   pageNumber: string = "1",
-  pageSize: string = "10",
-  postCounter: any = firstPostId
+  pageSize: string = "10"
 ) => {
-  const postId = new ObjectId(await postCounter());
+  const postId = new ObjectId(await firstPostId());
+  return await commentsQueryRepository.findComments(
+    sortBy,
+    sortDirection,
+    pageNumber,
+    pageSize,
+    postId
+  );
+};
+
+// Find comments for second post
+export const findCommentsOfSecondPost = async (
+  sortBy: string = "createdAt",
+  sortDirection: string = "desc",
+  pageNumber: string = "1",
+  pageSize: string = "10"
+) => {
+  const postId = new ObjectId(await secondPostId());
   return await commentsQueryRepository.findComments(
     sortBy,
     sortDirection,
@@ -388,36 +404,26 @@ export const foundCommentsObj = async (
 
 // Find comments array length
 export const commentsLength = async () => {
-  return (await foundCommentsObj()).items.length;
+  return (await findComments()).items.length;
 };
 
-// Find comments array length for second post
-export const commentsLengthPostTwo = async () => {
-  return (
-    await foundCommentsObj(
-      undefined,
-      undefined,
-      undefined,
-      undefined,
-      secondPostId
-    )
-  ).items.length;
+// Find comments array length
+export const commentsOfSecondPostLength = async () => {
+  return (await findCommentsOfSecondPost()).items.length;
 };
 
 // Find first comment
 export const firstComment = async () => {
-  return (await foundCommentsObj()).items[0];
+  return (await findComments()).items[0];
 };
 
 // Find first comment ID
 export const firstCommentId = async () => {
-  return (await foundCommentsObj()).items[0].id;
+  return (await findComments()).items[0].id;
 };
 
 // Create new comment
-export const commentCreator = async (
-  content: any = commentContentString
-) => {
+export const commentCreator = async (content: any = commentContentString) => {
   const postId = await firstPostId();
   const loginResponse = await authentication();
   const token = loginResponse.body.accessToken;
@@ -431,17 +437,17 @@ export const commentCreator = async (
 
 // Create new comment
 export const commentCreatorSecondPost = async (
-    content: any = commentContentString
+  content: any = commentContentString
 ) => {
   const postId = await secondPostId();
   const loginResponse = await authentication();
   const token = loginResponse.body.accessToken;
   return request(app)
-      .post(postsURI + postId + commentsURI)
-      .send({
-        content,
-      })
-      .set(basicAuthKey, `Bearer ${token}`);
+    .post(postsURI + postId + commentsURI)
+    .send({
+      content,
+    })
+    .set(basicAuthKey, `Bearer ${token}`);
 };
 
 // Return new comment
@@ -465,10 +471,11 @@ export const commentReturner = async (
 
 // Update comment
 export const commentUpdater = async (
-  content: string = commentNewContentString
+  content: string = commentNewContentString,
+  loginOrEmail: string = userLoginString
 ) => {
   const commentId = await firstCommentId();
-  const loginResponse = await authentication();
+  const loginResponse = await authentication(undefined, loginOrEmail);
   const token = loginResponse.body.accessToken;
   return request(app)
     .put(commentsURI + commentId)

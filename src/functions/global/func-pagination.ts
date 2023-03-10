@@ -5,7 +5,7 @@ export const funcPagination = async (
   pageNumber: number,
   pageSize: number,
   collection: Document,
-  filter?: Document,
+  filter?: Document
 ) => {
   return await collection
     .find(filter)

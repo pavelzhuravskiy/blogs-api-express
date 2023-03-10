@@ -6,7 +6,7 @@ export const funcOutput = async (
   output: Function,
   collection: Document,
   mapping: Function,
-  filter?: Document,
+  filter?: Document
 ) => {
   const totalCount = await collection.countDocuments(filter);
   const pagesCount = Math.ceil(totalCount / pageSize);
