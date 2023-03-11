@@ -1013,6 +1013,20 @@ describe("Users login and email filtering", () => {
     expect(usersWithQuery.items[0].email).toBe(userEmailFilterString04);
     expect(usersWithQuery.items[1].email).toBe(userEmailFilterString02);
   });
+  it("should return users with login and email filter", async () => {
+    // Applying and checking login filter
+
+    const response = await getter(usersURI);
+    expect(response.status).toBe(200);
+
+    const usersWithQuery = await findUsers("Zh", "el");
+    expect(usersWithQuery.totalCount).toBe(2);
+    expect(usersWithQuery.items.length).toBe(2);
+
+    // Default sorting for users ==> createdAt, desc
+    expect(usersWithQuery.items[0].email).toBe(userEmailFilterString02);
+    expect(usersWithQuery.items[1].email).toBe(userEmailFilterString01);
+  });
 });
 describe("Users sorting", () => {
   beforeAll(eraseAll);
