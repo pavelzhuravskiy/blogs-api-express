@@ -6,6 +6,7 @@ import { runDB } from "./repositories/_mongodb-connect";
 import { usersRouter } from "./routers/users-router";
 import { authRouter } from "./routers/auth-router";
 import { commentsRouter } from "./routers/comments-router";
+import {emailRouter} from "./routers/email-router";
 
 export const app = express();
 const port = process.env.PORT || 5000;
@@ -14,10 +15,11 @@ app.use(express.json());
 
 app.use("/auth", authRouter);
 app.use("/blogs", blogsRouter);
-app.use("/posts", postsRouter);
 app.use("/comments", commentsRouter);
-app.use("/users", usersRouter);
+app.use("/email", emailRouter);
+app.use("/posts", postsRouter);
 app.use("/testing", testingRouter);
+app.use("/users", usersRouter);
 
 const startApp = async () => {
   await runDB();
