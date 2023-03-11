@@ -29,7 +29,7 @@ export const funcFilter = async (
     }
 
     if (searchEmailTerm) {
-      filter.$or.push({ "accountData.login": { $regex: searchEmailTerm, $options: "i" } });
+      filter.$or.push({ "accountData.email": { $regex: searchEmailTerm, $options: "i" } });
     }
   }
 
