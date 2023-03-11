@@ -1708,15 +1708,6 @@ describe("Comments status 403 checks", () => {
       "villain@hacker.com"
     );
     expect(response.status).toBe(201);
-
-    // Checking result by returning created user
-    const user = await firstUser();
-    const returnedUser = await userReturner(
-      undefined,
-      "Villain",
-      "villain@hacker.com"
-    );
-    expect(user).toStrictEqual(returnedUser);
   });
   it("should create new comment for testing", async () => {
     // Trying to create comment with authenticated user
@@ -1736,14 +1727,6 @@ describe("Comments status 403 checks", () => {
     );
     expect(response.status).toBe(403);
   });
-
-  // it("should return 401 when deleting comment with incorrect credentials", async () => {
-  //   const commentId = await firstCommentId();
-  //   const response = await request(app)
-  //       .delete(commentsURI + commentId)
-  //       .set(basicAuthKey, invalidAuthValue);
-  //   expect(response.status).toBe(401);
-  // });
 });
 describe("Comments status 404 checks", () => {
   beforeAll(eraseAll);

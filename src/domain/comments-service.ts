@@ -21,7 +21,7 @@ export const commentsService = {
       ...content,
       commentatorInfo: {
         userId: user!._id.toString(),
-        userLogin: user!.login,
+        userLogin: user!.accountData.login,
       },
       postId: _id.toString(),
       createdAt: new Date().toISOString(),

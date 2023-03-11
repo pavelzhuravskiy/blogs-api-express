@@ -7,7 +7,6 @@ import { funcFilter } from "../../functions/global/func-filter";
 import { funcPagination } from "../../functions/global/func-pagination";
 import { funcSorting } from "../../functions/global/func-sorting";
 import { funcOutput } from "../../functions/global/func-output";
-import { MongoUserModelWithId } from "../../models/users/MongoUserModelWithId";
 import { MongoUserModelWithPasswordWithId } from "../../models/users/MongoUserModelWithPasswordWithId";
 
 export const usersQueryRepository = {
@@ -31,7 +30,7 @@ export const usersQueryRepository = {
 
     // Pagination
     const usersPagination = await funcPagination(
-      await funcSorting(sortBy, sortDirection),
+      await funcSorting(`accountData.${sortBy}`, sortDirection),
       Number(pageNumber) || 1,
       Number(pageSize) || 10,
       usersCollection,
@@ -61,16 +60,15 @@ export const usersQueryRepository = {
 
     return {
       id: foundUser._id.toString(),
-      email: foundUser.email,
-      login: foundUser.login,
-      createdAt: foundUser.createdAt,
+      email: foundUser.accountData.email,
+      login: foundUser.accountData.login,
+      createdAt: foundUser.accountData.createdAt,
     };
   },
 
-  // Return user with string ID
   async findUserByIdWithMongoId(
     _id: ObjectId
-  ): Promise<MongoUserModelWithId | null> {
+  ): Promise<MongoUserModelWithPasswordWithId | null> {
     const foundUser = await usersCollection.findOne({ _id });
 
     if (!foundUser) {
@@ -84,7 +82,10 @@ export const usersQueryRepository = {
     loginOrEmail: string
   ): Promise<MongoUserModelWithPasswordWithId | null> {
     return await usersCollection.findOne({
-      $or: [{ login: loginOrEmail }, { email: loginOrEmail }],
+      $or: [
+        { "accountData.login": loginOrEmail },
+        { "accountData.email": loginOrEmail },
+      ],
     });
   },
 };

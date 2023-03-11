@@ -1,9 +1,9 @@
-import { MongoUserModelWithId } from "../models/users/MongoUserModelWithId";
+import { MongoUserModelWithPasswordWithId } from "../models/users/MongoUserModelWithPasswordWithId";
 
 declare global {
   declare namespace Express {
     export interface Request {
-      user: MongoUserModelWithId | null;
+      user: MongoUserModelWithPasswordWithId | null;
     }
   }
 }

@@ -1,12 +1,13 @@
-import { MongoUserModelWithId } from "../../models/users/MongoUserModelWithId";
+import { MongoUserModelWithPasswordWithId } from "../../models/users/MongoUserModelWithPasswordWithId";
 
-export const funcUserMapping = (array: MongoUserModelWithId[]) => {
+export const funcUserMapping = (array: MongoUserModelWithPasswordWithId[]) => {
   return array.map((user) => {
+    // return user
     return {
       id: user._id.toString(),
-      login: user.login,
-      email: user.email,
-      createdAt: user.createdAt,
+      login: user.accountData.login,
+      email: user.accountData.email,
+      createdAt: user.accountData.createdAt,
     };
   });
 };

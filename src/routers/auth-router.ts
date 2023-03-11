@@ -5,6 +5,8 @@ import { usersQueryRepository } from "../repositories/query-repos/mongodb-users-
 import { authBearer } from "../middlewares/auth/auth-bearer";
 import { validationAuthInput } from "../middlewares/validations/input/validation-auth-input";
 import { validationErrorCheck } from "../middlewares/validations/_validation-error-check";
+import { validationUserUnique } from "../middlewares/validations/validation-user-unique";
+import { validationUsersInput } from "../middlewares/validations/input/validation-users-input";
 
 export const authRouter = Router({});
 
@@ -32,9 +34,25 @@ authRouter.post(
 
 authRouter.get("/me", authBearer, async (req: Request, res: Response) => {
   const accountInfo = {
-    email: req.user!.email,
-    login: req.user!.login,
+    email: req.user!.accountData.email,
+    login: req.user!.accountData.login,
     userId: req.user!._id,
   };
   res.status(200).json(accountInfo);
 });
+
+authRouter.post(
+  "/registration",
+  validationUserUnique("login"),
+  validationUserUnique("email"),
+  validationUsersInput,
+  validationErrorCheck,
+  async (req: Request, res: Response) => {
+    await usersService.createNewUser(
+      req.body.login,
+      req.body.password,
+      req.body.email
+    );
+    res.sendStatus(204);
+  }
+);

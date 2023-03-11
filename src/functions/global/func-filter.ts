@@ -25,11 +25,11 @@ export const funcFilter = async (
     filter.$or = [];
 
     if (searchLoginTerm) {
-      filter.$or.push({ login: { $regex: searchLoginTerm, $options: "i" } });
+      filter.$or.push({ "accountData.login": { $regex: searchLoginTerm, $options: "i" } });
     }
 
     if (searchEmailTerm) {
-      filter.$or.push({ email: { $regex: searchEmailTerm, $options: "i" } });
+      filter.$or.push({ "accountData.login": { $regex: searchEmailTerm, $options: "i" } });
     }
   }
 
