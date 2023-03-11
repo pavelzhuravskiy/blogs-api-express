@@ -29,11 +29,9 @@ export const usersQueryRepository = {
     );
 
     // Pagination
+    const userSortingField = sortBy ? `accountData.${sortBy}` : `accountData.createdAt`;
     const usersPagination = await funcPagination(
-      await funcSorting(
-        `accountData.createdAt` || `accountData.${sortBy}`,
-        sortDirection
-      ),
+      await funcSorting(userSortingField, sortDirection),
       Number(pageNumber) || 1,
       Number(pageSize) || 10,
       usersCollection,
