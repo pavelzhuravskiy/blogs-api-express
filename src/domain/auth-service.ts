@@ -5,6 +5,7 @@ import { ObjectId } from "mongodb";
 import { randomUUID } from "crypto";
 import { add } from "date-fns";
 import { usersRepository } from "../repositories/mongodb-users-repository";
+import { usersQueryRepository } from "../repositories/query-repos/mongodb-users-query-repository";
 
 export const authService = {
   // Register new user
@@ -34,12 +35,20 @@ export const authService = {
     };
     const createResult = await usersRepository.createUser(newUser);
     try {
-      await emailManager.sendRegistrationEmail(newUser.accountData.email);
+      await emailManager.sendRegistrationEmail(
+        newUser.accountData.email,
+        newUser.emailConfirmation.confirmationCode
+      );
     } catch (error) {
       console.error(error);
       await usersRepository.deleteUser(newUser._id);
       return null;
     }
     return createResult;
+  },
+
+  async confirmEmail(code: string): Promise<boolean> {
+    const user = await usersQueryRepository.findUserByCode(code);
+    return await usersRepository.updateConfirmation(user!._id);
   },
 };

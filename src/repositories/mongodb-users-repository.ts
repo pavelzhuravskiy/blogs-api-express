@@ -29,4 +29,13 @@ export const usersRepository = {
     await usersCollection.deleteMany({});
     return (await usersCollection.countDocuments()) === 0;
   },
+
+  // Update user confirmation status
+  async updateConfirmation(_id: ObjectId) {
+    const result = await usersCollection.updateOne(
+      { _id },
+      { $set: { "emailConfirmation.isConfirmed": true } }
+    );
+    return result.modifiedCount === 1;
+  },
 };

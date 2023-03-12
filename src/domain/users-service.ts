@@ -38,6 +38,7 @@ export const usersService = {
     const user = await usersQueryRepository.findUserByLoginOrEmail(
       loginOrEmail
     );
+
     if (!user) {
       return false;
     }

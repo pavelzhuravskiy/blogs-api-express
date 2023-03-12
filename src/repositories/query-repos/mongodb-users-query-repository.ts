@@ -91,4 +91,10 @@ export const usersQueryRepository = {
       ],
     });
   },
+
+  async findUserByCode(code: string) {
+    return await usersCollection.findOne({
+      "emailConfirmation.confirmationCode": code,
+    });
+  },
 };

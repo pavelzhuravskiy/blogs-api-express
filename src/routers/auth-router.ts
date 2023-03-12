@@ -8,6 +8,12 @@ import { validationErrorCheck } from "../middlewares/validations/_validation-err
 import { validationUserUnique } from "../middlewares/validations/validation-user-unique";
 import { validationUsersInput } from "../middlewares/validations/input/validation-users-input";
 import { authService } from "../domain/auth-service";
+import {
+    validationEmailConfirm
+} from "../middlewares/validations/validation-email-confirm";
+import {
+    validationCodeInput
+} from "../middlewares/validations/input/validation-code-input";
 
 export const authRouter = Router({});
 
@@ -60,4 +66,19 @@ authRouter.post(
       res.sendStatus(400);
     }
   }
+);
+
+authRouter.post(
+    "/registration-confirmation",
+    validationCodeInput,
+    validationEmailConfirm,
+    validationErrorCheck,
+    async (req: Request, res: Response) => {
+        const result = await authService.confirmEmail(req.body.code)
+        if (result) {
+            res.sendStatus(201)
+        } else {
+            res.sendStatus(400)
+        }
+    }
 );
