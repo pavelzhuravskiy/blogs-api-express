@@ -7,8 +7,8 @@ export type MongoUserModelWithPassword = {
     isMembership: boolean;
   };
   emailConfirmation: {
-    confirmationCode: string;
-    expirationDate: Date;
-    isConfirmed: boolean;
+    confirmationCode: string | null;
+    expirationDate: Date | null;
+    isConfirmed: boolean | null;
   };
 };

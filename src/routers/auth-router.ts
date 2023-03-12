@@ -7,6 +7,7 @@ import { validationAuthInput } from "../middlewares/validations/input/validation
 import { validationErrorCheck } from "../middlewares/validations/_validation-error-check";
 import { validationUserUnique } from "../middlewares/validations/validation-user-unique";
 import { validationUsersInput } from "../middlewares/validations/input/validation-users-input";
+import { authService } from "../domain/auth-service";
 
 export const authRouter = Router({});
 
@@ -48,11 +49,15 @@ authRouter.post(
   validationUsersInput,
   validationErrorCheck,
   async (req: Request, res: Response) => {
-    await usersService.createNewUser(
+    const user = await authService.registerUser(
       req.body.login,
       req.body.password,
       req.body.email
     );
-    res.sendStatus(204);
+    if (user) {
+      res.sendStatus(204);
+    } else {
+      res.sendStatus(400);
+    }
   }
 );

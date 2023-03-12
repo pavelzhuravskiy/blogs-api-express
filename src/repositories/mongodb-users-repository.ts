@@ -1,12 +1,12 @@
 import { usersCollection } from "./_mongodb-connect";
 import { ObjectId } from "mongodb";
 import { MongoUserModelWithStringId } from "../models/users/MongoUserModelWithStringId";
-import { MongoUserModelWithPassword } from "../models/users/MongoUserModelWithPassword";
+import { MongoUserModelWithPasswordWithId } from "../models/users/MongoUserModelWithPasswordWithId";
 
 export const usersRepository = {
   // Create new user
-  async createNewUser(
-    user: MongoUserModelWithPassword
+  async createUser(
+    user: MongoUserModelWithPasswordWithId
   ): Promise<MongoUserModelWithStringId> {
     const insertedUser = await usersCollection.insertOne(user);
 

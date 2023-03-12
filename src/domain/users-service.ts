@@ -3,8 +3,6 @@ import { MongoUserModel } from "../models/users/MongoUserModel";
 import { usersRepository } from "../repositories/mongodb-users-repository";
 import bcrypt from "bcrypt";
 import { usersQueryRepository } from "../repositories/query-repos/mongodb-users-query-repository";
-import {randomUUID} from "crypto";
-import { add } from "date-fns";
 
 export const usersService = {
   // Create new user
@@ -12,9 +10,10 @@ export const usersService = {
     login: string,
     password: string,
     email: string
-  ): Promise<MongoUserModel> {
+  ): Promise<MongoUserModel | null> {
     const hash = await bcrypt.hash(password, 10);
     const newUser = {
+      _id: new ObjectId(),
       accountData: {
         login,
         password: hash,
@@ -23,15 +22,12 @@ export const usersService = {
         isMembership: false,
       },
       emailConfirmation: {
-        confirmationCode: randomUUID(),
-        expirationDate: add(new Date(), {
-          hours: 1,
-          minutes: 3
-        }),
-        isConfirmed: false
-      }
+        confirmationCode: null,
+        expirationDate: null,
+        isConfirmed: null,
+      },
     };
-    return usersRepository.createNewUser(newUser);
+    return await usersRepository.createUser(newUser);
   },
 
   // Credentials check

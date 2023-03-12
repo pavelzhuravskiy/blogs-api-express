@@ -49,7 +49,7 @@ export const postNewContentString = "New content";
 // User creation strings
 export const userLoginString = "login";
 export const userPasswordString = "password";
-export const userEmailString = "login@test.com";
+export const userEmailString = "alex.crane.0599@gmail.com";
 
 // User logins for filter check
 export const userLoginFilterString01 = "Zhur";
@@ -59,11 +59,11 @@ export const userLoginFilterString04 = "Ivan";
 export const userLoginFilterString05 = "Tom";
 
 // User emails for filter check
-export const userEmailFilterString01 = "zhur@test.com";
-export const userEmailFilterString02 = "elena@test.com";
-export const userEmailFilterString03 = "bob@test.com";
-export const userEmailFilterString04 = "ivan@test.com";
-export const userEmailFilterString05 = "tom@test.com";
+export const userEmailFilterString01 = "zhur@mailforspam.com";
+export const userEmailFilterString02 = "elena@mailforspam.com";
+export const userEmailFilterString03 = "bob@mailforspam.com";
+export const userEmailFilterString04 = "ivan@mailforspam.com";
+export const userEmailFilterString05 = "tom@mailforspam.com";
 
 // Comment creation strings
 export const commentContentString = "Lorem ipsum dolor sit";

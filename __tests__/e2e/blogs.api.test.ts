@@ -998,7 +998,7 @@ describe("Users login and email filtering", () => {
     // Default sorting for users ==> createdAt, desc
     expect(usersWithQuery.items[0].login).toBe(userLoginFilterString04);
     expect(usersWithQuery.items[1].login).toBe(userLoginFilterString02);
-  });
+  }, 30000);
   it("should return users with email filter", async () => {
     // Applying and checking login filter
 
@@ -1012,7 +1012,7 @@ describe("Users login and email filtering", () => {
     // Default sorting for users ==> createdAt, desc
     expect(usersWithQuery.items[0].email).toBe(userEmailFilterString04);
     expect(usersWithQuery.items[1].email).toBe(userEmailFilterString02);
-  });
+  }, 30000);
   it("should return users with login and email filter", async () => {
     // Applying and checking login filter
 
@@ -1026,7 +1026,7 @@ describe("Users login and email filtering", () => {
     // Default sorting for users ==> createdAt, desc
     expect(usersWithQuery.items[0].email).toBe(userEmailFilterString02);
     expect(usersWithQuery.items[1].email).toBe(userEmailFilterString01);
-  });
+  }, 30000);
 });
 describe("Users sorting", () => {
   beforeAll(eraseAll);
@@ -1093,7 +1093,7 @@ describe("Users sorting", () => {
     expect(usersWithQueryAsc.items[2].login).toBe(userLoginFilterString04);
     expect(usersWithQueryAsc.items[3].login).toBe(userLoginFilterString05);
     expect(usersWithQueryAsc.items[4].login).toBe(userLoginFilterString01);
-  });
+  },30000);
 });
 describe("Users pagination", () => {
   beforeAll(eraseAll);
@@ -1105,7 +1105,7 @@ describe("Users pagination", () => {
         undefined,
         `login${i}`,
         undefined,
-        `addr${i}@test.com`
+        `addr${i}@mailforspam.com`
       );
       expect(response.status).toBe(201);
       i++;

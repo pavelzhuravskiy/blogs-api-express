@@ -101,7 +101,7 @@ postsRouter.delete("/", authBasic, async (req: Request, res: Response) => {
   }
 });
 
-// ----- Comments section start -----
+// +++++ Comments section start +++++
 
 postsRouter.get(
   "/:id/comments",

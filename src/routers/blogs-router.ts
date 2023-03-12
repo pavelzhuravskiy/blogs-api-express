@@ -74,7 +74,7 @@ blogsRouter.post(
   }
 );
 
-// Post creation start
+// +++++ Post creation section start +++++
 
 blogsRouter.post(
   "/:id/posts",
@@ -91,7 +91,7 @@ blogsRouter.post(
   }
 );
 
-// Post creation end
+// ----- Post creation section start -----
 
 blogsRouter.put(
   "/:id",
