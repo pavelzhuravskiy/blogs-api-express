@@ -39,7 +39,7 @@ export const usersService = {
       loginOrEmail
     );
 
-    if (!user) {
+    if (!user || !user.emailConfirmation.isConfirmed) {
       return false;
     }
     return await bcrypt.compare(password, user.accountData.password);
