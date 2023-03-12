@@ -9,6 +9,6 @@ export type MongoUserModelWithPassword = {
   emailConfirmation: {
     confirmationCode: string | null;
     expirationDate: Date | null;
-    isConfirmed: boolean | null;
+    isConfirmed: boolean;
   };
 };

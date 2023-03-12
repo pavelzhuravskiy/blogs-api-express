@@ -24,7 +24,7 @@ export const usersService = {
       emailConfirmation: {
         confirmationCode: null,
         expirationDate: null,
-        isConfirmed: null,
+        isConfirmed: true,
       },
     };
     return await usersRepository.createUser(newUser);
