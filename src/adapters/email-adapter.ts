@@ -3,15 +3,17 @@ export const emailAdapter = {
   async sendEmail(email: string, subject: string, message: string) {
     // create reusable transporter object using the default SMTP transport
     let transporter = nodemailer.createTransport({
-      service: "Gmail",
+      host: 'smtp.zoho.eu',
+      port: 465,
+      secure: true, //ssl
       auth: {
-        user: "alex.crane.0599@gmail.com",
-        pass: "tjvkwssoxlsldbeb",
-      },
+        user:process.env.EMAIL,
+        pass:process.env.EMAIL_PASSWORD
+      }
     });
 
     const mailOptions = {
-      from: "DebugMan <alex.crane.0599@gmail.com>", // sender address
+      from: process.env.EMAIL, // sender address
       to: email, // list of receivers
       subject: subject, // Subject line
       html: message,
