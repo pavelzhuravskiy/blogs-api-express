@@ -5,7 +5,7 @@ export const emailAdapter = {
     let transporter = nodemailer.createTransport({
       service: "DebugMail",
       auth: {
-        user: "pavel.zhuravskiy@gmail.com",
+        user: "alex.crane.0599@gmail.com",
         pass: "AT#5@6NWr56*6gRWz@hgf",
       },
     });
