@@ -3,19 +3,27 @@ export const emailAdapter = {
   async sendEmail(email: string, subject: string, message: string) {
     // create reusable transporter object using the default SMTP transport
     let transporter = nodemailer.createTransport({
-      service: "gmail",
+      service: "DebugMail",
       auth: {
-        user: "alex.crane.0599@gmail.com",
-        pass: "sexmdobddlfqhjgp",
+        user: "pavel.zhuravskiy@gmail.com",
+        pass: "AT#5@6NWr56*6gRWz@hgf",
       },
     });
 
-    // send mail with defined transport object
-    return await transporter.sendMail({
+    const mailOptions = {
       from: "Admin <alex.crane.0599@gmail.com>", // sender address
       to: email, // list of receivers
       subject: subject, // Subject line
       html: message,
+    }
+
+    // send mail with defined transport object
+    return transporter.sendMail(mailOptions, function (err, info) {
+      if (err) {
+        console.log(err)
+      } else {
+        console.log(`E-mail sent: ${info.response}`)
+      }
     });
   },
 };
