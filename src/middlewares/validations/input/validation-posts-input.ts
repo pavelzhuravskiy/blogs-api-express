@@ -4,10 +4,8 @@ export const validationPostsInput = [
   body("title")
     .exists()
     .withMessage("Title is required")
-    .bail()
     .isString()
     .withMessage("Type of title must be string")
-    .bail()
     .trim()
     .isLength({
       min: 1,
@@ -19,10 +17,8 @@ export const validationPostsInput = [
   body("shortDescription")
     .exists()
     .withMessage("Short description is required")
-    .bail()
     .isString()
     .withMessage("Type of short description must be string")
-    .bail()
     .trim()
     .isLength({
       min: 1,
@@ -34,10 +30,8 @@ export const validationPostsInput = [
   body("content")
     .exists()
     .withMessage("Content is required")
-    .bail()
     .isString()
     .withMessage("Type of content must be string")
-    .bail()
     .trim()
     .isLength({
       min: 1,
@@ -49,7 +43,6 @@ export const validationPostsInput = [
   body("content")
     .exists()
     .withMessage("Blog ID is required")
-    .bail()
     .isString()
     .withMessage("Type of Blog ID must be string"),
 ];

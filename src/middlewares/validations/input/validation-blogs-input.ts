@@ -7,10 +7,8 @@ export const validationBlogsInput = [
   body("name")
     .exists()
     .withMessage("Name is required")
-    .bail()
     .isString()
     .withMessage("Type of name must be string")
-    .bail()
     .trim()
     .isLength({
       min: 1,
@@ -22,10 +20,8 @@ export const validationBlogsInput = [
   body("description")
     .exists()
     .withMessage("Description is required")
-    .bail()
     .isString()
     .withMessage("Type of description must be string")
-    .bail()
     .trim()
     .isLength({
       min: 1,
@@ -37,10 +33,8 @@ export const validationBlogsInput = [
   body("websiteUrl")
     .exists()
     .withMessage("Website URL is required")
-    .bail()
     .isString()
     .withMessage("Type of Website URL must be string")
-    .bail()
     .trim()
     .isLength({
       min: 1,
@@ -49,7 +43,6 @@ export const validationBlogsInput = [
     .withMessage(
       "Website URL length must be more than 0 and less than or equal to 100 symbols"
     )
-    .bail()
     .matches(websiteUrlPattern)
     .withMessage("Website URL must be in correct format"),
 ];

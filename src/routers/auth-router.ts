@@ -14,6 +14,12 @@ import {
 import {
     validationCodeInput
 } from "../middlewares/validations/input/validation-code-input";
+import {
+    validationEmailResend
+} from "../middlewares/validations/validation-email-resend";
+import {
+    validationEmailResendInput
+} from "../middlewares/validations/input/validation-email-resend-input";
 
 export const authRouter = Router({});
 
@@ -80,5 +86,15 @@ authRouter.post(
         } else {
             res.sendStatus(400)
         }
+    }
+);
+
+authRouter.post(
+    "/registration-email-resending",
+    validationEmailResendInput,
+    validationEmailResend,
+    validationErrorCheck,
+    async (req: Request, res: Response) => {
+        console.log(`Hello!`)
     }
 );

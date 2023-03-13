@@ -4,10 +4,8 @@ export const ValidationCommentsInput = [
   body("content")
     .exists()
     .withMessage("Content is required")
-    .bail()
     .isString()
     .withMessage("Type of content must be string")
-    .bail()
     .trim()
     .isLength({
       min: 20,
