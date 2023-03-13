@@ -8,18 +8,10 @@ import { validationErrorCheck } from "../middlewares/validations/_validation-err
 import { validationUserUnique } from "../middlewares/validations/validation-user-unique";
 import { validationUsersInput } from "../middlewares/validations/input/validation-users-input";
 import { authService } from "../domain/auth-service";
-import {
-    validationEmailConfirm
-} from "../middlewares/validations/validation-email-confirm";
-import {
-    validationCodeInput
-} from "../middlewares/validations/input/validation-code-input";
-import {
-    validationEmailResend
-} from "../middlewares/validations/validation-email-resend";
-import {
-    validationEmailResendInput
-} from "../middlewares/validations/input/validation-email-resend-input";
+import { validationEmailConfirm } from "../middlewares/validations/validation-email-confirm";
+import { validationCodeInput } from "../middlewares/validations/input/validation-code-input";
+import { validationEmailResend } from "../middlewares/validations/validation-email-resend";
+import { validationEmailResendInput } from "../middlewares/validations/input/validation-email-resend-input";
 
 export const authRouter = Router({});
 
@@ -75,26 +67,31 @@ authRouter.post(
 );
 
 authRouter.post(
-    "/registration-confirmation",
-    validationCodeInput,
-    validationEmailConfirm,
-    validationErrorCheck,
-    async (req: Request, res: Response) => {
-        const result = await authService.confirmEmail(req.body.code)
-        if (result) {
-            res.sendStatus(201)
-        } else {
-            res.sendStatus(400)
-        }
+  "/registration-confirmation",
+  validationCodeInput,
+  validationEmailConfirm,
+  validationErrorCheck,
+  async (req: Request, res: Response) => {
+    const result = await authService.confirmEmail(req.body.code);
+    if (result) {
+      res.sendStatus(204);
+    } else {
+      res.sendStatus(400);
     }
+  }
 );
 
 authRouter.post(
-    "/registration-email-resending",
-    validationEmailResendInput,
-    validationEmailResend,
-    validationErrorCheck,
-    async (req: Request, res: Response) => {
-        console.log(`Hello!`)
+  "/registration-email-resending",
+  validationEmailResendInput,
+  validationEmailResend,
+  validationErrorCheck,
+  async (req: Request, res: Response) => {
+    const result = await authService.confirmEmail(req.body.code);
+    if (result) {
+      res.sendStatus(204);
+    } else {
+      res.sendStatus(400);
     }
+  }
 );
