@@ -6,16 +6,24 @@ export const emailAdapter = {
       service: "gmail",
       auth: {
         user: "alex.crane.0599@gmail.com",
-        pass: "sexmdobddlfqhjgp",
+        pass: "texmpxkgkhwmzfks",
       },
     });
 
-    // send mail with defined transport object
-    return await transporter.sendMail({
+    const mailOptions = {
       from: "Admin <alex.crane.0599@gmail.com>", // sender address
       to: email, // list of receivers
       subject: subject, // Subject line
       html: message,
+    }
+
+    // send mail with defined transport object
+    return transporter.sendMail(mailOptions, function (err, info) {
+      if (err) {
+        console.log(err)
+      } else {
+        console.log(`E-mail sent: ${info.response}`)
+      }
     });
   },
 };
