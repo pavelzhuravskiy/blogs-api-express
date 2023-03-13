@@ -10,4 +10,4 @@ export const validationEmailResendInput = [
     .withMessage("Type of e-mail must be string")
     .matches(emailPattern)
     .withMessage("E-mail must be in correct format"),
-];
+]
