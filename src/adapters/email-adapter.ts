@@ -11,6 +11,16 @@ export const emailAdapter = {
       }
     });
 
+    // let transporter = nodemailer.createTransport({
+    //   host: 'smtp.zoho.eu',
+    //   port: 465,
+    //   secure: true, //ssl
+    //   auth: {
+    //     user:process.env.EMAIL,
+    //     pass:process.env.EMAIL_PASSWORD
+    //   }
+    // });
+
     const mailOptions = {
       from: "IT-Inc admin <alex.crane.0599@gmail.com>", // sender address
       to: email, // list of receivers
