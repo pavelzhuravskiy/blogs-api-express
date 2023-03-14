@@ -54,20 +54,10 @@ exports.authRouter.post("/registration", (0, validation_user_unique_1.validation
     }
 }));
 exports.authRouter.post("/registration-confirmation", validation_code_input_1.validationCodeInput, validation_email_confirm_1.validationEmailConfirm, _validation_error_check_1.validationErrorCheck, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const result = yield auth_service_1.authService.confirmEmail(req.body.code);
-    if (result) {
-        res.sendStatus(204);
-    }
-    else {
-        res.sendStatus(400);
-    }
+    yield auth_service_1.authService.confirmEmail(req.body.code);
+    res.sendStatus(204);
 }));
 exports.authRouter.post("/registration-email-resending", validation_email_resend_input_1.validationEmailResendInput, validation_email_resend_1.validationEmailResend, _validation_error_check_1.validationErrorCheck, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const result = yield auth_service_1.authService.confirmEmail(req.body.code);
-    if (result) {
-        res.sendStatus(204);
-    }
-    else {
-        res.sendStatus(400);
-    }
+    yield auth_service_1.authService.confirmEmail(req.body.code);
+    res.sendStatus(204);
 }));

@@ -20,9 +20,6 @@ exports.emailAdapter = {
             // create reusable transporter object using the default SMTP transport
             let transporter = yield nodemailer_1.default.createTransport({
                 service: "gmail",
-                // host: "smtp.gmail.com",
-                // port: 465,
-                // secure: true,
                 auth: {
                     user: "alex.crane.0599@gmail.com",
                     pass: "xzfcnxgxicdmqhdq"

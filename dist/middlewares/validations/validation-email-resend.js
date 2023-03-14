@@ -14,7 +14,7 @@ const express_validator_1 = require("express-validator");
 const mongodb_users_query_repository_1 = require("../../repositories/query-repos/mongodb-users-query-repository");
 exports.validationEmailResend = (0, express_validator_1.body)("email").custom((value) => __awaiter(void 0, void 0, void 0, function* () {
     const user = yield mongodb_users_query_repository_1.usersQueryRepository.findUserByLoginOrEmail(value);
-    if (user === null || user === void 0 ? void 0 : user.emailConfirmation.isConfirmed) {
+    if (!user || user.emailConfirmation.isConfirmed) {
         throw new Error("User with provided email not found or is already confirmed");
     }
     return true;

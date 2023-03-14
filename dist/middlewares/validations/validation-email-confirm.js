@@ -14,9 +14,10 @@ const express_validator_1 = require("express-validator");
 const mongodb_users_query_repository_1 = require("../../repositories/query-repos/mongodb-users-query-repository");
 exports.validationEmailConfirm = (0, express_validator_1.body)("code").custom((value) => __awaiter(void 0, void 0, void 0, function* () {
     const user = yield mongodb_users_query_repository_1.usersQueryRepository.findUserByCode(value);
-    if ((user === null || user === void 0 ? void 0 : user.emailConfirmation.isConfirmed) ||
-        (user === null || user === void 0 ? void 0 : user.emailConfirmation.confirmationCode) !== value ||
-        (user === null || user === void 0 ? void 0 : user.emailConfirmation.expirationDate) < new Date()) {
+    if (!user ||
+        user.emailConfirmation.isConfirmed ||
+        user.emailConfirmation.confirmationCode !== value ||
+        user.emailConfirmation.expirationDate < new Date()) {
         throw new Error("Confirmation code is incorrect");
     }
     return true;
