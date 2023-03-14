@@ -5,6 +5,9 @@ export const emailAdapter = {
 
     let transporter = await nodemailer.createTransport({
       service: "Gmail",
+      host: "smtp.gmail.com",
+      port: 465,
+      secure: true,
       auth: {
         user:"alex.crane.0599@gmail.com",
         pass:"ljovcwhzdlxcvtbg"
