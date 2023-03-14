@@ -58,6 +58,6 @@ exports.authRouter.post("/registration-confirmation", validation_code_input_1.va
     res.sendStatus(204);
 }));
 exports.authRouter.post("/registration-email-resending", validation_email_resend_input_1.validationEmailResendInput, validation_email_resend_1.validationEmailResend, _validation_error_check_1.validationErrorCheck, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    yield auth_service_1.authService.confirmEmail(req.body.code);
+    yield auth_service_1.authService.resendEmail(req.body.email);
     res.sendStatus(204);
 }));

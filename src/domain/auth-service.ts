@@ -57,6 +57,7 @@ export const authService = {
 
   async resendEmail(email: string): Promise<boolean> {
     const user = await usersQueryRepository.findUserByLoginOrEmail(email);
+    console.log(user)
     if (!user || !user.emailConfirmation.confirmationCode) {
       return false;
     }
@@ -65,10 +66,10 @@ export const authService = {
         user.accountData.email,
         user.emailConfirmation.confirmationCode
       );
-      return true;
     } catch (error) {
       console.error(error);
       return false;
     }
+    return true
   },
 };

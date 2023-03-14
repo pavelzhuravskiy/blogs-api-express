@@ -64,4 +64,21 @@ exports.authService = {
             return yield mongodb_users_repository_1.usersRepository.updateConfirmation(user._id);
         });
     },
+    resendEmail(email) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const user = yield mongodb_users_query_repository_1.usersQueryRepository.findUserByLoginOrEmail(email);
+            console.log(user);
+            if (!user || !user.emailConfirmation.confirmationCode) {
+                return false;
+            }
+            try {
+                yield email_manager_1.emailManager.sendRegistrationEmail(user.accountData.email, user.emailConfirmation.confirmationCode);
+            }
+            catch (error) {
+                console.error(error);
+                return false;
+            }
+            return true;
+        });
+    },
 };
