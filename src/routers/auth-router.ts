@@ -72,12 +72,8 @@ authRouter.post(
   validationEmailConfirm,
   validationErrorCheck,
   async (req: Request, res: Response) => {
-    const result = await authService.confirmEmail(req.body.code);
-    if (result) {
-      res.sendStatus(204);
-    } else {
-      res.sendStatus(400);
-    }
+    await authService.confirmEmail(req.body.code);
+    res.sendStatus(204);
   }
 );
 
@@ -87,11 +83,7 @@ authRouter.post(
   validationEmailResend,
   validationErrorCheck,
   async (req: Request, res: Response) => {
-    const result = await authService.confirmEmail(req.body.code);
-    if (result) {
-      res.sendStatus(204);
-    } else {
-      res.sendStatus(400);
-    }
+    await authService.confirmEmail(req.body.code);
+    res.sendStatus(204);
   }
 );

@@ -49,9 +49,9 @@ export const authService = {
 
   async confirmEmail(code: string): Promise<boolean> {
     const user = await usersQueryRepository.findUserByCode(code);
-    if (!user) {
-      return false
-    }
-    return await usersRepository.updateConfirmation(user._id);
+    // if (!user) {
+    //   return false
+    // }
+    return await usersRepository.updateConfirmation(user!._id);
   },
 };
