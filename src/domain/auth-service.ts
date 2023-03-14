@@ -52,6 +52,6 @@ export const authService = {
     if (!user) {
       return false
     }
-    return await usersRepository.updateConfirmation(user._id);
+    return await usersRepository.updateConfirmation(user!._id);
   },
 };
