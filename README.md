@@ -1,1 +1,1 @@
-Blogs and posts project API
+Blogs and posts project API.
