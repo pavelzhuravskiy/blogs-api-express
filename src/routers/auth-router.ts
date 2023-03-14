@@ -83,7 +83,7 @@ authRouter.post(
   validationEmailResend,
   validationErrorCheck,
   async (req: Request, res: Response) => {
-    await authService.confirmEmail(req.body.code);
+    await authService.resendEmail(req.body.email);
     res.sendStatus(204);
   }
 );

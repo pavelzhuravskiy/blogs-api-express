@@ -50,8 +50,25 @@ export const authService = {
   async confirmEmail(code: string): Promise<boolean> {
     const user = await usersQueryRepository.findUserByCode(code);
     if (!user) {
-      return false
+      return false;
     }
-    return await usersRepository.updateConfirmation(user!._id);
+    return await usersRepository.updateConfirmation(user._id);
+  },
+
+  async resendEmail(email: string): Promise<boolean> {
+    const user = await usersQueryRepository.findUserByLoginOrEmail(email);
+    if (!user || !user.emailConfirmation.confirmationCode) {
+      return false;
+    }
+    try {
+      await emailManager.sendRegistrationEmail(
+        user.accountData.email,
+        user.emailConfirmation.confirmationCode
+      );
+      return true;
+    } catch (error) {
+      console.error(error);
+      return false;
+    }
   },
 };
