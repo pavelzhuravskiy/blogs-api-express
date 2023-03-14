@@ -19,12 +19,13 @@ export const emailAdapter = {
     }
 
     // send mail with defined transport object
-    return transporter.sendMail(mailOptions, function (err, info) {
+    await transporter.sendMail(mailOptions, function (err, info) {
       if (err) {
         console.log(err)
       } else {
         console.log(`E-mail sent: ${info.response}`)
       }
     });
+    return
   },
 };
