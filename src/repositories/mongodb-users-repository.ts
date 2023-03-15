@@ -31,11 +31,21 @@ export const usersRepository = {
   },
 
   // Update user confirmation status
-  async updateConfirmation(_id: ObjectId) {
+  async updateConfirmationStatus(_id: ObjectId) {
     const result = await usersCollection.updateOne(
       { _id },
       { $set: { "emailConfirmation.isConfirmed": true } }
     );
     return result.modifiedCount === 1;
   },
+
+  // Update confirmation code
+  async updateConfirmationCode(_id: ObjectId, newConfirmationCode: string) {
+    const result = await usersCollection.updateOne(
+        { _id },
+        { $set: { "emailConfirmation.confirmationCode": newConfirmationCode } }
+    );
+    return result.modifiedCount === 1;
+  },
+
 };
