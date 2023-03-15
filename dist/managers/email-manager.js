@@ -12,11 +12,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.emailManager = void 0;
 const email_adapter_1 = require("../adapters/email-adapter");
 exports.emailManager = {
-    sendRegistrationEmail(newUserEmail, confirmationCode) {
+    sendRegistrationEmail(email, confirmationCode) {
         return __awaiter(this, void 0, void 0, function* () {
             const registrationSubject = "Confirm your email";
             const registrationMessage = `<h1>Thank you for registration!</h1><p>To finish registration process please follow the link below:<a href="https://somesite.com/confirm-email?code=${confirmationCode}">complete registration</a></p>`;
-            yield email_adapter_1.emailAdapter.sendEmail(newUserEmail, registrationSubject, registrationMessage);
+            yield email_adapter_1.emailAdapter.sendEmail(email, registrationSubject, registrationMessage);
         });
     },
 };

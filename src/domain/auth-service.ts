@@ -57,19 +57,20 @@ export const authService = {
 
   async resendEmail(email: string): Promise<boolean> {
     const user = await usersQueryRepository.findUserByLoginOrEmail(email);
-    console.log(user)
+    console.log(user);
     if (!user || !user.emailConfirmation.confirmationCode) {
       return false;
     }
+    const newConfirmationCode = randomUUID();
     try {
       await emailManager.sendRegistrationEmail(
         user.accountData.email,
-        user.emailConfirmation.confirmationCode
+        newConfirmationCode
       );
     } catch (error) {
       console.error(error);
       return false;
     }
-    return true
+    return true;
   },
 };

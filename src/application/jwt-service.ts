@@ -13,7 +13,7 @@ export const jwtService = {
   },
   async getUserIdByToken(token: string) {
     try {
-      const result: any = jwt.verify(token, settings.JWT_SECRET); // TODO Fix any
+      const result = jwt.verify(token, settings.JWT_SECRET) as { userId: number };
       return new ObjectId(result.userId);
     } catch (error) {
       return null;
