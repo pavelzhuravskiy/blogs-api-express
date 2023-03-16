@@ -12,7 +12,7 @@ import { validationEmailConfirm } from "../middlewares/validations/validation-em
 import { validationCodeInput } from "../middlewares/validations/input/validation-code-input";
 import { validationEmailResend } from "../middlewares/validations/validation-email-resend";
 import { validationEmailResendInput } from "../middlewares/validations/input/validation-email-resend-input";
-import { tokenService } from "../domain/token-service";
+import { validationRefreshToken } from "../middlewares/validations/validation-refresh-token";
 
 export const authRouter = Router({});
 
@@ -94,14 +94,13 @@ authRouter.post(
 
 authRouter.post(
     "/refresh-token",
-    // validationTokenInput,
-    // validationTokenInput, // TODO Black List Check Middleware
-    // validationErrorCheck,
+    validationRefreshToken,
     async (req: Request, res: Response) => {
-        const x = await tokenService.createNewBlacklistedRefreshToken(
-            req.cookies.refreshToken
-        );
-        res.status(300).json(x)
+        const refreshToken = req.cookies.refreshToken;
+        const accessToken = refreshToken.accessToken
+        const userId = await jwtService.getUserIdByToken(accessToken);
+        console.log(userId)
+        res.sendStatus(300)
         //
         // if (check) {
         //     const user = await usersQueryRepository.findUserByLoginOrEmail(

@@ -29,7 +29,7 @@ export const usersCollection =
 export const commentsCollection =
   blogsAndPostsDB.collection<MongoCommentModel>("comments");
 export const refreshTokensBlacklistCollection =
-    blogsAndPostsDB.collection<MongoRefreshTokenModel>("refresh-tokens-blacklist");
+    blogsAndPostsDB.collection<MongoRefreshTokenModel>("blacklisted-tokens");
 
 export async function runDB() {
   try {

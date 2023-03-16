@@ -5,7 +5,7 @@ export const tokenService = {
   // Create new blacklisted refresh token
   async createNewBlacklistedRefreshToken(
     refreshToken: string
-  ): Promise<MongoRefreshTokenModel> {
+  ): Promise<MongoRefreshTokenModel | null> {
     const newBlacklistedToken = {
       refreshToken,
     };
