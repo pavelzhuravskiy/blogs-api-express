@@ -29,8 +29,15 @@ authRouter.post(
         req.body.loginOrEmail
       );
 
-      const token = await jwtService.createJWT(user);
-      res.status(200).json(token);
+      const accessToken = await jwtService.createAccessTokenJWT(user);
+      const refreshToken = await jwtService.createRefreshTokenJWT(user);
+      res
+        .cookie("refreshToken", refreshToken, {
+          httpOnly: true,
+          // secure: true, // TODO Set true!
+        })
+        .status(200)
+        .json(accessToken);
     } else {
       res.sendStatus(401);
     }
@@ -53,16 +60,12 @@ authRouter.post(
   validationUsersInput,
   validationErrorCheck,
   async (req: Request, res: Response) => {
-    const user = await authService.registerUser(
+    await authService.registerUser(
       req.body.login,
       req.body.password,
       req.body.email
     );
-    if (user) {
-      res.sendStatus(204);
-    } else {
-      res.sendStatus(400);
-    }
+    res.sendStatus(204);
   }
 );
 
@@ -87,3 +90,31 @@ authRouter.post(
     res.sendStatus(204);
   }
 );
+
+// authRouter.post(
+//     "/refresh-token",
+//     // validationTokenInput, // TODO Middleware
+//     // validationErrorCheck,
+//     async (req: Request, res: Response) => {
+//         const check = await usersService.checkToken(
+//             req.cookies.refreshToken
+//         );
+//         if (check) {
+//             const user = await usersQueryRepository.findUserByLoginOrEmail(
+//                 req.body.loginOrEmail
+//             );
+//
+//             const accessToken = await jwtService.createAccessTokenJWT(user);
+//             const refreshToken = await jwtService.createRefreshTokenJWT(user);
+//             res
+//                 .cookie("refreshToken", refreshToken, {
+//                     httpOnly: true,
+//                     // secure: true, // TODO Set true!
+//                 })
+//                 .status(200)
+//                 .json(accessToken);
+//         } else {
+//             res.sendStatus(401);
+//         }
+//     }
+// );
