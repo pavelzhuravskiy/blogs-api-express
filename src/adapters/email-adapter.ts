@@ -12,7 +12,7 @@ export const emailAdapter = {
     });
 
     const mailOptions = {
-      from: "IT-Inc admin <alex.crane.0599@gmail.com>", // sender address
+      from: `IT-Inc admin <process.env.EMAIL>`, // sender address
       to: email, // list of receivers
       subject: subject, // Subject line
       html: message,
