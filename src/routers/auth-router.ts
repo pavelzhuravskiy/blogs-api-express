@@ -12,6 +12,7 @@ import { validationEmailConfirm } from "../middlewares/validations/validation-em
 import { validationCodeInput } from "../middlewares/validations/input/validation-code-input";
 import { validationEmailResend } from "../middlewares/validations/validation-email-resend";
 import { validationEmailResendInput } from "../middlewares/validations/input/validation-email-resend-input";
+import { tokenService } from "../domain/token-service";
 
 export const authRouter = Router({});
 
@@ -91,30 +92,33 @@ authRouter.post(
   }
 );
 
-// authRouter.post(
-//     "/refresh-token",
-//     // validationTokenInput, // TODO Middleware
-//     // validationErrorCheck,
-//     async (req: Request, res: Response) => {
-//         const check = await usersService.checkToken(
-//             req.cookies.refreshToken
-//         );
-//         if (check) {
-//             const user = await usersQueryRepository.findUserByLoginOrEmail(
-//                 req.body.loginOrEmail
-//             );
-//
-//             const accessToken = await jwtService.createAccessTokenJWT(user);
-//             const refreshToken = await jwtService.createRefreshTokenJWT(user);
-//             res
-//                 .cookie("refreshToken", refreshToken, {
-//                     httpOnly: true,
-//                     // secure: true, // TODO Set true!
-//                 })
-//                 .status(200)
-//                 .json(accessToken);
-//         } else {
-//             res.sendStatus(401);
-//         }
-//     }
-// );
+authRouter.post(
+    "/refresh-token",
+    // validationTokenInput,
+    // validationTokenInput, // TODO Black List Check Middleware
+    // validationErrorCheck,
+    async (req: Request, res: Response) => {
+        const x = await tokenService.createNewBlacklistedRefreshToken(
+            req.cookies.refreshToken
+        );
+        res.status(300).json(x)
+        //
+        // if (check) {
+        //     const user = await usersQueryRepository.findUserByLoginOrEmail(
+        //         req.body.loginOrEmail
+        //     );
+        //
+        //     const accessToken = await jwtService.createAccessTokenJWT(user);
+        //     const refreshToken = await jwtService.createRefreshTokenJWT(user);
+        //     res
+        //         .cookie("refreshToken", refreshToken, {
+        //             httpOnly: true,
+        //             // secure: true, // TODO Set true!
+        //         })
+        //         .status(200)
+        //         .json(accessToken);
+        // } else {
+        //     res.sendStatus(401);
+        // }
+    }
+);

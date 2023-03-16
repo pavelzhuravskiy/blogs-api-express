@@ -6,11 +6,13 @@ import { runDB } from "./repositories/_mongodb-connect";
 import { usersRouter } from "./routers/users-router";
 import { authRouter } from "./routers/auth-router";
 import { commentsRouter } from "./routers/comments-router";
+import cookieParser from "cookie-parser";
 
 export const app = express();
 const port = process.env.PORT || 5000;
 
 app.use(express.json());
+app.use(cookieParser());
 
 app.use("/auth", authRouter);
 app.use("/blogs", blogsRouter);

@@ -39,14 +39,6 @@ export const usersService = {
       loginOrEmail
     );
 
-    // ***** LET USER LOGIN WITHOUT EMAIL CONFIRMATION *****
-
-    /*if (!user) {
-      return false;
-    }*/
-
-    // ***** LET USER LOGIN WITHOUT EMAIL CONFIRMATION *****
-
     if (!user || !user.emailConfirmation.isConfirmed) {
       return false;
     }

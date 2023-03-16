@@ -4,6 +4,7 @@ import { MongoBlogModel } from "../models/blogs/MongoBlogModel";
 import * as dotenv from "dotenv";
 import { MongoUserModelWithPassword } from "../models/users/MongoUserModelWithPassword";
 import { MongoCommentModel } from "../models/comments/MongoCommentModel";
+import {MongoRefreshTokenModel} from "../models/global/MongoRefreshTokenModel";
 
 dotenv.config();
 
@@ -27,6 +28,8 @@ export const usersCollection =
   blogsAndPostsDB.collection<MongoUserModelWithPassword>("users");
 export const commentsCollection =
   blogsAndPostsDB.collection<MongoCommentModel>("comments");
+export const refreshTokensBlacklistCollection =
+    blogsAndPostsDB.collection<MongoRefreshTokenModel>("refresh-tokens-blacklist");
 
 export async function runDB() {
   try {
