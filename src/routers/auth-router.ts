@@ -13,6 +13,8 @@ import { validationCodeInput } from "../middlewares/validations/input/validation
 import { validationEmailResend } from "../middlewares/validations/validation-email-resend";
 import { validationEmailResendInput } from "../middlewares/validations/input/validation-email-resend-input";
 import { validationRefreshToken } from "../middlewares/validations/validation-refresh-token";
+import { tokensService } from "../domain/tokens-service";
+import { authBasic } from "../middlewares/auth/auth-basic";
 
 export const authRouter = Router({});
 
@@ -93,31 +95,34 @@ authRouter.post(
 );
 
 authRouter.post(
-    "/refresh-token",
-    validationRefreshToken,
-    async (req: Request, res: Response) => {
-        const refreshToken = req.cookies.refreshToken;
-        const accessToken = refreshToken.accessToken
-        const userId = await jwtService.getUserIdByToken(accessToken);
-        console.log(userId)
-        res.sendStatus(300)
-        //
-        // if (check) {
-        //     const user = await usersQueryRepository.findUserByLoginOrEmail(
-        //         req.body.loginOrEmail
-        //     );
-        //
-        //     const accessToken = await jwtService.createAccessTokenJWT(user);
-        //     const refreshToken = await jwtService.createRefreshTokenJWT(user);
-        //     res
-        //         .cookie("refreshToken", refreshToken, {
-        //             httpOnly: true,
-        //             // secure: true, // TODO Set true!
-        //         })
-        //         .status(200)
-        //         .json(accessToken);
-        // } else {
-        //     res.sendStatus(401);
-        // }
+  "/refresh-token",
+  validationRefreshToken,
+  async (req: Request, res: Response) => {
+    const refreshToken = req.cookies.refreshToken;
+    const userId = await jwtService.getUserIdByToken(refreshToken);
+    if (userId) {
+      await tokensService.createNewBlacklistedRefreshToken(refreshToken);
+      const user = await usersQueryRepository.findUserByIdWithMongoId(userId);
+      const newAccessToken = await jwtService.createAccessTokenJWT(user);
+      const newRefreshToken = await jwtService.createRefreshTokenJWT(user);
+      res
+        .cookie("refreshToken", newRefreshToken, {
+          httpOnly: true,
+          // secure: true, // TODO Set true!
+        })
+        .sendStatus(200)
+        .json(newAccessToken);
+    } else {
+      res.sendStatus(401);
     }
+  }
 );
+
+authRouter.delete("/tokens", authBasic, async (req: Request, res: Response) => {
+  const isDeleted = await tokensService.deleteAll();
+  if (isDeleted) {
+    res.sendStatus(204);
+  } else {
+    res.sendStatus(404);
+  }
+});

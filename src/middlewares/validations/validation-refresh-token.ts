@@ -8,14 +8,17 @@ export const validationRefreshToken = async (
 ) => {
   const refreshToken = req.cookies.refreshToken;
 
+  console.log(refreshToken)
+
   if (!refreshToken) {
     res.sendStatus(401);
     return;
   }
 
-  const findRefreshTokenInBlackList =
-    await tokensQueryRepository.findBlackListedToken(refreshToken);
-  if (!findRefreshTokenInBlackList) {
+  const findTokenInBlackList = await tokensQueryRepository.findBlackListedToken(
+    refreshToken
+  );
+  if (!findTokenInBlackList) {
     next();
   } else {
     res.sendStatus(401);
