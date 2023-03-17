@@ -6,14 +6,14 @@ import { MongoUserModelWithPasswordWithId } from "../models/users/MongoUserModel
 export const jwtService = {
   async createAccessTokenJWT(user: MongoUserModelWithPasswordWithId | null) {
     const accessToken = jwt.sign({ userId: user!._id }, settings.JWT_SECRET, {
-      expiresIn: 1000, // TODO Change value to 10
+      expiresIn: 10
     });
 
     return { accessToken };
   },
   async createRefreshTokenJWT(user: MongoUserModelWithPasswordWithId | null) {
     return jwt.sign({ userId: user!._id }, settings.JWT_SECRET, {
-      expiresIn: 2000, // TODO Change value to 20
+      expiresIn: 20
     });
   },
   async getUserIdByToken(token: string) {

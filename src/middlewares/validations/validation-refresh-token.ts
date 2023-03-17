@@ -8,8 +8,6 @@ export const validationRefreshToken = async (
 ) => {
   const refreshToken = req.cookies.refreshToken;
 
-  console.log(refreshToken)
-
   if (!refreshToken) {
     res.sendStatus(401);
     return;

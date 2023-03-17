@@ -110,8 +110,23 @@ authRouter.post(
           httpOnly: true,
           // secure: true, // TODO Set true!
         })
-        .sendStatus(200)
+        .status(200)
         .json(newAccessToken);
+    } else {
+      res.sendStatus(401);
+    }
+  }
+);
+
+authRouter.post(
+  "/logout",
+  validationRefreshToken,
+  async (req: Request, res: Response) => {
+    const refreshToken = req.cookies.refreshToken;
+    const userId = await jwtService.getUserIdByToken(refreshToken);
+    if (userId) {
+      await tokensService.createNewBlacklistedRefreshToken(refreshToken);
+      res.sendStatus(204);
     } else {
       res.sendStatus(401);
     }
