@@ -7,9 +7,12 @@ import { usersRouter } from "./routers/users-router";
 import { authRouter } from "./routers/auth-router";
 import { commentsRouter } from "./routers/comments-router";
 import cookieParser from "cookie-parser";
+import {securityRouter} from "./routers/security-router";
 
 export const app = express();
 const port = process.env.PORT || 5000;
+
+app.set('trust proxy', true)
 
 app.use(express.json());
 app.use(cookieParser());
@@ -17,6 +20,7 @@ app.use(cookieParser());
 app.use("/auth", authRouter);
 app.use("/blogs", blogsRouter);
 app.use("/comments", commentsRouter);
+app.use("/security", securityRouter);
 app.use("/posts", postsRouter);
 app.use("/testing", testingRouter);
 app.use("/users", usersRouter);

@@ -12,39 +12,44 @@ import { validationEmailConfirm } from "../middlewares/validations/validation-em
 import { validationCodeInput } from "../middlewares/validations/input/validation-code-input";
 import { validationEmailResend } from "../middlewares/validations/validation-email-resend";
 import { validationEmailResendInput } from "../middlewares/validations/input/validation-email-resend-input";
-import { validationRefreshToken } from "../middlewares/validations/validation-refresh-token";
-import { tokensService } from "../domain/tokens-service";
+// import { validationRefreshToken } from "../middlewares/validations/validation-refresh-token";
+// import { tokensService } from "../domain/tokens-service";
 import { authBasic } from "../middlewares/auth/auth-basic";
+import {devicesService} from "../domain/devices-service";
 
 export const authRouter = Router({});
 
 authRouter.post(
-  "/login",
-  validationAuthInput,
-  validationErrorCheck,
-  async (req: Request, res: Response) => {
-    const check = await usersService.checkCredentials(
-      req.body.loginOrEmail,
-      req.body.password
-    );
-    if (check) {
-      const user = await usersQueryRepository.findUserByLoginOrEmail(
-        req.body.loginOrEmail
-      );
+    "/login",
+    validationAuthInput, // TODO 429 status
+    validationErrorCheck,
+    async (req: Request, res: Response) => {
+        const check = await usersService.checkCredentials(
+            req.body.loginOrEmail,
+            req.body.password
+        );
+        if (check) {
+            const user = await usersQueryRepository.findUserByLoginOrEmail(
+                req.body.loginOrEmail
+            );
 
-      const accessToken = await jwtService.createAccessTokenJWT(user);
-      const refreshToken = await jwtService.createRefreshTokenJWT(user);
-      res
-        .cookie("refreshToken", refreshToken, {
-          httpOnly: true,
-          secure: true
-        })
-        .status(200)
-        .json(accessToken);
-    } else {
-      res.sendStatus(401);
+            const accessToken = await jwtService.createAccessTokenJWT(user);
+            const refreshToken = await jwtService.createRefreshTokenJWT(user);
+            const ip = req.ip
+
+            await devicesService.createNewDevice(refreshToken, ip);
+
+            res
+                .cookie("refreshToken", refreshToken, {
+                    httpOnly: true,
+                    secure: true
+                })
+                .status(200)
+                .json(accessToken);
+        } else {
+            res.sendStatus(401);
+        }
     }
-  }
 );
 
 authRouter.get("/me", authBearer, async (req: Request, res: Response) => {
@@ -96,12 +101,12 @@ authRouter.post(
 
 authRouter.post(
   "/refresh-token",
-  validationRefreshToken,
+  // validationRefreshToken,
   async (req: Request, res: Response) => {
     const refreshToken = req.cookies.refreshToken;
     const userId = await jwtService.getUserIdByToken(refreshToken);
     if (userId) {
-      await tokensService.createNewBlacklistedRefreshToken(refreshToken);
+      // await tokensService.createNewBlacklistedRefreshToken(refreshToken);
       const user = await usersQueryRepository.findUserByIdWithMongoId(userId);
       const newAccessToken = await jwtService.createAccessTokenJWT(user);
       const newRefreshToken = await jwtService.createRefreshTokenJWT(user);
@@ -120,12 +125,12 @@ authRouter.post(
 
 authRouter.post(
   "/logout",
-  validationRefreshToken,
+  // validationRefreshToken,
   async (req: Request, res: Response) => {
     const refreshToken = req.cookies.refreshToken;
     const userId = await jwtService.getUserIdByToken(refreshToken);
     if (userId) {
-      await tokensService.createNewBlacklistedRefreshToken(refreshToken);
+      // await tokensService.createNewBlacklistedRefreshToken(refreshToken);
       res.sendStatus(204);
     } else {
       res.sendStatus(401);
@@ -134,10 +139,10 @@ authRouter.post(
 );
 
 authRouter.delete("/tokens", authBasic, async (req: Request, res: Response) => {
-  const isDeleted = await tokensService.deleteAll();
-  if (isDeleted) {
-    res.sendStatus(204);
-  } else {
-    res.sendStatus(404);
-  }
+  // const isDeleted = await tokensService.deleteAll();
+  // if (isDeleted) {
+  //   res.sendStatus(204);
+  // } else {
+  //   res.sendStatus(404);
+  // }
 });
