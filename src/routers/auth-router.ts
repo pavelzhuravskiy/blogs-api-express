@@ -43,21 +43,21 @@ authRouter.post(
         await devicesService.updateDevice(deviceId, issuedAt, ip);
       }
 
-      res.sendStatus(300)
-      // let userAgent = req.headers["user-agent"];
-      // if (!userAgent) {
-      //   userAgent = "unknown";
-      // }
-      //
-      // await devicesService.createDevice(newRefreshToken, ip, userAgent);
-      //
-      // res
-      //   .cookie("refreshToken", newRefreshToken, {
-      //     httpOnly: true,
-      //     // secure: true, // TODO Fix
-      //   })
-      //   .status(200)
-      //   .json(newAccessToken);
+      // res.sendStatus(300)
+      let userAgent = req.headers["user-agent"];
+      if (!userAgent) {
+        userAgent = "unknown";
+      }
+
+      await devicesService.createDevice(newRefreshToken, ip, userAgent);
+
+      res
+        .cookie("refreshToken", newRefreshToken, {
+          httpOnly: true,
+          // secure: true, // TODO Fix
+        })
+        .status(200)
+        .json(newAccessToken);
     } else {
       res.sendStatus(401);
     }
