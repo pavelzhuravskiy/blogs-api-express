@@ -13,7 +13,6 @@ import { validationCodeInput } from "../middlewares/validations/input/validation
 import { validationEmailResend } from "../middlewares/validations/validation-email-resend";
 import { validationEmailResendInput } from "../middlewares/validations/input/validation-email-resend-input";
 import { devicesService } from "../domain/devices-service";
-import { devicesQueryRepository } from "../repositories/query-repos/mongodb-devices-query-repository";
 
 export const authRouter = Router({});
 
@@ -39,25 +38,22 @@ authRouter.post(
       const issuedAt = await jwtService.getIssuedAtFromToken(newRefreshToken);
 
       if (deviceId && issuedAt) {
-        // await devicesQueryRepository.findDeviceById(deviceId);
         await devicesService.updateDevice(deviceId, issuedAt, ip);
+      } else {
+        let userAgent = req.headers["user-agent"];
+        if (!userAgent) {
+          userAgent = "unknown";
+        }
+        await devicesService.createDevice(newRefreshToken, ip, userAgent);
       }
 
-      res.sendStatus(300)
-      // let userAgent = req.headers["user-agent"];
-      // if (!userAgent) {
-      //   userAgent = "unknown";
-      // }
-      //
-      // await devicesService.createDevice(newRefreshToken, ip, userAgent);
-      //
-      // res
-      //   .cookie("refreshToken", newRefreshToken, {
-      //     httpOnly: true,
-      //     // secure: true, // TODO Fix
-      //   })
-      //   .status(200)
-      //   .json(newAccessToken);
+      res
+        .cookie("refreshToken", newRefreshToken, {
+          httpOnly: true,
+          // secure: true, // TODO Fix
+        })
+        .status(200)
+        .json(newAccessToken);
     } else {
       res.sendStatus(401);
     }
