@@ -1,8 +1,7 @@
-import { MongoRefreshTokenModel } from "../models/tokens/MongoRefreshTokenModel";
 import { ObjectId } from "mongodb";
-import {MongoDeviceModel} from "../models/devices/MongoDeviceModel";
-import {devicesRepository} from "../repositories/mongodb-devices-repository";
-import {jwtService} from "../application/jwt-service";
+import { MongoDeviceModel } from "../models/devices/MongoDeviceModel";
+import { devicesRepository } from "../repositories/mongodb-devices-repository";
+import { jwtService } from "../application/jwt-service";
 
 export const devicesService = {
   // Create new blacklisted refresh token
@@ -11,18 +10,23 @@ export const devicesService = {
     ip: string,
     userAgent: string
   ): Promise<MongoDeviceModel | null> {
-    const deviceId = await jwtService.getDeviceIdByToken(refreshToken);
+    const deviceId = await jwtService.getDeviceIdFromToken(refreshToken);
+    const expirationDate = await jwtService.getExpirationDateFromToken(
+      refreshToken
+    );
+    const issuedAt = await jwtService.getIssuedAtFromToken(refreshToken);
 
-    if (!deviceId) {
-      return null
+    if (!deviceId || !expirationDate || !issuedAt) {
+      return null;
     }
 
     const newDevice = {
       _id: new ObjectId(),
       ip,
       title: userAgent,
-      lastActiveDate: new Date().toISOString(),
-      deviceId: deviceId
+      deviceId: deviceId,
+      lastActiveDate: issuedAt,
+      expirationDate: expirationDate,
     };
 
     return devicesRepository.createDevice(newDevice);

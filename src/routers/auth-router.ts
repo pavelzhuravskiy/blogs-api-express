@@ -35,7 +35,9 @@ authRouter.post(
 
             const accessToken = await jwtService.createAccessTokenJWT(user);
             const refreshToken = await jwtService.createRefreshTokenJWT(user);
+
             const ip = req.ip
+
             let userAgent = req.headers["user-agent"]
             if (!userAgent) {
                 userAgent = "unknown"
@@ -108,7 +110,7 @@ authRouter.post(
   // validationRefreshToken,
   async (req: Request, res: Response) => {
     const refreshToken = req.cookies.refreshToken;
-    const userId = await jwtService.getUserIdByToken(refreshToken);
+    const userId = await jwtService.getUserIdFromToken(refreshToken);
     if (userId) {
       // await tokensService.createNewBlacklistedRefreshToken(refreshToken);
       const user = await usersQueryRepository.findUserByIdWithMongoId(userId);
@@ -132,7 +134,7 @@ authRouter.post(
   // validationRefreshToken,
   async (req: Request, res: Response) => {
     const refreshToken = req.cookies.refreshToken;
-    const userId = await jwtService.getUserIdByToken(refreshToken);
+    const userId = await jwtService.getUserIdFromToken(refreshToken);
     if (userId) {
       // await tokensService.createNewBlacklistedRefreshToken(refreshToken);
       res.sendStatus(204);

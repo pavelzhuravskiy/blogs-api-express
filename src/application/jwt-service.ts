@@ -10,7 +10,7 @@ export const jwtService = {
       { userId: user!._id, deviceId: randomUUID() },
       settings.JWT_SECRET,
       {
-        expiresIn: 1000, // TODO Fix time
+        expiresIn: "1h", // TODO Fix time
       }
     );
 
@@ -21,28 +21,46 @@ export const jwtService = {
       { userId: user!._id, deviceId: randomUUID() },
       settings.JWT_SECRET,
       {
-        expiresIn: 20, // TODO Fix time
+        expiresIn: "2h", // TODO Fix time
       }
     );
   },
-  async getUserIdByToken(token: string) {
+  async getUserIdFromToken(token: string) {
     try {
       const result = jwt.verify(token, settings.JWT_SECRET) as {
         userId: number;
-        deviceId: string
       };
       return new ObjectId(result.userId);
     } catch (error) {
       return null;
     }
   },
-  async getDeviceIdByToken(token: string) {
+  async getDeviceIdFromToken(token: string) {
     try {
       const result = jwt.verify(token, settings.JWT_SECRET) as {
-        userId: number;
         deviceId: string
       };
       return result.deviceId;
+    } catch (error) {
+      return null;
+    }
+  },
+  async getExpirationDateFromToken(token: string) {
+    try {
+      const result = jwt.verify(token, settings.JWT_SECRET) as {
+        exp: number
+      };
+      return result.exp;
+    } catch (error) {
+      return null;
+    }
+  },
+  async getIssuedAtFromToken(token: string) {
+    try {
+      const result = jwt.verify(token, settings.JWT_SECRET) as {
+        iat: number
+      };
+      return result.iat;
     } catch (error) {
       return null;
     }
