@@ -8,7 +8,8 @@ export const devicesService = {
   // Create new blacklisted refresh token
   async createNewDevice(
     refreshToken: string,
-    ip: string
+    ip: string,
+    userAgent: string
   ): Promise<MongoDeviceModel | null> {
     const deviceId = await jwtService.getDeviceIdByToken(refreshToken);
 
@@ -19,8 +20,8 @@ export const devicesService = {
     const newDevice = {
       _id: new ObjectId(),
       ip,
-      title: "sometitle",
-      lastActiveDate: "somedate",
+      title: userAgent,
+      lastActiveDate: new Date().toISOString(),
       deviceId: deviceId
     };
 

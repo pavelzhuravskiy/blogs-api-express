@@ -36,8 +36,12 @@ authRouter.post(
             const accessToken = await jwtService.createAccessTokenJWT(user);
             const refreshToken = await jwtService.createRefreshTokenJWT(user);
             const ip = req.ip
+            let userAgent = req.headers["user-agent"]
+            if (!userAgent) {
+                userAgent = "unknown"
+            }
 
-            await devicesService.createNewDevice(refreshToken, ip);
+            await devicesService.createNewDevice(refreshToken, ip, userAgent);
 
             res
                 .cookie("refreshToken", refreshToken, {
