@@ -12,50 +12,56 @@ import { validationEmailConfirm } from "../middlewares/validations/validation-em
 import { validationCodeInput } from "../middlewares/validations/input/validation-code-input";
 import { validationEmailResend } from "../middlewares/validations/validation-email-resend";
 import { validationEmailResendInput } from "../middlewares/validations/input/validation-email-resend-input";
-// import { validationRefreshToken } from "../middlewares/validations/validation-refresh-token";
-// import { tokensService } from "../domain/tokens-service";
-import { authBasic } from "../middlewares/auth/auth-basic";
-import {devicesService} from "../domain/devices-service";
+import { devicesService } from "../domain/devices-service";
+import { devicesQueryRepository } from "../repositories/query-repos/mongodb-devices-query-repository";
 
 export const authRouter = Router({});
 
 authRouter.post(
-    "/login",
-    validationAuthInput, // TODO 429 status
-    validationErrorCheck,
-    async (req: Request, res: Response) => {
-        const check = await usersService.checkCredentials(
-            req.body.loginOrEmail,
-            req.body.password
-        );
-        if (check) {
-            const user = await usersQueryRepository.findUserByLoginOrEmail(
-                req.body.loginOrEmail
-            );
+  "/login",
+  validationAuthInput, // TODO 429 status
+  validationErrorCheck,
+  async (req: Request, res: Response) => {
+    const check = await usersService.checkCredentials(
+      req.body.loginOrEmail,
+      req.body.password
+    );
+    if (check) {
+      const refreshToken = req.cookies.refreshToken;
+      const ip = req.ip;
+      const user = await usersQueryRepository.findUserByLoginOrEmail(
+        req.body.loginOrEmail
+      );
 
-            const accessToken = await jwtService.createAccessTokenJWT(user);
-            const refreshToken = await jwtService.createRefreshTokenJWT(user);
+      const deviceId = await jwtService.getDeviceIdFromToken(refreshToken);
+      const newAccessToken = await jwtService.createAccessTokenJWT(user);
+      const newRefreshToken = await jwtService.createRefreshTokenJWT(user);
+      const issuedAt = await jwtService.getIssuedAtFromToken(newRefreshToken);
 
-            const ip = req.ip
+      if (deviceId && issuedAt) {
+        // await devicesQueryRepository.findDeviceById(deviceId);
+        await devicesService.updateDevice(deviceId, issuedAt, ip);
+      }
 
-            let userAgent = req.headers["user-agent"]
-            if (!userAgent) {
-                userAgent = "unknown"
-            }
-
-            await devicesService.createNewDevice(refreshToken, ip, userAgent);
-
-            res
-                .cookie("refreshToken", refreshToken, {
-                    httpOnly: true,
-                    secure: true
-                })
-                .status(200)
-                .json(accessToken);
-        } else {
-            res.sendStatus(401);
-        }
+      res.sendStatus(300)
+      // let userAgent = req.headers["user-agent"];
+      // if (!userAgent) {
+      //   userAgent = "unknown";
+      // }
+      //
+      // await devicesService.createDevice(newRefreshToken, ip, userAgent);
+      //
+      // res
+      //   .cookie("refreshToken", newRefreshToken, {
+      //     httpOnly: true,
+      //     // secure: true, // TODO Fix
+      //   })
+      //   .status(200)
+      //   .json(newAccessToken);
+    } else {
+      res.sendStatus(401);
     }
+  }
 );
 
 authRouter.get("/me", authBearer, async (req: Request, res: Response) => {
@@ -110,19 +116,24 @@ authRouter.post(
   // validationRefreshToken,
   async (req: Request, res: Response) => {
     const refreshToken = req.cookies.refreshToken;
+
     const userId = await jwtService.getUserIdFromToken(refreshToken);
     if (userId) {
-      // await tokensService.createNewBlacklistedRefreshToken(refreshToken);
       const user = await usersQueryRepository.findUserByIdWithMongoId(userId);
       const newAccessToken = await jwtService.createAccessTokenJWT(user);
       const newRefreshToken = await jwtService.createRefreshTokenJWT(user);
-      res
-        .cookie("refreshToken", newRefreshToken, {
-          httpOnly: true,
-          secure: true
-        })
-        .status(200)
-        .json(newAccessToken);
+
+      const issuedAt = await jwtService.getIssuedAtFromToken(refreshToken);
+
+      if (issuedAt) {
+        res
+          .cookie("refreshToken", newRefreshToken, {
+            httpOnly: true,
+            // secure: true, // TODO Fix
+          })
+          .status(200)
+          .json(newAccessToken);
+      }
     } else {
       res.sendStatus(401);
     }
@@ -143,12 +154,3 @@ authRouter.post(
     }
   }
 );
-
-authRouter.delete("/tokens", authBasic, async (req: Request, res: Response) => {
-  // const isDeleted = await tokensService.deleteAll();
-  // if (isDeleted) {
-  //   res.sendStatus(204);
-  // } else {
-  //   res.sendStatus(404);
-  // }
-});

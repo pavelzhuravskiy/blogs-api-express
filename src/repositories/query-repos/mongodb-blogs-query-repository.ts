@@ -1,6 +1,6 @@
 import { blogsCollection } from "../_mongodb-connect";
 import { MongoBlogModelWithPagination } from "../../models/blogs/MongoBlogModelWithPagination";
-import { funcBlogMapping } from "../../functions/mappings/func-blog-mapping";
+import { funcBlogsMapping } from "../../functions/mappings/func-blogs-mapping";
 import { ObjectId } from "mongodb";
 import { MongoBlogModelWithStringId } from "../../models/blogs/MongoBlogModelWithStringId";
 import { funcFilter } from "../../functions/global/func-filter";
@@ -35,7 +35,7 @@ export const blogsQueryRepository = {
       Number(pageSize) || 10,
       blogsPagination,
       blogsCollection,
-      funcBlogMapping,
+      funcBlogsMapping,
       blogsFilter
     );
   },

@@ -1,9 +1,28 @@
-import { devicesCollection } from "./_mongodb-connect";
+import {blogsCollection, devicesCollection} from "./_mongodb-connect";
 import { MongoDeviceModel } from "../models/devices/MongoDeviceModel";
+import { ObjectId } from "mongodb";
 
 export const devicesRepository = {
   async createDevice(device: MongoDeviceModel): Promise<MongoDeviceModel> {
     await devicesCollection.insertOne(device);
     return device;
+  },
+
+  async updateDevice(deviceId: string, issuedAt: number, ip: string): Promise<boolean> {
+    const result = await devicesCollection.updateOne(
+      { deviceId },
+      {
+        $set: {
+          lastActiveDate: issuedAt,
+          ip: ip
+        },
+      }
+    );
+    return result.matchedCount === 1;
+  },
+
+  async deleteAll(): Promise<boolean> {
+    await devicesCollection.deleteMany({});
+    return (await devicesCollection.countDocuments()) === 0;
   },
 };

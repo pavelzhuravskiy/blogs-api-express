@@ -2,15 +2,19 @@ import { ObjectId } from "mongodb";
 import { MongoDeviceModel } from "../models/devices/MongoDeviceModel";
 import { devicesRepository } from "../repositories/mongodb-devices-repository";
 import { jwtService } from "../application/jwt-service";
+import {blogsRepository} from "../repositories/mongodb-blogs-repository";
 
 export const devicesService = {
-  // Create new blacklisted refresh token
-  async createNewDevice(
+  async createDevice(
     refreshToken: string,
     ip: string,
     userAgent: string
   ): Promise<MongoDeviceModel | null> {
     const deviceId = await jwtService.getDeviceIdFromToken(refreshToken);
+
+
+
+
     const expirationDate = await jwtService.getExpirationDateFromToken(
       refreshToken
     );
@@ -30,6 +34,14 @@ export const devicesService = {
     };
 
     return devicesRepository.createDevice(newDevice);
+  },
+
+  async updateDevice(deviceId: string, issuedAt: number, ip: string): Promise<boolean> {
+    return devicesRepository.updateDevice(deviceId, issuedAt, ip);
+  },
+
+  async deleteAll(): Promise<boolean> {
+    return devicesRepository.deleteAll();
   },
 
   // // Delete all blacklisted refresh tokens

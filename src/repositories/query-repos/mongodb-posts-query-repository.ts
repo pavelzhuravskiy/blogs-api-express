@@ -1,7 +1,7 @@
 import { postsCollection } from "../_mongodb-connect";
 import { ObjectId } from "mongodb";
 import { MongoPostModelWithStringId } from "../../models/posts/MongoPostModelWithStringId";
-import { funcPostMapping } from "../../functions/mappings/func-post-mapping";
+import { funcPostsMapping } from "../../functions/mappings/func-posts-mapping";
 import { MongoPostModelWithPagination } from "../../models/posts/MongoPostModelWithPagination";
 import { funcSorting } from "../../functions/global/func-sorting";
 import { funcPagination } from "../../functions/global/func-pagination";
@@ -35,7 +35,7 @@ export const postsQueryRepository = {
       Number(pageSize) || 10,
       postsPagination,
       postsCollection,
-      funcPostMapping,
+      funcPostsMapping,
       postsFilter
     );
   },

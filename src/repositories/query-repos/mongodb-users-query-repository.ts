@@ -1,6 +1,6 @@
 import { usersCollection } from "../_mongodb-connect";
 import { ObjectId } from "mongodb";
-import { funcUserMapping } from "../../functions/mappings/func-user-mapping";
+import { funcUsersMapping } from "../../functions/mappings/func-users-mapping";
 import { MongoUserModelWithStringId } from "../../models/users/MongoUserModelWithStringId";
 import { MongoUserModelWithPagination } from "../../models/users/MongoUserModelWithPagination";
 import { funcFilter } from "../../functions/global/func-filter";
@@ -46,7 +46,7 @@ export const usersQueryRepository = {
       Number(pageSize) || 10,
       usersPagination,
       usersCollection,
-      funcUserMapping,
+      funcUsersMapping,
       usersFilter
     );
   },
