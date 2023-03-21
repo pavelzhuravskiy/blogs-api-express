@@ -1,5 +1,5 @@
 import { Request, Response, Router } from "express";
-import { devicesService } from "../domain/devices-service";
+import { devicesService } from "../_legacy_/service/devices-service";
 import { devicesQueryRepository } from "../repositories/query-repos/mongodb-devices-query-repository";
 
 export const securityRouter = Router({});

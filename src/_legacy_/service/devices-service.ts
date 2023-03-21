@@ -1,7 +1,8 @@
 import { ObjectId } from "mongodb";
-import { MongoDeviceModel } from "../models/devices/MongoDeviceModel";
-import { devicesRepository } from "../repositories/mongodb-devices-repository";
-import { jwtService } from "../application/jwt-service";
+import { MongoDeviceModel } from "../../models/devices/MongoDeviceModel";
+import { devicesRepository } from "../../repositories/mongodb-devices-repository";
+import { jwtService } from "../../application/jwt-service";
+import {blogsRepository} from "../../repositories/mongodb-blogs-repository";
 
 export const devicesService = {
   async createDevice(
@@ -42,6 +43,10 @@ export const devicesService = {
 
   async updateIp(ip: string, deviceId: string): Promise<boolean> {
     return devicesRepository.updateIp(ip, deviceId);
+  },
+
+  async deleteDevice(deviceId: string): Promise<boolean> {
+    return devicesRepository.deleteDevice(deviceId);
   },
 
   async deleteAll(): Promise<boolean> {

@@ -12,7 +12,7 @@ import { validationEmailConfirm } from "../middlewares/validations/validation-em
 import { validationCodeInput } from "../middlewares/validations/input/validation-code-input";
 import { validationEmailResend } from "../middlewares/validations/validation-email-resend";
 import { validationEmailResendInput } from "../middlewares/validations/input/validation-email-resend-input";
-import { devicesService } from "../domain/devices-service";
+import { devicesService } from "../_legacy_/service/devices-service";
 
 export const authRouter = Router({});
 
@@ -98,25 +98,25 @@ authRouter.post(
   "/refresh-token",
   // validationRefreshToken,
   async (req: Request, res: Response) => {
+    const ip = req.ip;
     const refreshToken = req.cookies.refreshToken;
-
     const userId = await jwtService.getUserIdFromToken(refreshToken);
     if (userId) {
       const user = await usersQueryRepository.findUserByIdWithMongoId(userId);
       const newAccessToken = await jwtService.createAccessTokenJWT(user);
       const newRefreshToken = await jwtService.createRefreshTokenJWT(user);
 
-      const issuedAt = await jwtService.getIssuedAtFromToken(refreshToken);
-
-      if (issuedAt) {
-        res
-          .cookie("refreshToken", newRefreshToken, {
-            httpOnly: true,
-            // secure: true, // TODO Fix
-          })
-          .status(200)
-          .json(newAccessToken);
-      }
+      const deviceId = await jwtService.getDeviceIdFromToken(refreshToken);
+      const issuedAt = await jwtService.getIssuedAtFromToken(newRefreshToken);
+      console.log(issuedAt);
+      await devicesService.updateDevice(ip, deviceId!, issuedAt!);
+      res
+        .cookie("refreshToken", newRefreshToken, {
+          httpOnly: true,
+          // secure: true, // TODO Fix
+        })
+        .status(200)
+        .json(newAccessToken);
     } else {
       res.sendStatus(401);
     }
@@ -133,7 +133,6 @@ authRouter.post(
 //             req.body.password
 //         );
 //         if (check) {
-//             const refreshToken = req.cookies.refreshToken;
 //             const ip = req.ip;
 //             const user = await usersQueryRepository.findUserByLoginOrEmail(
 //                 req.body.loginOrEmail
@@ -144,9 +143,7 @@ authRouter.post(
 //             const newRefreshToken = await jwtService.createRefreshTokenJWT(user);
 //             const issuedAt = await jwtService.getIssuedAtFromToken(newRefreshToken);
 //
-//             if (deviceId && issuedAt) {
-//                 await devicesService.updateDevice(deviceId, issuedAt, ip);
-//             } else {
+//              else {
 //                 let userAgent = req.headers["user-agent"];
 //                 if (!userAgent) {
 //                     userAgent = "unknown";
@@ -167,17 +164,13 @@ authRouter.post(
 //     }
 // );
 
-authRouter.post(
-  "/logout",
-  // validationRefreshToken,
-  async (req: Request, res: Response) => {
-    const refreshToken = req.cookies.refreshToken;
-    const userId = await jwtService.getUserIdFromToken(refreshToken);
-    if (userId) {
-      // await tokensService.createNewBlacklistedRefreshToken(refreshToken);
-      res.sendStatus(204);
-    } else {
-      res.sendStatus(401);
-    }
+authRouter.post("/logout", async (req: Request, res: Response) => {
+  const refreshToken = req.cookies.refreshToken;
+  const deviceId = await jwtService.getDeviceIdFromToken(refreshToken);
+  if (deviceId) {
+    await devicesService.deleteDevice(deviceId);
+    res.sendStatus(204);
+  } else {
+    res.sendStatus(401);
   }
-);
+});

@@ -33,6 +33,11 @@ export const devicesRepository = {
     return result.matchedCount === 1;
   },
 
+  async deleteDevice(deviceId: string): Promise<boolean> {
+    const result = await devicesCollection.deleteOne({ deviceId });
+    return result.deletedCount === 1;
+  },
+
   async deleteAll(): Promise<boolean> {
     await devicesCollection.deleteMany({});
     return (await devicesCollection.countDocuments()) === 0;
