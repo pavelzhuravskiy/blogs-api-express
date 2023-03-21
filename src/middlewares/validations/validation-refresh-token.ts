@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
-import {jwtService} from "../../application/jwt-service";
-// import { tokensQueryRepository } from "../../repositories/query-repos/mongodb-tokens-query-repository";
+import { jwtService } from "../../application/jwt-service";
+import { devicesQueryRepository } from "../../repositories/query-repos/mongodb-devices-query-repository";
 
 export const validationRefreshToken = async (
   req: Request,
@@ -14,19 +14,16 @@ export const validationRefreshToken = async (
     return;
   }
 
-  const tokenDate = await jwtService.getExpirationDateFromToken(
-    refreshToken
-  );
+  const tokenIssuedAt = await jwtService.getIssuedAtFromToken(refreshToken);
 
-  const expirationDate = await
+  const deviceId = await jwtService.getDeviceIdFromToken(refreshToken);
+  const device = await devicesQueryRepository.findDeviceById(deviceId!);
 
-    console.log(tokenDate)
+  const dbTokenIssuedAt = device?.lastActiveDate;
 
-  next()
-
-  // if (refreshToken.cookies.) {
-  //   next();
-  // } else {
-  //   res.sendStatus(401);
-  // }
+  if (tokenIssuedAt !== dbTokenIssuedAt) {
+    res.sendStatus(401);
+  } else {
+    next();
+  }
 };

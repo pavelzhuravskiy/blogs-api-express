@@ -8,11 +8,12 @@ export const devicesRepository = {
     return device;
   },
 
-  async updateDevice(ip: string, deviceId: string, issuedAt: number): Promise<boolean> {
+  async updateDevice(ip: string, deviceId: string, newDeviceId: string, issuedAt: number): Promise<boolean> {
     const result = await devicesCollection.updateOne(
       { deviceId },
       {
         $set: {
+          deviceId: newDeviceId,
           lastActiveDate: issuedAt,
           ip: ip
         },

@@ -36,9 +36,10 @@ export const devicesService = {
   async updateDevice(
     ip: string,
     deviceId: string,
+    newDeviceId: string,
     issuedAt: number
   ): Promise<boolean> {
-    return devicesRepository.updateDevice(ip, deviceId, issuedAt);
+    return devicesRepository.updateDevice(ip, deviceId, newDeviceId, issuedAt);
   },
 
   async updateIp(ip: string, deviceId: string): Promise<boolean> {

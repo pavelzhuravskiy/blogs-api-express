@@ -7,12 +7,12 @@ import { usersRouter } from "./routers/users-router";
 import { authRouter } from "./routers/auth-router";
 import { commentsRouter } from "./routers/comments-router";
 import cookieParser from "cookie-parser";
-import {securityRouter} from "./routers/security-router";
+import { securityRouter } from "./routers/security-router";
 
 export const app = express();
 const port = process.env.PORT || 5000;
 
-app.set('trust proxy', true)
+app.set("trust proxy", true);
 
 app.use(express.json());
 app.use(cookieParser());
