@@ -1,8 +1,6 @@
-import { blogsCollection, devicesCollection } from "../_mongodb-connect";
+import { devicesCollection } from "../_mongodb-connect";
 import { MongoDeviceViewModel } from "../../models/devices/MongoDeviceViewModel";
 import { funcDevicesMapping } from "../../functions/mappings/func-devices-mapping";
-import { ObjectId } from "mongodb";
-import { MongoBlogModelWithStringId } from "../../models/blogs/MongoBlogModelWithStringId";
 import { MongoDeviceModel } from "../../models/devices/MongoDeviceModel";
 
 export const devicesQueryRepository = {

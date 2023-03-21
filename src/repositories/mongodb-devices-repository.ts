@@ -8,7 +8,7 @@ export const devicesRepository = {
     return device;
   },
 
-  async updateDevice(deviceId: string, issuedAt: number, ip: string): Promise<boolean> {
+  async updateDevice(ip: string, deviceId: string, issuedAt: number): Promise<boolean> {
     const result = await devicesCollection.updateOne(
       { deviceId },
       {
@@ -17,6 +17,18 @@ export const devicesRepository = {
           ip: ip
         },
       }
+    );
+    return result.matchedCount === 1;
+  },
+
+  async updateIp(ip: string, deviceId: string): Promise<boolean> {
+    const result = await devicesCollection.updateOne(
+        { deviceId },
+        {
+          $set: {
+            ip: ip
+          },
+        }
     );
     return result.matchedCount === 1;
   },

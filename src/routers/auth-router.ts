@@ -26,27 +26,14 @@ authRouter.post(
       req.body.password
     );
     if (check) {
-      const refreshToken = req.cookies.refreshToken;
       const ip = req.ip;
+      const userAgent = req.headers["user-agent"] || "unknown";
       const user = await usersQueryRepository.findUserByLoginOrEmail(
         req.body.loginOrEmail
       );
-
-      const deviceId = await jwtService.getDeviceIdFromToken(refreshToken);
       const newAccessToken = await jwtService.createAccessTokenJWT(user);
       const newRefreshToken = await jwtService.createRefreshTokenJWT(user);
-      const issuedAt = await jwtService.getIssuedAtFromToken(newRefreshToken);
-
-      if (deviceId && issuedAt) {
-        await devicesService.updateDevice(deviceId, issuedAt, ip);
-      } else {
-        let userAgent = req.headers["user-agent"];
-        if (!userAgent) {
-          userAgent = "unknown";
-        }
-        await devicesService.createDevice(newRefreshToken, ip, userAgent);
-      }
-
+      await devicesService.createDevice(newRefreshToken, ip, userAgent);
       res
         .cookie("refreshToken", newRefreshToken, {
           httpOnly: true,
@@ -135,6 +122,50 @@ authRouter.post(
     }
   }
 );
+
+// authRouter.post(
+//     "/login",
+//     validationAuthInput, // TODO 429 status
+//     validationErrorCheck,
+//     async (req: Request, res: Response) => {
+//         const check = await usersService.checkCredentials(
+//             req.body.loginOrEmail,
+//             req.body.password
+//         );
+//         if (check) {
+//             const refreshToken = req.cookies.refreshToken;
+//             const ip = req.ip;
+//             const user = await usersQueryRepository.findUserByLoginOrEmail(
+//                 req.body.loginOrEmail
+//             );
+//
+//             const deviceId = await jwtService.getDeviceIdFromToken(refreshToken);
+//             const newAccessToken = await jwtService.createAccessTokenJWT(user);
+//             const newRefreshToken = await jwtService.createRefreshTokenJWT(user);
+//             const issuedAt = await jwtService.getIssuedAtFromToken(newRefreshToken);
+//
+//             if (deviceId && issuedAt) {
+//                 await devicesService.updateDevice(deviceId, issuedAt, ip);
+//             } else {
+//                 let userAgent = req.headers["user-agent"];
+//                 if (!userAgent) {
+//                     userAgent = "unknown";
+//                 }
+//                 await devicesService.createDevice(newRefreshToken, ip, userAgent);
+//             }
+//
+//             res
+//                 .cookie("refreshToken", newRefreshToken, {
+//                     httpOnly: true,
+//                     // secure: true, // TODO Fix
+//                 })
+//                 .status(200)
+//                 .json(newAccessToken);
+//         } else {
+//             res.sendStatus(401);
+//         }
+//     }
+// );
 
 authRouter.post(
   "/logout",
