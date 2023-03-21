@@ -12,7 +12,7 @@ import { validationEmailConfirm } from "../middlewares/validations/validation-em
 import { validationCodeInput } from "../middlewares/validations/input/validation-code-input";
 import { validationEmailResend } from "../middlewares/validations/validation-email-resend";
 import { validationEmailResendInput } from "../middlewares/validations/input/validation-email-resend-input";
-import { devicesService } from "../_legacy_/service/devices-service";
+import { devicesService } from "../domain/devices-service";
 import {
     validationRefreshToken
 } from "../middlewares/validations/validation-refresh-token";

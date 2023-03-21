@@ -16,8 +16,9 @@ export const validationErrorCheck = (
   const result = validationResult(req).formatWith(errorFormatter);
 
   const idFinder = result.array().find((e) => e.field === "id");
+  const deviceIdFinder = result.array().find((e) => e.field === "deviceId");
 
-  if (idFinder) {
+  if (idFinder || deviceIdFinder) {
     res.status(404).json({ errorsMessages: result.array() });
     return;
   }

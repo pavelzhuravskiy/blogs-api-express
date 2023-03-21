@@ -1,8 +1,7 @@
 import { ObjectId } from "mongodb";
-import { MongoDeviceModel } from "../../models/devices/MongoDeviceModel";
-import { devicesRepository } from "../../repositories/mongodb-devices-repository";
-import { jwtService } from "../../application/jwt-service";
-import {blogsRepository} from "../../repositories/mongodb-blogs-repository";
+import { MongoDeviceModel } from "../models/devices/MongoDeviceModel";
+import { devicesRepository } from "../repositories/mongodb-devices-repository";
+import { jwtService } from "../application/jwt-service";
 
 export const devicesService = {
   async createDevice(
@@ -42,10 +41,6 @@ export const devicesService = {
     return devicesRepository.updateDevice(ip, deviceId, newDeviceId, issuedAt);
   },
 
-  async updateIp(ip: string, deviceId: string): Promise<boolean> {
-    return devicesRepository.updateIp(ip, deviceId);
-  },
-
   async deleteDevice(deviceId: string): Promise<boolean> {
     return devicesRepository.deleteDevice(deviceId);
   },
@@ -53,9 +48,4 @@ export const devicesService = {
   async deleteAll(): Promise<boolean> {
     return devicesRepository.deleteAll();
   },
-
-  // // Delete all blacklisted refresh tokens
-  // async deleteAll(): Promise<boolean> {
-  //   return blacklistedTokensRepository.deleteAll();
-  // },
 };
