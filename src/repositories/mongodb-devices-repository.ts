@@ -9,17 +9,15 @@ export const devicesRepository = {
 
   async updateDevice(
     ip: string,
-    deviceId: string,
-    newDeviceId: string,
+    userId: string,
     issuedAt: number
   ): Promise<boolean> {
     const result = await devicesCollection.updateOne(
-      { deviceId },
+      { userId },
       {
         $set: {
-          deviceId: newDeviceId,
           lastActiveDate: issuedAt,
-          ip: ip,
+          ip,
         },
       }
     );

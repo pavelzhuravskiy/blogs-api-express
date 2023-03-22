@@ -38,7 +38,7 @@ authRouter.post(
       res
         .cookie("refreshToken", newRefreshToken, {
           httpOnly: true,
-          secure: true
+          // secure: true
         })
         .status(200)
         .json(newAccessToken);
@@ -95,50 +95,38 @@ authRouter.post(
   }
 );
 
-authRouter.post(
-  "/refresh-token",
-  async (req: Request, res: Response) => {
-    const ip = req.ip;
-    const cookieRefreshToken = req.cookies.refreshToken;
+authRouter.post("/refresh-token", async (req: Request, res: Response) => {
+  const ip = req.ip;
+  const cookieRefreshToken = req.cookies.refreshToken;
 
-    const cookieRefreshTokenObj = await jwtService.verifyToken(
-      cookieRefreshToken
+  const cookieRefreshTokenObj = await jwtService.verifyToken(
+    cookieRefreshToken
+  );
+
+  if (cookieRefreshTokenObj) {
+    const userId = cookieRefreshTokenObj.userId.toString();
+    const user = await usersQueryRepository.findUserByIdWithMongoId(
+      new ObjectId(userId)
     );
 
-    if (cookieRefreshTokenObj) {
-      const userId = cookieRefreshTokenObj.userId;
-      const user = await usersQueryRepository.findUserByIdWithMongoId(
-        new ObjectId(userId)
-      );
+    const newAccessToken = await jwtService.createAccessTokenJWT(user);
+    const newRefreshToken = await jwtService.createRefreshTokenJWT(user);
+    const newRefreshTokenObj = await jwtService.verifyToken(newRefreshToken);
+    const issuedAt = newRefreshTokenObj!.iat;
 
-      const newAccessToken = await jwtService.createAccessTokenJWT(user);
-      const newRefreshToken = await jwtService.createRefreshTokenJWT(user);
+    await devicesService.updateDevice(ip, userId, issuedAt);
 
-      const newRefreshTokenObj = await jwtService.verifyToken(newRefreshToken);
-
-      const cookieDeviceId = cookieRefreshTokenObj.deviceId;
-      const newDeviceId = newRefreshTokenObj!.deviceId;
-      const issuedAt = newRefreshTokenObj!.iat;
-
-      await devicesService.updateDevice(
-        ip,
-        cookieDeviceId,
-        newDeviceId,
-        issuedAt
-      );
-
-      res
-        .cookie("refreshToken", newRefreshToken, {
-          httpOnly: true,
-          secure: true
-        })
-        .status(200)
-        .json(newAccessToken);
-    } else {
-      res.sendStatus(401);
-    }
+    res
+      .cookie("refreshToken", newRefreshToken, {
+        httpOnly: true,
+        // secure: true
+      })
+      .status(200)
+      .json(newAccessToken);
+  } else {
+    res.sendStatus(401);
   }
-);
+});
 
 authRouter.post("/logout", async (req: Request, res: Response) => {
   const cookieRefreshToken = req.cookies.refreshToken;

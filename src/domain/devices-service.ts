@@ -38,11 +38,10 @@ export const devicesService = {
 
   async updateDevice(
     ip: string,
-    deviceId: string,
-    newDeviceId: string,
+    userId: string,
     issuedAt: number
   ): Promise<boolean> {
-    return devicesRepository.updateDevice(ip, deviceId, newDeviceId, issuedAt);
+    return devicesRepository.updateDevice(ip, userId, issuedAt);
   },
 
   async deleteDevice(deviceId: string): Promise<boolean> {
