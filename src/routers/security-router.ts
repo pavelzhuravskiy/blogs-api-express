@@ -27,6 +27,7 @@ securityRouter.get("/devices", async (req: Request, res: Response) => {
 securityRouter.delete(
   "/devices/:deviceId",
   validationDevicesFindByParamId,
+  validationDeviceOwner,
   validationErrorCheck,
   validationDeviceOwner,
   async (req: Request, res: Response) => {
