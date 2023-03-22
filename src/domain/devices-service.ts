@@ -5,20 +5,20 @@ import { jwtService } from "../application/jwt-service";
 
 export const devicesService = {
   async createDevice(
-    refreshToken: string,
+    newRefreshToken: string,
     ip: string,
     userAgent: string
   ): Promise<MongoDeviceModel | null> {
-    const deviceId = await jwtService.getDeviceIdFromToken(refreshToken);
 
-    const expirationDate = await jwtService.getExpirationDateFromToken(
-      refreshToken
-    );
-    const issuedAt = await jwtService.getIssuedAtFromToken(refreshToken);
+    const newRefreshTokenObj = await jwtService.verifyToken(newRefreshToken);
 
-    if (!deviceId || !expirationDate || !issuedAt) {
+    if (!newRefreshTokenObj) {
       return null;
     }
+
+    const deviceId = newRefreshTokenObj.deviceId;
+    const expirationDate = newRefreshTokenObj.exp;
+    const issuedAt = newRefreshTokenObj.iat;
 
     const newDevice = {
       _id: new ObjectId(),

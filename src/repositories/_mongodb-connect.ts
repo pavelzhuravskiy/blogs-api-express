@@ -4,8 +4,7 @@ import { MongoBlogModel } from "../models/blogs/MongoBlogModel";
 import * as dotenv from "dotenv";
 import { MongoUserModelWithPassword } from "../models/users/MongoUserModelWithPassword";
 import { MongoCommentModel } from "../models/comments/MongoCommentModel";
-import {MongoRefreshTokenModel} from "../models/tokens/MongoRefreshTokenModel";
-import {MongoDeviceModel} from "../models/devices/MongoDeviceModel";
+import { MongoDeviceModel } from "../models/devices/MongoDeviceModel";
 
 dotenv.config();
 

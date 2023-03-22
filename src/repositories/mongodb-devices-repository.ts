@@ -1,6 +1,5 @@
-import {blogsCollection, devicesCollection} from "./_mongodb-connect";
+import { devicesCollection } from "./_mongodb-connect";
 import { MongoDeviceModel } from "../models/devices/MongoDeviceModel";
-import { ObjectId } from "mongodb";
 
 export const devicesRepository = {
   async createDevice(device: MongoDeviceModel): Promise<MongoDeviceModel> {
@@ -8,14 +7,19 @@ export const devicesRepository = {
     return device;
   },
 
-  async updateDevice(ip: string, deviceId: string, newDeviceId: string, issuedAt: number): Promise<boolean> {
+  async updateDevice(
+    ip: string,
+    deviceId: string,
+    newDeviceId: string,
+    issuedAt: number
+  ): Promise<boolean> {
     const result = await devicesCollection.updateOne(
       { deviceId },
       {
         $set: {
           deviceId: newDeviceId,
           lastActiveDate: issuedAt,
-          ip: ip
+          ip: ip,
         },
       }
     );
@@ -24,12 +28,12 @@ export const devicesRepository = {
 
   async updateIp(ip: string, deviceId: string): Promise<boolean> {
     const result = await devicesCollection.updateOne(
-        { deviceId },
-        {
-          $set: {
-            ip: ip
-          },
-        }
+      { deviceId },
+      {
+        $set: {
+          ip: ip,
+        },
+      }
     );
     return result.matchedCount === 1;
   },

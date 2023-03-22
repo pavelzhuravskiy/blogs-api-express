@@ -13,9 +13,7 @@ import { validationCodeInput } from "../middlewares/validations/input/validation
 import { validationEmailResend } from "../middlewares/validations/validation-email-resend";
 import { validationEmailResendInput } from "../middlewares/validations/input/validation-email-resend-input";
 import { devicesService } from "../domain/devices-service";
-import {
-    validationRefreshToken
-} from "../middlewares/validations/validation-refresh-token";
+import { ObjectId } from "mongodb";
 
 export const authRouter = Router({});
 
@@ -99,21 +97,37 @@ authRouter.post(
 
 authRouter.post(
   "/refresh-token",
-  validationRefreshToken,
+  // validationRefreshToken,
   async (req: Request, res: Response) => {
     const ip = req.ip;
-    const refreshToken = req.cookies.refreshToken;
-    const userId = await jwtService.getUserIdFromToken(refreshToken);
-    if (userId) {
-      const user = await usersQueryRepository.findUserByIdWithMongoId(userId);
+    const cookieRefreshToken = req.cookies.refreshToken;
+
+    const cookieRefreshTokenObj = await jwtService.verifyToken(
+      cookieRefreshToken
+    );
+
+    if (cookieRefreshTokenObj) {
+      const userId = cookieRefreshTokenObj.userId;
+      const user = await usersQueryRepository.findUserByIdWithMongoId(
+        new ObjectId(userId)
+      );
+
       const newAccessToken = await jwtService.createAccessTokenJWT(user);
       const newRefreshToken = await jwtService.createRefreshTokenJWT(user);
 
-      const deviceId = await jwtService.getDeviceIdFromToken(refreshToken);
-      const newDeviceId = await jwtService.getDeviceIdFromToken(newRefreshToken)
-      const issuedAt = await jwtService.getIssuedAtFromToken(newRefreshToken);
+      const newRefreshTokenObj = await jwtService.verifyToken(newRefreshToken);
 
-      await devicesService.updateDevice(ip, deviceId!, newDeviceId!, issuedAt!);
+      const cookieDeviceId = cookieRefreshTokenObj.deviceId;
+      const newDeviceId = newRefreshTokenObj!.deviceId;
+      const issuedAt = newRefreshTokenObj!.iat;
+
+      await devicesService.updateDevice(
+        ip,
+        cookieDeviceId,
+        newDeviceId,
+        issuedAt
+      );
+
       res
         .cookie("refreshToken", newRefreshToken, {
           httpOnly: true,
@@ -128,10 +142,13 @@ authRouter.post(
 );
 
 authRouter.post("/logout", async (req: Request, res: Response) => {
-  const refreshToken = req.cookies.refreshToken;
-  const deviceId = await jwtService.getDeviceIdFromToken(refreshToken);
-  if (deviceId) {
-    await devicesService.deleteDevice(deviceId);
+  const cookieRefreshToken = req.cookies.refreshToken;
+  const cookieRefreshTokenObj = await jwtService.verifyToken(
+    cookieRefreshToken
+  );
+  if (cookieRefreshTokenObj) {
+    const cookieDeviceId = cookieRefreshTokenObj.deviceId;
+    await devicesService.deleteDevice(cookieDeviceId);
     res.sendStatus(204);
   } else {
     res.sendStatus(401);

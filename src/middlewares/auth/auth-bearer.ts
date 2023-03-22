@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { jwtService } from "../../application/jwt-service";
 import { usersQueryRepository } from "../../repositories/query-repos/mongodb-users-query-repository";
+import { ObjectId } from "mongodb";
 
 export const authBearer = async (
   req: Request,
@@ -13,9 +14,10 @@ export const authBearer = async (
   }
 
   const token = req.headers.authorization.split(" ")[1];
-  const userId = await jwtService.getUserIdFromToken(token);
+  const tokenObj = await jwtService.verifyToken(token);
 
-  if (userId) {
+  if (tokenObj) {
+    const userId = new ObjectId(tokenObj.userId);
     req.user = await usersQueryRepository.findUserByIdWithMongoId(userId);
     next();
   } else {
