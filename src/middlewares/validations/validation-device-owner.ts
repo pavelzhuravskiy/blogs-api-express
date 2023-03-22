@@ -4,7 +4,7 @@ import {
   devicesQueryRepository
 } from "../../repositories/query-repos/mongodb-devices-query-repository";
 
-export const validationRefreshToken = async (
+export const validationDeviceOwner = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -12,7 +12,6 @@ export const validationRefreshToken = async (
   const cookieRefreshToken = req.cookies.refreshToken;
 
   if (!cookieRefreshToken) {
-
     res.sendStatus(401);
     return;
   }

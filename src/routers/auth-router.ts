@@ -38,7 +38,7 @@ authRouter.post(
       res
         .cookie("refreshToken", newRefreshToken, {
           httpOnly: true,
-          secure: true
+          // secure: true
         })
         .status(200)
         .json(newAccessToken);
@@ -97,7 +97,6 @@ authRouter.post(
 
 authRouter.post(
   "/refresh-token",
-  // validationRefreshToken,
   async (req: Request, res: Response) => {
     const ip = req.ip;
     const cookieRefreshToken = req.cookies.refreshToken;

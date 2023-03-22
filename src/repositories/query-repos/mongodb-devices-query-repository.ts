@@ -4,8 +4,8 @@ import { funcDevicesMapping } from "../../functions/mappings/func-devices-mappin
 import { MongoDeviceModel } from "../../models/devices/MongoDeviceModel";
 
 export const devicesQueryRepository = {
-  async findDevices(): Promise<MongoDeviceViewModel[]> {
-    const foundDevices = await devicesCollection.find({}).toArray();
+  async findDevices(userId: string): Promise<MongoDeviceViewModel[]> {
+    const foundDevices = await devicesCollection.find({ userId }).toArray();
     return funcDevicesMapping(foundDevices);
   },
 

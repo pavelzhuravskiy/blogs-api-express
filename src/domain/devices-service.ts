@@ -12,10 +12,13 @@ export const devicesService = {
 
     const newRefreshTokenObj = await jwtService.verifyToken(newRefreshToken);
 
+    // console.log(newRefreshTokenObj)
+
     if (!newRefreshTokenObj) {
       return null;
     }
 
+    const userId = newRefreshTokenObj.userId
     const deviceId = newRefreshTokenObj.deviceId;
     const expirationDate = newRefreshTokenObj.exp;
     const issuedAt = newRefreshTokenObj.iat;
@@ -24,7 +27,8 @@ export const devicesService = {
       _id: new ObjectId(),
       ip,
       title: userAgent,
-      deviceId: deviceId,
+      userId: userId.toString(),
+      deviceId,
       lastActiveDate: issuedAt,
       expirationDate: expirationDate,
     };
