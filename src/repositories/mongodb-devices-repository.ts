@@ -41,6 +41,11 @@ export const devicesRepository = {
     return result.deletedCount === 1;
   },
 
+  async deleteAllOldDevices(currentDevice: string): Promise<boolean> {
+    await devicesCollection.deleteMany({ deviceId: { $ne: currentDevice } });
+    return (await devicesCollection.countDocuments()) === 1;
+  },
+
   async deleteAll(): Promise<boolean> {
     await devicesCollection.deleteMany({});
     return (await devicesCollection.countDocuments()) === 0;

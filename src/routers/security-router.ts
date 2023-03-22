@@ -3,7 +3,6 @@ import { devicesService } from "../domain/devices-service";
 import { devicesQueryRepository } from "../repositories/query-repos/mongodb-devices-query-repository";
 import { validationErrorCheck } from "../middlewares/validations/_validation-error-check";
 import { validationDevicesFindByParamId } from "../middlewares/validations/find-by-id/validation-devices-find-by-param-id";
-import { validationRefreshToken } from "../middlewares/validations/validation-refresh-token";
 import { jwtService } from "../application/jwt-service";
 import { validationDeviceOwner } from "../middlewares/validations/validation-device-owner";
 
@@ -39,15 +38,20 @@ securityRouter.delete(
   }
 );
 
-securityRouter.delete(
-  "/devices",
-  validationRefreshToken,
-  async (req: Request, res: Response) => {
-    const isDeleted = await devicesService.deleteAll();
+securityRouter.delete("/devices", async (req: Request, res: Response) => {
+  const cookieRefreshToken = req.cookies.refreshToken;
+  const cookieRefreshTokenObj = await jwtService.verifyToken(
+    cookieRefreshToken
+  );
+  if (cookieRefreshTokenObj) {
+    const currentDevice = cookieRefreshTokenObj.deviceId;
+    const isDeleted = await devicesService.deleteAllOldDevices(currentDevice);
     if (isDeleted) {
       res.sendStatus(204);
     } else {
       res.sendStatus(404);
     }
+  } else {
+    res.sendStatus(401);
   }
-);
+});

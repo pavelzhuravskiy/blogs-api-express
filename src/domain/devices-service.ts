@@ -12,8 +12,6 @@ export const devicesService = {
 
     const newRefreshTokenObj = await jwtService.verifyToken(newRefreshToken);
 
-    // console.log(newRefreshTokenObj)
-
     if (!newRefreshTokenObj) {
       return null;
     }
@@ -46,6 +44,10 @@ export const devicesService = {
 
   async deleteDevice(deviceId: string): Promise<boolean> {
     return devicesRepository.deleteDevice(deviceId);
+  },
+
+  async deleteAllOldDevices(currentDevice: string): Promise<boolean> {
+    return devicesRepository.deleteAllOldDevices(currentDevice);
   },
 
   async deleteAll(): Promise<boolean> {
