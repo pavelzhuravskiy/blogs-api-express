@@ -38,7 +38,7 @@ authRouter.post(
       res
         .cookie("refreshToken", newRefreshToken, {
           httpOnly: true,
-          // secure: true
+          secure: true
         })
         .status(200)
         .json(newAccessToken);
