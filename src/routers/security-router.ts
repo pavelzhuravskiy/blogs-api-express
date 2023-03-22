@@ -45,12 +45,8 @@ securityRouter.delete("/devices", async (req: Request, res: Response) => {
   );
   if (cookieRefreshTokenObj) {
     const currentDevice = cookieRefreshTokenObj.deviceId;
-    const isDeleted = await devicesService.deleteAllOldDevices(currentDevice);
-    if (isDeleted) {
-      res.sendStatus(204);
-    } else {
-      res.sendStatus(404);
-    }
+    await devicesService.deleteAllOldDevices(currentDevice);
+    res.sendStatus(204);
   } else {
     res.sendStatus(401);
   }
