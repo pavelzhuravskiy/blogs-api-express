@@ -14,6 +14,7 @@ import { validationEmailResend } from "../middlewares/validations/validation-ema
 import { validationEmailResendInput } from "../middlewares/validations/input/validation-email-resend-input";
 import { devicesService } from "../domain/devices-service";
 import { ObjectId } from "mongodb";
+import { validationRefreshToken } from "../middlewares/validations/validation-refresh-token";
 
 export const authRouter = Router({});
 
@@ -38,7 +39,7 @@ authRouter.post(
       res
         .cookie("refreshToken", newRefreshToken, {
           httpOnly: true,
-          // secure: true
+          secure: true
         })
         .status(200)
         .json(newAccessToken);
@@ -97,7 +98,7 @@ authRouter.post(
 
 authRouter.post(
   "/refresh-token",
-  // validationRefreshToken,
+  validationRefreshToken,
   async (req: Request, res: Response) => {
     const ip = req.ip;
     const cookieRefreshToken = req.cookies.refreshToken;
@@ -106,29 +107,27 @@ authRouter.post(
       cookieRefreshToken
     );
 
-    if (cookieRefreshTokenObj) {
-      const userId = cookieRefreshTokenObj.userId.toString();
-      const user = await usersQueryRepository.findUserByIdWithMongoId(
-        new ObjectId(userId)
-      );
+    const deviceId = cookieRefreshTokenObj!.deviceId
 
-      const newAccessToken = await jwtService.createAccessTokenJWT(user);
-      const newRefreshToken = await jwtService.createRefreshTokenJWT(user);
-      const newRefreshTokenObj = await jwtService.verifyToken(newRefreshToken);
-      const issuedAt = newRefreshTokenObj!.iat;
+    const userId = cookieRefreshTokenObj!.userId.toString();
+    const user = await usersQueryRepository.findUserByIdWithMongoId(
+      new ObjectId(userId)
+    );
 
-      await devicesService.updateDevice(ip, userId, issuedAt);
+    const newAccessToken = await jwtService.createAccessTokenJWT(user, deviceId);
+    const newRefreshToken = await jwtService.createRefreshTokenJWT(user, deviceId);
+    const newRefreshTokenObj = await jwtService.verifyToken(newRefreshToken);
+    const newIssuedAt = newRefreshTokenObj!.iat;
 
-      res
-        .cookie("refreshToken", newRefreshToken, {
-          httpOnly: true,
-          // secure: true
-        })
-        .status(200)
-        .json(newAccessToken);
-    } else {
-      res.sendStatus(401);
-    }
+    await devicesService.updateDevice(ip, userId, newIssuedAt);
+
+    res
+      .cookie("refreshToken", newRefreshToken, {
+        httpOnly: true,
+        secure: true
+      })
+      .status(200)
+      .json(newAccessToken);
   }
 );
 

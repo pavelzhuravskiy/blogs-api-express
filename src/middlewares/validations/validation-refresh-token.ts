@@ -24,27 +24,16 @@ export const validationRefreshToken = async (
   }
 
   const deviceId = cookieRefreshTokenObj.deviceId;
-
-  // console.log(deviceId)
+  const cookieRefreshTokenIat = cookieRefreshTokenObj.iat;
 
   const dbDevice = await devicesQueryRepository.findDeviceById(deviceId);
 
-  console.log(dbDevice);
-
-  // if (!dbDevice) {
-  //   res.sendStatus(300);
-  //   return;
-  // }
-
-  const dbLastActiveDate = dbDevice?.lastActiveDate;
-  const cookieRefreshTokenIat = cookieRefreshTokenObj.iat;
-
-  // console.log(dbLastActiveDate)
-  // console.log(cookieRefreshTokenIat)
-
-  if (dbLastActiveDate !== cookieRefreshTokenIat) {
-    res.sendStatus(401);
-    return;
+  if (dbDevice) {
+    const lastActiveDate = dbDevice.lastActiveDate
+    if (cookieRefreshTokenIat < lastActiveDate) {
+      res.sendStatus(401);
+      return;
+    }
   }
 
   next();

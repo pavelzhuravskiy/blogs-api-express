@@ -4,23 +4,29 @@ import { MongoUserModelWithPasswordWithId } from "../models/users/MongoUserModel
 import { randomUUID } from "crypto";
 
 export const jwtService = {
-  async createAccessTokenJWT(user: MongoUserModelWithPasswordWithId | null) {
+  async createAccessTokenJWT(
+    user: MongoUserModelWithPasswordWithId | null,
+    deviceId: string = randomUUID()
+  ) {
     const accessToken = jwt.sign(
-      { userId: user!._id, deviceId: randomUUID() },
+      { userId: user!._id, deviceId },
       settings.JWT_SECRET,
       {
-        expiresIn: "1h",
+        expiresIn: 10,
       }
     );
 
     return { accessToken };
   },
-  async createRefreshTokenJWT(user: MongoUserModelWithPasswordWithId | null) {
+  async createRefreshTokenJWT(
+    user: MongoUserModelWithPasswordWithId | null,
+    deviceId: string = randomUUID()
+  ) {
     return jwt.sign(
-      { userId: user!._id, deviceId: randomUUID() },
+      { userId: user!._id, deviceId },
       settings.JWT_SECRET,
       {
-        expiresIn: "2h"
+        expiresIn: 20,
       }
     );
   },

@@ -1969,6 +1969,12 @@ describe("Devices operations", () => {
     const thirdDeviceDate = response.body[2].lastActiveDate;
     const fourthDeviceDate = response.body[3].lastActiveDate;
 
+    const sleep = (delay: number) => {
+      return new Promise(resolve => setTimeout(resolve, delay))
+    }
+
+    await sleep(1000)
+
     // Trying to refresh token
     const refreshTokenResponse = await refreshTokenUpdater(
       undefined,
@@ -1997,6 +2003,10 @@ describe("Devices operations", () => {
     const secondDeviceDateRefreshed = refreshedResponse.body[1].lastActiveDate;
     const thirdDeviceDateRefreshed = refreshedResponse.body[2].lastActiveDate;
     const fourthDeviceDateRefreshed = refreshedResponse.body[3].lastActiveDate;
+
+    // console.log(firstDeviceDateRefreshed)
+    // console.log(firstDeviceDate)
+
 
     expect(firstDeviceDateRefreshed).not.toBe(firstDeviceDate);
     expect(secondDeviceDateRefreshed).toBe(secondDeviceDate);
