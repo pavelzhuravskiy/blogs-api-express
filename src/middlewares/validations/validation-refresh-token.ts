@@ -34,6 +34,9 @@ export const validationRefreshToken = async (
       res.sendStatus(401);
       return;
     }
+  } else {
+    res.sendStatus(401);
+    return;
   }
 
   next();
