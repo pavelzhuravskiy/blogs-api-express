@@ -15,6 +15,7 @@ import {
   commentsURI,
   invalidAuthValue,
   invalidURI,
+  ipString,
   loginURI,
   postContentString,
   postNewContentString,
@@ -23,8 +24,9 @@ import {
   postShortDescriptionString,
   postsURI,
   postTitleString,
+  refreshTokenURI,
   testingURI,
-  userAgentChrome,
+  userAgentChromeString,
   userEmailString,
   userLoginString,
   userPasswordString,
@@ -51,7 +53,7 @@ export const authentication = async (
     uri: string = loginURI,
     loginOrEmail: any = userLoginString,
     password: any = userPasswordString,
-    userAgent: any = userAgentChrome,
+    userAgent: any = userAgentChromeString,
 ) => {
   return request(app).post(uri).set('User-Agent', userAgent).send({
     loginOrEmail,
@@ -527,6 +529,34 @@ export const invalidCommentUpdater = async (
 export const eraseAll = async () => {
   await eraser(testingURI);
 };
+
+// ---------- DEVICES FUNCTIONS ----------
+
+// Return new device
+export const deviceReturner = async (
+    ip: string = ipString,
+    title: string = userAgentChromeString,
+    lastActiveDate: string = expect.any(String),
+    deviceId: string = expect.any(String),
+) => {
+  return {
+    ip,
+    title,
+    lastActiveDate,
+    deviceId
+  };
+};
+
+// Update refresh token
+export const refreshTokenUpdater = (
+    uri: string = refreshTokenURI,
+    cookie: string
+) => {
+  return request(app)
+      .post(uri)
+      .set('cookie', cookie);
+};
+
 
 // ---------- COOKIE FUNCTIONS ----------
 

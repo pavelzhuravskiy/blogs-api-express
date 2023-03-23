@@ -42,6 +42,7 @@ import {
   commentsOfSecondPostLength,
   getterWithCookie,
   eraserWithCookie,
+  deviceReturner, refreshTokenUpdater,
 } from "../../test-utils/test-functions";
 import {
   accountURI,
@@ -87,9 +88,9 @@ import {
   sortingString07,
   sortingString09,
   spaceString,
-  userAgentAndroid,
-  userAgentFirefox,
-  userAgentIphone,
+  userAgentAndroidString,
+  userAgentFirefoxString,
+  userAgentIphoneString,
   userEmailFilterString01,
   userEmailFilterString02,
   userEmailFilterString03,
@@ -1816,43 +1817,80 @@ describe("Devices operations", () => {
     const returnedUser = await userReturner();
     expect(user).toStrictEqual(returnedUser);
   });
-  it("should log in user four times with different user agents", async () => {
+  it("should pass devices tests", async () => {
     // Trying to log in four times
     await authentication();
-    await authentication(undefined, undefined, undefined, userAgentIphone);
-    await authentication(undefined, undefined, undefined, userAgentAndroid);
+    await authentication(
+      undefined,
+      undefined,
+      undefined,
+      userAgentIphoneString
+    );
+    await authentication(
+      undefined,
+      undefined,
+      undefined,
+      userAgentAndroidString
+    );
     const firstUserLoginResponse = await authentication(
       undefined,
       undefined,
       undefined,
-      userAgentFirefox
+      userAgentFirefoxString
     );
     expect(firstUserLoginResponse.status).toBe(200);
 
     // Finding cookie in last log in
-    const firstLoginCookie = firstUserLoginResponse.headers["set-cookie"][0];
+    const firstUserToken = firstUserLoginResponse.headers["set-cookie"][0];
 
     // Check devices array length
-    const firstResponse = await getterWithCookie(devicesURI, firstLoginCookie);
+    const firstResponse = await getterWithCookie(devicesURI, firstUserToken);
     expect(firstResponse.status).toBe(200);
     expect(firstResponse.body.length).toBe(4);
+
+    const returnedDevice = await deviceReturner();
+
+    expect(firstResponse.body[0]).toStrictEqual(returnedDevice);
 
     // Trying to delete nonexistent device (404)
     const notFoundResponse = await eraserWithCookie(
       devicesURI,
       invalidURI,
-      firstLoginCookie
+      firstUserToken
     );
     expect(notFoundResponse.status).toBe(404);
 
     // Trying to delete device with incorrect cookie (401)
-    const deviceId = firstResponse.body[0].deviceId;
+    const firstDeviceId = firstResponse.body[0].deviceId;
+    const secondDeviceId = firstResponse.body[1].deviceId;
+    const thirdDeviceId = firstResponse.body[2].deviceId;
+    const fourthDeviceId = firstResponse.body[3].deviceId;
+
     const unauthorizedResponse = await eraserWithCookie(
       devicesURI,
-      deviceId,
+      firstDeviceId,
       longString17
     );
     expect(unauthorizedResponse.status).toBe(401);
+
+    // Trying to refresh token
+    const refreshTokenResponse = await refreshTokenUpdater(undefined, firstUserToken)
+    expect(refreshTokenResponse.status).toBe(200)
+
+    // Check devices array length one more time
+    const firstRefreshedResponse = await getterWithCookie(devicesURI, firstUserToken);
+    expect(firstRefreshedResponse.body.length).toBe(4);
+
+    // Checking devices id's
+    const firstDeviceIdAfterRefresh = firstResponse.body[0].deviceId;
+    const secondDeviceIdAfterRefresh = firstResponse.body[1].deviceId;
+    const thirdDeviceIdAfterRefresh = firstResponse.body[2].deviceId;
+    const fourthDeviceIdAfterRefresh = firstResponse.body[3].deviceId;
+
+    expect(firstDeviceIdAfterRefresh).toBe(firstDeviceId)
+    expect(secondDeviceIdAfterRefresh).toBe(secondDeviceId)
+    expect(thirdDeviceIdAfterRefresh).toBe(thirdDeviceId)
+    expect(fourthDeviceIdAfterRefresh).toBe(fourthDeviceId)
 
     // Creating second user
     await userCreator(
@@ -1875,9 +1913,9 @@ describe("Devices operations", () => {
 
     // Trying to delete device of another user (403)
     const invalidUserResponse = await eraserWithCookie(
-        devicesURI,
-        deviceId,
-        secondLoginCookie
+      devicesURI,
+      firstDeviceId,
+      secondLoginCookie
     );
     expect(invalidUserResponse.status).toBe(403);
   });

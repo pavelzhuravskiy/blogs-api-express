@@ -5,14 +5,15 @@ export const invalidAuthValue = "hello";
 
 // URIs
 export const accountURI = "/auth/me";
-export const loginURI = "/auth/login";
 export const blogsURI = "/blogs/";
-export const postsURI = "/posts/";
-export const usersURI = "/users/";
 export const commentsURI = "/comments/";
 export const devicesURI = "/security/devices/";
 export const invalidURI = "-100";
+export const loginURI = "/auth/login/";
+export const postsURI = "/posts/";
+export const refreshTokenURI = "/auth/refresh-token/";
 export const testingURI = "/testing/all-data/";
+export const usersURI = "/users/";
 
 // Blog creation strings
 export const blogNameString = "Test name";
@@ -86,10 +87,14 @@ export const commentContentString04 = "New content 01 for comment";
 export const commentContentString05 = "New content 04 for comment";
 
 // User agent strings
-export const userAgentChrome = "Google Chrome";
-export const userAgentIphone = "iPhone";
-export const userAgentAndroid = "Android";
-export const userAgentFirefox = "Mozilla Firefox"
+export const userAgentChromeString = "Google Chrome";
+export const userAgentIphoneString = "iPhone";
+export const userAgentAndroidString = "Android";
+export const userAgentFirefoxString = "Mozilla Firefox"
+
+// IP strings
+
+export const ipString = "::ffff:127.0.0.1"
 
 // Long strings
 export const longString17 = "Lorem ipsum dolor";
