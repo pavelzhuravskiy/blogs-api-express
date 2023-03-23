@@ -52,7 +52,7 @@ export const authService = {
     if (!user) {
       return false;
     }
-    return await usersRepository.updateConfirmationStatus(user._id);
+    return usersRepository.updateConfirmationStatus(user._id);
   },
 
   async resendEmail(email: string): Promise<boolean> {
@@ -70,6 +70,6 @@ export const authService = {
       console.error(error);
       return false;
     }
-    return await usersRepository.updateConfirmationCode(user._id, newConfirmationCode);
+    return usersRepository.updateConfirmationCode(user._id, newConfirmationCode);
   },
 };

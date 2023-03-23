@@ -40,6 +40,8 @@ import {
   usersLength,
   secondPostId,
   commentsOfSecondPostLength,
+  getterWithCookie,
+  eraserWithCookie,
 } from "../../test-utils/test-functions";
 import {
   accountURI,
@@ -62,6 +64,7 @@ import {
   commentContentString05,
   commentNewContentString,
   commentsURI,
+  devicesURI,
   invalidAuthValue,
   invalidURI,
   longString1013,
@@ -76,12 +79,17 @@ import {
   postShortDescriptionString,
   postsURI,
   postTitleString,
+  secondUserEmailString,
+  secondUserLoginString,
   sortingString02,
   sortingString04,
   sortingString05,
   sortingString07,
   sortingString09,
   spaceString,
+  userAgentAndroid,
+  userAgentFirefox,
+  userAgentIphone,
   userEmailFilterString01,
   userEmailFilterString02,
   userEmailFilterString03,
@@ -1093,7 +1101,7 @@ describe("Users sorting", () => {
     expect(usersWithQueryAsc.items[2].login).toBe(userLoginFilterString04);
     expect(usersWithQueryAsc.items[3].login).toBe(userLoginFilterString05);
     expect(usersWithQueryAsc.items[4].login).toBe(userLoginFilterString01);
-  },30000);
+  }, 30000);
 });
 describe("Users pagination", () => {
   beforeAll(eraseAll);
@@ -1793,5 +1801,84 @@ describe("Comments status 404 checks", () => {
   it("should return 404 when deleting nonexistent comment", async () => {
     const response = await eraser(commentsURI + invalidURI);
     expect(response.status).toBe(404);
+  });
+});
+
+describe("Devices operations", () => {
+  beforeAll(eraseAll);
+  it("should create new user for testing", async () => {
+    // Trying to create user
+    const response = await userCreator();
+    expect(response.status).toBe(201);
+
+    // Checking result by returning created user
+    const user = await firstUser();
+    const returnedUser = await userReturner();
+    expect(user).toStrictEqual(returnedUser);
+  });
+  it("should log in user four times with different user agents", async () => {
+    // Trying to log in four times
+    await authentication();
+    await authentication(undefined, undefined, undefined, userAgentIphone);
+    await authentication(undefined, undefined, undefined, userAgentAndroid);
+    const firstUserLoginResponse = await authentication(
+      undefined,
+      undefined,
+      undefined,
+      userAgentFirefox
+    );
+    expect(firstUserLoginResponse.status).toBe(200);
+
+    // Finding cookie in last log in
+    const firstLoginCookie = firstUserLoginResponse.headers["set-cookie"][0];
+
+    // Check devices array length
+    const firstResponse = await getterWithCookie(devicesURI, firstLoginCookie);
+    expect(firstResponse.status).toBe(200);
+    expect(firstResponse.body.length).toBe(4);
+
+    // Trying to delete nonexistent device (404)
+    const notFoundResponse = await eraserWithCookie(
+      devicesURI,
+      invalidURI,
+      firstLoginCookie
+    );
+    expect(notFoundResponse.status).toBe(404);
+
+    // Trying to delete device with incorrect cookie (401)
+    const deviceId = firstResponse.body[0].deviceId;
+    const unauthorizedResponse = await eraserWithCookie(
+      devicesURI,
+      deviceId,
+      longString17
+    );
+    expect(unauthorizedResponse.status).toBe(401);
+
+    // Creating second user
+    await userCreator(
+      undefined,
+      secondUserLoginString,
+      undefined,
+      secondUserEmailString
+    );
+
+    // Trying to log in second user
+    const secondUserLoginResponse = await authentication(
+      undefined,
+      secondUserLoginString,
+      undefined
+    );
+    expect(secondUserLoginResponse.status).toBe(200);
+
+    // Finding second user auth cookie
+    const secondLoginCookie = secondUserLoginResponse.headers["set-cookie"][0];
+
+    // Trying to delete device of another user (403)
+    const invalidUserResponse = await eraserWithCookie(
+        devicesURI,
+        deviceId,
+        secondLoginCookie
+    );
+    expect(invalidUserResponse.status).toBe(403);
   });
 });

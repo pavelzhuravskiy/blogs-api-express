@@ -7,7 +7,7 @@ export const funcPagination = async (
   collection: Document,
   filter?: Document
 ) => {
-  return await collection
+  return collection
     .find(filter)
     .sort(sortingObj)
     .skip(pageNumber > 0 ? (pageNumber - 1) * pageSize : 0)

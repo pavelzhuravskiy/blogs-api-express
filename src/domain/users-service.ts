@@ -27,7 +27,7 @@ export const usersService = {
         isConfirmed: true,
       },
     };
-    return await usersRepository.createUser(newUser);
+    return usersRepository.createUser(newUser);
   },
 
   // Credentials check
@@ -42,7 +42,7 @@ export const usersService = {
     if (!user || !user.emailConfirmation.isConfirmed) {
       return false;
     }
-    return await bcrypt.compare(password, user.accountData.password);
+    return bcrypt.compare(password, user.accountData.password);
   },
 
   // Delete user by ID

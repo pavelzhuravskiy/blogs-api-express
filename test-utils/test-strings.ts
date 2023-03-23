@@ -10,7 +10,9 @@ export const blogsURI = "/blogs/";
 export const postsURI = "/posts/";
 export const usersURI = "/users/";
 export const commentsURI = "/comments/";
+export const devicesURI = "/security/devices/";
 export const invalidURI = "-100";
+export const testingURI = "/testing/all-data/";
 
 // Blog creation strings
 export const blogNameString = "Test name";
@@ -49,7 +51,12 @@ export const postNewContentString = "New content";
 // User creation strings
 export const userLoginString = "login";
 export const userPasswordString = "password";
-export const userEmailString = "alex.crane.0599@gmail.com";
+export const userEmailString = "test@test.com";
+
+// User creation strings
+export const secondUserLoginString = "login2";
+export const secondUserEmailString = "test2@test.com";
+
 
 // User logins for filter check
 export const userLoginFilterString01 = "Zhur";
@@ -77,6 +84,12 @@ export const commentContentString02 = "New content 05 for comment";
 export const commentContentString03 = "New content 02 for comment";
 export const commentContentString04 = "New content 01 for comment";
 export const commentContentString05 = "New content 04 for comment";
+
+// User agent strings
+export const userAgentChrome = "Google Chrome";
+export const userAgentIphone = "iPhone";
+export const userAgentAndroid = "Android";
+export const userAgentFirefox = "Mozilla Firefox"
 
 // Long strings
 export const longString17 = "Lorem ipsum dolor";

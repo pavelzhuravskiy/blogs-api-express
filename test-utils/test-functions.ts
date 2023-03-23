@@ -1,4 +1,4 @@
-import { app } from "../src";
+import {app} from "../src";
 import request from "supertest";
 import {
   basicAuthKey,
@@ -23,26 +23,37 @@ import {
   postShortDescriptionString,
   postsURI,
   postTitleString,
+  testingURI,
+  userAgentChrome,
   userEmailString,
   userLoginString,
   userPasswordString,
   usersURI,
 } from "./test-strings";
-import { ObjectId } from "mongodb";
-import { blogsQueryRepository } from "../src/repositories/query-repos/mongodb-blogs-query-repository";
-import { postsQueryRepository } from "../src/repositories/query-repos/mongodb-posts-query-repository";
-import { usersQueryRepository } from "../src/repositories/query-repos/mongodb-users-query-repository";
-import { commentsQueryRepository } from "../src/repositories/query-repos/mongodb-comments-query-repository";
+import {ObjectId} from "mongodb";
+import {
+  blogsQueryRepository
+} from "../src/repositories/query-repos/mongodb-blogs-query-repository";
+import {
+  postsQueryRepository
+} from "../src/repositories/query-repos/mongodb-posts-query-repository";
+import {
+  usersQueryRepository
+} from "../src/repositories/query-repos/mongodb-users-query-repository";
+import {
+  commentsQueryRepository
+} from "../src/repositories/query-repos/mongodb-comments-query-repository";
 
 // ---------- AUTH FUNCTIONS ----------
 
 // User authentication
 export const authentication = async (
-  uri: string = loginURI,
-  loginOrEmail: any = userLoginString,
-  password: any = userPasswordString
+    uri: string = loginURI,
+    loginOrEmail: any = userLoginString,
+    password: any = userPasswordString,
+    userAgent: any = userAgentChrome,
 ) => {
-  return request(app).post(uri).send({
+  return request(app).post(uri).set('User-Agent', userAgent).send({
     loginOrEmail,
     password,
   });
@@ -514,8 +525,23 @@ export const invalidCommentUpdater = async (
 };
 
 export const eraseAll = async () => {
-  await eraser(blogsURI);
-  await eraser(postsURI);
-  await eraser(usersURI);
-  await eraser(commentsURI);
+  await eraser(testingURI);
+};
+
+// ---------- COOKIE FUNCTIONS ----------
+
+// Get all with cookie
+export const getterWithCookie = (uri: string, cookie: string) => {
+  return request(app).get(uri).set('cookie', cookie);
+};
+
+// Delete by id (cookie)
+export const eraserWithCookie = (
+    uri: string,
+    id: string,
+    cookie: string
+) => {
+  return request(app)
+      .delete(uri + id)
+      .set('cookie', cookie);
 };

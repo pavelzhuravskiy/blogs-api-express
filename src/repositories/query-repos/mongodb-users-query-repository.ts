@@ -84,7 +84,7 @@ export const usersQueryRepository = {
   async findUserByLoginOrEmail(
     loginOrEmail: string
   ): Promise<MongoUserModelWithPasswordWithId | null> {
-    return await usersCollection.findOne({
+    return usersCollection.findOne({
       $or: [
         { "accountData.login": loginOrEmail },
         { "accountData.email": loginOrEmail },
@@ -93,7 +93,7 @@ export const usersQueryRepository = {
   },
 
   async findUserByCode(code: string) {
-    return await usersCollection.findOne({
+    return usersCollection.findOne({
       "emailConfirmation.confirmationCode": code,
     });
   },
