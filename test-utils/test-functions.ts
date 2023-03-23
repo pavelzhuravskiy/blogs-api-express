@@ -346,6 +346,11 @@ export const firstUserLogin = async () => {
   return (await findUsers()).items[0].login;
 };
 
+// Find second user
+export const secondUser = async () => {
+  return (await findUsers()).items[1];
+};
+
 // Create new user
 export const userCreator = async (
   uri: string = usersURI,

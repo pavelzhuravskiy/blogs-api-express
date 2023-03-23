@@ -42,7 +42,9 @@ import {
   commentsOfSecondPostLength,
   getterWithCookie,
   eraserWithCookie,
-  deviceReturner, refreshTokenUpdater,
+  deviceReturner,
+  refreshTokenUpdater,
+  secondUser,
 } from "../../test-utils/test-functions";
 import {
   accountURI,
@@ -241,148 +243,6 @@ describe("Authentication operation", () => {
   });
 });
 
-describe("Blogs CRUD operations", () => {
-  beforeAll(eraseAll);
-  it("should return all blogs", async () => {
-    const response = await getter(blogsURI);
-    expect(response.status).toBe(200);
-    expect(response.body).toEqual(emptyOutput);
-  });
-  it("should create new blog", async () => {
-    // Trying to create a blog
-    const response = await blogCreator();
-    expect(response.status).toBe(201);
-
-    // Checking result by returning created blog
-    const blog = await firstBlog();
-    const returnedBlog = await blogReturner();
-    expect(blog).toStrictEqual(returnedBlog);
-  });
-  it("should update blog", async () => {
-    // Trying to update a blog
-    const response = await blogUpdater();
-    expect(response.status).toBe(204);
-  });
-  it("should return blog by ID with updated data", async () => {
-    // Trying to get blog by ID
-    const blogId = await firstBlogId();
-    const response = await getterWithId(blogsURI, blogId);
-    expect(response.status).toBe(200);
-
-    // Checking result by returning updated blog
-    const blog = await firstBlog();
-    const returnedBlog = await blogReturner(
-      undefined,
-      blogNewNameString,
-      blogNewDescriptionString,
-      blogNewWebsiteUrlString
-    );
-    expect(blog).toStrictEqual(returnedBlog);
-  });
-  it("should delete blog by ID", async () => {
-    // Trying to delete a blog
-    const blogId = await firstBlogId();
-    const response = await eraserWithId(blogsURI, blogId, invalidAuthValue);
-    expect(response.status).toBe(401);
-  });
-});
-describe("Blogs name filtering", () => {
-  beforeAll(eraseAll);
-  it("should return blogs with filter", async () => {
-    // Trying to create 5 blogs
-    await blogCreator(undefined, blogFilterString01);
-    await blogCreator(undefined, blogFilterString02);
-    await blogCreator(undefined, blogFilterString03);
-    await blogCreator(undefined, blogFilterString04);
-    const lastBlogResponse = await blogCreator(undefined, blogFilterString05);
-
-    expect(lastBlogResponse.status).toBe(201);
-
-    // Checking result by returning blogs array length
-    const length = await blogsLength();
-    expect(length).toBe(5);
-
-    // Applying and checking filter
-
-    const response = await getter(blogsURI);
-    expect(response.status).toBe(200);
-
-    const blogsWithQuery = await findBlogs("va");
-    expect(blogsWithQuery.totalCount).toBe(3);
-    expect(blogsWithQuery.items.length).toBe(3);
-
-    // Default sorting for blogs ==> createdAt, desc
-    expect(blogsWithQuery.items[0].name).toBe(blogFilterString03);
-    expect(blogsWithQuery.items[1].name).toBe(blogFilterString02);
-    expect(blogsWithQuery.items[2].name).toBe(blogFilterString01);
-  });
-});
-describe("Blogs sorting", () => {
-  beforeAll(eraseAll);
-  it("should sort blogs by any field (name for testing)", async () => {
-    // Trying to create 5 blogs
-    await blogCreator(undefined, sortingString07);
-    await blogCreator(undefined, sortingString02);
-    await blogCreator(undefined, sortingString04);
-    await blogCreator(undefined, sortingString05);
-    const lastBlogResponse = await blogCreator(undefined, sortingString09);
-
-    expect(lastBlogResponse.status).toBe(201);
-
-    // Checking result by returning blogs array length
-    const length = await blogsLength();
-    expect(length).toBe(5);
-
-    const response = await getter(blogsURI);
-    expect(response.status).toBe(200);
-
-    // Applying and checking descending sorting
-    const blogsWithQueryDesc = await findBlogs(undefined, "name");
-    expect(blogsWithQueryDesc.items[0].name).toBe(sortingString09);
-    expect(blogsWithQueryDesc.items[1].name).toBe(sortingString07);
-    expect(blogsWithQueryDesc.items[2].name).toBe(sortingString05);
-    expect(blogsWithQueryDesc.items[3].name).toBe(sortingString04);
-    expect(blogsWithQueryDesc.items[4].name).toBe(sortingString02);
-
-    // Applying and checking ascending sorting
-    const blogsWithQueryAsc = await findBlogs(undefined, "name", "asc");
-    expect(response.status).toBe(200);
-    expect(blogsWithQueryAsc.items[0].name).toBe(sortingString02);
-    expect(blogsWithQueryAsc.items[1].name).toBe(sortingString04);
-    expect(blogsWithQueryAsc.items[2].name).toBe(sortingString05);
-    expect(blogsWithQueryAsc.items[3].name).toBe(sortingString07);
-    expect(blogsWithQueryAsc.items[4].name).toBe(sortingString09);
-  });
-});
-describe("Blogs pagination", () => {
-  beforeAll(eraseAll);
-  it("should return correct blogs pagination output", async () => {
-    // Trying to create 20 blogs
-    let i = 0;
-    while (i < 20) {
-      const response = await blogCreator(undefined, `Test name ${i}`);
-      expect(response.status).toBe(201);
-      i++;
-    }
-
-    // Checking pagination
-    const check = await getter(blogsURI);
-    expect(check.status).toBe(200);
-
-    const blogsWithQuery = await findBlogs(
-      undefined,
-      undefined,
-      undefined,
-      "2",
-      "5"
-    );
-    expect(blogsWithQuery.pagesCount).toBe(4);
-    expect(blogsWithQuery.page).toBe(2);
-    expect(blogsWithQuery.pageSize).toBe(5);
-    expect(blogsWithQuery.totalCount).toBe(20);
-    expect(blogsWithQuery.items.length).toBe(5);
-  }, 30000);
-});
 describe("Blogs status 400 checks", () => {
   beforeAll(eraseAll);
   it("should NOT create new blog without name", async () => {
@@ -553,175 +413,149 @@ describe("Blogs status 404 checks", () => {
     expect(response.status).toBe(404);
   });
 });
-
-describe("Posts CRUD operations", () => {
+describe("Blogs CRUD operations", () => {
   beforeAll(eraseAll);
-  it("should create new blog for testing", async () => {
-    // Trying to create a blog
-    const response = await blogCreator();
-    expect(response.status).toBe(201);
-
-    // Checking result by returning created blog
-    const blog = await firstBlog();
-    const returnedBlog = await blogReturner();
-    expect(blog).toStrictEqual(returnedBlog);
-  });
-  it("should return all posts", async () => {
-    const response = await getter(postsURI);
+  it("should return all blogs", async () => {
+    const response = await getter(blogsURI);
     expect(response.status).toBe(200);
     expect(response.body).toEqual(emptyOutput);
   });
-  it("should create new post", async () => {
-    // Trying to create a post
-    const response = await postCreator();
+  it("should create new blog", async () => {
+    // Trying to create a blog
+    const response = await blogCreator();
     expect(response.status).toBe(201);
 
-    // Checking result by returning created post
-    const post = await firstPost();
-    const returnedPost = await postReturner();
-    expect(post).toStrictEqual(returnedPost);
+    // Checking result by returning created blog
+    const blog = await firstBlog();
+    const returnedBlog = await blogReturner();
+    expect(blog).toStrictEqual(returnedBlog);
   });
-  it("should update post", async () => {
-    // Trying to update a post
-    const response = await postUpdater();
+  it("should update blog", async () => {
+    // Trying to update a blog
+    const response = await blogUpdater();
     expect(response.status).toBe(204);
   });
-  it("should return post by ID with updated data", async () => {
-    // Trying to get post by ID
-    const postId = await firstPostId();
-    const response = await getterWithId(postsURI, postId);
+  it("should return blog by ID with updated data", async () => {
+    // Trying to get blog by ID
+    const blogId = await firstBlogId();
+    const response = await getterWithId(blogsURI, blogId);
     expect(response.status).toBe(200);
 
-    // Checking result by returning updated post
-    const post = await firstPost();
-    const returnedPost = await postReturner(
+    // Checking result by returning updated blog
+    const blog = await firstBlog();
+    const returnedBlog = await blogReturner(
       undefined,
-      postNewTitleString,
-      postNewShortDescriptionString,
-      postNewContentString
+      blogNewNameString,
+      blogNewDescriptionString,
+      blogNewWebsiteUrlString
     );
-    expect(post).toStrictEqual(returnedPost);
-  });
-  it("should delete post by ID", async () => {
-    // Trying to delete post
-    const postId = await firstPostId();
-    const response = await eraserWithId(postsURI, postId);
-    expect(response.status).toBe(204);
-
-    // Checking result by returning posts array length
-    const length = await postsLength();
-    expect(length).toBe(0);
-  });
-});
-describe("Posts inside blog CR operations", () => {
-  beforeAll(eraseAll);
-  it("should create new blog for testing", async () => {
-    // Trying to create a blog
-    const response = await blogCreator();
-    expect(response.status).toBe(201);
-
-    // Checking result by returning created blog
-    const blog = await firstBlog();
-    const returnedBlog = await blogReturner();
     expect(blog).toStrictEqual(returnedBlog);
   });
-  it("should create new post for exact blog", async () => {
-    // Finding blogId
+  it("should delete blog by ID", async () => {
+    // Trying to delete a blog
     const blogId = await firstBlogId();
-
-    // Trying to create a post
-    const response = await postCreator(blogsURI + blogId + postsURI);
-    expect(response.status).toBe(201);
-
-    // Checking result by returning created post
-    const post = await firstPost();
-    const returnedPost = await postReturner();
-    expect(post).toStrictEqual(returnedPost);
-
-    // Checking that post is available through blog URI param
-    const check = await getter(blogsURI + blogId);
-    expect(check.status).toBe(200);
-    expect(post).toStrictEqual(returnedPost);
+    const response = await eraserWithId(blogsURI, blogId, invalidAuthValue);
+    expect(response.status).toBe(401);
   });
 });
-describe("Posts sorting", () => {
+describe("Blogs name filtering", () => {
   beforeAll(eraseAll);
-  it("should create new blog for testing", async () => {
-    // Trying to create a blog
-    const response = await blogCreator();
-    expect(response.status).toBe(201);
-
-    // Checking result by returning created blog
-    const blog = await firstBlog();
-    const returnedBlog = await blogReturner();
-    expect(blog).toStrictEqual(returnedBlog);
-  });
-  it("should sort posts by any field (title for testing)", async () => {
-    // Trying to create 5 posts
-    await postCreator(undefined, sortingString07);
-    await postCreator(undefined, sortingString02);
-    await postCreator(undefined, sortingString04);
-    await postCreator(undefined, sortingString05);
-    const lastBlogResponse = await postCreator(undefined, sortingString09);
+  it("should return blogs with filter", async () => {
+    // Trying to create 5 blogs
+    await blogCreator(undefined, blogFilterString01);
+    await blogCreator(undefined, blogFilterString02);
+    await blogCreator(undefined, blogFilterString03);
+    await blogCreator(undefined, blogFilterString04);
+    const lastBlogResponse = await blogCreator(undefined, blogFilterString05);
 
     expect(lastBlogResponse.status).toBe(201);
 
     // Checking result by returning blogs array length
-    const length = await postsLength();
+    const length = await blogsLength();
     expect(length).toBe(5);
 
-    const response = await getter(postsURI);
+    // Applying and checking filter
+
+    const response = await getter(blogsURI);
+    expect(response.status).toBe(200);
+
+    const blogsWithQuery = await findBlogs("va");
+    expect(blogsWithQuery.totalCount).toBe(3);
+    expect(blogsWithQuery.items.length).toBe(3);
+
+    // Default sorting for blogs ==> createdAt, desc
+    expect(blogsWithQuery.items[0].name).toBe(blogFilterString03);
+    expect(blogsWithQuery.items[1].name).toBe(blogFilterString02);
+    expect(blogsWithQuery.items[2].name).toBe(blogFilterString01);
+  });
+});
+describe("Blogs sorting", () => {
+  beforeAll(eraseAll);
+  it("should sort blogs by any field (name for testing)", async () => {
+    // Trying to create 5 blogs
+    await blogCreator(undefined, sortingString07);
+    await blogCreator(undefined, sortingString02);
+    await blogCreator(undefined, sortingString04);
+    await blogCreator(undefined, sortingString05);
+    const lastBlogResponse = await blogCreator(undefined, sortingString09);
+
+    expect(lastBlogResponse.status).toBe(201);
+
+    // Checking result by returning blogs array length
+    const length = await blogsLength();
+    expect(length).toBe(5);
+
+    const response = await getter(blogsURI);
     expect(response.status).toBe(200);
 
     // Applying and checking descending sorting
-    const postsWithQueryDesc = await findPosts("title");
-    expect(postsWithQueryDesc.items[0].title).toBe(sortingString09);
-    expect(postsWithQueryDesc.items[1].title).toBe(sortingString07);
-    expect(postsWithQueryDesc.items[2].title).toBe(sortingString05);
-    expect(postsWithQueryDesc.items[3].title).toBe(sortingString04);
-    expect(postsWithQueryDesc.items[4].title).toBe(sortingString02);
+    const blogsWithQueryDesc = await findBlogs(undefined, "name");
+    expect(blogsWithQueryDesc.items[0].name).toBe(sortingString09);
+    expect(blogsWithQueryDesc.items[1].name).toBe(sortingString07);
+    expect(blogsWithQueryDesc.items[2].name).toBe(sortingString05);
+    expect(blogsWithQueryDesc.items[3].name).toBe(sortingString04);
+    expect(blogsWithQueryDesc.items[4].name).toBe(sortingString02);
 
-    // Applying and checking descending sorting
-    const postsWithQueryAsc = await findPosts("title", "asc");
-    expect(postsWithQueryAsc.items[0].title).toBe(sortingString02);
-    expect(postsWithQueryAsc.items[1].title).toBe(sortingString04);
-    expect(postsWithQueryAsc.items[2].title).toBe(sortingString05);
-    expect(postsWithQueryAsc.items[3].title).toBe(sortingString07);
-    expect(postsWithQueryAsc.items[4].title).toBe(sortingString09);
+    // Applying and checking ascending sorting
+    const blogsWithQueryAsc = await findBlogs(undefined, "name", "asc");
+    expect(response.status).toBe(200);
+    expect(blogsWithQueryAsc.items[0].name).toBe(sortingString02);
+    expect(blogsWithQueryAsc.items[1].name).toBe(sortingString04);
+    expect(blogsWithQueryAsc.items[2].name).toBe(sortingString05);
+    expect(blogsWithQueryAsc.items[3].name).toBe(sortingString07);
+    expect(blogsWithQueryAsc.items[4].name).toBe(sortingString09);
   });
 });
-describe("Posts pagination", () => {
+describe("Blogs pagination", () => {
   beforeAll(eraseAll);
-  it("should create new blog for testing", async () => {
-    // Trying to create a blog
-    const response = await blogCreator();
-    expect(response.status).toBe(201);
-
-    // Checking result by returning created blog
-    const blog = await firstBlog();
-    const returnedBlog = await blogReturner();
-    expect(blog).toStrictEqual(returnedBlog);
-  });
-  it("should return correct posts pagination output", async () => {
-    // Trying to create 20 posts
+  it("should return correct blogs pagination output", async () => {
+    // Trying to create 20 blogs
     let i = 0;
     while (i < 20) {
-      const response = await postCreator(undefined, `Test title ${i}`);
+      const response = await blogCreator(undefined, `Test name ${i}`);
       expect(response.status).toBe(201);
       i++;
     }
 
     // Checking pagination
-    const check = await getter(postsURI);
+    const check = await getter(blogsURI);
     expect(check.status).toBe(200);
-    const postsWithQuery = await findPosts(undefined, undefined, "2", "5");
-    expect(postsWithQuery.pagesCount).toBe(4);
-    expect(postsWithQuery.page).toBe(2);
-    expect(postsWithQuery.pageSize).toBe(5);
-    expect(postsWithQuery.totalCount).toBe(20);
-    expect(postsWithQuery.items.length).toBe(5);
+
+    const blogsWithQuery = await findBlogs(
+      undefined,
+      undefined,
+      undefined,
+      "2",
+      "5"
+    );
+    expect(blogsWithQuery.pagesCount).toBe(4);
+    expect(blogsWithQuery.page).toBe(2);
+    expect(blogsWithQuery.pageSize).toBe(5);
+    expect(blogsWithQuery.totalCount).toBe(20);
+    expect(blogsWithQuery.items.length).toBe(5);
   }, 30000);
 });
+
 describe("Posts status 400 checks", () => {
   beforeAll(eraseAll);
   it("should create new blog for posts testing", async () => {
@@ -925,7 +759,322 @@ describe("Posts status 404 checks", () => {
     expect(response.status).toBe(404);
   });
 });
+describe("Posts CRUD operations", () => {
+  beforeAll(eraseAll);
+  it("should create new blog for testing", async () => {
+    // Trying to create a blog
+    const response = await blogCreator();
+    expect(response.status).toBe(201);
 
+    // Checking result by returning created blog
+    const blog = await firstBlog();
+    const returnedBlog = await blogReturner();
+    expect(blog).toStrictEqual(returnedBlog);
+  });
+  it("should return all posts", async () => {
+    const response = await getter(postsURI);
+    expect(response.status).toBe(200);
+    expect(response.body).toEqual(emptyOutput);
+  });
+  it("should create new post", async () => {
+    // Trying to create a post
+    const response = await postCreator();
+    expect(response.status).toBe(201);
+
+    // Checking result by returning created post
+    const post = await firstPost();
+    const returnedPost = await postReturner();
+    expect(post).toStrictEqual(returnedPost);
+  });
+  it("should update post", async () => {
+    // Trying to update a post
+    const response = await postUpdater();
+    expect(response.status).toBe(204);
+  });
+  it("should return post by ID with updated data", async () => {
+    // Trying to get post by ID
+    const postId = await firstPostId();
+    const response = await getterWithId(postsURI, postId);
+    expect(response.status).toBe(200);
+
+    // Checking result by returning updated post
+    const post = await firstPost();
+    const returnedPost = await postReturner(
+      undefined,
+      postNewTitleString,
+      postNewShortDescriptionString,
+      postNewContentString
+    );
+    expect(post).toStrictEqual(returnedPost);
+  });
+  it("should delete post by ID", async () => {
+    // Trying to delete post
+    const postId = await firstPostId();
+    const response = await eraserWithId(postsURI, postId);
+    expect(response.status).toBe(204);
+
+    // Checking result by returning posts array length
+    const length = await postsLength();
+    expect(length).toBe(0);
+  });
+});
+describe("Posts inside blog CR operations", () => {
+  beforeAll(eraseAll);
+  it("should create new blog for testing", async () => {
+    // Trying to create a blog
+    const response = await blogCreator();
+    expect(response.status).toBe(201);
+
+    // Checking result by returning created blog
+    const blog = await firstBlog();
+    const returnedBlog = await blogReturner();
+    expect(blog).toStrictEqual(returnedBlog);
+  });
+  it("should create new post for exact blog", async () => {
+    // Finding blogId
+    const blogId = await firstBlogId();
+
+    // Trying to create a post
+    const response = await postCreator(blogsURI + blogId + postsURI);
+    expect(response.status).toBe(201);
+
+    // Checking result by returning created post
+    const post = await firstPost();
+    const returnedPost = await postReturner();
+    expect(post).toStrictEqual(returnedPost);
+
+    // Checking that post is available through blog URI param
+    const check = await getter(blogsURI + blogId);
+    expect(check.status).toBe(200);
+    expect(post).toStrictEqual(returnedPost);
+  });
+});
+describe("Posts sorting", () => {
+  beforeAll(eraseAll);
+  it("should create new blog for testing", async () => {
+    // Trying to create a blog
+    const response = await blogCreator();
+    expect(response.status).toBe(201);
+
+    // Checking result by returning created blog
+    const blog = await firstBlog();
+    const returnedBlog = await blogReturner();
+    expect(blog).toStrictEqual(returnedBlog);
+  });
+  it("should sort posts by any field (title for testing)", async () => {
+    // Trying to create 5 posts
+    await postCreator(undefined, sortingString07);
+    await postCreator(undefined, sortingString02);
+    await postCreator(undefined, sortingString04);
+    await postCreator(undefined, sortingString05);
+    const lastBlogResponse = await postCreator(undefined, sortingString09);
+
+    expect(lastBlogResponse.status).toBe(201);
+
+    // Checking result by returning blogs array length
+    const length = await postsLength();
+    expect(length).toBe(5);
+
+    const response = await getter(postsURI);
+    expect(response.status).toBe(200);
+
+    // Applying and checking descending sorting
+    const postsWithQueryDesc = await findPosts("title");
+    expect(postsWithQueryDesc.items[0].title).toBe(sortingString09);
+    expect(postsWithQueryDesc.items[1].title).toBe(sortingString07);
+    expect(postsWithQueryDesc.items[2].title).toBe(sortingString05);
+    expect(postsWithQueryDesc.items[3].title).toBe(sortingString04);
+    expect(postsWithQueryDesc.items[4].title).toBe(sortingString02);
+
+    // Applying and checking descending sorting
+    const postsWithQueryAsc = await findPosts("title", "asc");
+    expect(postsWithQueryAsc.items[0].title).toBe(sortingString02);
+    expect(postsWithQueryAsc.items[1].title).toBe(sortingString04);
+    expect(postsWithQueryAsc.items[2].title).toBe(sortingString05);
+    expect(postsWithQueryAsc.items[3].title).toBe(sortingString07);
+    expect(postsWithQueryAsc.items[4].title).toBe(sortingString09);
+  });
+});
+describe("Posts pagination", () => {
+  beforeAll(eraseAll);
+  it("should create new blog for testing", async () => {
+    // Trying to create a blog
+    const response = await blogCreator();
+    expect(response.status).toBe(201);
+
+    // Checking result by returning created blog
+    const blog = await firstBlog();
+    const returnedBlog = await blogReturner();
+    expect(blog).toStrictEqual(returnedBlog);
+  });
+  it("should return correct posts pagination output", async () => {
+    // Trying to create 20 posts
+    let i = 0;
+    while (i < 20) {
+      const response = await postCreator(undefined, `Test title ${i}`);
+      expect(response.status).toBe(201);
+      i++;
+    }
+
+    // Checking pagination
+    const check = await getter(postsURI);
+    expect(check.status).toBe(200);
+    const postsWithQuery = await findPosts(undefined, undefined, "2", "5");
+    expect(postsWithQuery.pagesCount).toBe(4);
+    expect(postsWithQuery.page).toBe(2);
+    expect(postsWithQuery.pageSize).toBe(5);
+    expect(postsWithQuery.totalCount).toBe(20);
+    expect(postsWithQuery.items.length).toBe(5);
+  }, 30000);
+});
+
+describe("Users status 400 checks", () => {
+  beforeAll(eraseAll);
+  it("should NOT create new user without login", async () => {
+    // Trying to create user without login
+    const response = await userCreator(undefined, null);
+    expect(response.status).toBe(400);
+
+    // Checking result
+    const length = await usersLength();
+    expect(length).toBe(0);
+  });
+  it("should NOT create new user with incorrect login type", async () => {
+    // Trying to create user with incorrect name type
+    const response = await userCreator(undefined, 123);
+    expect(response.status).toBe(400);
+
+    // Checking result
+    const length = await usersLength();
+    expect(length).toBe(0);
+  });
+  it("should NOT create new user with incorrect login length", async () => {
+    // Trying to create user with incorrect login length
+    const response = await userCreator(undefined, longString17);
+    expect(response.status).toBe(400);
+
+    // Checking result
+    const length = await usersLength();
+    expect(length).toBe(0);
+  });
+  it("should NOT create new user with incorrect login format", async () => {
+    // Trying to create login with incorrect website URL format
+    const response = await userCreator(undefined, spaceString);
+    expect(response.status).toBe(400);
+
+    // Checking result
+    const length = await usersLength();
+    expect(length).toBe(0);
+  });
+  it("should NOT create new user without password", async () => {
+    // Trying to create user without password
+    const response = await userCreator(undefined, undefined, null);
+    expect(response.status).toBe(400);
+
+    // Checking result
+    const length = await usersLength();
+    expect(length).toBe(0);
+  });
+  it("should NOT create new user with incorrect password type", async () => {
+    // Trying to create a user with incorrect password type
+    const response = await userCreator(undefined, undefined, 123);
+    expect(response.status).toBe(400);
+
+    // Checking result
+    const length = await usersLength();
+    expect(length).toBe(0);
+  });
+  it("should NOT create new user with incorrect password length", async () => {
+    // Trying to create a user with incorrect password length
+    const response = await userCreator(undefined, undefined, longString39);
+    expect(response.status).toBe(400);
+
+    // Checking result
+    const length = await usersLength();
+    expect(length).toBe(0);
+  });
+  it("should NOT create new user without email", async () => {
+    // Trying to create user without email
+    const response = await userCreator(undefined, undefined, undefined, null);
+    expect(response.status).toBe(400);
+
+    // Checking result
+    const length = await usersLength();
+    expect(length).toBe(0);
+  });
+  it("should NOT create new user with incorrect email type", async () => {
+    // Trying to create user with incorrect email type
+    const response = await userCreator(undefined, undefined, undefined, 123);
+    expect(response.status).toBe(400);
+
+    // Checking result
+    const length = await usersLength();
+    expect(length).toBe(0);
+  });
+  it("should NOT create new user with incorrect email format", async () => {
+    // Trying to create user with incorrect email format
+    const response = await userCreator(
+      undefined,
+      undefined,
+      undefined,
+      spaceString
+    );
+    expect(response.status).toBe(400);
+
+    // Checking result
+    const length = await usersLength();
+    expect(length).toBe(0);
+  });
+});
+describe("Users status 401 checks", () => {
+  beforeAll(eraseAll);
+  it("should create new user for testing", async () => {
+    // Trying to create user
+    const response = await userCreator();
+    expect(response.status).toBe(201);
+
+    // Checking result by returning created user
+    const user = await firstUser();
+    const returnedUser = await userReturner();
+    expect(user).toStrictEqual(returnedUser);
+  });
+  it("should return 401 when getting users with incorrect credentials", async () => {
+    const response = await getterWithInvalidCredentials(usersURI);
+    expect(response.status).toBe(401);
+  });
+  it("should return 401 when creating user with incorrect credentials", async () => {
+    const response = await userCreator(
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      invalidAuthValue
+    );
+    expect(response.status).toBe(401);
+  });
+  it("should return 401 when deleting user with incorrect credentials", async () => {
+    const userId = await firstUserId();
+    const response = await eraserWithId(usersURI, userId, invalidAuthValue);
+    expect(response.status).toBe(401);
+  });
+});
+describe("Users status 404 checks", () => {
+  beforeAll(eraseAll);
+  it("should create new user for testing", async () => {
+    // Trying to create user
+    const response = await userCreator();
+    expect(response.status).toBe(201);
+
+    // Checking result by returning created user
+    const user = await firstUser();
+    const returnedUser = await userReturner();
+    expect(user).toStrictEqual(returnedUser);
+  });
+  it("should return 404 when deleting nonexistent user", async () => {
+    const response = await eraser(usersURI + invalidURI);
+    expect(response.status).toBe(404);
+  });
+});
 describe("Users CRD operations", () => {
   beforeAll(eraseAll);
   it("should return all users", async () => {
@@ -1139,106 +1288,29 @@ describe("Users pagination", () => {
     expect(usersWithQuery.items.length).toBe(5);
   }, 30000);
 });
-describe("Users status 400 checks", () => {
+
+describe("Comments status 400 checks", () => {
   beforeAll(eraseAll);
-  it("should NOT create new user without login", async () => {
-    // Trying to create user without login
-    const response = await userCreator(undefined, null);
-    expect(response.status).toBe(400);
+  it("should create new blog for testing", async () => {
+    // Trying to create a blog
+    const response = await blogCreator();
+    expect(response.status).toBe(201);
 
-    // Checking result
-    const length = await usersLength();
-    expect(length).toBe(0);
+    // Checking result by returning created blog
+    const blog = await firstBlog();
+    const returnedBlog = await blogReturner();
+    expect(blog).toStrictEqual(returnedBlog);
   });
-  it("should NOT create new user with incorrect login type", async () => {
-    // Trying to create user with incorrect name type
-    const response = await userCreator(undefined, 123);
-    expect(response.status).toBe(400);
+  it("should create new post for testing", async () => {
+    // Trying to create a post
+    const response = await postCreator();
+    expect(response.status).toBe(201);
 
-    // Checking result
-    const length = await usersLength();
-    expect(length).toBe(0);
+    // Checking result by returning created post
+    const post = await firstPost();
+    const returnedPost = await postReturner();
+    expect(post).toStrictEqual(returnedPost);
   });
-  it("should NOT create new user with incorrect login length", async () => {
-    // Trying to create user with incorrect login length
-    const response = await userCreator(undefined, longString17);
-    expect(response.status).toBe(400);
-
-    // Checking result
-    const length = await usersLength();
-    expect(length).toBe(0);
-  });
-  it("should NOT create new user with incorrect login format", async () => {
-    // Trying to create login with incorrect website URL format
-    const response = await userCreator(undefined, spaceString);
-    expect(response.status).toBe(400);
-
-    // Checking result
-    const length = await usersLength();
-    expect(length).toBe(0);
-  });
-  it("should NOT create new user without password", async () => {
-    // Trying to create user without password
-    const response = await userCreator(undefined, undefined, null);
-    expect(response.status).toBe(400);
-
-    // Checking result
-    const length = await usersLength();
-    expect(length).toBe(0);
-  });
-  it("should NOT create new user with incorrect password type", async () => {
-    // Trying to create a user with incorrect password type
-    const response = await userCreator(undefined, undefined, 123);
-    expect(response.status).toBe(400);
-
-    // Checking result
-    const length = await usersLength();
-    expect(length).toBe(0);
-  });
-  it("should NOT create new user with incorrect password length", async () => {
-    // Trying to create a user with incorrect password length
-    const response = await userCreator(undefined, undefined, longString39);
-    expect(response.status).toBe(400);
-
-    // Checking result
-    const length = await usersLength();
-    expect(length).toBe(0);
-  });
-  it("should NOT create new user without email", async () => {
-    // Trying to create user without email
-    const response = await userCreator(undefined, undefined, undefined, null);
-    expect(response.status).toBe(400);
-
-    // Checking result
-    const length = await usersLength();
-    expect(length).toBe(0);
-  });
-  it("should NOT create new user with incorrect email type", async () => {
-    // Trying to create user with incorrect email type
-    const response = await userCreator(undefined, undefined, undefined, 123);
-    expect(response.status).toBe(400);
-
-    // Checking result
-    const length = await usersLength();
-    expect(length).toBe(0);
-  });
-  it("should NOT create new user with incorrect email format", async () => {
-    // Trying to create user with incorrect email format
-    const response = await userCreator(
-      undefined,
-      undefined,
-      undefined,
-      spaceString
-    );
-    expect(response.status).toBe(400);
-
-    // Checking result
-    const length = await usersLength();
-    expect(length).toBe(0);
-  });
-});
-describe("Users status 401 checks", () => {
-  beforeAll(eraseAll);
   it("should create new user for testing", async () => {
     // Trying to create user
     const response = await userCreator();
@@ -1249,28 +1321,56 @@ describe("Users status 401 checks", () => {
     const returnedUser = await userReturner();
     expect(user).toStrictEqual(returnedUser);
   });
-  it("should return 401 when getting users with incorrect credentials", async () => {
-    const response = await getterWithInvalidCredentials(usersURI);
-    expect(response.status).toBe(401);
+  it("should NOT create new comment without content", async () => {
+    // Trying to create comment without content
+    const response = await commentCreator(null);
+    expect(response.status).toBe(400);
+
+    // Checking result
+    const length = await commentsLength();
+    expect(length).toBe(0);
   });
-  it("should return 401 when creating user with incorrect credentials", async () => {
-    const response = await userCreator(
-      undefined,
-      undefined,
-      undefined,
-      undefined,
-      invalidAuthValue
-    );
-    expect(response.status).toBe(401);
+  it("should NOT create new comment with incorrect content type", async () => {
+    // Trying to create comment with incorrect content type
+    const response = await commentCreator(123);
+    expect(response.status).toBe(400);
+
+    // Checking result
+    const length = await commentsLength();
+    expect(length).toBe(0);
   });
-  it("should return 401 when deleting user with incorrect credentials", async () => {
-    const userId = await firstUserId();
-    const response = await eraserWithId(usersURI, userId, invalidAuthValue);
-    expect(response.status).toBe(401);
+  it("should NOT create new comment with incorrect content length", async () => {
+    // Trying to create comment with incorrect content length
+    const response = await commentCreator(longString17);
+    expect(response.status).toBe(400);
+
+    // Checking result
+    const length = await commentsLength();
+    expect(length).toBe(0);
   });
 });
-describe("Users status 404 checks", () => {
+describe("Comments status 401 checks", () => {
   beforeAll(eraseAll);
+  it("should create new blog for testing", async () => {
+    // Trying to create a blog
+    const response = await blogCreator();
+    expect(response.status).toBe(201);
+
+    // Checking result by returning created blog
+    const blog = await firstBlog();
+    const returnedBlog = await blogReturner();
+    expect(blog).toStrictEqual(returnedBlog);
+  });
+  it("should create new post for testing", async () => {
+    // Trying to create a post
+    const response = await postCreator();
+    expect(response.status).toBe(201);
+
+    // Checking result by returning created post
+    const post = await firstPost();
+    const returnedPost = await postReturner();
+    expect(post).toStrictEqual(returnedPost);
+  });
   it("should create new user for testing", async () => {
     // Trying to create user
     const response = await userCreator();
@@ -1281,12 +1381,158 @@ describe("Users status 404 checks", () => {
     const returnedUser = await userReturner();
     expect(user).toStrictEqual(returnedUser);
   });
-  it("should return 404 when deleting nonexistent user", async () => {
-    const response = await eraser(usersURI + invalidURI);
+  it("should create new comment for testing", async () => {
+    // Trying to create comment with authenticated user
+    const response = await commentCreator();
+    expect(response.status).toBe(201);
+
+    // Checking result by returning created post
+    const comment = await firstComment();
+    const returnedComment = await commentReturner();
+    expect(comment).toStrictEqual(returnedComment);
+  });
+  it("should return 401 when creating comment with incorrect credentials", async () => {
+    const postId = await firstPostId();
+    const response = await request(app)
+      .post(postsURI + postId + commentsURI)
+      .send({
+        commentContentString,
+      })
+      .set(basicAuthKey, invalidAuthValue);
+    expect(response.status).toBe(401);
+  });
+  it("should return 401 when updating comment with incorrect credentials", async () => {
+    const commentId = await firstCommentId();
+    const response = await request(app)
+      .put(commentsURI + commentId)
+      .send({
+        commentContentString,
+      })
+      .set(basicAuthKey, invalidAuthValue);
+    expect(response.status).toBe(401);
+  });
+  it("should return 401 when deleting comment with incorrect credentials", async () => {
+    const commentId = await firstCommentId();
+    const response = await request(app)
+      .delete(commentsURI + commentId)
+      .set(basicAuthKey, invalidAuthValue);
+    expect(response.status).toBe(401);
+  });
+});
+describe("Comments status 403 checks", () => {
+  beforeAll(eraseAll);
+  it("should create new blog for testing", async () => {
+    // Trying to create a blog
+    const response = await blogCreator();
+    expect(response.status).toBe(201);
+
+    // Checking result by returning created blog
+    const blog = await firstBlog();
+    const returnedBlog = await blogReturner();
+    expect(blog).toStrictEqual(returnedBlog);
+  });
+  it("should create new post for testing", async () => {
+    // Trying to create a post
+    const response = await postCreator();
+    expect(response.status).toBe(201);
+
+    // Checking result by returning created post
+    const post = await firstPost();
+    const returnedPost = await postReturner();
+    expect(post).toStrictEqual(returnedPost);
+  });
+  it("should create new user for testing", async () => {
+    // Trying to create user
+    const response = await userCreator();
+    expect(response.status).toBe(201);
+
+    // Checking result by returning created user
+    const user = await firstUser();
+    const returnedUser = await userReturner();
+    expect(user).toStrictEqual(returnedUser);
+  });
+  it("should create new villain user for testing", async () => {
+    // Trying to create user
+    const response = await userCreator(
+      undefined,
+      "Villain",
+      undefined,
+      "villain@hacker.com"
+    );
+    expect(response.status).toBe(201);
+  });
+  it("should create new comment for testing", async () => {
+    // Trying to create comment with authenticated user
+    const response = await commentCreator();
+    expect(response.status).toBe(201);
+  });
+  it("should return 403 when updating comment with incorrect token", async () => {
+    const response = await commentUpdater(undefined, "Villain");
+    expect(response.status).toBe(403);
+  });
+  it("should return 403 when deleting comment with incorrect token", async () => {
+    const commentId = await firstCommentId();
+    const response = await eraserWithIdBearer(
+      commentsURI,
+      commentId,
+      "Villain"
+    );
+    expect(response.status).toBe(403);
+  });
+});
+describe("Comments status 404 checks", () => {
+  beforeAll(eraseAll);
+  it("should create new blog for testing", async () => {
+    // Trying to create a blog
+    const response = await blogCreator();
+    expect(response.status).toBe(201);
+
+    // Checking result by returning created blog
+    const blog = await firstBlog();
+    const returnedBlog = await blogReturner();
+    expect(blog).toStrictEqual(returnedBlog);
+  });
+  it("should create new post for testing", async () => {
+    // Trying to create a post
+    const response = await postCreator();
+    expect(response.status).toBe(201);
+
+    // Checking result by returning created post
+    const post = await firstPost();
+    const returnedPost = await postReturner();
+    expect(post).toStrictEqual(returnedPost);
+  });
+  it("should create new user for testing", async () => {
+    // Trying to create user
+    const response = await userCreator();
+    expect(response.status).toBe(201);
+
+    // Checking result by returning created user
+    const user = await firstUser();
+    const returnedUser = await userReturner();
+    expect(user).toStrictEqual(returnedUser);
+  });
+  it("should return 404 when getting comments of nonexistent post", async () => {
+    const response = await getter(postsURI + invalidURI + commentsURI);
+    expect(response.status).toBe(404);
+  });
+  it("should return 404 when creating comment of nonexistent post", async () => {
+    const response = await invalidCommentCreator();
+    expect(response.status).toBe(404);
+  });
+  it("should return 404 when getting nonexistent comment", async () => {
+    const response = await getter(commentsURI + invalidURI);
+    expect(response.status).toBe(404);
+  });
+  it("should return 404 when updating nonexistent comment", async () => {
+    const response = await invalidCommentUpdater(commentsURI + invalidURI);
+    expect(response.status).toBe(404);
+  });
+  it("should return 404 when deleting nonexistent comment", async () => {
+    const response = await eraser(commentsURI + invalidURI);
     expect(response.status).toBe(404);
   });
 });
-
 describe("Comments CRUD operations", () => {
   beforeAll(eraseAll);
   it("should create new blog for testing", async () => {
@@ -1560,28 +1806,9 @@ describe("Comments pagination", () => {
     expect(commentsWithQuery.items.length).toBe(5);
   }, 30000);
 });
-describe("Comments status 400 checks", () => {
+
+describe("Devices statuses checks", () => {
   beforeAll(eraseAll);
-  it("should create new blog for testing", async () => {
-    // Trying to create a blog
-    const response = await blogCreator();
-    expect(response.status).toBe(201);
-
-    // Checking result by returning created blog
-    const blog = await firstBlog();
-    const returnedBlog = await blogReturner();
-    expect(blog).toStrictEqual(returnedBlog);
-  });
-  it("should create new post for testing", async () => {
-    // Trying to create a post
-    const response = await postCreator();
-    expect(response.status).toBe(201);
-
-    // Checking result by returning created post
-    const post = await firstPost();
-    const returnedPost = await postReturner();
-    expect(post).toStrictEqual(returnedPost);
-  });
   it("should create new user for testing", async () => {
     // Trying to create user
     const response = await userCreator();
@@ -1592,313 +1819,62 @@ describe("Comments status 400 checks", () => {
     const returnedUser = await userReturner();
     expect(user).toStrictEqual(returnedUser);
   });
-  it("should NOT create new comment without content", async () => {
-    // Trying to create comment without content
-    const response = await commentCreator(null);
-    expect(response.status).toBe(400);
-
-    // Checking result
-    const length = await commentsLength();
-    expect(length).toBe(0);
-  });
-  it("should NOT create new comment with incorrect content type", async () => {
-    // Trying to create comment with incorrect content type
-    const response = await commentCreator(123);
-    expect(response.status).toBe(400);
-
-    // Checking result
-    const length = await commentsLength();
-    expect(length).toBe(0);
-  });
-  it("should NOT create new comment with incorrect content length", async () => {
-    // Trying to create comment with incorrect content length
-    const response = await commentCreator(longString17);
-    expect(response.status).toBe(400);
-
-    // Checking result
-    const length = await commentsLength();
-    expect(length).toBe(0);
-  });
-});
-describe("Comments status 401 checks", () => {
-  beforeAll(eraseAll);
-  it("should create new blog for testing", async () => {
-    // Trying to create a blog
-    const response = await blogCreator();
-    expect(response.status).toBe(201);
-
-    // Checking result by returning created blog
-    const blog = await firstBlog();
-    const returnedBlog = await blogReturner();
-    expect(blog).toStrictEqual(returnedBlog);
-  });
-  it("should create new post for testing", async () => {
-    // Trying to create a post
-    const response = await postCreator();
-    expect(response.status).toBe(201);
-
-    // Checking result by returning created post
-    const post = await firstPost();
-    const returnedPost = await postReturner();
-    expect(post).toStrictEqual(returnedPost);
-  });
-  it("should create new user for testing", async () => {
-    // Trying to create user
-    const response = await userCreator();
-    expect(response.status).toBe(201);
-
-    // Checking result by returning created user
-    const user = await firstUser();
-    const returnedUser = await userReturner();
-    expect(user).toStrictEqual(returnedUser);
-  });
-  it("should create new comment for testing", async () => {
-    // Trying to create comment with authenticated user
-    const response = await commentCreator();
-    expect(response.status).toBe(201);
-
-    // Checking result by returning created post
-    const comment = await firstComment();
-    const returnedComment = await commentReturner();
-    expect(comment).toStrictEqual(returnedComment);
-  });
-  it("should return 401 when creating comment with incorrect credentials", async () => {
-    const postId = await firstPostId();
-    const response = await request(app)
-      .post(postsURI + postId + commentsURI)
-      .send({
-        commentContentString,
-      })
-      .set(basicAuthKey, invalidAuthValue);
-    expect(response.status).toBe(401);
-  });
-  it("should return 401 when updating comment with incorrect credentials", async () => {
-    const commentId = await firstCommentId();
-    const response = await request(app)
-      .put(commentsURI + commentId)
-      .send({
-        commentContentString,
-      })
-      .set(basicAuthKey, invalidAuthValue);
-    expect(response.status).toBe(401);
-  });
-  it("should return 401 when deleting comment with incorrect credentials", async () => {
-    const commentId = await firstCommentId();
-    const response = await request(app)
-      .delete(commentsURI + commentId)
-      .set(basicAuthKey, invalidAuthValue);
-    expect(response.status).toBe(401);
-  });
-});
-describe("Comments status 403 checks", () => {
-  beforeAll(eraseAll);
-  it("should create new blog for testing", async () => {
-    // Trying to create a blog
-    const response = await blogCreator();
-    expect(response.status).toBe(201);
-
-    // Checking result by returning created blog
-    const blog = await firstBlog();
-    const returnedBlog = await blogReturner();
-    expect(blog).toStrictEqual(returnedBlog);
-  });
-  it("should create new post for testing", async () => {
-    // Trying to create a post
-    const response = await postCreator();
-    expect(response.status).toBe(201);
-
-    // Checking result by returning created post
-    const post = await firstPost();
-    const returnedPost = await postReturner();
-    expect(post).toStrictEqual(returnedPost);
-  });
-  it("should create new user for testing", async () => {
-    // Trying to create user
-    const response = await userCreator();
-    expect(response.status).toBe(201);
-
-    // Checking result by returning created user
-    const user = await firstUser();
-    const returnedUser = await userReturner();
-    expect(user).toStrictEqual(returnedUser);
-  });
-  it("should create new villain user for testing", async () => {
+  it("should create second user for testing", async () => {
     // Trying to create user
     const response = await userCreator(
-      undefined,
-      "Villain",
-      undefined,
-      "villain@hacker.com"
-    );
-    expect(response.status).toBe(201);
-  });
-  it("should create new comment for testing", async () => {
-    // Trying to create comment with authenticated user
-    const response = await commentCreator();
-    expect(response.status).toBe(201);
-  });
-  it("should return 403 when updating comment with incorrect token", async () => {
-    const response = await commentUpdater(undefined, "Villain");
-    expect(response.status).toBe(403);
-  });
-  it("should return 403 when deleting comment with incorrect token", async () => {
-    const commentId = await firstCommentId();
-    const response = await eraserWithIdBearer(
-      commentsURI,
-      commentId,
-      "Villain"
-    );
-    expect(response.status).toBe(403);
-  });
-});
-describe("Comments status 404 checks", () => {
-  beforeAll(eraseAll);
-  it("should create new blog for testing", async () => {
-    // Trying to create a blog
-    const response = await blogCreator();
-    expect(response.status).toBe(201);
-
-    // Checking result by returning created blog
-    const blog = await firstBlog();
-    const returnedBlog = await blogReturner();
-    expect(blog).toStrictEqual(returnedBlog);
-  });
-  it("should create new post for testing", async () => {
-    // Trying to create a post
-    const response = await postCreator();
-    expect(response.status).toBe(201);
-
-    // Checking result by returning created post
-    const post = await firstPost();
-    const returnedPost = await postReturner();
-    expect(post).toStrictEqual(returnedPost);
-  });
-  it("should create new user for testing", async () => {
-    // Trying to create user
-    const response = await userCreator();
-    expect(response.status).toBe(201);
-
-    // Checking result by returning created user
-    const user = await firstUser();
-    const returnedUser = await userReturner();
-    expect(user).toStrictEqual(returnedUser);
-  });
-  it("should return 404 when getting comments of nonexistent post", async () => {
-    const response = await getter(postsURI + invalidURI + commentsURI);
-    expect(response.status).toBe(404);
-  });
-  it("should return 404 when creating comment of nonexistent post", async () => {
-    const response = await invalidCommentCreator();
-    expect(response.status).toBe(404);
-  });
-  it("should return 404 when getting nonexistent comment", async () => {
-    const response = await getter(commentsURI + invalidURI);
-    expect(response.status).toBe(404);
-  });
-  it("should return 404 when updating nonexistent comment", async () => {
-    const response = await invalidCommentUpdater(commentsURI + invalidURI);
-    expect(response.status).toBe(404);
-  });
-  it("should return 404 when deleting nonexistent comment", async () => {
-    const response = await eraser(commentsURI + invalidURI);
-    expect(response.status).toBe(404);
-  });
-});
-
-describe("Devices operations", () => {
-  beforeAll(eraseAll);
-  it("should create new user for testing", async () => {
-    // Trying to create user
-    const response = await userCreator();
-    expect(response.status).toBe(201);
-
-    // Checking result by returning created user
-    const user = await firstUser();
-    const returnedUser = await userReturner();
-    expect(user).toStrictEqual(returnedUser);
-  });
-  it("should pass devices tests", async () => {
-    // Trying to log in four times
-    await authentication();
-    await authentication(
-      undefined,
-      undefined,
-      undefined,
-      userAgentIphoneString
-    );
-    await authentication(
-      undefined,
-      undefined,
-      undefined,
-      userAgentAndroidString
-    );
-    const firstUserLoginResponse = await authentication(
-      undefined,
-      undefined,
-      undefined,
-      userAgentFirefoxString
-    );
-    expect(firstUserLoginResponse.status).toBe(200);
-
-    // Finding cookie in last log in
-    const firstUserToken = firstUserLoginResponse.headers["set-cookie"][0];
-
-    // Check devices array length
-    const firstResponse = await getterWithCookie(devicesURI, firstUserToken);
-    expect(firstResponse.status).toBe(200);
-    expect(firstResponse.body.length).toBe(4);
-
-    const returnedDevice = await deviceReturner();
-
-    expect(firstResponse.body[0]).toStrictEqual(returnedDevice);
-
-    // Trying to delete nonexistent device (404)
-    const notFoundResponse = await eraserWithCookie(
-      devicesURI,
-      invalidURI,
-      firstUserToken
-    );
-    expect(notFoundResponse.status).toBe(404);
-
-    // Trying to delete device with incorrect cookie (401)
-    const firstDeviceId = firstResponse.body[0].deviceId;
-    const secondDeviceId = firstResponse.body[1].deviceId;
-    const thirdDeviceId = firstResponse.body[2].deviceId;
-    const fourthDeviceId = firstResponse.body[3].deviceId;
-
-    const unauthorizedResponse = await eraserWithCookie(
-      devicesURI,
-      firstDeviceId,
-      longString17
-    );
-    expect(unauthorizedResponse.status).toBe(401);
-
-    // Trying to refresh token
-    const refreshTokenResponse = await refreshTokenUpdater(undefined, firstUserToken)
-    expect(refreshTokenResponse.status).toBe(200)
-
-    // Check devices array length one more time
-    const firstRefreshedResponse = await getterWithCookie(devicesURI, firstUserToken);
-    expect(firstRefreshedResponse.body.length).toBe(4);
-
-    // Checking devices id's
-    const firstDeviceIdAfterRefresh = firstResponse.body[0].deviceId;
-    const secondDeviceIdAfterRefresh = firstResponse.body[1].deviceId;
-    const thirdDeviceIdAfterRefresh = firstResponse.body[2].deviceId;
-    const fourthDeviceIdAfterRefresh = firstResponse.body[3].deviceId;
-
-    expect(firstDeviceIdAfterRefresh).toBe(firstDeviceId)
-    expect(secondDeviceIdAfterRefresh).toBe(secondDeviceId)
-    expect(thirdDeviceIdAfterRefresh).toBe(thirdDeviceId)
-    expect(fourthDeviceIdAfterRefresh).toBe(fourthDeviceId)
-
-    // Creating second user
-    await userCreator(
       undefined,
       secondUserLoginString,
       undefined,
       secondUserEmailString
     );
+
+    expect(response.status).toBe(201);
+
+    // Checking result by returning created user
+    const user = await secondUser();
+    const returnedUser = await userReturner();
+    expect(user).toStrictEqual(returnedUser);
+  });
+  it("should return 401 when deleting device with incorrect cookie", async () => {
+    // Authenticating user
+    const authResponse = await authentication();
+
+    // Finding cookie
+    const refreshToken = authResponse.headers["set-cookie"][0];
+
+    // Checking devices
+    const response = await getterWithCookie(devicesURI, refreshToken);
+    expect(response.status).toBe(200);
+    expect(response.body.length).toBe(1);
+
+    const returnedDevice = await deviceReturner();
+    expect(response.body[0]).toStrictEqual(returnedDevice);
+
+    // Trying to delete device with incorrect cookie (401)
+    const deviceId = response.body[0].deviceId;
+    const unauthorizedResponse = await eraserWithCookie(
+      devicesURI,
+      deviceId,
+      longString17
+    );
+    expect(unauthorizedResponse.status).toBe(401);
+  });
+  it("should return 403 when deleting device of another user", async () => {
+    // Authenticating user
+    const authResponse = await authentication();
+
+    // Finding cookie
+    const refreshToken = authResponse.headers["set-cookie"][0];
+
+    // Checking devices
+    const response = await getterWithCookie(devicesURI, refreshToken);
+    expect(response.status).toBe(200);
+    expect(response.body.length).toBe(2);
+
+    const returnedDevice = await deviceReturner();
+    expect(response.body[0]).toStrictEqual(returnedDevice);
+
+    const deviceId = response.body[0].deviceId;
 
     // Trying to log in second user
     const secondUserLoginResponse = await authentication(
@@ -1914,9 +1890,117 @@ describe("Devices operations", () => {
     // Trying to delete device of another user (403)
     const invalidUserResponse = await eraserWithCookie(
       devicesURI,
-      firstDeviceId,
+      deviceId,
       secondLoginCookie
     );
     expect(invalidUserResponse.status).toBe(403);
+  });
+  it("should return 404 when deleting nonexistent device", async () => {
+    // Authenticating user
+    const response = await authentication();
+
+    // Finding cookie
+    const firstUserToken = response.headers["set-cookie"][0];
+
+    // Trying to delete nonexistent device (404)
+    const notFoundResponse = await eraserWithCookie(
+      devicesURI,
+      invalidURI,
+      firstUserToken
+    );
+    expect(notFoundResponse.status).toBe(404);
+  });
+});
+describe("Devices operations", () => {
+  beforeAll(eraseAll);
+  it("should create new user for testing", async () => {
+    // Trying to create user
+    const response = await userCreator();
+    expect(response.status).toBe(201);
+
+    // Checking result by returning created user
+    const user = await firstUser();
+    const returnedUser = await userReturner();
+    expect(user).toStrictEqual(returnedUser);
+  });
+  it("should ...", async () => {
+    // Trying to log in four times
+    await authentication();
+    await authentication(
+      undefined,
+      undefined,
+      undefined,
+      userAgentIphoneString
+    );
+    await authentication(
+      undefined,
+      undefined,
+      undefined,
+      userAgentAndroidString
+    );
+    const authResponse = await authentication(
+      undefined,
+      undefined,
+      undefined,
+      userAgentFirefoxString
+    );
+    expect(authResponse.status).toBe(200);
+
+    // Finding cookie in last log in
+    const refreshToken = authResponse.headers["set-cookie"][0];
+
+    // Checking devices
+    const response = await getterWithCookie(devicesURI, refreshToken);
+    expect(response.status).toBe(200);
+    expect(response.body.length).toBe(4);
+
+    const returnedDevice = await deviceReturner();
+    expect(response.body[0]).toStrictEqual(returnedDevice);
+
+    // Getting devices IDs
+    const firstDeviceId = response.body[0].deviceId;
+    const secondDeviceId = response.body[1].deviceId;
+    const thirdDeviceId = response.body[2].deviceId;
+    const fourthDeviceId = response.body[3].deviceId;
+
+    // Getting devices last active dates
+    const firstDeviceDate = response.body[0].lastActiveDate;
+    const secondDeviceDate = response.body[1].lastActiveDate;
+    const thirdDeviceDate = response.body[2].lastActiveDate;
+    const fourthDeviceDate = response.body[3].lastActiveDate;
+
+    // Trying to refresh token
+    const refreshTokenResponse = await refreshTokenUpdater(
+      undefined,
+      refreshToken
+    );
+    expect(refreshTokenResponse.status).toBe(200);
+
+    // Check devices one more time
+    const refreshedResponse = await getterWithCookie(devicesURI, refreshToken);
+    expect(refreshTokenResponse.status).toBe(200);
+    expect(refreshedResponse.body.length).toBe(4);
+
+    // Checking devices IDs
+    const firstDeviceIdAfterRefresh = refreshedResponse.body[0].deviceId;
+    const secondDeviceIdAfterRefresh = refreshedResponse.body[1].deviceId;
+    const thirdDeviceIdAfterRefresh = refreshedResponse.body[2].deviceId;
+    const fourthDeviceIdAfterRefresh = refreshedResponse.body[3].deviceId;
+
+    expect(firstDeviceIdAfterRefresh).toBe(firstDeviceId);
+    expect(secondDeviceIdAfterRefresh).toBe(secondDeviceId);
+    expect(thirdDeviceIdAfterRefresh).toBe(thirdDeviceId);
+    expect(fourthDeviceIdAfterRefresh).toBe(fourthDeviceId);
+
+    // Checking devices dates
+    const firstDeviceDateRefreshed = refreshedResponse.body[0].lastActiveDate;
+    const secondDeviceDateRefreshed = refreshedResponse.body[1].lastActiveDate;
+    const thirdDeviceDateRefreshed = refreshedResponse.body[2].lastActiveDate;
+    const fourthDeviceDateRefreshed = refreshedResponse.body[3].lastActiveDate;
+
+    expect(firstDeviceDateRefreshed).not.toBe(firstDeviceDate);
+    expect(secondDeviceDateRefreshed).toBe(secondDeviceDate);
+    expect(thirdDeviceDateRefreshed).toBe(thirdDeviceDate);
+    expect(fourthDeviceDateRefreshed).toBe(fourthDeviceDate);
   });
 });
