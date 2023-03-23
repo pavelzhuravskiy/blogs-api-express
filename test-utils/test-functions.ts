@@ -580,3 +580,10 @@ export const eraserWithCookie = (
       .delete(uri + id)
       .set('cookie', cookie);
 };
+
+
+// ---------- UTILITIES ----------
+
+export const sleep = (delay: number) => {
+  return new Promise(resolve => setTimeout(resolve, delay))
+}

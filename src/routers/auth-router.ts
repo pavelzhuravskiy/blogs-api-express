@@ -15,12 +15,14 @@ import { validationEmailResendInput } from "../middlewares/validations/input/val
 import { devicesService } from "../domain/devices-service";
 import { ObjectId } from "mongodb";
 import { validationRefreshToken } from "../middlewares/validations/validation-refresh-token";
+import { loginLimiter } from "../middlewares/rate-limiters";
 
 export const authRouter = Router({});
 
 authRouter.post(
   "/login",
-  validationAuthInput, // TODO 429 status
+  loginLimiter,
+  validationAuthInput,
   validationErrorCheck,
   async (req: Request, res: Response) => {
     const check = await usersService.checkCredentials(
@@ -39,7 +41,7 @@ authRouter.post(
       res
         .cookie("refreshToken", newRefreshToken, {
           httpOnly: true,
-          secure: true
+          secure: true,
         })
         .status(200)
         .json(newAccessToken);
@@ -60,6 +62,7 @@ authRouter.get("/me", authBearer, async (req: Request, res: Response) => {
 
 authRouter.post(
   "/registration",
+  loginLimiter,
   validationUserUnique("login"),
   validationUserUnique("email"),
   validationUsersInput,
@@ -76,6 +79,7 @@ authRouter.post(
 
 authRouter.post(
   "/registration-confirmation",
+  loginLimiter,
   validationCodeInput,
   validationEmailConfirm,
   validationErrorCheck,
@@ -87,6 +91,7 @@ authRouter.post(
 
 authRouter.post(
   "/registration-email-resending",
+  loginLimiter,
   validationEmailResendInput,
   validationEmailResend,
   validationErrorCheck,
@@ -107,15 +112,21 @@ authRouter.post(
       cookieRefreshToken
     );
 
-    const deviceId = cookieRefreshTokenObj!.deviceId
+    const deviceId = cookieRefreshTokenObj!.deviceId;
 
     const userId = cookieRefreshTokenObj!.userId.toString();
     const user = await usersQueryRepository.findUserByIdWithMongoId(
       new ObjectId(userId)
     );
 
-    const newAccessToken = await jwtService.createAccessTokenJWT(user, deviceId);
-    const newRefreshToken = await jwtService.createRefreshTokenJWT(user, deviceId);
+    const newAccessToken = await jwtService.createAccessTokenJWT(
+      user,
+      deviceId
+    );
+    const newRefreshToken = await jwtService.createRefreshTokenJWT(
+      user,
+      deviceId
+    );
     const newRefreshTokenObj = await jwtService.verifyToken(newRefreshToken);
     const newIssuedAt = newRefreshTokenObj!.iat;
 
@@ -124,7 +135,7 @@ authRouter.post(
     res
       .cookie("refreshToken", newRefreshToken, {
         httpOnly: true,
-        secure: true
+        secure: true,
       })
       .status(200)
       .json(newAccessToken);
