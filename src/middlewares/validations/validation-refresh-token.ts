@@ -29,7 +29,7 @@ export const validationRefreshToken = async (
   const dbDevice = await devicesQueryRepository.findDeviceById(deviceId);
 
   if (dbDevice) {
-    const lastActiveDate = dbDevice.lastActiveDate
+    const lastActiveDate = dbDevice.lastActiveDate;
     if (cookieRefreshTokenIat < lastActiveDate) {
       res.sendStatus(401);
       return;

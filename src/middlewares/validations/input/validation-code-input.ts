@@ -5,5 +5,5 @@ export const validationCodeInput = [
     .exists()
     .withMessage("Confirmation code is required")
     .isString()
-    .withMessage("Type of confirmation code must be string")
+    .withMessage("Type of confirmation code must be string"),
 ];

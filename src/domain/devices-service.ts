@@ -9,14 +9,13 @@ export const devicesService = {
     ip: string,
     userAgent: string
   ): Promise<MongoDeviceModel | null> {
-
     const newRefreshTokenObj = await jwtService.verifyToken(newRefreshToken);
 
     if (!newRefreshTokenObj) {
       return null;
     }
 
-    const userId = newRefreshTokenObj.userId
+    const userId = newRefreshTokenObj.userId;
     const deviceId = newRefreshTokenObj.deviceId;
     const expirationDate = newRefreshTokenObj.exp;
     const issuedAt = newRefreshTokenObj.iat;

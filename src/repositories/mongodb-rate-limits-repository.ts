@@ -1,5 +1,5 @@
 import { rateLimitsCollection } from "./_mongodb-connect";
-import { MongoRateLimitsModel } from "../models/devices/MongoRateLimitsModel";
+import { MongoRateLimitsModel } from "../models/global/MongoRateLimitsModel";
 
 export const rateLimitsRepository = {
   async createRateLimit(

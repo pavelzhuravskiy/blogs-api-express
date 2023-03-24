@@ -42,10 +42,9 @@ export const usersRepository = {
   // Update confirmation code
   async updateConfirmationCode(_id: ObjectId, newConfirmationCode: string) {
     const result = await usersCollection.updateOne(
-        { _id },
-        { $set: { "emailConfirmation.confirmationCode": newConfirmationCode } }
+      { _id },
+      { $set: { "emailConfirmation.confirmationCode": newConfirmationCode } }
     );
     return result.modifiedCount === 1;
   },
-
 };

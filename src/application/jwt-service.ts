@@ -22,13 +22,9 @@ export const jwtService = {
     user: MongoUserModelWithPasswordWithId | null,
     deviceId: string = randomUUID()
   ) {
-    return jwt.sign(
-      { userId: user!._id, deviceId },
-      settings.JWT_SECRET,
-      {
-        expiresIn: 20,
-      }
-    );
+    return jwt.sign({ userId: user!._id, deviceId }, settings.JWT_SECRET, {
+      expiresIn: 20,
+    });
   },
 
   async verifyToken(token: string) {

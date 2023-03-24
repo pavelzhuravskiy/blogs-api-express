@@ -1,4 +1,4 @@
-import { MongoRateLimitsModel } from "../models/devices/MongoRateLimitsModel";
+import { MongoRateLimitsModel } from "../models/global/MongoRateLimitsModel";
 import { rateLimitsRepository } from "../repositories/mongodb-rate-limits-repository";
 import { rateLimitsQueryRepository } from "../repositories/query-repos/mongodb-rate-limits-query-repository";
 
@@ -9,7 +9,9 @@ export const rateLimitsService = {
     date: number,
     attemptsCount: number
   ): Promise<MongoRateLimitsModel> {
+    const createdAt = new Date();
     const newRateLimit = {
+      createdAt,
       ip,
       endpoint,
       lastAttempt: date,

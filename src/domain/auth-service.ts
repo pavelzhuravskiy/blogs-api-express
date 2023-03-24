@@ -70,6 +70,9 @@ export const authService = {
       console.error(error);
       return false;
     }
-    return usersRepository.updateConfirmationCode(user._id, newConfirmationCode);
+    return usersRepository.updateConfirmationCode(
+      user._id,
+      newConfirmationCode
+    );
   },
 };
