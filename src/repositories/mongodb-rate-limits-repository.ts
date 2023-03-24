@@ -45,4 +45,9 @@ export const rateLimitsRepository = {
     const result = await rateLimitsCollection.deleteOne({ ip, endpoint });
     return result.deletedCount === 1;
   },
+
+  async deleteAll(): Promise<boolean> {
+    await rateLimitsCollection.deleteMany({});
+    return (await rateLimitsCollection.countDocuments()) === 0;
+  },
 };

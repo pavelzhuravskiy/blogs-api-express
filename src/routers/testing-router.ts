@@ -4,6 +4,9 @@ import { postsRepository } from "../repositories/mongodb-posts-repository";
 import { usersRepository } from "../repositories/mongodb-users-repository";
 import { commentsRepository } from "../repositories/mongodb-comments-repository";
 import {devicesRepository} from "../repositories/mongodb-devices-repository";
+import {
+  rateLimitsRepository
+} from "../repositories/mongodb-rate-limits-repository";
 
 export const testingRouter = Router({});
 
@@ -13,5 +16,6 @@ testingRouter.delete("/all-data", async (req: Request, res: Response) => {
   await usersRepository.deleteAll();
   await commentsRepository.deleteAll();
   await devicesRepository.deleteAll()
+  await rateLimitsRepository.deleteAll()
   res.sendStatus(204);
 });
