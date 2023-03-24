@@ -79,7 +79,7 @@ authRouter.post(
 
 authRouter.post(
   "/registration-confirmation",
-  // loginLimiter,
+  rateLimiter,
   validationCodeInput,
   validationEmailConfirm,
   validationErrorCheck,
@@ -91,7 +91,7 @@ authRouter.post(
 
 authRouter.post(
   "/registration-email-resending",
-  // rateLimiter,
+  rateLimiter,
   validationEmailResendInput,
   validationEmailResend,
   validationErrorCheck,
