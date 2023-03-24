@@ -5,6 +5,7 @@ import * as dotenv from "dotenv";
 import { MongoUserModelWithPassword } from "../models/users/MongoUserModelWithPassword";
 import { MongoCommentModel } from "../models/comments/MongoCommentModel";
 import { MongoDeviceModel } from "../models/devices/MongoDeviceModel";
+import {MongoRateLimitsModel} from "../models/devices/MongoRateLimitsModel";
 
 dotenv.config();
 
@@ -30,6 +31,8 @@ export const commentsCollection =
   blogsAndPostsDB.collection<MongoCommentModel>("comments");
 export const devicesCollection =
     blogsAndPostsDB.collection<MongoDeviceModel>("devices");
+export const rateLimitsCollection =
+    blogsAndPostsDB.collection<MongoRateLimitsModel>("rate_limits");
 
 export async function runDB() {
   try {

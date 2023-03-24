@@ -24,18 +24,6 @@ export const devicesRepository = {
     return result.matchedCount === 1;
   },
 
-  async updateIp(ip: string, deviceId: string): Promise<boolean> {
-    const result = await devicesCollection.updateOne(
-      { deviceId },
-      {
-        $set: {
-          ip: ip,
-        },
-      }
-    );
-    return result.matchedCount === 1;
-  },
-
   async deleteDevice(deviceId: string): Promise<boolean> {
     const result = await devicesCollection.deleteOne({ deviceId });
     return result.deletedCount === 1;

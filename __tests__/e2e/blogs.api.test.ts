@@ -8,11 +8,18 @@ import {
   commentCreatorSecondPost,
   commentReturner,
   commentsLength,
+  commentsOfSecondPostLength,
   commentUpdater,
+  deviceReturner,
   eraseAll,
   eraser,
+  eraserWithCookie,
   eraserWithId,
   eraserWithIdBearer,
+  findBlogs,
+  findComments,
+  findPosts,
+  findUsers,
   firstBlog,
   firstBlogId,
   firstComment,
@@ -21,11 +28,8 @@ import {
   firstPostId,
   firstUser,
   firstUserId,
-  findBlogs,
-  findComments,
-  findPosts,
-  findUsers,
   getter,
+  getterWithCookie,
   getterWithId,
   getterWithInvalidCredentials,
   invalidCommentCreator,
@@ -34,17 +38,13 @@ import {
   postReturner,
   postsLength,
   postUpdater,
+  refreshTokenUpdater,
   secondPost,
+  secondPostId,
+  secondUser,
   userCreator,
   userReturner,
   usersLength,
-  secondPostId,
-  commentsOfSecondPostLength,
-  getterWithCookie,
-  eraserWithCookie,
-  deviceReturner,
-  refreshTokenUpdater,
-  secondUser, sleep,
 } from "../../test-utils/test-functions";
 import {
   accountURI,
@@ -110,6 +110,7 @@ import { emptyOutput } from "../../test-utils/test-objects";
 import request from "supertest";
 import { app } from "../../src";
 import { client } from "../../src/repositories/_mongodb-connect";
+import { funcSleep } from "../../src/functions/global/func-sleep";
 
 afterAll(async () => {
   await client.close();
@@ -1969,7 +1970,7 @@ describe("Devices operations", () => {
     const thirdDeviceDate = response.body[2].lastActiveDate;
     const fourthDeviceDate = response.body[3].lastActiveDate;
 
-    await sleep(1000)
+    await funcSleep(1000);
 
     // Trying to refresh token
     const refreshTokenResponse = await refreshTokenUpdater(

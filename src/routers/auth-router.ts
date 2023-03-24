@@ -15,13 +15,13 @@ import { validationEmailResendInput } from "../middlewares/validations/input/val
 import { devicesService } from "../domain/devices-service";
 import { ObjectId } from "mongodb";
 import { validationRefreshToken } from "../middlewares/validations/validation-refresh-token";
-import { loginLimiter } from "../middlewares/rate-limiters";
+import { rateLimiter } from "../middlewares/rate-limiter";
 
 export const authRouter = Router({});
 
 authRouter.post(
   "/login",
-  loginLimiter,
+  rateLimiter,
   validationAuthInput,
   validationErrorCheck,
   async (req: Request, res: Response) => {
@@ -62,7 +62,7 @@ authRouter.get("/me", authBearer, async (req: Request, res: Response) => {
 
 authRouter.post(
   "/registration",
-  loginLimiter,
+  rateLimiter,
   validationUserUnique("login"),
   validationUserUnique("email"),
   validationUsersInput,
@@ -79,7 +79,7 @@ authRouter.post(
 
 authRouter.post(
   "/registration-confirmation",
-  loginLimiter,
+  // loginLimiter,
   validationCodeInput,
   validationEmailConfirm,
   validationErrorCheck,
@@ -91,7 +91,7 @@ authRouter.post(
 
 authRouter.post(
   "/registration-email-resending",
-  loginLimiter,
+  // rateLimiter,
   validationEmailResendInput,
   validationEmailResend,
   validationErrorCheck,
