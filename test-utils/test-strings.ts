@@ -10,6 +10,7 @@ export const commentsURI = "/comments/";
 export const devicesURI = "/security/devices/";
 export const invalidURI = "-100";
 export const loginURI = "/auth/login/";
+export const logoutURI = "/auth/logout/";
 export const postsURI = "/posts/";
 export const refreshTokenURI = "/auth/refresh-token/";
 export const testingURI = "/testing/all-data/";

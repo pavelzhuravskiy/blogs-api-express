@@ -16,6 +16,7 @@ import {
   eraserWithCookie,
   eraserWithId,
   eraserWithIdBearer,
+  eraserWithIdWithCookie,
   findBlogs,
   findComments,
   findPosts,
@@ -34,6 +35,7 @@ import {
   getterWithInvalidCredentials,
   invalidCommentCreator,
   invalidCommentUpdater,
+  logout,
   postCreator,
   postReturner,
   postsLength,
@@ -1853,7 +1855,7 @@ describe("Devices statuses checks", () => {
 
     // Trying to delete device with incorrect cookie (401)
     const deviceId = response.body[0].deviceId;
-    const unauthorizedResponse = await eraserWithCookie(
+    const unauthorizedResponse = await eraserWithIdWithCookie(
       devicesURI,
       deviceId,
       longString17
@@ -1889,7 +1891,7 @@ describe("Devices statuses checks", () => {
     const secondLoginCookie = secondUserLoginResponse.headers["set-cookie"][0];
 
     // Trying to delete device of another user (403)
-    const invalidUserResponse = await eraserWithCookie(
+    const invalidUserResponse = await eraserWithIdWithCookie(
       devicesURI,
       deviceId,
       secondLoginCookie
@@ -1904,7 +1906,7 @@ describe("Devices statuses checks", () => {
     const firstUserToken = response.headers["set-cookie"][0];
 
     // Trying to delete nonexistent device (404)
-    const notFoundResponse = await eraserWithCookie(
+    const notFoundResponse = await eraserWithIdWithCookie(
       devicesURI,
       invalidURI,
       firstUserToken
@@ -1924,7 +1926,7 @@ describe("Devices operations", () => {
     const returnedUser = await userReturner();
     expect(user).toStrictEqual(returnedUser);
   });
-  it("should ...", async () => {
+  it("should pass all devices operations", async () => {
     // Trying to log in four times
     await authentication();
     await authentication(
@@ -2005,5 +2007,58 @@ describe("Devices operations", () => {
     expect(secondDeviceDateRefreshed).toBe(secondDeviceDate);
     expect(thirdDeviceDateRefreshed).toBe(thirdDeviceDate);
     expect(fourthDeviceDateRefreshed).toBe(fourthDeviceDate);
+
+    // Deleting second device
+    const updatedRefreshToken = refreshTokenResponse.headers["set-cookie"][0];
+    const deleteSecondResponse = await eraserWithIdWithCookie(
+      devicesURI,
+      secondDeviceIdAfterRefresh,
+      updatedRefreshToken
+    );
+
+    expect(deleteSecondResponse.status).toBe(204);
+
+    // Check devices one more time
+    const refreshedResponseTwo = await getterWithCookie(
+      devicesURI,
+      refreshToken
+    );
+    expect(refreshTokenResponse.status).toBe(200);
+    expect(refreshedResponseTwo.body.length).toBe(3);
+
+    // Trying to log out
+    const logoutResponse = await logout(undefined, updatedRefreshToken);
+    expect(logoutResponse.status).toBe(204);
+
+    // Check devices one more time
+    const refreshedResponseThree = await getterWithCookie(
+      devicesURI,
+      updatedRefreshToken
+    );
+    expect(refreshTokenResponse.status).toBe(200);
+    expect(refreshedResponseThree.body.length).toBe(2);
+
+    // Trying to log in
+    const authResponseTwo = await authentication();
+    expect(authResponseTwo.status).toBe(200);
+
+    // Finding cookie in last log in
+    const updatedRefreshTokenTwo = authResponseTwo.headers["set-cookie"][0];
+
+    // Trying to delete all but NOT last device
+    const deleteOldDevicesResponse = await eraserWithCookie(
+      devicesURI,
+      updatedRefreshTokenTwo
+    );
+    expect(deleteOldDevicesResponse.status).toBe(204);
+
+    // Check devices one more time
+    const refreshedResponseFour = await getterWithCookie(
+      devicesURI,
+      updatedRefreshToken
+    );
+
+    expect(refreshTokenResponse.status).toBe(200);
+    expect(refreshedResponseFour.body.length).toBe(1);
   });
 });

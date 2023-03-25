@@ -12,11 +12,11 @@ import {
   blogWebsiteUrlString,
   commentContentString,
   commentNewContentString,
-  commentsURI,
+  commentsURI, devicesURI,
   invalidAuthValue,
   invalidURI,
   ipString,
-  loginURI,
+  loginURI, logoutURI,
   postContentString,
   postNewContentString,
   postNewShortDescriptionString,
@@ -59,6 +59,14 @@ export const authentication = async (
     loginOrEmail,
     password,
   });
+};
+
+// Logout
+export const logout = async (
+    uri: string = logoutURI,
+    cookie: string
+) => {
+  return request(app).post(uri).set('cookie', cookie);
 };
 
 // ---------- UNIVERSAL FUNCTIONS ----------
@@ -571,12 +579,22 @@ export const getterWithCookie = (uri: string, cookie: string) => {
 };
 
 // Delete by id (cookie)
-export const eraserWithCookie = (
+export const eraserWithIdWithCookie = (
     uri: string,
     id: string,
     cookie: string
 ) => {
   return request(app)
       .delete(uri + id)
+      .set('cookie', cookie);
+};
+
+// Delete all (cookie)
+export const eraserWithCookie = (
+    uri: string = devicesURI,
+    cookie: string
+) => {
+  return request(app)
+      .delete(uri)
       .set('cookie', cookie);
 };
