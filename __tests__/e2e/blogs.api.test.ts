@@ -91,7 +91,7 @@ import {
   sortingString05,
   sortingString07,
   sortingString09,
-  spaceString,
+  spaceString, testingURI,
   userAgentAndroidString,
   userAgentFirefoxString,
   userAgentIphoneString,
@@ -160,27 +160,50 @@ describe("Testing delete operation", () => {
     const returnedComment = await commentReturner();
     expect(comment).toStrictEqual(returnedComment);
   });
+  it("should create new device", async () => {
+    // Authenticating user
+    const authResponse = await authentication();
+
+    // Finding cookie
+    const refreshToken = authResponse.headers["set-cookie"][0];
+
+    // Checking devices
+    const response = await getterWithCookie(devicesURI, refreshToken);
+    expect(response.status).toBe(200);
+    expect(response.body.length).toBe(2);
+
+  });
   it("should delete everything", async () => {
+    // Authenticating user
+    const authResponse = await authentication();
+
+    // Finding cookie
+    const refreshToken = authResponse.headers["set-cookie"][0];
+
     // Trying to delete everything
-    const commentsResponse = await eraser(commentsURI);
-    const lengthOfComments = await commentsLength();
-    expect(commentsResponse.status).toBe(204);
-    expect(lengthOfComments).toBe(0);
+    const response = await eraser(testingURI);
+    expect(response.status).toBe(204)
 
-    const postsResponse = await eraser(postsURI);
-    const lengthOfPosts = await postsLength();
-    expect(postsResponse.status).toBe(204);
-    expect(lengthOfPosts).toBe(0);
+    // Checking users
+    const usersResponse = await getter(usersURI);
+    expect(usersResponse.status).toBe(200);
+    expect(usersResponse.body.items.length).toBe(0);
 
-    const blogsResponse = await eraser(blogsURI);
-    const lengthOfBlogs = await blogsLength();
-    expect(blogsResponse.status).toBe(204);
-    expect(lengthOfBlogs).toBe(0);
+    // Checking devices
+    const devicesResponse = await getterWithCookie(devicesURI, refreshToken);
+    expect(devicesResponse.status).toBe(200);
+    expect(devicesResponse.body.length).toBe(0);
 
-    const usersResponse = await eraser(usersURI);
-    const lengthOfUsers = await usersLength();
-    expect(usersResponse.status).toBe(204);
-    expect(lengthOfUsers).toBe(0);
+    // Checking posts
+    const postsResponse = await getter(postsURI);
+    expect(postsResponse.status).toBe(200);
+    expect(postsResponse.body.items.length).toBe(0);
+
+    // Checking blogs
+    const blogsResponse = await getter(blogsURI);
+    expect(blogsResponse.status).toBe(200);
+    expect(blogsResponse.body.items.length).toBe(0);
+
   });
 });
 
