@@ -3,7 +3,7 @@ export const emailAdapter = {
   async sendEmail(email: string, subject: string, message: string) {
     // create reusable transporter object using the default SMTP transport
 
-    let transporter = await nodemailer.createTransport({
+    let transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
         user: process.env.EMAIL,
@@ -19,7 +19,7 @@ export const emailAdapter = {
     };
 
     // send mail with defined transport object
-    await transporter.sendMail(mailOptions, function (err, info) {
+    transporter.sendMail(mailOptions, function (err, info) {
       if (err) {
         console.log(err);
       } else {

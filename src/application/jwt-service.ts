@@ -12,7 +12,7 @@ export const jwtService = {
       { userId: user!._id, deviceId },
       settings.JWT_SECRET,
       {
-        expiresIn: 10,
+        expiresIn: "1h",
       }
     );
 
@@ -23,7 +23,7 @@ export const jwtService = {
     deviceId: string = randomUUID()
   ) {
     return jwt.sign({ userId: user!._id, deviceId }, settings.JWT_SECRET, {
-      expiresIn: 20,
+      expiresIn: "2h",
     });
   },
 
