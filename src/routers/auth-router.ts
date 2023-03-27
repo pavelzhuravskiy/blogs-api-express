@@ -155,3 +155,18 @@ authRouter.post("/logout", async (req: Request, res: Response) => {
     res.sendStatus(401);
   }
 });
+
+authRouter.post(
+    "/password-recovery", // TODO
+    // rateLimiter,
+    // validationUserUnique("login"),
+    // validationUserUnique("email"),
+    // validationUsersInput,
+    // validationErrorCheck, // TODO
+    async (req: Request, res: Response) => {
+        await authService.sendPasswordRecoveryCode(
+            req.body.email
+        );
+        res.sendStatus(204);
+    }
+);

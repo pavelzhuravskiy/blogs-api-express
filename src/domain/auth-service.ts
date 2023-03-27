@@ -28,9 +28,12 @@ export const authService = {
         confirmationCode: randomUUID(),
         expirationDate: add(new Date(), {
           hours: 1,
-          minutes: 3,
         }),
         isConfirmed: false,
+      },
+      passwordConfirmation: {
+        confirmationCode: null,
+        expirationDate: null,
       },
     };
     const createResult = await usersRepository.createUser(newUser);
@@ -52,7 +55,7 @@ export const authService = {
     if (!user) {
       return false;
     }
-    return usersRepository.updateConfirmationStatus(user._id);
+    return usersRepository.updateEmailConfirmationStatus(user._id);
   },
 
   async resendEmail(email: string): Promise<boolean> {
@@ -70,9 +73,37 @@ export const authService = {
       console.error(error);
       return false;
     }
-    return usersRepository.updateConfirmationCode(
+    return usersRepository.updateEmailConfirmationCode(
       user._id,
       newConfirmationCode
     );
+  },
+
+  // Send password recovery code
+  async sendPasswordRecoveryCode(email: string): Promise<boolean> {
+    const user = await usersQueryRepository.findUserByLoginOrEmail(email);
+
+    if (!user) {
+      return false;
+    }
+
+    const userId = user._id;
+    const confirmationCode = randomUUID();
+    const confirmationCodeIssuedAt = Date.now();
+
+    const updateResult = await usersRepository.updatePasswordConfirmationData(
+      userId,
+      confirmationCode,
+      confirmationCodeIssuedAt
+    );
+
+    try {
+      await emailManager.sendChangePasswordEmail(email, confirmationCode);
+    } catch (error) {
+      console.error(error);
+      return false;
+    }
+
+    return updateResult
   },
 };

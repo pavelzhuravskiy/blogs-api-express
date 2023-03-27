@@ -31,7 +31,7 @@ export const usersRepository = {
   },
 
   // Update user confirmation status
-  async updateConfirmationStatus(_id: ObjectId) {
+  async updateEmailConfirmationStatus(_id: ObjectId) {
     const result = await usersCollection.updateOne(
       { _id },
       { $set: { "emailConfirmation.isConfirmed": true } }
@@ -40,10 +40,31 @@ export const usersRepository = {
   },
 
   // Update confirmation code
-  async updateConfirmationCode(_id: ObjectId, newConfirmationCode: string) {
+  async updateEmailConfirmationCode(
+    _id: ObjectId,
+    newConfirmationCode: string
+  ) {
     const result = await usersCollection.updateOne(
       { _id },
       { $set: { "emailConfirmation.confirmationCode": newConfirmationCode } }
+    );
+    return result.modifiedCount === 1;
+  },
+
+  // Update password recovery confirmation data
+  async updatePasswordConfirmationData(
+    _id: ObjectId,
+    confirmationCode: string,
+    confirmationCodeIssuedAt: number
+  ) {
+    const result = await usersCollection.updateOne(
+      { _id },
+      {
+        $set: {
+          "passwordConfirmation.confirmationCode": confirmationCode,
+          "passwordConfirmation.expirationDate": confirmationCodeIssuedAt,
+        },
+      }
     );
     return result.modifiedCount === 1;
   },

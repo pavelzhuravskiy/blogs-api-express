@@ -26,6 +26,10 @@ export const usersService = {
         expirationDate: null,
         isConfirmed: true,
       },
+      passwordConfirmation: {
+        confirmationCode: null,
+        expirationDate: null,
+      },
     };
     return usersRepository.createUser(newUser);
   },
