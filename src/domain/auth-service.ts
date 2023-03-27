@@ -51,7 +51,7 @@ export const authService = {
   },
 
   async confirmEmail(code: string): Promise<boolean> {
-    const user = await usersQueryRepository.findUserByCode(code);
+    const user = await usersQueryRepository.findUserByEmailConfirmationCode(code);
     if (!user) {
       return false;
     }
@@ -89,12 +89,14 @@ export const authService = {
 
     const userId = user._id;
     const confirmationCode = randomUUID();
-    const confirmationCodeIssuedAt = Date.now();
+    const expirationDate = add(new Date(), {
+      hours: 1,
+    })
 
     const updateResult = await usersRepository.updatePasswordConfirmationData(
       userId,
       confirmationCode,
-      confirmationCodeIssuedAt
+      expirationDate
     );
 
     try {
@@ -106,4 +108,16 @@ export const authService = {
 
     return updateResult
   },
+
+  // Send password recovery code
+  async changePassword(code: string, password: string): Promise<boolean> {
+    const hash = await bcrypt.hash(password, 10);
+    const user = await usersQueryRepository.findUserByPasswordConfirmationCode(code);
+    if (!user) {
+      return false;
+    }
+    return usersRepository.updatePassword(user._id, hash);
+
+  },
+
 };

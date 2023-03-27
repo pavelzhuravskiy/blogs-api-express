@@ -55,17 +55,36 @@ export const usersRepository = {
   async updatePasswordConfirmationData(
     _id: ObjectId,
     confirmationCode: string,
-    confirmationCodeIssuedAt: number
+    expirationDate: Date
   ) {
     const result = await usersCollection.updateOne(
       { _id },
       {
         $set: {
           "passwordConfirmation.confirmationCode": confirmationCode,
-          "passwordConfirmation.expirationDate": confirmationCodeIssuedAt,
+          "passwordConfirmation.expirationDate": expirationDate,
         },
       }
     );
     return result.modifiedCount === 1;
   },
+
+  // Update password recovery confirmation data
+  async updatePassword(
+      _id: ObjectId,
+      hash: string,
+  ) {
+    const result = await usersCollection.updateOne(
+        { _id },
+        {
+          $set: {
+            "accountData.password": hash,
+            "passwordConfirmation.confirmationCode": null,
+            "passwordConfirmation.expirationDate": null,
+          },
+        }
+    );
+    return result.modifiedCount === 1;
+  },
+
 };

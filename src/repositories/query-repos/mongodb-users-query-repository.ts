@@ -92,9 +92,15 @@ export const usersQueryRepository = {
     });
   },
 
-  async findUserByCode(code: string) {
+  async findUserByEmailConfirmationCode(code: string) {
     return usersCollection.findOne({
       "emailConfirmation.confirmationCode": code,
+    });
+  },
+
+  async findUserByPasswordConfirmationCode(code: string) {
+    return usersCollection.findOne({
+      "passwordConfirmation.confirmationCode": code,
     });
   },
 };

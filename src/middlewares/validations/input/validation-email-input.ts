@@ -2,7 +2,7 @@ import { body } from "express-validator";
 
 const emailPattern = /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/;
 
-export const validationEmailResendInput = [
+export const validationEmailInput = [
   body("email")
     .exists()
     .withMessage("E-mail is required")
