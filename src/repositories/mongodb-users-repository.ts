@@ -54,14 +54,14 @@ export const usersRepository = {
   // Update password recovery confirmation data
   async updatePasswordRecoveryData(
     _id: ObjectId,
-    confirmationCode: string,
+    recoveryCode: string,
     expirationDate: Date
   ) {
     const result = await usersCollection.updateOne(
       { _id },
       {
         $set: {
-          "passwordRecovery.confirmationCode": confirmationCode,
+          "passwordRecovery.recoveryCode": recoveryCode,
           "passwordRecovery.expirationDate": expirationDate,
         },
       }
@@ -79,7 +79,7 @@ export const usersRepository = {
         {
           $set: {
             "accountData.password": hash,
-            "passwordRecovery.confirmationCode": null,
+            "passwordRecovery.recoveryCode": null,
             "passwordRecovery.expirationDate": null,
           },
         }

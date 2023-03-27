@@ -16,15 +16,10 @@ import { devicesService } from "../domain/devices-service";
 import { ObjectId } from "mongodb";
 import { validationRefreshToken } from "../middlewares/validations/validation-refresh-token";
 import { rateLimiter } from "../middlewares/rate-limiter";
-import {
-    validationPasswordConfirm
-} from "../middlewares/validations/validation-password-confirm";
-import {
-    validationUserExistsByEmail
-} from "../middlewares/validations/validation-user-exists-by-email";
-import {
-    validationPasswordInput
-} from "../middlewares/validations/input/validation-password-input";
+import { validationPasswordConfirm } from "../middlewares/validations/validation-password-confirm";
+import { validationUserExistsByEmail } from "../middlewares/validations/validation-user-exists-by-email";
+import { validationPasswordInput } from "../middlewares/validations/input/validation-password-input";
+import { validationRecoveryCodeInput } from "../middlewares/validations/input/validation-recovery-code-input";
 
 export const authRouter = Router({});
 
@@ -166,31 +161,26 @@ authRouter.post("/logout", async (req: Request, res: Response) => {
 });
 
 authRouter.post(
-    "/password-recovery",
-    // rateLimiter,
-    validationEmailInput,
-    validationUserExistsByEmail,
-    validationErrorCheck,
-    async (req: Request, res: Response) => {
-        await authService.sendPasswordRecoveryCode(
-            req.body.email
-        );
-        res.sendStatus(204);
-    }
+  "/password-recovery",
+  // rateLimiter,
+  validationEmailInput,
+  validationUserExistsByEmail,
+  validationErrorCheck,
+  async (req: Request, res: Response) => {
+    await authService.sendPasswordRecoveryCode(req.body.email);
+    res.sendStatus(204);
+  }
 );
 
 authRouter.post(
-    "/password-change",
-    // rateLimiter,
-    validationCodeInput,
-    validationPasswordInput,
-    validationPasswordConfirm,
-    validationErrorCheck,
-    async (req: Request, res: Response) => {
-        await authService.changePassword(
-            req.body.code,
-            req.body.password
-        );
-        res.sendStatus(204);
-    }
+  "/new-password",
+  // rateLimiter,
+  validationRecoveryCodeInput,
+  validationPasswordInput,
+  validationPasswordConfirm,
+  validationErrorCheck,
+  async (req: Request, res: Response) => {
+    await authService.changePassword(req.body.recoveryCode, req.body.password);
+    res.sendStatus(204);
+  }
 );

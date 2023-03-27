@@ -11,9 +11,9 @@ export const emailManager = {
     );
   },
 
-  async sendChangePasswordEmail(email: string, code: string) {
+  async sendChangePasswordEmail(email: string, recoveryCode: string) {
     const registrationSubject = "Confirm your email";
-    const registrationMessage = `<h1>Hello!</h1><p>To change password please follow the link below:<a href="https://somesite.com/confirm-email?code=${code}">complete password</a></p>`; // TODO Change
+    const registrationMessage = `<h1>Password recovery</h1><p>To finish password recovery please follow the link below:<a href="https://somesite.com/password-recovery?recoveryCode=${recoveryCode}">recovery password</a></p>`;
     await emailAdapter.sendEmail(
       email,
       registrationSubject,

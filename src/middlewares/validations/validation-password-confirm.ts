@@ -1,14 +1,14 @@
 import { body } from "express-validator";
 import { usersQueryRepository } from "../../repositories/query-repos/mongodb-users-query-repository";
 
-export const validationPasswordConfirm = body("code").custom(async (value) => {
-  const user = await usersQueryRepository.findUserByPasswordConfirmationCode(value);
+export const validationPasswordConfirm = body("recoveryCode").custom(async (value) => {
+  const user = await usersQueryRepository.findUserByPasswordRecoveryCode(value);
   if (
     !user ||
-    user.passwordRecovery.confirmationCode !== value ||
+    user.passwordRecovery.recoveryCode !== value ||
     user.passwordRecovery.expirationDate! < new Date()
   ) {
-    throw new Error("Confirmation code is incorrect");
+    throw new Error("Recovery code is incorrect");
   }
   return true;
 });

@@ -98,9 +98,9 @@ export const usersQueryRepository = {
     });
   },
 
-  async findUserByPasswordConfirmationCode(code: string) {
+  async findUserByPasswordRecoveryCode(recoveryCode: string) {
     return usersCollection.findOne({
-      "passwordRecovery.confirmationCode": code,
+      "passwordRecovery.recoveryCode": recoveryCode,
     });
   },
 };
