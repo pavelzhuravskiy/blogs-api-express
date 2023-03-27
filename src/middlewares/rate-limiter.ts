@@ -1,7 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { rateLimitsService } from "../domain/rate-limits-service";
 import { rateLimitsQueryRepository } from "../repositories/query-repos/mongodb-rate-limits-query-repository";
-import { funcSleep } from "../functions/global/func-sleep";
 
 export const rateLimiter = async (
   req: Request,
@@ -41,8 +40,9 @@ export const rateLimiter = async (
     if (updatedAttemptsCount) {
       if (updatedAttemptsCount > 5) {
         res.sendStatus(429);
-        await funcSleep(10000);
-        await rateLimitsService.deleteRateLimit(ip, endpoint);
+        setTimeout(async () => {
+          await rateLimitsService.deleteRateLimit(ip, endpoint);
+        }, 10000);
         return;
       }
     }
