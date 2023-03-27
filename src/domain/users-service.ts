@@ -26,7 +26,7 @@ export const usersService = {
         expirationDate: null,
         isConfirmed: true,
       },
-      passwordConfirmation: {
+      passwordRecovery: {
         confirmationCode: null,
         expirationDate: null,
       },

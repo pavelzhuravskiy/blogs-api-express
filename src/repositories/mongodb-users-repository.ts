@@ -52,7 +52,7 @@ export const usersRepository = {
   },
 
   // Update password recovery confirmation data
-  async updatePasswordConfirmationData(
+  async updatePasswordRecoveryData(
     _id: ObjectId,
     confirmationCode: string,
     expirationDate: Date
@@ -61,15 +61,15 @@ export const usersRepository = {
       { _id },
       {
         $set: {
-          "passwordConfirmation.confirmationCode": confirmationCode,
-          "passwordConfirmation.expirationDate": expirationDate,
+          "passwordRecovery.confirmationCode": confirmationCode,
+          "passwordRecovery.expirationDate": expirationDate,
         },
       }
     );
     return result.modifiedCount === 1;
   },
 
-  // Update password recovery confirmation data
+  // Update password recovery data
   async updatePassword(
       _id: ObjectId,
       hash: string,
@@ -79,8 +79,8 @@ export const usersRepository = {
         {
           $set: {
             "accountData.password": hash,
-            "passwordConfirmation.confirmationCode": null,
-            "passwordConfirmation.expirationDate": null,
+            "passwordRecovery.confirmationCode": null,
+            "passwordRecovery.expirationDate": null,
           },
         }
     );

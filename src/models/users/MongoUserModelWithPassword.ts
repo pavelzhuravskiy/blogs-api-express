@@ -11,7 +11,7 @@ export type MongoUserModelWithPassword = {
     expirationDate: Date | null;
     isConfirmed: boolean;
   };
-  passwordConfirmation: {
+  passwordRecovery: {
     confirmationCode: string | null,
     expirationDate: Date | null
   }

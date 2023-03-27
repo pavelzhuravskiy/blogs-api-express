@@ -31,7 +31,7 @@ export const authService = {
         }),
         isConfirmed: false,
       },
-      passwordConfirmation: {
+      passwordRecovery: {
         confirmationCode: null,
         expirationDate: null,
       },
@@ -93,7 +93,7 @@ export const authService = {
       hours: 1,
     })
 
-    const updateResult = await usersRepository.updatePasswordConfirmationData(
+    const updateResult = await usersRepository.updatePasswordRecoveryData(
       userId,
       confirmationCode,
       expirationDate

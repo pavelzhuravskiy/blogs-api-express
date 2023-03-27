@@ -100,7 +100,7 @@ export const usersQueryRepository = {
 
   async findUserByPasswordConfirmationCode(code: string) {
     return usersCollection.findOne({
-      "passwordConfirmation.confirmationCode": code,
+      "passwordRecovery.confirmationCode": code,
     });
   },
 };
