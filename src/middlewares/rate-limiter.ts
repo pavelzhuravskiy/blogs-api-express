@@ -42,7 +42,7 @@ export const rateLimiter = async (
         res.sendStatus(429);
         setTimeout(async () => {
           await rateLimitsService.deleteRateLimit(ip, endpoint);
-        }, 5000);
+        }, 9000);
         return;
       }
     }
