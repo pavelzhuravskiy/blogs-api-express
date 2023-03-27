@@ -17,7 +17,6 @@ import { ObjectId } from "mongodb";
 import { validationRefreshToken } from "../middlewares/validations/validation-refresh-token";
 import { rateLimiter } from "../middlewares/rate-limiter";
 import { validationPasswordConfirm } from "../middlewares/validations/validation-password-confirm";
-import { validationUserExistsByEmail } from "../middlewares/validations/validation-user-exists-by-email";
 import { validationPasswordInput } from "../middlewares/validations/input/validation-password-input";
 import { validationRecoveryCodeInput } from "../middlewares/validations/input/validation-recovery-code-input";
 
@@ -59,7 +58,6 @@ authRouter.post(
   "/password-recovery",
   rateLimiter,
   validationEmailInput,
-  validationUserExistsByEmail,
   validationErrorCheck,
   async (req: Request, res: Response) => {
     await authService.sendPasswordRecoveryCode(req.body.email);
