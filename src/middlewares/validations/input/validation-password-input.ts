@@ -1,7 +1,7 @@
 import { body } from "express-validator";
 
 export const validationPasswordInput = [
-  body("password")
+  body("newPassword")
     .exists()
     .withMessage("Password is required")
     .isString()

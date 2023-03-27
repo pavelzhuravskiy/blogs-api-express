@@ -45,7 +45,7 @@ authRouter.post(
       res
         .cookie("refreshToken", newRefreshToken, {
           httpOnly: true,
-          // secure: true, // TODO
+          secure: true,
         })
         .status(200)
         .json(newAccessToken);
@@ -55,52 +55,30 @@ authRouter.post(
   }
 );
 
-authRouter.get("/me", authBearer, async (req: Request, res: Response) => {
-  const accountInfo = {
-    email: req.user!.accountData.email,
-    login: req.user!.accountData.login,
-    userId: req.user!._id,
-  };
-  res.status(200).json(accountInfo);
-});
-
 authRouter.post(
-  "/registration",
-  rateLimiter,
-  validationUserUnique("login"),
-  validationUserUnique("email"),
-  validationUsersInput,
-  validationErrorCheck,
-  async (req: Request, res: Response) => {
-    await authService.registerUser(
-      req.body.login,
-      req.body.password,
-      req.body.email
-    );
-    res.sendStatus(204);
-  }
-);
-
-authRouter.post(
-  "/registration-confirmation",
-  rateLimiter,
-  validationCodeInput,
-  validationEmailConfirm,
-  validationErrorCheck,
-  async (req: Request, res: Response) => {
-    await authService.confirmEmail(req.body.code);
-    res.sendStatus(204);
-  }
-);
-
-authRouter.post(
-  "/registration-email-resending",
+  "/password-recovery",
   rateLimiter,
   validationEmailInput,
-  validationEmailResend,
+  validationUserExistsByEmail,
   validationErrorCheck,
   async (req: Request, res: Response) => {
-    await authService.resendEmail(req.body.email);
+    await authService.sendPasswordRecoveryCode(req.body.email);
+    res.sendStatus(204);
+  }
+);
+
+authRouter.post(
+  "/new-password",
+  rateLimiter,
+  validationRecoveryCodeInput,
+  validationPasswordInput,
+  validationPasswordConfirm,
+  validationErrorCheck,
+  async (req: Request, res: Response) => {
+    await authService.changePassword(
+      req.body.recoveryCode,
+      req.body.newPassword
+    );
     res.sendStatus(204);
   }
 );
@@ -139,10 +117,51 @@ authRouter.post(
     res
       .cookie("refreshToken", newRefreshToken, {
         httpOnly: true,
-        // secure: true, // TODO
+        secure: true,
       })
       .status(200)
       .json(newAccessToken);
+  }
+);
+
+authRouter.post(
+  "/registration-confirmation",
+  rateLimiter,
+  validationCodeInput,
+  validationEmailConfirm,
+  validationErrorCheck,
+  async (req: Request, res: Response) => {
+    await authService.confirmEmail(req.body.code);
+    res.sendStatus(204);
+  }
+);
+
+authRouter.post(
+  "/registration",
+  rateLimiter,
+  validationUserUnique("login"),
+  validationUserUnique("email"),
+  validationUsersInput,
+  validationErrorCheck,
+  async (req: Request, res: Response) => {
+    await authService.registerUser(
+      req.body.login,
+      req.body.password,
+      req.body.email
+    );
+    res.sendStatus(204);
+  }
+);
+
+authRouter.post(
+  "/registration-email-resending",
+  rateLimiter,
+  validationEmailInput,
+  validationEmailResend,
+  validationErrorCheck,
+  async (req: Request, res: Response) => {
+    await authService.resendEmail(req.body.email);
+    res.sendStatus(204);
   }
 );
 
@@ -160,27 +179,11 @@ authRouter.post("/logout", async (req: Request, res: Response) => {
   }
 });
 
-authRouter.post(
-  "/password-recovery",
-  // rateLimiter,
-  validationEmailInput,
-  validationUserExistsByEmail,
-  validationErrorCheck,
-  async (req: Request, res: Response) => {
-    await authService.sendPasswordRecoveryCode(req.body.email);
-    res.sendStatus(204);
-  }
-);
-
-authRouter.post(
-  "/new-password",
-  // rateLimiter,
-  validationRecoveryCodeInput,
-  validationPasswordInput,
-  validationPasswordConfirm,
-  validationErrorCheck,
-  async (req: Request, res: Response) => {
-    await authService.changePassword(req.body.recoveryCode, req.body.password);
-    res.sendStatus(204);
-  }
-);
+authRouter.get("/me", authBearer, async (req: Request, res: Response) => {
+  const accountInfo = {
+    email: req.user!.accountData.email,
+    login: req.user!.accountData.login,
+    userId: req.user!._id,
+  };
+  res.status(200).json(accountInfo);
+});
