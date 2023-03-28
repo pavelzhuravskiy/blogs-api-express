@@ -25,7 +25,7 @@ export const blogsRepository = {
     description: string,
     websiteUrl: string
   ): Promise<boolean> {
-    const result = await blogsCollection.updateOne(
+    const result = await Blogs.updateOne(
       { _id },
       {
         $set: {
@@ -46,7 +46,7 @@ export const blogsRepository = {
 
   // Delete all blogs
   async deleteAll(): Promise<boolean> {
-    await blogsCollection.deleteMany({});
-    return (await blogsCollection.countDocuments()) === 0;
+    await Blogs.deleteMany({});
+    return (await Blogs.countDocuments()) === 0;
   },
 };

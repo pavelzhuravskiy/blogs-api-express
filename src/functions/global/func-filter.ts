@@ -7,7 +7,7 @@ export const funcFilter = async (
   searchLoginTerm: null | string = null,
   searchEmailTerm: null | string = null
 ) => {
-  const filter: Document = {};
+  const filter: Document = {}; // TODO
 
   if (blogId) {
     filter.blogId = blogId.toString();

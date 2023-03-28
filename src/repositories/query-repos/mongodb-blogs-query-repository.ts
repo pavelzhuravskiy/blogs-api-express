@@ -1,12 +1,13 @@
 import { blogsCollection } from "../_mongodb-connect";
-import { MongoBlogModelWithPagination } from "../../models/blogs/MongoBlogModelWithPagination";
-import { blogsMapping } from "../../functions/mappings/blogs-mapping";
 import { ObjectId } from "mongodb";
-import { funcFilter } from "../../functions/global/func-filter";
-import { funcSorting } from "../../functions/global/func-sorting";
-import { funcPagination } from "../../functions/global/func-pagination";
-import { funcOutput } from "../../functions/global/func-output";
 import { BlogViewModel } from "../../models/blogs/BlogViewModel";
+import { Paginator } from "../../models/global/Paginator";
+import { Blogs } from "../../schemas/blogSchema";
+import { funcPagination } from "../../functions/global/func-pagination";
+import { funcSorting } from "../../functions/global/func-sorting";
+import { funcOutput } from "../../functions/global/func-output";
+import { funcFilter } from "../../functions/global/func-filter";
+import { funcBlogsMapping } from "../../functions/mappings/func-blogs-mapping";
 
 export const blogsQueryRepository = {
   // Return blogs with query
@@ -16,7 +17,7 @@ export const blogsQueryRepository = {
     sortDirection: string,
     pageNumber: string,
     pageSize: string
-  ): Promise<MongoBlogModelWithPagination> {
+  ): Promise<Paginator<BlogViewModel[]>> {
     // Filter
     const blogsFilter = await funcFilter(undefined, undefined, searchNameTerm);
 
@@ -25,7 +26,7 @@ export const blogsQueryRepository = {
       await funcSorting(sortBy, sortDirection),
       Number(pageNumber) || 1,
       Number(pageSize) || 10,
-      blogsCollection,
+      Blogs,
       blogsFilter
     );
 
@@ -34,8 +35,8 @@ export const blogsQueryRepository = {
       Number(pageNumber) || 1,
       Number(pageSize) || 10,
       blogsPagination,
-      blogsCollection,
-      blogsMapping,
+      Blogs,
+      funcBlogsMapping,
       blogsFilter
     );
   },

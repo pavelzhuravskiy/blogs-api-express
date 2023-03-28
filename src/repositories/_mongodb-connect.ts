@@ -11,11 +11,12 @@ import mongoose from "mongoose";
 dotenv.config();
 
 const mongoURI = process.env.MONGO_URI
+const testURI = process.env.TEST_URI
 const mongooseURI = process.env.MONGOOSE_URI || "mongodb://0.0.0.0:27017"
 
 const uri =
   process.env.NODE_ENV === "test"
-    ? "mongodb://0.0.0.0:27017" // Local connection for tests
+    ? testURI // Connection for tests db
     : mongoURI; // Remote connection
 
 if (!uri) {
