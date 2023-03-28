@@ -9,22 +9,6 @@ export const rateLimitsRepository = {
     return rateLimit;
   },
 
-  async updateLastAttempt(
-    ip: string,
-    endpoint: string,
-    date: number
-  ): Promise<boolean> {
-    const result = await rateLimitsCollection.updateOne(
-      { ip, endpoint },
-      {
-        $set: {
-          lastAttempt: date,
-        },
-      }
-    );
-    return result.matchedCount === 1;
-  },
-
   async updateCounter(
     ip: string,
     endpoint: string,

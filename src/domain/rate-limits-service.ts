@@ -6,36 +6,15 @@ export const rateLimitsService = {
   async createNewRateLimit(
     ip: string,
     endpoint: string,
-    date: number,
     attemptsCount: number
   ): Promise<MongoRateLimitsModel> {
-    const createdAt = new Date();
     const newRateLimit = {
-      createdAt,
       ip,
       endpoint,
-      lastAttempt: date,
       attemptsCount,
     };
 
     return rateLimitsRepository.createRateLimit(newRateLimit);
-  },
-
-  async updateLastAttempt(
-    ip: string,
-    endpoint: string,
-    date: number
-  ): Promise<boolean> {
-    const rateLimit = await rateLimitsQueryRepository.findRateLimit(
-      ip,
-      endpoint
-    );
-
-    if (!rateLimit) {
-      return false;
-    }
-
-    return rateLimitsRepository.updateLastAttempt(ip, endpoint, date);
   },
 
   async updateCounter(ip: string, endpoint: string): Promise<boolean> {
