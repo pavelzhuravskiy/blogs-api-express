@@ -1,5 +1,5 @@
-import { MongoIdModel } from "../global/MongoIdModel";
+import { MongoId } from "../global/MongoId";
 import { MongoUserModelWithPassword } from "./MongoUserModelWithPassword";
 
 export type MongoUserModelWithPasswordWithId = MongoUserModelWithPassword &
-  MongoIdModel;
+  MongoId;

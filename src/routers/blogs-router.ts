@@ -12,7 +12,7 @@ import { validationErrorCheck } from "../middlewares/validations/_validation-err
 import { validationBlogsFindByParamId } from "../middlewares/validations/find-by-id/validation-blogs-find-by-param-id";
 import { postsService } from "../domain/posts-service";
 import { validationPostsInput } from "../middlewares/validations/input/validation-posts-input";
-import { GlobalIdStringModel } from "../models/global/GlobalIdStringModel";
+import { StringId } from "../models/global/StringId";
 import { blogsQueryRepository } from "../repositories/query-repos/mongodb-blogs-query-repository";
 import { postsQueryRepository } from "../repositories/query-repos/mongodb-posts-query-repository";
 
@@ -49,7 +49,7 @@ blogsRouter.get(
   validationBlogsFindByParamId,
   validationErrorCheck,
   async (
-    req: RequestWithParamsAndQuery<GlobalIdStringModel, GlobalQueryModel>,
+    req: RequestWithParamsAndQuery<StringId, GlobalQueryModel>,
     res: Response
   ) => {
     const foundPosts = await postsQueryRepository.findPosts(

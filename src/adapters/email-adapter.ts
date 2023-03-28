@@ -1,6 +1,6 @@
 import { SentMessageInfo } from "nodemailer";
 
-const nodemailer = require("nodemailer");
+import nodemailer from "nodemailer";
 
 export const emailAdapter = {
   async sendEmail(email: string, subject: string, message: string) {
@@ -28,10 +28,7 @@ export const emailAdapter = {
     });
 
     const mailData = {
-      from: {
-        name: `IT-INC Admin`,
-        address: process.env.EMAIL,
-      },
+      from: '"IT-INC Admin" <process.env.EMAIL>',
       to: email,
       subject: subject,
       html: message,

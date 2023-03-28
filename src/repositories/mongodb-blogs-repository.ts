@@ -1,17 +1,15 @@
 import { blogsCollection } from "./_mongodb-connect";
-import { MongoBlogModel } from "../models/blogs/MongoBlogModel";
+import { BlogDBModel } from "../models/blogs/BlogDBModel";
 import { ObjectId } from "mongodb";
-import { MongoBlogModelWithStringId } from "../models/blogs/MongoBlogModelWithStringId";
+import { BlogViewModel } from "../models/blogs/BlogViewModel";
+import { Blogs } from "../schemas/blogSchema";
 
 export const blogsRepository = {
   // Create new blog
-  async createNewBlog(
-    newBlog: MongoBlogModel
-  ): Promise<MongoBlogModelWithStringId> {
-    const insertedBlog = await blogsCollection.insertOne(newBlog);
-
+  async createNewBlog(newBlog: BlogDBModel): Promise<BlogViewModel> {
+    const insertedBlog = await Blogs.create(newBlog);
     return {
-      id: insertedBlog.insertedId.toString(),
+      id: insertedBlog._id.toString(),
       name: newBlog.name,
       description: newBlog.description,
       websiteUrl: newBlog.websiteUrl,

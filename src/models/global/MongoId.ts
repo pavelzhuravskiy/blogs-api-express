@@ -1,5 +1,5 @@
 import { ObjectId } from "mongodb";
 
-export type MongoIdModel = {
+export type MongoId = {
   _id: ObjectId;
 };

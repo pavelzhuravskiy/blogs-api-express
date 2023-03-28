@@ -16,7 +16,7 @@ import { ValidationCommentsInput } from "../middlewares/validations/input/valida
 import { commentsQueryRepository } from "../repositories/query-repos/mongodb-comments-query-repository";
 import { commentsService } from "../domain/comments-service";
 import { authBearer } from "../middlewares/auth/auth-bearer";
-import { GlobalIdStringModel } from "../models/global/GlobalIdStringModel";
+import { StringId } from "../models/global/StringId";
 
 export const postsRouter = Router({});
 
@@ -108,7 +108,7 @@ postsRouter.get(
   validationPostsFindByParamId,
   validationErrorCheck,
   async (
-    req: RequestWithParamsAndQuery<GlobalIdStringModel, GlobalQueryModel>,
+    req: RequestWithParamsAndQuery<StringId, GlobalQueryModel>,
     res: Response
   ) => {
     const foundComments = await commentsQueryRepository.findComments(

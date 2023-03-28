@@ -1,12 +1,12 @@
 import { blogsCollection } from "../_mongodb-connect";
 import { MongoBlogModelWithPagination } from "../../models/blogs/MongoBlogModelWithPagination";
-import { funcBlogsMapping } from "../../functions/mappings/func-blogs-mapping";
+import { blogsMapping } from "../../functions/mappings/blogs-mapping";
 import { ObjectId } from "mongodb";
-import { MongoBlogModelWithStringId } from "../../models/blogs/MongoBlogModelWithStringId";
 import { funcFilter } from "../../functions/global/func-filter";
 import { funcSorting } from "../../functions/global/func-sorting";
 import { funcPagination } from "../../functions/global/func-pagination";
 import { funcOutput } from "../../functions/global/func-output";
+import { BlogViewModel } from "../../models/blogs/BlogViewModel";
 
 export const blogsQueryRepository = {
   // Return blogs with query
@@ -35,15 +35,13 @@ export const blogsQueryRepository = {
       Number(pageSize) || 10,
       blogsPagination,
       blogsCollection,
-      funcBlogsMapping,
+      blogsMapping,
       blogsFilter
     );
   },
 
   // Return blog by ID
-  async findBlogById(
-    _id: ObjectId
-  ): Promise<MongoBlogModelWithStringId | null> {
+  async findBlogById(_id: ObjectId): Promise<BlogViewModel | null> {
     const foundBlog = await blogsCollection.findOne({ _id });
 
     if (!foundBlog) {

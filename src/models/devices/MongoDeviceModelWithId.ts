@@ -1,4 +1,4 @@
-import { MongoIdModel } from "../global/MongoIdModel";
+import { MongoId } from "../global/MongoId";
 import { MongoDeviceModel } from "./MongoDeviceModel";
 
-export type MongoDeviceModelWithId = MongoDeviceModel & MongoIdModel;
+export type MongoDeviceModelWithId = MongoDeviceModel & MongoId;
