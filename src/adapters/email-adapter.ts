@@ -11,7 +11,7 @@ export const emailAdapter = {
       subject: subject,
       html: message,
     };
-    sgMail
+    await sgMail
       .send(msg)
       .then(() => {
         console.log("Email sent");
