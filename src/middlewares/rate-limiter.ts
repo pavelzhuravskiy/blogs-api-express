@@ -15,7 +15,7 @@ export const rateLimiter = async (
 
   setTimeout(async () => {
     await rateLimitsService.deleteRateLimit(ip, endpoint);
-  }, 20000);
+  }, 30000);
 
   if (!foundLimiter) {
     await rateLimitsService.createNewRateLimit(
@@ -25,7 +25,7 @@ export const rateLimiter = async (
     );
   } else {
     const attemptsCount = foundLimiter.attemptsCount
-    if (attemptsCount > 5) {
+    if (attemptsCount >= 5) {
       res.sendStatus(429)
       return
     }
