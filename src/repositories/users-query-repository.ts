@@ -1,13 +1,13 @@
-import { usersCollection } from "../_db-connect";
 import { ObjectId } from "mongodb";
-import { funcUsersMapping } from "../../functions/mappings/func-users-mapping";
-import { MongoUserModelWithStringId } from "../../models/users/MongoUserModelWithStringId";
-import { MongoUserModelWithPagination } from "../../models/users/MongoUserModelWithPagination";
-import { funcFilter } from "../../functions/global/func-filter";
-import { funcPagination } from "../../functions/global/func-pagination";
-import { funcSorting } from "../../functions/global/func-sorting";
-import { funcOutput } from "../../functions/global/func-output";
-import { MongoUserModelWithPasswordWithId } from "../../models/users/MongoUserModelWithPasswordWithId";
+import { funcUsersMapping } from "../functions/mappings/func-users-mapping";
+import { funcFilter } from "../functions/global/func-filter";
+import { funcPagination } from "../functions/global/func-pagination";
+import { funcSorting } from "../functions/global/func-sorting";
+import { funcOutput } from "../functions/global/func-output";
+import { UserDBModel } from "../models/UserDBModel";
+import { Paginator } from "../models/global/Paginator";
+import { UserViewModel } from "../models/UserViewModel";
+import { Users } from "../schemas/userSchema";
 
 export const usersQueryRepository = {
   // Return users with query
@@ -18,7 +18,7 @@ export const usersQueryRepository = {
     sortDirection: string,
     pageNumber: string,
     pageSize: string
-  ): Promise<MongoUserModelWithPagination> {
+  ): Promise<Paginator<UserViewModel[]>> {
     // Filter
     const usersFilter = await funcFilter(
       undefined,
@@ -36,7 +36,7 @@ export const usersQueryRepository = {
       await funcSorting(usersSortingField, sortDirection),
       Number(pageNumber) || 1,
       Number(pageSize) || 10,
-      usersCollection,
+      Users,
       usersFilter
     );
 
@@ -45,17 +45,15 @@ export const usersQueryRepository = {
       Number(pageNumber) || 1,
       Number(pageSize) || 10,
       usersPagination,
-      usersCollection,
+      Users,
       funcUsersMapping,
       usersFilter
     );
   },
 
   // Return user with string ID
-  async findUserByIdWithStringId(
-    _id: ObjectId
-  ): Promise<MongoUserModelWithStringId | null> {
-    const foundUser = await usersCollection.findOne({ _id });
+  async findUserByIdReturnViewModel(_id: ObjectId): Promise<UserViewModel | null> {
+    const foundUser = await Users.findOne({ _id });
 
     if (!foundUser) {
       return null;
@@ -69,10 +67,8 @@ export const usersQueryRepository = {
     };
   },
 
-  async findUserByIdWithMongoId(
-    _id: ObjectId
-  ): Promise<MongoUserModelWithPasswordWithId | null> {
-    const foundUser = await usersCollection.findOne({ _id });
+  async findUserByIdReturnDBModel(_id: ObjectId): Promise<UserDBModel | null> {
+    const foundUser = await Users.findOne({ _id });
 
     if (!foundUser) {
       return null;
@@ -83,8 +79,8 @@ export const usersQueryRepository = {
 
   async findUserByLoginOrEmail(
     loginOrEmail: string
-  ): Promise<MongoUserModelWithPasswordWithId | null> {
-    return usersCollection.findOne({
+  ): Promise<UserDBModel | null> {
+    return Users.findOne({
       $or: [
         { "accountData.login": loginOrEmail },
         { "accountData.email": loginOrEmail },
@@ -93,13 +89,13 @@ export const usersQueryRepository = {
   },
 
   async findUserByEmailConfirmationCode(code: string) {
-    return usersCollection.findOne({
+    return Users.findOne({
       "emailConfirmation.confirmationCode": code,
     });
   },
 
   async findUserByPasswordRecoveryCode(recoveryCode: string) {
-    return usersCollection.findOne({
+    return Users.findOne({
       "passwordRecovery.recoveryCode": recoveryCode,
     });
   },

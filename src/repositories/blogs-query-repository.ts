@@ -1,5 +1,5 @@
 import { ObjectId } from "mongodb";
-import { BlogViewModel } from "../models/blogs/BlogViewModel";
+import { BlogViewModel } from "../models/BlogViewModel";
 import { Paginator } from "../models/global/Paginator";
 import { Blogs } from "../schemas/blogSchema";
 import { funcPagination } from "../functions/global/func-pagination";

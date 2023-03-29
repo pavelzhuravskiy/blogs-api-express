@@ -1,17 +1,15 @@
-import { usersCollection } from "./_db-connect";
 import { ObjectId } from "mongodb";
-import { MongoUserModelWithStringId } from "../models/users/MongoUserModelWithStringId";
-import { MongoUserModelWithPasswordWithId } from "../models/users/MongoUserModelWithPasswordWithId";
+import { UserDBModel } from "../models/UserDBModel";
+import { UserViewModel } from "../models/UserViewModel";
+import { Users } from "../schemas/userSchema";
 
 export const usersRepository = {
   // Create new user
-  async createUser(
-    user: MongoUserModelWithPasswordWithId
-  ): Promise<MongoUserModelWithStringId> {
-    const insertedUser = await usersCollection.insertOne(user);
+  async createUser(user: UserDBModel): Promise<UserViewModel> {
+    const insertedUser = await Users.create(user);
 
     return {
-      id: insertedUser.insertedId.toString(),
+      id: insertedUser._id.toString(),
       login: user.accountData.login,
       email: user.accountData.email,
       createdAt: user.accountData.createdAt,
@@ -20,19 +18,19 @@ export const usersRepository = {
 
   // Delete existing user
   async deleteUser(_id: ObjectId): Promise<boolean> {
-    const result = await usersCollection.deleteOne({ _id });
+    const result = await Users.deleteOne({ _id });
     return result.deletedCount === 1;
   },
 
   // Delete all users
   async deleteAll(): Promise<boolean> {
-    await usersCollection.deleteMany({});
-    return (await usersCollection.countDocuments()) === 0;
+    await Users.deleteMany({});
+    return (await Users.countDocuments()) === 0;
   },
 
   // Update user confirmation status
   async updateEmailConfirmationStatus(_id: ObjectId) {
-    const result = await usersCollection.updateOne(
+    const result = await Users.updateOne(
       { _id },
       { $set: { "emailConfirmation.isConfirmed": true } }
     );
@@ -44,7 +42,7 @@ export const usersRepository = {
     _id: ObjectId,
     newConfirmationCode: string
   ) {
-    const result = await usersCollection.updateOne(
+    const result = await Users.updateOne(
       { _id },
       { $set: { "emailConfirmation.confirmationCode": newConfirmationCode } }
     );
@@ -57,7 +55,7 @@ export const usersRepository = {
     recoveryCode: string,
     expirationDate: Date
   ) {
-    const result = await usersCollection.updateOne(
+    const result = await Users.updateOne(
       { _id },
       {
         $set: {
@@ -70,21 +68,17 @@ export const usersRepository = {
   },
 
   // Update password recovery data
-  async updatePassword(
-      _id: ObjectId,
-      hash: string,
-  ) {
-    const result = await usersCollection.updateOne(
-        { _id },
-        {
-          $set: {
-            "accountData.password": hash,
-            "passwordRecovery.recoveryCode": null,
-            "passwordRecovery.expirationDate": null,
-          },
-        }
+  async updatePassword(_id: ObjectId, hash: string) {
+    const result = await Users.updateOne(
+      { _id },
+      {
+        $set: {
+          "accountData.password": hash,
+          "passwordRecovery.recoveryCode": null,
+          "passwordRecovery.expirationDate": null,
+        },
+      }
     );
     return result.modifiedCount === 1;
   },
-
 };

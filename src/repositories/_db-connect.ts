@@ -1,6 +1,5 @@
 import { MongoClient } from "mongodb";
 import * as dotenv from "dotenv";
-import { MongoUserModelWithPassword } from "../models/users/MongoUserModelWithPassword";
 import { MongoCommentModel } from "../models/comments/MongoCommentModel";
 import { MongoDeviceModel } from "../models/devices/MongoDeviceModel";
 import { MongoRateLimitsModel } from "../models/global/MongoRateLimitsModel";
@@ -9,12 +8,11 @@ import mongoose from "mongoose";
 dotenv.config();
 
 const mongoURI = process.env.MONGO_URI
-const testURI = process.env.TEST_URI
 const mongooseURI = process.env.MONGOOSE_URI || "mongodb://0.0.0.0:27017"
 
 const uri =
   process.env.NODE_ENV === "test"
-    ? testURI // Connection for tests db
+    ? "mongodb://0.0.0.0:27017" // Connection for tests db
     : mongoURI; // Remote connection
 
 if (!uri) {
@@ -28,8 +26,8 @@ const blogsAndPostsDB = client.db();
 //   blogsAndPostsDB.collection<BlogDBModel>("blogs");
 // export const postsCollection =
 //   blogsAndPostsDB.collection<PostViewModel>("posts");
-export const usersCollection =
-  blogsAndPostsDB.collection<MongoUserModelWithPassword>("users");
+// export const usersCollection =
+//   blogsAndPostsDB.collection<MongoUserModelWithPassword>("users");
 export const commentsCollection =
   blogsAndPostsDB.collection<MongoCommentModel>("comments");
 export const devicesCollection =

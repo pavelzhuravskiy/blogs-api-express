@@ -1,6 +1,6 @@
-import { MongoUserModelWithPasswordWithId } from "../../models/users/MongoUserModelWithPasswordWithId";
+import { UserDBModel } from "../../models/UserDBModel";
 
-export const funcUsersMapping = (array: MongoUserModelWithPasswordWithId[]) => {
+export const funcUsersMapping = (array: UserDBModel[]) => {
   return array.map((user) => {
     // return user
     return {

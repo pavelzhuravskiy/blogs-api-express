@@ -3,7 +3,7 @@ import { MongoCommentModel } from "../models/comments/MongoCommentModel";
 import { MongoCommentModelWithStringId } from "../models/comments/MongoCommentModelWithStringId";
 import { postsQueryRepository } from "../repositories/posts-query-repository";
 import { commentsRepository } from "../repositories/mongodb-comments-repository";
-import { usersQueryRepository } from "../repositories/query-repos/mongodb-users-query-repository";
+import { usersQueryRepository } from "../repositories/users-query-repository";
 
 export const commentsService = {
   // Create new comment
@@ -16,7 +16,7 @@ export const commentsService = {
     if (!post) {
       return false;
     }
-    const user = await usersQueryRepository.findUserByIdWithMongoId(_userId);
+    const user = await usersQueryRepository.findUserByIdReturnDBModel(_userId);
     const newComment = {
       ...content,
       commentatorInfo: {

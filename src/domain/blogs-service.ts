@@ -1,7 +1,7 @@
 import { blogsRepository } from "../repositories/blogs-repository";
-import { BlogDBModel } from "../models/blogs/BlogDBModel";
+import { BlogDBModel } from "../models/BlogDBModel";
 import { ObjectId } from "mongodb";
-import { BlogViewModel } from "../models/blogs/BlogViewModel";
+import { BlogViewModel } from "../models/BlogViewModel";
 
 export const blogsService = {
   // Create new blog

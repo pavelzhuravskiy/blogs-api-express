@@ -1,7 +1,7 @@
 import { Request, Response, Router } from "express";
 import { usersService } from "../domain/users-service";
 import { jwtService } from "../application/jwt-service";
-import { usersQueryRepository } from "../repositories/query-repos/mongodb-users-query-repository";
+import { usersQueryRepository } from "../repositories/users-query-repository";
 import { authBearer } from "../middlewares/auth/auth-bearer";
 import { validationAuthInput } from "../middlewares/validations/input/validation-auth-input";
 import { validationErrorCheck } from "../middlewares/validations/_validation-error-check";
@@ -95,7 +95,7 @@ authRouter.post(
     const deviceId = cookieRefreshTokenObj!.deviceId;
 
     const userId = cookieRefreshTokenObj!.userId.toString();
-    const user = await usersQueryRepository.findUserByIdWithMongoId(
+    const user = await usersQueryRepository.findUserByIdReturnDBModel(
       new ObjectId(userId)
     );
 

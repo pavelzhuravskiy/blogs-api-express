@@ -1,4 +1,4 @@
-import { BlogDBModel } from "../../models/blogs/BlogDBModel";
+import { BlogDBModel } from "../../models/BlogDBModel";
 
 export const funcBlogsMapping = (array: BlogDBModel[]) => {
   return array.map((blog) => {

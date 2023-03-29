@@ -1,11 +1,11 @@
 import { emailManager } from "../managers/email-manager";
-import { MongoUserModel } from "../models/users/MongoUserModel";
+import { UserViewModel } from "../models/UserViewModel";
 import bcrypt from "bcrypt";
 import { ObjectId } from "mongodb";
 import { randomUUID } from "crypto";
 import { add } from "date-fns";
-import { usersRepository } from "../repositories/mongodb-users-repository";
-import { usersQueryRepository } from "../repositories/query-repos/mongodb-users-query-repository";
+import { usersRepository } from "../repositories/users-repository";
+import { usersQueryRepository } from "../repositories/users-query-repository";
 
 export const authService = {
   // Register new user
@@ -13,7 +13,7 @@ export const authService = {
     login: string,
     password: string,
     email: string
-  ): Promise<MongoUserModel | null> {
+  ): Promise<UserViewModel | null> {
     const hash = await bcrypt.hash(password, 10);
     const newUser = {
       _id: new ObjectId(),

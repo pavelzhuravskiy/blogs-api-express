@@ -1,4 +1,6 @@
-export type MongoUserModelWithPassword = {
+import { WithId } from "mongodb";
+
+export type UserDBModel = WithId<{
   accountData: {
     login: string;
     password: string;
@@ -12,7 +14,7 @@ export type MongoUserModelWithPassword = {
     isConfirmed: boolean;
   };
   passwordRecovery: {
-    recoveryCode: string | null,
-    expirationDate: Date | null
-  }
-};
+    recoveryCode: string | null;
+    expirationDate: Date | null;
+  };
+}>;

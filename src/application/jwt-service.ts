@@ -1,11 +1,11 @@
 import jwt from "jsonwebtoken";
 import { settings } from "../settings";
-import { MongoUserModelWithPasswordWithId } from "../models/users/MongoUserModelWithPasswordWithId";
+import { UserDBModel } from "../models/UserDBModel";
 import { randomUUID } from "crypto";
 
 export const jwtService = {
   async createAccessTokenJWT(
-    user: MongoUserModelWithPasswordWithId | null,
+    user: UserDBModel | null,
     deviceId: string = randomUUID()
   ) {
     const accessToken = jwt.sign(
@@ -19,7 +19,7 @@ export const jwtService = {
     return { accessToken };
   },
   async createRefreshTokenJWT(
-    user: MongoUserModelWithPasswordWithId | null,
+    user: UserDBModel | null,
     deviceId: string = randomUUID()
   ) {
     return jwt.sign({ userId: user!._id, deviceId }, settings.JWT_SECRET, {

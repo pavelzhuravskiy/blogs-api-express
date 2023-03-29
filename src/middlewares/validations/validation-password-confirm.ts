@@ -1,5 +1,5 @@
 import { body } from "express-validator";
-import { usersQueryRepository } from "../../repositories/query-repos/mongodb-users-query-repository";
+import { usersQueryRepository } from "../../repositories/users-query-repository";
 
 export const validationPasswordConfirm = body("recoveryCode").custom(async (value) => {
   const user = await usersQueryRepository.findUserByPasswordRecoveryCode(value);

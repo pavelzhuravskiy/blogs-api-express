@@ -1,8 +1,8 @@
 import { ObjectId } from "mongodb";
-import { MongoUserModel } from "../models/users/MongoUserModel";
-import { usersRepository } from "../repositories/mongodb-users-repository";
+import { UserViewModel } from "../models/UserViewModel";
+import { usersRepository } from "../repositories/users-repository";
 import bcrypt from "bcrypt";
-import { usersQueryRepository } from "../repositories/query-repos/mongodb-users-query-repository";
+import { usersQueryRepository } from "../repositories/users-query-repository";
 
 export const usersService = {
   // Create new user
@@ -10,7 +10,7 @@ export const usersService = {
     login: string,
     password: string,
     email: string
-  ): Promise<MongoUserModel | null> {
+  ): Promise<UserViewModel | null> {
     const hash = await bcrypt.hash(password, 10);
     const newUser = {
       _id: new ObjectId(),

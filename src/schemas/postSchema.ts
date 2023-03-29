@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { PostDBModel } from "../models/posts/PostDBModel";
+import { PostDBModel } from "../models/PostDBModel";
 
 const postSchema = new mongoose.Schema<PostDBModel>({
   title: { type: String, required: true },

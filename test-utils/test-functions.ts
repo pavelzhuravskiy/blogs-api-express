@@ -41,7 +41,7 @@ import {
 } from "../src/repositories/posts-query-repository";
 import {
   usersQueryRepository
-} from "../src/repositories/query-repos/mongodb-users-query-repository";
+} from "../src/repositories/users-query-repository";
 import {
   commentsQueryRepository
 } from "../src/repositories/query-repos/mongodb-comments-query-repository";

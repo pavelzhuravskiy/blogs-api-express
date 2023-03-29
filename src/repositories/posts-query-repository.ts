@@ -5,7 +5,7 @@ import { funcPagination } from "../functions/global/func-pagination";
 import { funcOutput } from "../functions/global/func-output";
 import { funcFilter } from "../functions/global/func-filter";
 import { Paginator } from "../models/global/Paginator";
-import { PostViewModel } from "../models/posts/PostViewModel";
+import { PostViewModel } from "../models/PostViewModel";
 import { Posts } from "../schemas/postSchema";
 
 export const postsQueryRepository = {

@@ -1,7 +1,7 @@
 import { ObjectId } from "mongodb";
 import { postsRepository } from "../repositories/posts-repository";
-import { PostDBModel } from "../models/posts/PostDBModel";
-import { PostViewModel } from "../models/posts/PostViewModel";
+import { PostDBModel } from "../models/PostDBModel";
+import { PostViewModel } from "../models/PostViewModel";
 import { blogsQueryRepository } from "../repositories/blogs-query-repository";
 
 export const postsService = {
