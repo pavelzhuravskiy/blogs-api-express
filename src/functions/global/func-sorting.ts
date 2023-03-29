@@ -14,7 +14,5 @@ export const funcSorting = async (
     sortingObj[sortBy] = 1;
   }
 
-  console.log(sortingObj);
-
   return sortingObj;
 };

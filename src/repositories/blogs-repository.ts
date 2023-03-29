@@ -39,8 +39,6 @@ export const blogsRepository = {
 
   // Delete existing blog
   async deleteBlog(_id: ObjectId): Promise<boolean> {
-    // const result = await Blogs.deleteOne({_id: ObjectId(_id)});
-    console.log(_id);
     const result = await Blogs.deleteOne({ _id });
     return result.deletedCount === 1;
   },

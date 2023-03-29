@@ -1,15 +1,14 @@
-import { Blogs } from "../../schemas/blogSchema";
 import { FilterQuery, SortOrder } from "mongoose";
-import { BlogDBModel } from "../../models/blogs/BlogDBModel";
 
 export const funcPagination = async (
   sortingObj: { [key: string]: SortOrder },
   pageNumber: number,
   pageSize: number,
   mongooseModel: any, // TODO Fix
-  filter: FilterQuery<BlogDBModel> | {}
+  filter: FilterQuery<any>
 ) => {
-  return Blogs.find(filter)
+  return mongooseModel
+    .find(filter)
     .lean()
     .sort(sortingObj)
     .skip(pageNumber > 0 ? (pageNumber - 1) * pageSize : 0)

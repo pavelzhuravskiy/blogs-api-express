@@ -1,4 +1,4 @@
-import { commentsCollection } from "../_mongodb-connect";
+import { commentsCollection } from "../_db-connect";
 import { ObjectId } from "mongodb";
 import { funcCommentsMapping } from "../../functions/mappings/func-comments-mapping";
 import { MongoCommentModelWithStringId } from "../../models/comments/MongoCommentModelWithStringId";

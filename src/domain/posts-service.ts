@@ -1,15 +1,12 @@
 import { ObjectId } from "mongodb";
-import { postsRepository } from "../repositories/mongodb-posts-repository";
-import { MongoPostModelWithId } from "../models/posts/MongoPostModelWithId";
-import { MongoPostModelWithStringId } from "../models/posts/MongoPostModelWithStringId";
-import { MongoPostModel } from "../models/posts/MongoPostModel";
-import { blogsQueryRepository } from "../repositories/query-repos/blogs-query-repository";
+import { postsRepository } from "../repositories/posts-repository";
+import { PostDBModel } from "../models/posts/PostDBModel";
+import { PostViewModel } from "../models/posts/PostViewModel";
+import { blogsQueryRepository } from "../repositories/blogs-query-repository";
 
 export const postsService = {
   // Create new post
-  async createNewPost(
-    post: MongoPostModelWithId
-  ): Promise<boolean | MongoPostModelWithStringId> {
+  async createNewPost(post: PostDBModel): Promise<boolean | PostViewModel> {
     const blog = await blogsQueryRepository.findBlogById(
       new ObjectId(post.blogId)
     );
@@ -27,8 +24,8 @@ export const postsService = {
   // Create new post
   async createNewPostByBlogId(
     _id: ObjectId,
-    post: MongoPostModelWithId
-  ): Promise<boolean | MongoPostModelWithStringId> {
+    post: PostDBModel
+  ): Promise<boolean | PostViewModel> {
     const blog = await blogsQueryRepository.findBlogById(new ObjectId(_id));
     if (!blog) {
       return false;
@@ -43,7 +40,7 @@ export const postsService = {
   },
 
   // Update existing post
-  async updatePost(_id: ObjectId, post: MongoPostModel): Promise<boolean> {
+  async updatePost(_id: ObjectId, post: PostViewModel): Promise<boolean> {
     return postsRepository.updatePost(
       _id,
       post.title,

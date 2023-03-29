@@ -1,4 +1,4 @@
-import { usersCollection } from "./_mongodb-connect";
+import { usersCollection } from "./_db-connect";
 import { ObjectId } from "mongodb";
 import { MongoUserModelWithStringId } from "../models/users/MongoUserModelWithStringId";
 import { MongoUserModelWithPasswordWithId } from "../models/users/MongoUserModelWithPasswordWithId";

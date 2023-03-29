@@ -1,5 +1,4 @@
 import { MongoClient } from "mongodb";
-import { MongoPostModel } from "../models/posts/MongoPostModel";
 import * as dotenv from "dotenv";
 import { MongoUserModelWithPassword } from "../models/users/MongoUserModelWithPassword";
 import { MongoCommentModel } from "../models/comments/MongoCommentModel";
@@ -27,8 +26,8 @@ export const client = new MongoClient(uri);
 const blogsAndPostsDB = client.db();
 // export const blogsCollection =
 //   blogsAndPostsDB.collection<BlogDBModel>("blogs");
-export const postsCollection =
-  blogsAndPostsDB.collection<MongoPostModel>("posts");
+// export const postsCollection =
+//   blogsAndPostsDB.collection<PostViewModel>("posts");
 export const usersCollection =
   blogsAndPostsDB.collection<MongoUserModelWithPassword>("users");
 export const commentsCollection =

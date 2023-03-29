@@ -1,12 +1,12 @@
 import { ObjectId } from "mongodb";
-import { BlogViewModel } from "../../models/blogs/BlogViewModel";
-import { Paginator } from "../../models/global/Paginator";
-import { Blogs } from "../../schemas/blogSchema";
-import { funcPagination } from "../../functions/global/func-pagination";
-import { funcSorting } from "../../functions/global/func-sorting";
-import { funcOutput } from "../../functions/global/func-output";
-import { funcFilter } from "../../functions/global/func-filter";
-import { funcBlogsMapping } from "../../functions/mappings/func-blogs-mapping";
+import { BlogViewModel } from "../models/blogs/BlogViewModel";
+import { Paginator } from "../models/global/Paginator";
+import { Blogs } from "../schemas/blogSchema";
+import { funcPagination } from "../functions/global/func-pagination";
+import { funcSorting } from "../functions/global/func-sorting";
+import { funcOutput } from "../functions/global/func-output";
+import { funcFilter } from "../functions/global/func-filter";
+import { funcBlogsMapping } from "../functions/mappings/func-blogs-mapping";
 
 export const blogsQueryRepository = {
   // Return blogs with query

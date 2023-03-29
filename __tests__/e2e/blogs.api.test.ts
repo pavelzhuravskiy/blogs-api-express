@@ -112,7 +112,7 @@ import {
 import { emptyOutput } from "../../test-utils/test-objects";
 import request from "supertest";
 import { app } from "../../src";
-import { client } from "../../src/repositories/_mongodb-connect";
+import { client } from "../../src/repositories/_db-connect";
 import { funcSleep } from "../../src/functions/global/func-sleep";
 
 afterAll(async () => {
@@ -801,6 +801,8 @@ describe("Posts testing", () => {
     });
     it("should return all posts", async () => {
       const response = await getter(postsURI);
+
+      console.log(response.body)
       expect(response.status).toBe(200);
       expect(response.body).toEqual(emptyOutput);
     });

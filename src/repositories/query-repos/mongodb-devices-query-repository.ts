@@ -1,4 +1,4 @@
-import { devicesCollection } from "../_mongodb-connect";
+import { devicesCollection } from "../_db-connect";
 import { MongoDeviceViewModel } from "../../models/devices/MongoDeviceViewModel";
 import { funcDevicesMapping } from "../../functions/mappings/func-devices-mapping";
 import { MongoDeviceModel } from "../../models/devices/MongoDeviceModel";

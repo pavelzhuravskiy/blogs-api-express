@@ -1,12 +1,12 @@
-import { postsCollection } from "../_mongodb-connect";
 import { ObjectId } from "mongodb";
-import { MongoPostModelWithStringId } from "../../models/posts/MongoPostModelWithStringId";
-import { funcPostsMapping } from "../../functions/mappings/func-posts-mapping";
-import { MongoPostModelWithPagination } from "../../models/posts/MongoPostModelWithPagination";
-import { funcSorting } from "../../functions/global/func-sorting";
-import { funcPagination } from "../../functions/global/func-pagination";
-import { funcOutput } from "../../functions/global/func-output";
-import { funcFilter } from "../../functions/global/func-filter";
+import { funcPostsMapping } from "../functions/mappings/func-posts-mapping";
+import { funcSorting } from "../functions/global/func-sorting";
+import { funcPagination } from "../functions/global/func-pagination";
+import { funcOutput } from "../functions/global/func-output";
+import { funcFilter } from "../functions/global/func-filter";
+import { Paginator } from "../models/global/Paginator";
+import { PostViewModel } from "../models/posts/PostViewModel";
+import { Posts } from "../schemas/postSchema";
 
 export const postsQueryRepository = {
   // Return posts with query
@@ -16,7 +16,7 @@ export const postsQueryRepository = {
     pageNumber: string,
     pageSize: string,
     blogId?: ObjectId
-  ): Promise<MongoPostModelWithPagination> {
+  ): Promise<Paginator<PostViewModel[]>> {
     // Filter
     const postsFilter = await funcFilter(blogId);
 
@@ -25,7 +25,7 @@ export const postsQueryRepository = {
       await funcSorting(sortBy, sortDirection),
       Number(pageNumber) || 1,
       Number(pageSize) || 10,
-      postsCollection,
+      Posts,
       postsFilter
     );
 
@@ -34,17 +34,15 @@ export const postsQueryRepository = {
       Number(pageNumber) || 1,
       Number(pageSize) || 10,
       postsPagination,
-      postsCollection,
+      Posts,
       funcPostsMapping,
       postsFilter
     );
   },
 
   // Return post by ID
-  async findPostById(
-    _id: ObjectId
-  ): Promise<MongoPostModelWithStringId | null> {
-    const foundPost = await postsCollection.findOne({ _id });
+  async findPostById(_id: ObjectId): Promise<PostViewModel | null> {
+    const foundPost = await Posts.findOne({ _id });
 
     if (!foundPost) {
       return null;

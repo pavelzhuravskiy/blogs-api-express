@@ -1,17 +1,15 @@
-import { postsCollection } from "./_mongodb-connect";
-import { MongoPostModel } from "../models/posts/MongoPostModel";
+import { PostViewModel } from "../models/posts/PostViewModel";
 import { ObjectId } from "mongodb";
-import { MongoPostModelWithStringId } from "../models/posts/MongoPostModelWithStringId";
+import { PostDBModel } from "../models/posts/PostDBModel";
+import { Posts } from "../schemas/postSchema";
 
 export const postsRepository = {
   // Create new post
-  async createNewPost(
-    newPost: MongoPostModel
-  ): Promise<boolean | MongoPostModelWithStringId> {
-    const insertedPost = await postsCollection.insertOne(newPost);
+  async createNewPost(newPost: PostDBModel): Promise<PostViewModel> {
+    const insertedPost = await Posts.create(newPost);
 
     return {
-      id: insertedPost.insertedId.toString(),
+      id: insertedPost._id.toString(),
       title: newPost.title,
       shortDescription: newPost.shortDescription,
       content: newPost.content,
@@ -29,7 +27,7 @@ export const postsRepository = {
     content: string,
     blogId: string
   ): Promise<boolean> {
-    const result = await postsCollection.updateOne(
+    const result = await Posts.updateOne(
       { _id },
       {
         $set: {
@@ -46,13 +44,13 @@ export const postsRepository = {
 
   // Delete existing post
   async deletePost(_id: ObjectId): Promise<boolean> {
-    const result = await postsCollection.deleteOne({ _id });
+    const result = await Posts.deleteOne({ _id });
     return result.deletedCount === 1;
   },
 
   // Delete all posts
   async deleteAll(): Promise<boolean> {
-    await postsCollection.deleteMany({});
-    return (await postsCollection.countDocuments()) === 0;
+    await Posts.deleteMany({});
+    return (await Posts.countDocuments()) === 0;
   },
 };

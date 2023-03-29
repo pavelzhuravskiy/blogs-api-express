@@ -13,8 +13,8 @@ import { validationBlogsFindByParamId } from "../middlewares/validations/find-by
 import { postsService } from "../domain/posts-service";
 import { validationPostsInput } from "../middlewares/validations/input/validation-posts-input";
 import { StringId } from "../models/global/StringId";
-import { blogsQueryRepository } from "../repositories/query-repos/blogs-query-repository";
-import { postsQueryRepository } from "../repositories/query-repos/mongodb-posts-query-repository";
+import { blogsQueryRepository } from "../repositories/blogs-query-repository";
+import { postsQueryRepository } from "../repositories/posts-query-repository";
 
 export const blogsRouter = Router({});
 

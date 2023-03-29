@@ -1,4 +1,4 @@
-import { devicesCollection } from "./_mongodb-connect";
+import { devicesCollection } from "./_db-connect";
 import { MongoDeviceModel } from "../models/devices/MongoDeviceModel";
 
 export const devicesRepository = {

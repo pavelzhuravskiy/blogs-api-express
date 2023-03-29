@@ -1,4 +1,4 @@
-import { commentsCollection } from "./_mongodb-connect";
+import { commentsCollection } from "./_db-connect";
 import { MongoCommentModel } from "../models/comments/MongoCommentModel";
 import { MongoCommentModelWithStringId } from "../models/comments/MongoCommentModelWithStringId";
 import { ObjectId } from "mongodb";

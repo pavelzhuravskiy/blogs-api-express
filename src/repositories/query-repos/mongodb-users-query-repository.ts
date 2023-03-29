@@ -1,4 +1,4 @@
-import { usersCollection } from "../_mongodb-connect";
+import { usersCollection } from "../_db-connect";
 import { ObjectId } from "mongodb";
 import { funcUsersMapping } from "../../functions/mappings/func-users-mapping";
 import { MongoUserModelWithStringId } from "../../models/users/MongoUserModelWithStringId";

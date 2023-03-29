@@ -1,6 +1,4 @@
-import { Blogs } from "../../schemas/blogSchema";
 import { FilterQuery } from "mongoose";
-import { BlogDBModel } from "../../models/blogs/BlogDBModel";
 
 export const funcOutput = async (
   pageNumber: number,
@@ -8,9 +6,9 @@ export const funcOutput = async (
   output: any, // TODO Fix
   mongooseModel: any, // TODO Fix
   mapping: Function,
-  filter: FilterQuery<BlogDBModel>
+  filter: FilterQuery<any>
 ) => {
-  const totalCount = await Blogs.countDocuments(filter);
+  const totalCount = await mongooseModel.countDocuments(filter);
   const pagesCount = Math.ceil(totalCount / pageSize);
 
   return {

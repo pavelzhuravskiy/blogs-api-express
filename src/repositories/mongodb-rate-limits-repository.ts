@@ -1,4 +1,4 @@
-import { rateLimitsCollection } from "./_mongodb-connect";
+import { rateLimitsCollection } from "./_db-connect";
 import { MongoRateLimitsModel } from "../models/global/MongoRateLimitsModel";
 
 export const rateLimitsRepository = {
