@@ -1,4 +1,3 @@
-import { blogsCollection } from "./_mongodb-connect";
 import { BlogDBModel } from "../models/blogs/BlogDBModel";
 import { ObjectId } from "mongodb";
 import { BlogViewModel } from "../models/blogs/BlogViewModel";
@@ -40,7 +39,9 @@ export const blogsRepository = {
 
   // Delete existing blog
   async deleteBlog(_id: ObjectId): Promise<boolean> {
-    const result = await blogsCollection.deleteOne({ _id });
+    // const result = await Blogs.deleteOne({_id: ObjectId(_id)});
+    console.log(_id);
+    const result = await Blogs.deleteOne({ _id });
     return result.deletedCount === 1;
   },
 

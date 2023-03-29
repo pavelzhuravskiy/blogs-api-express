@@ -35,7 +35,7 @@ import {
 import {ObjectId} from "mongodb";
 import {
   blogsQueryRepository
-} from "../src/repositories/query-repos/mongodb-blogs-query-repository";
+} from "../src/repositories/query-repos/blogs-query-repository";
 import {
   postsQueryRepository
 } from "../src/repositories/query-repos/mongodb-posts-query-repository";

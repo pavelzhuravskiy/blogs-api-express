@@ -1,4 +1,4 @@
-import { blogsRepository } from "../repositories/mongodb-blogs-repository";
+import { blogsRepository } from "../repositories/blogs-repository";
 import { BlogDBModel } from "../models/blogs/BlogDBModel";
 import { ObjectId } from "mongodb";
 import { BlogViewModel } from "../models/blogs/BlogViewModel";

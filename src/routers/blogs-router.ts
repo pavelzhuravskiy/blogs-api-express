@@ -13,7 +13,7 @@ import { validationBlogsFindByParamId } from "../middlewares/validations/find-by
 import { postsService } from "../domain/posts-service";
 import { validationPostsInput } from "../middlewares/validations/input/validation-posts-input";
 import { StringId } from "../models/global/StringId";
-import { blogsQueryRepository } from "../repositories/query-repos/mongodb-blogs-query-repository";
+import { blogsQueryRepository } from "../repositories/query-repos/blogs-query-repository";
 import { postsQueryRepository } from "../repositories/query-repos/mongodb-posts-query-repository";
 
 export const blogsRouter = Router({});
@@ -117,6 +117,7 @@ blogsRouter.delete(
   validationBlogsFindByParamId,
   validationErrorCheck,
   async (req: Request, res: Response) => {
+      console.log(req.params.id)
     const isDeleted = await blogsService.deleteBlog(
       new ObjectId(req.params.id)
     );
