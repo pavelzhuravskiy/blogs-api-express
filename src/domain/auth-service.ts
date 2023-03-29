@@ -1,11 +1,11 @@
 import { emailManager } from "../managers/email-manager";
-import { UserViewModel } from "../models/UserViewModel";
+import { UserViewModel } from "../models/view/UserViewModel";
 import bcrypt from "bcrypt";
 import { ObjectId } from "mongodb";
 import { randomUUID } from "crypto";
 import { add } from "date-fns";
 import { usersRepository } from "../repositories/users-repository";
-import { usersQueryRepository } from "../repositories/users-query-repository";
+import { usersQueryRepository } from "../repositories/query-repos/users-query-repository";
 
 export const authService = {
   // Register new user

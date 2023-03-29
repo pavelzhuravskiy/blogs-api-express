@@ -1,13 +1,13 @@
 import { ObjectId } from "mongodb";
-import { funcUsersMapping } from "../functions/mappings/func-users-mapping";
-import { funcFilter } from "../functions/global/func-filter";
-import { funcPagination } from "../functions/global/func-pagination";
-import { funcSorting } from "../functions/global/func-sorting";
-import { funcOutput } from "../functions/global/func-output";
-import { UserDBModel } from "../models/UserDBModel";
-import { Paginator } from "../models/global/Paginator";
-import { UserViewModel } from "../models/UserViewModel";
-import { Users } from "../schemas/userSchema";
+import { funcUsersMapping } from "../../functions/mappings/func-users-mapping";
+import { funcFilter } from "../../functions/global/func-filter";
+import { funcPagination } from "../../functions/global/func-pagination";
+import { funcSorting } from "../../functions/global/func-sorting";
+import { funcOutput } from "../../functions/global/func-output";
+import { UserDBModel } from "../../models/database/UserDBModel";
+import { Paginator } from "../../models/global/Paginator";
+import { UserViewModel } from "../../models/view/UserViewModel";
+import { Users } from "../../schemas/userSchema";
 
 export const usersQueryRepository = {
   // Return users with query

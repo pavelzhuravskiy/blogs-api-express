@@ -1,18 +1,18 @@
 import mongoose from "mongoose";
-import { UserDBModel } from "../models/UserDBModel";
+import { UserDBModel } from "../models/database/UserDBModel";
 
 const userSchema = new mongoose.Schema<UserDBModel>({
   accountData: {
-    login: { type: String, required: true },
+    login: { type: String, required: true, unique: true },
     password: { type: String, required: true },
-    email: { type: String, required: true },
-    createdAt: String,
-    isMembership: Boolean,
+    email: { type: String, required: true, unique: true },
+    createdAt: { type: String, required: true },
+    isMembership: { type: Boolean, required: true },
   },
   emailConfirmation: {
     confirmationCode: String,
     expirationDate: Date,
-    isConfirmed: Boolean,
+    isConfirmed: { type: Boolean, required: true },
   },
   passwordRecovery: {
     recoveryCode: String,

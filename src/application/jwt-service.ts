@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 import { settings } from "../settings";
-import { UserDBModel } from "../models/UserDBModel";
+import { UserDBModel } from "../models/database/UserDBModel";
 import { randomUUID } from "crypto";
 
 export const jwtService = {

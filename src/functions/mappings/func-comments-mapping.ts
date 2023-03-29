@@ -1,6 +1,6 @@
-import { MongoCommentModelWithId } from "../../models/comments/MongoCommentModelWithId";
+import { CommentDBModel } from "../../models/database/CommentDBModel";
 
-export const funcCommentsMapping = (array: MongoCommentModelWithId[]) => {
+export const funcCommentsMapping = (array: CommentDBModel[]) => {
   return array.map((comment) => {
     return {
       id: comment._id.toString(),

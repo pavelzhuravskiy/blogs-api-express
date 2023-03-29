@@ -1,12 +1,12 @@
-import { commentsCollection } from "../_db-connect";
 import { ObjectId } from "mongodb";
 import { funcCommentsMapping } from "../../functions/mappings/func-comments-mapping";
-import { MongoCommentModelWithStringId } from "../../models/comments/MongoCommentModelWithStringId";
 import { funcPagination } from "../../functions/global/func-pagination";
 import { funcSorting } from "../../functions/global/func-sorting";
 import { funcOutput } from "../../functions/global/func-output";
-import { MongoCommentsModelWithPagination } from "../../models/comments/MongoCommentsModelWithPagination";
 import { funcFilter } from "../../functions/global/func-filter";
+import { Paginator } from "../../models/global/Paginator";
+import { CommentViewModel } from "../../models/view/CommentViewModel";
+import { Comments } from "../../schemas/commentSchema";
 
 export const commentsQueryRepository = {
   // Return comments with query
@@ -16,7 +16,7 @@ export const commentsQueryRepository = {
     pageNumber: string,
     pageSize: string,
     postId: ObjectId
-  ): Promise<MongoCommentsModelWithPagination> {
+  ): Promise<Paginator<CommentViewModel[]>> {
     // Filter
     const commentsFilter = await funcFilter(undefined, postId);
 
@@ -25,7 +25,7 @@ export const commentsQueryRepository = {
       await funcSorting(sortBy, sortDirection),
       Number(pageNumber) || 1,
       Number(pageSize) || 10,
-      commentsCollection,
+      Comments,
       commentsFilter
     );
 
@@ -34,16 +34,14 @@ export const commentsQueryRepository = {
       Number(pageNumber) || 1,
       Number(pageSize) || 10,
       commentsPagination,
-      commentsCollection,
+      Comments,
       funcCommentsMapping,
       commentsFilter
     );
   },
 
-  async findCommentById(
-    _id: ObjectId
-  ): Promise<MongoCommentModelWithStringId | null> {
-    const foundComment = await commentsCollection.findOne({ _id });
+  async findCommentById(_id: ObjectId): Promise<CommentViewModel | null> {
+    const foundComment = await Comments.findOne({ _id });
 
     if (!foundComment) {
       return null;

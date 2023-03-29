@@ -3,7 +3,7 @@ import { ObjectId } from "mongodb";
 import { RequestWithQuery } from "../types/request-types";
 import { GlobalQueryModel } from "../models/global/GlobalQueryModel";
 import { validationErrorCheck } from "../middlewares/validations/_validation-error-check";
-import { usersQueryRepository } from "../repositories/users-query-repository";
+import { usersQueryRepository } from "../repositories/query-repos/users-query-repository";
 import { validationUsersInput } from "../middlewares/validations/input/validation-users-input";
 import { usersService } from "../domain/users-service";
 import { validationUsersFindByParamId } from "../middlewares/validations/find-by-id/validation-users-find-by-param-id";

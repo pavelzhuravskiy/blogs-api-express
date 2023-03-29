@@ -1,5 +1,5 @@
 import { body } from "express-validator";
-import { usersQueryRepository } from "../../repositories/users-query-repository";
+import { usersQueryRepository } from "../../repositories/query-repos/users-query-repository";
 
 export const validationEmailResend = body("email").custom(async (value) => {
   const user = await usersQueryRepository.findUserByLoginOrEmail(value);

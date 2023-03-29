@@ -2,7 +2,7 @@ import { Request, Response, Router } from "express";
 import { blogsRepository } from "../repositories/blogs-repository";
 import { postsRepository } from "../repositories/posts-repository";
 import { usersRepository } from "../repositories/users-repository";
-import { commentsRepository } from "../repositories/mongodb-comments-repository";
+import { commentsRepository } from "../repositories/comments-repository";
 import { devicesRepository } from "../repositories/mongodb-devices-repository";
 import { rateLimitsRepository } from "../repositories/mongodb-rate-limits-repository";
 

@@ -35,16 +35,16 @@ import {
 import {ObjectId} from "mongodb";
 import {
   blogsQueryRepository
-} from "../src/repositories/blogs-query-repository";
+} from "../src/repositories/query-repos/blogs-query-repository";
 import {
   postsQueryRepository
-} from "../src/repositories/posts-query-repository";
+} from "../src/repositories/query-repos/posts-query-repository";
 import {
   usersQueryRepository
-} from "../src/repositories/users-query-repository";
+} from "../src/repositories/query-repos/users-query-repository";
 import {
   commentsQueryRepository
-} from "../src/repositories/query-repos/mongodb-comments-query-repository";
+} from "../src/repositories/query-repos/comments-query-repository";
 
 // ---------- AUTH FUNCTIONS ----------
 

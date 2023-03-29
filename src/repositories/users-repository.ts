@@ -1,6 +1,6 @@
 import { ObjectId } from "mongodb";
-import { UserDBModel } from "../models/UserDBModel";
-import { UserViewModel } from "../models/UserViewModel";
+import { UserDBModel } from "../models/database/UserDBModel";
+import { UserViewModel } from "../models/view/UserViewModel";
 import { Users } from "../schemas/userSchema";
 
 export const usersRepository = {

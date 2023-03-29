@@ -1,4 +1,4 @@
-import { PostDBModel } from "../../models/PostDBModel";
+import { PostDBModel } from "../../models/database/PostDBModel";
 
 export const funcPostsMapping = (array: PostDBModel[]) => {
   return array.map((post) => {

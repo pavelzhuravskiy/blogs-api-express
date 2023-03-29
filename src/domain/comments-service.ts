@@ -1,29 +1,29 @@
 import { ObjectId } from "mongodb";
-import { MongoCommentModel } from "../models/comments/MongoCommentModel";
-import { MongoCommentModelWithStringId } from "../models/comments/MongoCommentModelWithStringId";
-import { postsQueryRepository } from "../repositories/posts-query-repository";
-import { commentsRepository } from "../repositories/mongodb-comments-repository";
-import { usersQueryRepository } from "../repositories/users-query-repository";
+import { CommentViewModel } from "../models/view/CommentViewModel";
+import { postsQueryRepository } from "../repositories/query-repos/posts-query-repository";
+import { commentsRepository } from "../repositories/comments-repository";
+import { usersQueryRepository } from "../repositories/query-repos/users-query-repository";
+import { CommentDBModel } from "../models/database/CommentDBModel";
 
 export const commentsService = {
   // Create new comment
   async createNewCommentByPostId(
-    _id: ObjectId,
-    content: MongoCommentModel,
-    _userId: ObjectId
-  ): Promise<boolean | MongoCommentModelWithStringId> {
-    const post = await postsQueryRepository.findPostById(new ObjectId(_id));
+    postId: ObjectId,
+    content: CommentDBModel,
+    userId: ObjectId
+  ): Promise<boolean | CommentViewModel> {
+    const post = await postsQueryRepository.findPostById(new ObjectId(postId));
     if (!post) {
       return false;
     }
-    const user = await usersQueryRepository.findUserByIdReturnDBModel(_userId);
+    const user = await usersQueryRepository.findUserByIdReturnDBModel(userId);
     const newComment = {
       ...content,
       commentatorInfo: {
         userId: user!._id.toString(),
         userLogin: user!.accountData.login,
       },
-      postId: _id.toString(),
+      postId: postId.toString(),
       createdAt: new Date().toISOString(),
     };
     return commentsRepository.createNewComment(newComment);
@@ -32,7 +32,7 @@ export const commentsService = {
   // Update existing comment
   async updateComment(
     _id: ObjectId,
-    comment: MongoCommentModel
+    comment: CommentViewModel
   ): Promise<boolean> {
     return commentsRepository.updateComment(_id, comment.content);
   },

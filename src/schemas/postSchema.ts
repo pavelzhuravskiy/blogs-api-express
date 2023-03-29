@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { PostDBModel } from "../models/PostDBModel";
+import { PostDBModel } from "../models/database/PostDBModel";
 
 const postSchema = new mongoose.Schema<PostDBModel>({
   title: { type: String, required: true },
@@ -7,7 +7,7 @@ const postSchema = new mongoose.Schema<PostDBModel>({
   content: { type: String, required: true },
   blogId: { type: String, required: true },
   blogName: { type: String, required: true },
-  createdAt: String,
+  createdAt: { type: String, required: true },
 });
 
 export const Posts = mongoose.model("posts", postSchema);

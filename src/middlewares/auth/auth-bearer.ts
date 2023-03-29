@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { jwtService } from "../../application/jwt-service";
-import { usersQueryRepository } from "../../repositories/users-query-repository";
+import { usersQueryRepository } from "../../repositories/query-repos/users-query-repository";
 import { ObjectId } from "mongodb";
 
 export const authBearer = async (

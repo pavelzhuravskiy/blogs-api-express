@@ -10,10 +10,10 @@ import {
 } from "../types/request-types";
 import { validationPostsCreation } from "../middlewares/validations/validation-posts-creation";
 import { validationPostsFindByParamId } from "../middlewares/validations/find-by-id/validation-posts-find-by-param-id";
-import { postsQueryRepository } from "../repositories/posts-query-repository";
+import { postsQueryRepository } from "../repositories/query-repos/posts-query-repository";
 import { GlobalQueryModel } from "../models/global/GlobalQueryModel";
 import { ValidationCommentsInput } from "../middlewares/validations/input/validation-comments-input";
-import { commentsQueryRepository } from "../repositories/query-repos/mongodb-comments-query-repository";
+import { commentsQueryRepository } from "../repositories/query-repos/comments-query-repository";
 import { commentsService } from "../domain/comments-service";
 import { authBearer } from "../middlewares/auth/auth-bearer";
 import { StringId } from "../models/global/StringId";

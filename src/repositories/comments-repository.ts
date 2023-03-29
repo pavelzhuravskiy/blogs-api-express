@@ -1,17 +1,17 @@
-import { commentsCollection } from "./_db-connect";
-import { MongoCommentModel } from "../models/comments/MongoCommentModel";
-import { MongoCommentModelWithStringId } from "../models/comments/MongoCommentModelWithStringId";
+import { CommentViewModel } from "../models/view/CommentViewModel";
 import { ObjectId } from "mongodb";
+import { CommentDBModel } from "../models/database/CommentDBModel";
+import { Comments } from "../schemas/commentSchema";
 
 export const commentsRepository = {
   // Create new comment
   async createNewComment(
-    newComment: MongoCommentModel
-  ): Promise<MongoCommentModelWithStringId> {
-    const insertedComment = await commentsCollection.insertOne(newComment);
+    newComment: CommentDBModel
+  ): Promise<CommentViewModel> {
+    const insertedComment = await Comments.create(newComment);
 
     return {
-      id: insertedComment.insertedId.toString(),
+      id: insertedComment._id.toString(),
       content: newComment.content,
       commentatorInfo: {
         userId: newComment.commentatorInfo.userId,
@@ -23,7 +23,7 @@ export const commentsRepository = {
 
   // Update existing comment
   async updateComment(_id: ObjectId, content: string): Promise<boolean> {
-    const result = await commentsCollection.updateOne(
+    const result = await Comments.updateOne(
       { _id },
       {
         $set: {
@@ -36,13 +36,13 @@ export const commentsRepository = {
 
   // Delete existing comment
   async deleteComment(_id: ObjectId): Promise<boolean> {
-    const result = await commentsCollection.deleteOne({ _id });
+    const result = await Comments.deleteOne({ _id });
     return result.deletedCount === 1;
   },
 
   // Delete all comments
   async deleteAll(): Promise<boolean> {
-    await commentsCollection.deleteMany({});
-    return (await commentsCollection.countDocuments()) === 0;
+    await Comments.deleteMany({});
+    return (await Comments.countDocuments()) === 0;
   },
 };

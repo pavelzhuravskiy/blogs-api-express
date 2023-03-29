@@ -1,6 +1,6 @@
-import { PostViewModel } from "../models/PostViewModel";
+import { PostViewModel } from "../models/view/PostViewModel";
 import { ObjectId } from "mongodb";
-import { PostDBModel } from "../models/PostDBModel";
+import { PostDBModel } from "../models/database/PostDBModel";
 import { Posts } from "../schemas/postSchema";
 
 export const postsRepository = {

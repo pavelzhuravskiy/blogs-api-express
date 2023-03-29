@@ -1,8 +1,8 @@
 import { ObjectId } from "mongodb";
-import { UserViewModel } from "../models/UserViewModel";
+import { UserViewModel } from "../models/view/UserViewModel";
 import { usersRepository } from "../repositories/users-repository";
 import bcrypt from "bcrypt";
-import { usersQueryRepository } from "../repositories/users-query-repository";
+import { usersQueryRepository } from "../repositories/query-repos/users-query-repository";
 
 export const usersService = {
   // Create new user

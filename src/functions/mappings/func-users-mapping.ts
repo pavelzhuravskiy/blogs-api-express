@@ -1,4 +1,4 @@
-import { UserDBModel } from "../../models/UserDBModel";
+import { UserDBModel } from "../../models/database/UserDBModel";
 
 export const funcUsersMapping = (array: UserDBModel[]) => {
   return array.map((user) => {

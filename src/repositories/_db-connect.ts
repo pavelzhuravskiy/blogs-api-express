@@ -1,6 +1,5 @@
 import { MongoClient } from "mongodb";
 import * as dotenv from "dotenv";
-import { MongoCommentModel } from "../models/comments/MongoCommentModel";
 import { MongoDeviceModel } from "../models/devices/MongoDeviceModel";
 import { MongoRateLimitsModel } from "../models/global/MongoRateLimitsModel";
 import mongoose from "mongoose";
@@ -28,8 +27,8 @@ const blogsAndPostsDB = client.db();
 //   blogsAndPostsDB.collection<PostViewModel>("posts");
 // export const usersCollection =
 //   blogsAndPostsDB.collection<MongoUserModelWithPassword>("users");
-export const commentsCollection =
-  blogsAndPostsDB.collection<MongoCommentModel>("comments");
+// export const commentsCollection =
+//   blogsAndPostsDB.collection<CommentViewModel>("comments");
 export const devicesCollection =
   blogsAndPostsDB.collection<MongoDeviceModel>("devices");
 export const rateLimitsCollection =
