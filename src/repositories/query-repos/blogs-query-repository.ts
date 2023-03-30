@@ -1,6 +1,6 @@
 import { ObjectId } from "mongodb";
 import { BlogViewModel } from "../../models/view/BlogViewModel";
-import { Paginator } from "../../models/global/Paginator";
+import { Paginator } from "../../models/view/_Paginator";
 import { Blogs } from "../../schemas/blogSchema";
 import { funcBlogsMapping } from "../../functions/mappings/func-blogs-mapping";
 import { BlogDBModel } from "../../models/database/BlogDBModel";

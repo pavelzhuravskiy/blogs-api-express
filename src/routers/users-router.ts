@@ -1,7 +1,7 @@
 import { Request, Response, Router } from "express";
 import { ObjectId } from "mongodb";
 import { RequestWithQuery } from "../types/request-types";
-import { GlobalQueryModel } from "../models/global/GlobalQueryModel";
+import { QueryModel } from "../models/global/QueryModel";
 import { validationErrorCheck } from "../middlewares/validations/_validation-error-check";
 import { usersQueryRepository } from "../repositories/query-repos/users-query-repository";
 import { validationUsersInput } from "../middlewares/validations/input/validation-users-input";
@@ -16,7 +16,7 @@ export const usersRouter = Router({});
 usersRouter.get(
   "/",
   authBasic,
-  async (req: RequestWithQuery<GlobalQueryModel>, res: Response) => {
+  async (req: RequestWithQuery<QueryModel>, res: Response) => {
     const foundBlogs = await usersQueryRepository.findUsers(
         Number(req.query.pageNumber) || 1,
         Number(req.query.pageSize) || 10,

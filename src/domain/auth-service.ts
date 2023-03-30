@@ -5,7 +5,6 @@ import { ObjectId } from "mongodb";
 import { randomUUID } from "crypto";
 import { add } from "date-fns";
 import { usersRepository } from "../repositories/users-repository";
-import { usersQueryRepository } from "../repositories/query-repos/users-query-repository";
 
 export const authService = {
   // Register new user
@@ -51,7 +50,7 @@ export const authService = {
   },
 
   async confirmEmail(code: string): Promise<boolean> {
-    const user = await usersQueryRepository.findUserByEmailConfirmationCode(code);
+    const user = await usersRepository.findUserByEmailConfirmationCode(code);
     if (!user) {
       return false;
     }
@@ -59,7 +58,7 @@ export const authService = {
   },
 
   async resendEmail(email: string): Promise<boolean> {
-    const user = await usersQueryRepository.findUserByLoginOrEmail(email);
+    const user = await usersRepository.findUserByLoginOrEmail(email);
     if (!user || !user.emailConfirmation.confirmationCode) {
       return false;
     }
@@ -81,7 +80,7 @@ export const authService = {
 
   // Send password recovery code
   async sendPasswordRecoveryCode(email: string): Promise<boolean> {
-    const user = await usersQueryRepository.findUserByLoginOrEmail(email);
+    const user = await usersRepository.findUserByLoginOrEmail(email);
 
     if (!user) {
       return false;
@@ -91,7 +90,7 @@ export const authService = {
     const recoveryCode = randomUUID();
     const expirationDate = add(new Date(), {
       hours: 1,
-    })
+    });
 
     const updateResult = await usersRepository.updatePasswordRecoveryData(
       userId,
@@ -106,18 +105,21 @@ export const authService = {
       return false;
     }
 
-    return updateResult
+    return updateResult;
   },
 
   // Send password recovery code
-  async changePassword(recoveryCode: string, password: string): Promise<boolean> {
+  async changePassword(
+    recoveryCode: string,
+    password: string
+  ): Promise<boolean> {
     const hash = await bcrypt.hash(password, 10);
-    const user = await usersQueryRepository.findUserByPasswordRecoveryCode(recoveryCode);
+    const user = await usersRepository.findUserByPasswordRecoveryCode(
+      recoveryCode
+    );
     if (!user) {
       return false;
     }
     return usersRepository.updatePassword(user._id, hash);
-
   },
-
 };

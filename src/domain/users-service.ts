@@ -2,7 +2,6 @@ import { ObjectId } from "mongodb";
 import { UserViewModel } from "../models/view/UserViewModel";
 import { usersRepository } from "../repositories/users-repository";
 import bcrypt from "bcrypt";
-import { usersQueryRepository } from "../repositories/query-repos/users-query-repository";
 
 export const usersService = {
   // Create new user
@@ -39,9 +38,7 @@ export const usersService = {
     loginOrEmail: string,
     password: string
   ): Promise<boolean> {
-    const user = await usersQueryRepository.findUserByLoginOrEmail(
-      loginOrEmail
-    );
+    const user = await usersRepository.findUserByLoginOrEmail(loginOrEmail);
 
     if (!user || !user.emailConfirmation.isConfirmed) {
       return false;

@@ -1,7 +1,7 @@
 import { ObjectId } from "mongodb";
 import { funcUsersMapping } from "../../functions/mappings/func-users-mapping";
 import { UserDBModel } from "../../models/database/UserDBModel";
-import { Paginator } from "../../models/global/Paginator";
+import { Paginator } from "../../models/view/_Paginator";
 import { UserViewModel } from "../../models/view/UserViewModel";
 import { Users } from "../../schemas/userSchema";
 import { FilterQuery, SortOrder } from "mongoose";
@@ -60,7 +60,7 @@ export const usersQueryRepository = {
   },
 
   // Return user with string ID
-  async findUserByIdReturnViewModel(
+  async findUserById(
     _id: ObjectId
   ): Promise<UserViewModel | null> {
     const foundUser = await Users.findOne({ _id });
@@ -75,38 +75,5 @@ export const usersQueryRepository = {
       login: foundUser.accountData.login,
       createdAt: foundUser.accountData.createdAt,
     };
-  },
-
-  async findUserByIdReturnDBModel(_id: ObjectId): Promise<UserDBModel | null> {
-    const foundUser = await Users.findOne({ _id });
-
-    if (!foundUser) {
-      return null;
-    }
-
-    return foundUser;
-  },
-
-  async findUserByLoginOrEmail(
-    loginOrEmail: string
-  ): Promise<UserDBModel | null> {
-    return Users.findOne({
-      $or: [
-        { "accountData.login": loginOrEmail },
-        { "accountData.email": loginOrEmail },
-      ],
-    });
-  },
-
-  async findUserByEmailConfirmationCode(code: string) {
-    return Users.findOne({
-      "emailConfirmation.confirmationCode": code,
-    });
-  },
-
-  async findUserByPasswordRecoveryCode(recoveryCode: string) {
-    return Users.findOne({
-      "passwordRecovery.recoveryCode": recoveryCode,
-    });
   },
 };

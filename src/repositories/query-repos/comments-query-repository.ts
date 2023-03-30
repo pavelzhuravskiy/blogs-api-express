@@ -2,7 +2,7 @@ import { ObjectId } from "mongodb";
 import { CommentViewModel } from "../../models/view/CommentViewModel";
 import { Comments } from "../../schemas/commentSchema";
 import { FilterQuery, SortOrder } from "mongoose";
-import { Paginator } from "../../models/global/Paginator";
+import { Paginator } from "../../models/view/_Paginator";
 import { CommentDBModel } from "../../models/database/CommentDBModel";
 import { funcCommentsMapping } from "../../functions/mappings/func-comments-mapping";
 

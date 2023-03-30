@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { jwtService } from "../../application/jwt-service";
-import { usersQueryRepository } from "../../repositories/query-repos/users-query-repository";
 import { ObjectId } from "mongodb";
+import { usersRepository } from "../../repositories/users-repository";
 
 export const authBearer = async (
   req: Request,
@@ -18,7 +18,7 @@ export const authBearer = async (
 
   if (tokenObj) {
     const userId = new ObjectId(tokenObj.userId);
-    req.user = await usersQueryRepository.findUserByIdReturnDBModel(userId);
+    req.user = await usersRepository.findUserById(userId);
     next();
   } else {
     res.sendStatus(401);

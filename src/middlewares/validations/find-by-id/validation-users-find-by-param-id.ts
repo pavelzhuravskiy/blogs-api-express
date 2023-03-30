@@ -4,7 +4,7 @@ import { usersQueryRepository } from "../../../repositories/query-repos/users-qu
 
 export const validationUsersFindByParamId = param("id").custom(
   async (value) => {
-    const result = await usersQueryRepository.findUserByIdReturnViewModel(
+    const result = await usersQueryRepository.findUserById(
       new ObjectId(value)
     );
     if (!result) {

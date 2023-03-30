@@ -5,14 +5,14 @@ import {
   RequestWithParamsAndQuery,
   RequestWithQuery,
 } from "../types/request-types";
-import { GlobalQueryModel } from "../models/global/GlobalQueryModel";
+import { QueryModel } from "../models/global/QueryModel";
 import { authBasic } from "../middlewares/auth/auth-basic";
 import { validationBlogsInput } from "../middlewares/validations/input/validation-blogs-input";
 import { validationErrorCheck } from "../middlewares/validations/_validation-error-check";
 import { validationBlogsFindByParamId } from "../middlewares/validations/find-by-id/validation-blogs-find-by-param-id";
 import { postsService } from "../domain/posts-service";
 import { validationPostsInput } from "../middlewares/validations/input/validation-posts-input";
-import { StringId } from "../models/global/StringId";
+import { StringIdModel } from "../models/global/StringIdModel";
 import { blogsQueryRepository } from "../repositories/query-repos/blogs-query-repository";
 import { postsQueryRepository } from "../repositories/query-repos/posts-query-repository";
 import { SortOrder } from "mongoose";
@@ -21,7 +21,7 @@ export const blogsRouter = Router({});
 
 blogsRouter.get(
   "/",
-  async (req: RequestWithQuery<GlobalQueryModel>, res: Response) => {
+  async (req: RequestWithQuery<QueryModel>, res: Response) => {
     const foundBlogs = await blogsQueryRepository.findBlogs(
       Number(req.query.pageNumber) || 1,
       Number(req.query.pageSize) || 10,
@@ -50,7 +50,7 @@ blogsRouter.get(
   validationBlogsFindByParamId,
   validationErrorCheck,
   async (
-    req: RequestWithParamsAndQuery<StringId, GlobalQueryModel>,
+    req: RequestWithParamsAndQuery<StringIdModel, QueryModel>,
     res: Response
   ) => {
     const foundPosts = await postsQueryRepository.findPosts(

@@ -1,8 +1,8 @@
 import { body } from "express-validator";
-import { usersQueryRepository } from "../../repositories/query-repos/users-query-repository";
+import { usersRepository } from "../../repositories/users-repository";
 
 export const validationEmailConfirm = body("code").custom(async (value) => {
-  const user = await usersQueryRepository.findUserByEmailConfirmationCode(value);
+  const user = await usersRepository.findUserByEmailConfirmationCode(value);
   if (
     !user ||
     user.emailConfirmation.isConfirmed ||

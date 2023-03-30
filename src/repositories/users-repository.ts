@@ -4,6 +4,43 @@ import { UserViewModel } from "../models/view/UserViewModel";
 import { Users } from "../schemas/userSchema";
 
 export const usersRepository = {
+  // Find user in DB
+  async findUserById(_id: ObjectId): Promise<UserDBModel | null> {
+    const foundUser = await Users.findOne({ _id });
+
+    if (!foundUser) {
+      return null;
+    }
+
+    return foundUser;
+  },
+
+  // Find user by login or email
+  async findUserByLoginOrEmail(
+      loginOrEmail: string
+  ): Promise<UserDBModel | null> {
+    return Users.findOne({
+      $or: [
+        { "accountData.login": loginOrEmail },
+        { "accountData.email": loginOrEmail },
+      ],
+    });
+  },
+
+  // Find user by email confirmation code
+  async findUserByEmailConfirmationCode(code: string) {
+    return Users.findOne({
+      "emailConfirmation.confirmationCode": code,
+    });
+  },
+
+  // Find user by password recovery code
+  async findUserByPasswordRecoveryCode(recoveryCode: string) {
+    return Users.findOne({
+      "passwordRecovery.recoveryCode": recoveryCode,
+    });
+  },
+
   // Create new user
   async createUser(user: UserDBModel): Promise<UserViewModel> {
     const insertedUser = await Users.create(user);

@@ -1,6 +1,6 @@
 import { ObjectId } from "mongodb";
 import { funcPostsMapping } from "../../functions/mappings/func-posts-mapping";
-import { Paginator } from "../../models/global/Paginator";
+import { Paginator } from "../../models/view/_Paginator";
 import { PostViewModel } from "../../models/view/PostViewModel";
 import { Posts } from "../../schemas/postSchema";
 import { FilterQuery, SortOrder } from "mongoose";

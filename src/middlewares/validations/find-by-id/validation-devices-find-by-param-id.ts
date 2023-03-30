@@ -1,9 +1,9 @@
 import { param } from "express-validator";
-import { devicesQueryRepository } from "../../../repositories/query-repos/devices-query-repository";
+import { devicesRepository } from "../../../repositories/devices-repository";
 
 export const validationDevicesFindByParamId = param("deviceId").custom(
   async (value) => {
-    const result = await devicesQueryRepository.findDeviceById(value);
+    const result = await devicesRepository.findDeviceById(value);
     if (!result) {
       throw new Error("ID not found");
     }

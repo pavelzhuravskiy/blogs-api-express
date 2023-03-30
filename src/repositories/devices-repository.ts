@@ -3,6 +3,16 @@ import { DeviceDBModel } from "../models/database/DeviceDBModel";
 import { DeviceViewModel } from "../models/view/DeviceViewModel";
 
 export const devicesRepository = {
+  async findDeviceById(deviceId: string): Promise<DeviceDBModel | null> {
+    const foundDevice = await Devices.findOne({ deviceId });
+
+    if (!foundDevice) {
+      return null;
+    }
+
+    return foundDevice;
+  },
+
   async createDevice(device: DeviceDBModel): Promise<DeviceViewModel> {
     await Devices.create(device);
     return {

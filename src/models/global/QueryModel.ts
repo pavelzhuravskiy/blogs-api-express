@@ -1,4 +1,4 @@
-export type GlobalQueryModel = {
+export type QueryModel = {
   searchNameTerm: string;
   searchLoginTerm: string;
   searchEmailTerm: string;
