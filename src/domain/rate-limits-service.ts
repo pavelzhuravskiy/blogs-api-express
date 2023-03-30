@@ -1,12 +1,12 @@
-import { MongoRateLimitsModel } from "../models/global/MongoRateLimitsModel";
-import { rateLimitsRepository } from "../repositories/mongodb-rate-limits-repository";
-import { rateLimitsQueryRepository } from "../repositories/query-repos/mongodb-rate-limits-query-repository";
+import { RateLimitDBModel } from "../models/database/RateLimitDBModel";
+import { rateLimitsRepository } from "../repositories/rate-limits-repository";
+import { rateLimitsQueryRepository } from "../repositories/query-repos/rate-limits-query-repository";
 
 export const rateLimitsService = {
   async createNewRateLimit(
     ip: string,
     endpoint: string,
-  ): Promise<MongoRateLimitsModel> {
+  ): Promise<RateLimitDBModel> {
     const newRateLimit = {
       ip,
       endpoint,

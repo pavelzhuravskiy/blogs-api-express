@@ -1,11 +1,11 @@
-import { rateLimitsCollection } from "./_db-connect";
-import { MongoRateLimitsModel } from "../models/global/MongoRateLimitsModel";
+import { RateLimitDBModel } from "../models/database/RateLimitDBModel";
+import { RateLimits } from "../schemas/rateLimitSchema";
 
 export const rateLimitsRepository = {
   async createRateLimit(
-    rateLimit: MongoRateLimitsModel
-  ): Promise<MongoRateLimitsModel> {
-    await rateLimitsCollection.insertOne(rateLimit);
+    rateLimit: RateLimitDBModel
+  ): Promise<RateLimitDBModel> {
+    await RateLimits.create(rateLimit);
     return rateLimit;
   },
 
@@ -15,12 +15,12 @@ export const rateLimitsRepository = {
     attemptsCount: number,
     currentDate: number
   ): Promise<boolean> {
-    const result = await rateLimitsCollection.updateOne(
+    const result = await RateLimits.updateOne(
       { ip, endpoint },
       {
         $set: {
           attemptsCount,
-          lastAttempt: currentDate
+          lastAttempt: currentDate,
         },
       }
     );
@@ -28,12 +28,12 @@ export const rateLimitsRepository = {
   },
 
   async deleteRateLimit(ip: string, endpoint: string): Promise<boolean> {
-    const result = await rateLimitsCollection.deleteOne({ ip, endpoint });
+    const result = await RateLimits.deleteOne({ ip, endpoint });
     return result.deletedCount === 1;
   },
 
   async deleteAll(): Promise<boolean> {
-    await rateLimitsCollection.deleteMany({});
-    return (await rateLimitsCollection.countDocuments()) === 0;
+    await RateLimits.deleteMany({});
+    return (await RateLimits.countDocuments()) === 0;
   },
 };

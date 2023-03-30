@@ -1,4 +1,4 @@
-export type MongoRateLimitsModel = {
+export type RateLimitDBModel = {
   ip: string;
   endpoint: string;
   firstAttempt: number;

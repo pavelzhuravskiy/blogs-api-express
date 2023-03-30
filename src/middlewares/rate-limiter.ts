@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { rateLimitsService } from "../domain/rate-limits-service";
-import { rateLimitsQueryRepository } from "../repositories/query-repos/mongodb-rate-limits-query-repository";
+import { rateLimitsQueryRepository } from "../repositories/query-repos/rate-limits-query-repository";
 
 export const rateLimiter = async (
   req: Request,
@@ -10,21 +10,21 @@ export const rateLimiter = async (
   const ip = req.ip;
   const endpoint = req.originalUrl;
 
-  const foundLimiter = await rateLimitsQueryRepository.findRateLimit(
+  const foundRateLimit = await rateLimitsQueryRepository.findRateLimit(
     ip,
     endpoint
   );
 
-  if (!foundLimiter) {
+  if (!foundRateLimit) {
     await rateLimitsService.createNewRateLimit(ip, endpoint);
   } else {
     const currentDate = Date.now();
-    const firstAttemptDate = foundLimiter.firstAttempt;
-    const lastAttemptDate = foundLimiter.lastAttempt;
+    const firstAttemptDate = foundRateLimit.firstAttempt;
+    const lastAttemptDate = foundRateLimit.lastAttempt;
     const diffBetweenNowAndFirst = currentDate - firstAttemptDate;
     const diffBetweenNowAndLast = currentDate - lastAttemptDate;
 
-    const attemptsCount = foundLimiter.attemptsCount;
+    const attemptsCount = foundRateLimit.attemptsCount;
 
     if (attemptsCount >= 5) {
       // Waiting timeout 5 sec
