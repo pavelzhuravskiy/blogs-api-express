@@ -1,43 +1,43 @@
 import { ObjectId } from "mongodb";
-import { funcCommentsMapping } from "../../functions/mappings/func-comments-mapping";
-import { funcPagination } from "../../functions/global/func-pagination";
-import { funcSorting } from "../../functions/global/func-sorting";
-import { funcOutput } from "../../functions/global/func-output";
-import { funcFilter } from "../../functions/global/func-filter";
-import { Paginator } from "../../models/global/Paginator";
 import { CommentViewModel } from "../../models/view/CommentViewModel";
 import { Comments } from "../../schemas/commentSchema";
+import { FilterQuery, SortOrder } from "mongoose";
+import { Paginator } from "../../models/global/Paginator";
+import { CommentDBModel } from "../../models/database/CommentDBModel";
+import { funcCommentsMapping } from "../../functions/mappings/func-comments-mapping";
 
 export const commentsQueryRepository = {
   // Return comments with query
   async findComments(
-    sortBy: string,
-    sortDirection: string,
-    pageNumber: string,
-    pageSize: string,
+    pageNumber: number,
+    pageSize: number,
+    sortBy: string = "createdAt",
+    sortDirection: SortOrder,
     postId: ObjectId
   ): Promise<Paginator<CommentViewModel[]>> {
-    // Filter
-    const commentsFilter = await funcFilter(undefined, postId);
+    const filter: FilterQuery<CommentDBModel> = { postId: postId.toString() };
 
-    // Pagination
-    const commentsPagination = await funcPagination(
-      await funcSorting(sortBy, sortDirection),
-      Number(pageNumber) || 1,
-      Number(pageSize) || 10,
-      Comments,
-      commentsFilter
-    );
+    const sortingObj: { [key: string]: SortOrder } = { [sortBy]: "desc" };
 
-    // Output
-    return funcOutput(
-      Number(pageNumber) || 1,
-      Number(pageSize) || 10,
-      commentsPagination,
-      Comments,
-      funcCommentsMapping,
-      commentsFilter
-    );
+    if (sortDirection === "asc") {
+      sortingObj[sortBy] = "asc";
+    }
+
+    const output = await Comments.find(filter)
+      .sort(sortingObj)
+      .skip(pageNumber > 0 ? (pageNumber - 1) * pageSize : 0)
+      .limit(pageSize > 0 ? pageSize : 0);
+
+    const totalCount = await Comments.countDocuments(filter);
+    const pagesCount = Math.ceil(totalCount / Number(pageSize));
+
+    return {
+      pagesCount: pagesCount,
+      page: pageNumber,
+      pageSize: pageSize,
+      totalCount,
+      items: funcCommentsMapping(output),
+    };
   },
 
   async findCommentById(_id: ObjectId): Promise<CommentViewModel | null> {

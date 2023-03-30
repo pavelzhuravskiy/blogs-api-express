@@ -1,4 +1,4 @@
-import {app} from "../src";
+import { app } from "../src";
 import request from "supertest";
 import {
   basicAuthKey,
@@ -12,11 +12,13 @@ import {
   blogWebsiteUrlString,
   commentContentString,
   commentNewContentString,
-  commentsURI, devicesURI,
+  commentsURI,
+  devicesURI,
   invalidAuthValue,
   invalidURI,
   ipString,
-  loginURI, logoutURI,
+  loginURI,
+  logoutURI,
   postContentString,
   postNewContentString,
   postNewShortDescriptionString,
@@ -32,41 +34,31 @@ import {
   userPasswordString,
   usersURI,
 } from "./test-strings";
-import {ObjectId} from "mongodb";
-import {
-  blogsQueryRepository
-} from "../src/repositories/query-repos/blogs-query-repository";
-import {
-  postsQueryRepository
-} from "../src/repositories/query-repos/posts-query-repository";
-import {
-  usersQueryRepository
-} from "../src/repositories/query-repos/users-query-repository";
-import {
-  commentsQueryRepository
-} from "../src/repositories/query-repos/comments-query-repository";
+import { ObjectId } from "mongodb";
+import { blogsQueryRepository } from "../src/repositories/query-repos/blogs-query-repository";
+import { postsQueryRepository } from "../src/repositories/query-repos/posts-query-repository";
+import { usersQueryRepository } from "../src/repositories/query-repos/users-query-repository";
+import { commentsQueryRepository } from "../src/repositories/query-repos/comments-query-repository";
+import { SortOrder } from "mongoose";
 
 // ---------- AUTH FUNCTIONS ----------
 
 // User authentication
 export const authentication = async (
-    uri: string = loginURI,
-    loginOrEmail: any = userLoginString,
-    password: any = userPasswordString,
-    userAgent: any = userAgentChromeString,
+  uri: string = loginURI,
+  loginOrEmail: any = userLoginString,
+  password: any = userPasswordString,
+  userAgent: any = userAgentChromeString
 ) => {
-  return request(app).post(uri).set('User-Agent', userAgent).send({
+  return request(app).post(uri).set("User-Agent", userAgent).send({
     loginOrEmail,
     password,
   });
 };
 
 // Logout
-export const logout = async (
-    uri: string = logoutURI,
-    cookie: string
-) => {
-  return request(app).post(uri).set('cookie', cookie);
+export const logout = async (uri: string = logoutURI, cookie: string) => {
+  return request(app).post(uri).set("cookie", cookie);
 };
 
 // ---------- UNIVERSAL FUNCTIONS ----------
@@ -119,18 +111,18 @@ export const getterWithInvalidCredentials = (uri: string) => {
 
 // Find blogs in repository
 export const findBlogs = async (
-  searchNameTerm: string = "",
+  pageNumber: number = 1,
+  pageSize: number = 10,
   sortBy: string = "createdAt",
-  sortDirection: string = "desc",
-  pageNumber: string = "1",
-  pageSize: string = "10"
+  sortDirection: SortOrder = "desc",
+  searchNameTerm: string = ""
 ) =>
   await blogsQueryRepository.findBlogs(
-    searchNameTerm,
+    pageNumber,
+    pageSize,
     sortBy,
     sortDirection,
-    pageNumber,
-    pageSize
+    searchNameTerm
   );
 
 // Find blogs array length
@@ -213,17 +205,17 @@ export const blogUpdater = async (
 
 // Find posts in repository
 export const findPosts = async (
+  pageNumber: number = 1,
+  pageSize: number = 10,
   sortBy: string = "createdAt",
-  sortDirection: string = "desc",
-  pageNumber: string = "1",
-  pageSize: string = "10",
+  sortDirection: SortOrder = "desc",
   blogId?: ObjectId
 ) =>
   await postsQueryRepository.findPosts(
-    sortBy,
-    sortDirection,
     pageNumber,
     pageSize,
+    sortBy,
+    sortDirection,
     blogId
   );
 
@@ -318,20 +310,20 @@ export const postUpdater = async (
 
 // Find users in repository
 export const findUsers = async (
-  searchLoginTerm: string = "",
-  searchEmailTerm: string = "",
+  pageNumber: number = 1,
+  pageSize: number = 10,
   sortBy: string = "createdAt",
-  sortDirection: string = "desc",
-  pageNumber: string = "1",
-  pageSize: string = "10"
+  sortDirection: SortOrder = "desc",
+  searchLoginTerm: string = "",
+  searchEmailTerm: string = ""
 ) =>
   await usersQueryRepository.findUsers(
-    searchLoginTerm,
-    searchEmailTerm,
+    pageNumber,
+    pageSize,
     sortBy,
     sortDirection,
-    pageNumber,
-    pageSize
+    searchLoginTerm,
+    searchEmailTerm
   );
 
 // Find users array length
@@ -396,34 +388,34 @@ export const userReturner = async (
 
 // Find comments for first post
 export const findComments = async (
+  pageNumber: number = 1,
+  pageSize: number = 10,
   sortBy: string = "createdAt",
-  sortDirection: string = "desc",
-  pageNumber: string = "1",
-  pageSize: string = "10"
+  sortDirection: SortOrder = "desc"
 ) => {
   const postId = new ObjectId(await firstPostId());
   return await commentsQueryRepository.findComments(
-    sortBy,
-    sortDirection,
     pageNumber,
     pageSize,
+    sortBy,
+    sortDirection,
     postId
   );
 };
 
 // Find comments for second post
 export const findCommentsOfSecondPost = async (
+  pageNumber: number = 1,
+  pageSize: number = 10,
   sortBy: string = "createdAt",
-  sortDirection: string = "desc",
-  pageNumber: string = "1",
-  pageSize: string = "10"
+  sortDirection: SortOrder = "desc"
 ) => {
   const postId = new ObjectId(await secondPostId());
   return await commentsQueryRepository.findComments(
-    sortBy,
-    sortDirection,
     pageNumber,
     pageSize,
+    sortBy,
+    sortDirection,
     postId
   );
 };
@@ -547,54 +539,46 @@ export const eraseAll = async () => {
 
 // Return new device
 export const deviceReturner = async (
-    ip: string = ipString,
-    title: string = userAgentChromeString,
-    lastActiveDate: string = expect.any(String),
-    deviceId: string = expect.any(String),
+  ip: string = ipString,
+  title: string = userAgentChromeString,
+  lastActiveDate: string = expect.any(String),
+  deviceId: string = expect.any(String)
 ) => {
   return {
     ip,
     title,
     lastActiveDate,
-    deviceId
+    deviceId,
   };
 };
 
 // Update refresh token
 export const refreshTokenUpdater = (
-    uri: string = refreshTokenURI,
-    cookie: string
+  uri: string = refreshTokenURI,
+  cookie: string
 ) => {
-  return request(app)
-      .post(uri)
-      .set('cookie', cookie);
+  return request(app).post(uri).set("cookie", cookie);
 };
-
 
 // ---------- COOKIE FUNCTIONS ----------
 
 // Get all with cookie
 export const getterWithCookie = (uri: string, cookie: string) => {
-  return request(app).get(uri).set('cookie', cookie);
+  return request(app).get(uri).set("cookie", cookie);
 };
 
 // Delete by id (cookie)
 export const eraserWithIdWithCookie = (
-    uri: string,
-    id: string,
-    cookie: string
+  uri: string,
+  id: string,
+  cookie: string
 ) => {
   return request(app)
-      .delete(uri + id)
-      .set('cookie', cookie);
+    .delete(uri + id)
+    .set("cookie", cookie);
 };
 
 // Delete all (cookie)
-export const eraserWithCookie = (
-    uri: string = devicesURI,
-    cookie: string
-) => {
-  return request(app)
-      .delete(uri)
-      .set('cookie', cookie);
+export const eraserWithCookie = (uri: string = devicesURI, cookie: string) => {
+  return request(app).delete(uri).set("cookie", cookie);
 };

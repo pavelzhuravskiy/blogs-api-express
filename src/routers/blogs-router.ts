@@ -15,6 +15,7 @@ import { validationPostsInput } from "../middlewares/validations/input/validatio
 import { StringId } from "../models/global/StringId";
 import { blogsQueryRepository } from "../repositories/query-repos/blogs-query-repository";
 import { postsQueryRepository } from "../repositories/query-repos/posts-query-repository";
+import { SortOrder } from "mongoose";
 
 export const blogsRouter = Router({});
 
@@ -22,11 +23,11 @@ blogsRouter.get(
   "/",
   async (req: RequestWithQuery<GlobalQueryModel>, res: Response) => {
     const foundBlogs = await blogsQueryRepository.findBlogs(
-      req.query.searchNameTerm,
+      Number(req.query.pageNumber) || 1,
+      Number(req.query.pageSize) || 10,
       req.query.sortBy,
-      req.query.sortDirection,
-      req.query.pageNumber,
-      req.query.pageSize
+      req.query.sortDirection as SortOrder,
+      req.query.searchNameTerm
     );
     res.json(foundBlogs);
   }
@@ -53,10 +54,10 @@ blogsRouter.get(
     res: Response
   ) => {
     const foundPosts = await postsQueryRepository.findPosts(
+      Number(req.query.pageNumber) || 1,
+      Number(req.query.pageSize) || 10,
       req.query.sortBy,
-      req.query.sortDirection,
-      req.query.pageNumber,
-      req.query.pageSize,
+      req.query.sortDirection as SortOrder,
       new ObjectId(req.params.id)
     );
     res.json(foundPosts);
@@ -117,7 +118,7 @@ blogsRouter.delete(
   validationBlogsFindByParamId,
   validationErrorCheck,
   async (req: Request, res: Response) => {
-      console.log(req.params.id)
+    console.log(req.params.id);
     const isDeleted = await blogsService.deleteBlog(
       new ObjectId(req.params.id)
     );

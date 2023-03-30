@@ -1,43 +1,47 @@
 import { ObjectId } from "mongodb";
 import { funcPostsMapping } from "../../functions/mappings/func-posts-mapping";
-import { funcSorting } from "../../functions/global/func-sorting";
-import { funcPagination } from "../../functions/global/func-pagination";
-import { funcOutput } from "../../functions/global/func-output";
-import { funcFilter } from "../../functions/global/func-filter";
 import { Paginator } from "../../models/global/Paginator";
 import { PostViewModel } from "../../models/view/PostViewModel";
 import { Posts } from "../../schemas/postSchema";
+import { FilterQuery, SortOrder } from "mongoose";
+import { PostDBModel } from "../../models/database/PostDBModel";
 
 export const postsQueryRepository = {
   // Return posts with query
   async findPosts(
-    sortBy: string,
-    sortDirection: string,
-    pageNumber: string,
-    pageSize: string,
+    pageNumber: number,
+    pageSize: number,
+    sortBy: string = "createdAt",
+    sortDirection: SortOrder,
     blogId?: ObjectId
   ): Promise<Paginator<PostViewModel[]>> {
-    // Filter
-    const postsFilter = await funcFilter(blogId);
+    const filter: FilterQuery<PostDBModel> = {};
 
-    // Pagination
-    const postsPagination = await funcPagination(
-      await funcSorting(sortBy, sortDirection),
-      Number(pageNumber) || 1,
-      Number(pageSize) || 10,
-      Posts,
-      postsFilter
-    );
+    if (blogId) {
+      filter.blogId = blogId.toString();
+    }
 
-    // Output
-    return funcOutput(
-      Number(pageNumber) || 1,
-      Number(pageSize) || 10,
-      postsPagination,
-      Posts,
-      funcPostsMapping,
-      postsFilter
-    );
+    const sortingObj: { [key: string]: SortOrder } = { [sortBy]: "desc" };
+
+    if (sortDirection === "asc") {
+      sortingObj[sortBy] = "asc";
+    }
+
+    const output = await Posts.find(filter)
+      .sort(sortingObj)
+      .skip(pageNumber > 0 ? (pageNumber - 1) * pageSize : 0)
+      .limit(pageSize > 0 ? pageSize : 0);
+
+    const totalCount = await Posts.countDocuments(filter);
+    const pagesCount = Math.ceil(totalCount / Number(pageSize));
+
+    return {
+      pagesCount: pagesCount,
+      page: pageNumber,
+      pageSize: pageSize,
+      totalCount,
+      items: funcPostsMapping(output),
+    };
   },
 
   // Return post by ID

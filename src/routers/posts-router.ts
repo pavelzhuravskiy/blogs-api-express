@@ -17,6 +17,7 @@ import { commentsQueryRepository } from "../repositories/query-repos/comments-qu
 import { commentsService } from "../domain/comments-service";
 import { authBearer } from "../middlewares/auth/auth-bearer";
 import { StringId } from "../models/global/StringId";
+import {SortOrder} from "mongoose";
 
 export const postsRouter = Router({});
 
@@ -24,10 +25,10 @@ postsRouter.get(
   "/",
   async (req: RequestWithQuery<GlobalQueryModel>, res: Response) => {
     const foundPosts = await postsQueryRepository.findPosts(
+      Number(req.query.pageNumber) || 1,
+      Number(req.query.pageSize) || 10,
       req.query.sortBy,
-      req.query.sortDirection,
-      req.query.pageNumber,
-      req.query.pageSize
+      req.query.sortDirection as SortOrder
     );
     res.json(foundPosts);
   }
@@ -112,10 +113,10 @@ postsRouter.get(
     res: Response
   ) => {
     const foundComments = await commentsQueryRepository.findComments(
-      req.query.sortBy,
-      req.query.sortDirection,
-      req.query.pageNumber,
-      req.query.pageSize,
+        Number(req.query.pageNumber) || 1,
+        Number(req.query.pageSize) || 10,
+        req.query.sortBy,
+        req.query.sortDirection as SortOrder,
       new ObjectId(req.params.id)
     );
     res.json(foundComments);

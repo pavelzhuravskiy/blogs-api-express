@@ -2,42 +2,46 @@ import { ObjectId } from "mongodb";
 import { BlogViewModel } from "../../models/view/BlogViewModel";
 import { Paginator } from "../../models/global/Paginator";
 import { Blogs } from "../../schemas/blogSchema";
-import { funcPagination } from "../../functions/global/func-pagination";
-import { funcSorting } from "../../functions/global/func-sorting";
-import { funcOutput } from "../../functions/global/func-output";
-import { funcFilter } from "../../functions/global/func-filter";
 import { funcBlogsMapping } from "../../functions/mappings/func-blogs-mapping";
+import { BlogDBModel } from "../../models/database/BlogDBModel";
+import { FilterQuery, SortOrder } from "mongoose";
 
 export const blogsQueryRepository = {
   // Return blogs with query
   async findBlogs(
-    searchNameTerm: string,
-    sortBy: string,
-    sortDirection: string,
-    pageNumber: string,
-    pageSize: string
+    pageNumber: number,
+    pageSize: number,
+    sortBy: string = "createdAt",
+    sortDirection: SortOrder,
+    searchNameTerm?: string
   ): Promise<Paginator<BlogViewModel[]>> {
-    // Filter
-    const blogsFilter = await funcFilter(undefined, undefined, searchNameTerm);
+    const filter: FilterQuery<BlogDBModel> = {};
 
-    // Pagination
-    const blogsPagination = await funcPagination(
-      await funcSorting(sortBy, sortDirection),
-      Number(pageNumber) || 1,
-      Number(pageSize) || 10,
-      Blogs,
-      blogsFilter
-    );
+    if (searchNameTerm) {
+      filter.name = { $regex: searchNameTerm, $options: "i" };
+    }
 
-    // Output
-    return funcOutput(
-      Number(pageNumber) || 1,
-      Number(pageSize) || 10,
-      blogsPagination,
-      Blogs,
-      funcBlogsMapping,
-      blogsFilter
-    );
+    const sortingObj: { [key: string]: SortOrder } = {[sortBy]: "desc"};
+
+    if (sortDirection === "asc") {
+      sortingObj[sortBy] = "asc"
+    }
+
+    const output = await Blogs.find(filter)
+      .sort(sortingObj)
+      .skip(pageNumber > 0 ? (pageNumber - 1) * pageSize : 0)
+      .limit(pageSize > 0 ? pageSize : 0);
+
+    const totalCount = await Blogs.countDocuments(filter);
+    const pagesCount = Math.ceil(totalCount / Number(pageSize));
+
+    return {
+      pagesCount: pagesCount,
+      page: pageNumber,
+      pageSize: pageSize,
+      totalCount,
+      items: funcBlogsMapping(output),
+    };
   },
 
   // Return blog by ID

@@ -9,6 +9,7 @@ import { usersService } from "../domain/users-service";
 import { validationUsersFindByParamId } from "../middlewares/validations/find-by-id/validation-users-find-by-param-id";
 import { validationUserUnique } from "../middlewares/validations/validation-user-unique";
 import { authBasic } from "../middlewares/auth/auth-basic";
+import {SortOrder} from "mongoose";
 
 export const usersRouter = Router({});
 
@@ -17,12 +18,12 @@ usersRouter.get(
   authBasic,
   async (req: RequestWithQuery<GlobalQueryModel>, res: Response) => {
     const foundBlogs = await usersQueryRepository.findUsers(
-      req.query.searchLoginTerm,
-      req.query.searchEmailTerm,
-      req.query.sortBy,
-      req.query.sortDirection,
-      req.query.pageNumber,
-      req.query.pageSize
+        Number(req.query.pageNumber) || 1,
+        Number(req.query.pageSize) || 10,
+        req.query.sortBy,
+        req.query.sortDirection as SortOrder,
+        req.query.searchLoginTerm,
+        req.query.searchEmailTerm,
     );
     res.json(foundBlogs);
   }

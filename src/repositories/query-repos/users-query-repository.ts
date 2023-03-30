@@ -1,58 +1,68 @@
 import { ObjectId } from "mongodb";
 import { funcUsersMapping } from "../../functions/mappings/func-users-mapping";
-import { funcFilter } from "../../functions/global/func-filter";
-import { funcPagination } from "../../functions/global/func-pagination";
-import { funcSorting } from "../../functions/global/func-sorting";
-import { funcOutput } from "../../functions/global/func-output";
 import { UserDBModel } from "../../models/database/UserDBModel";
 import { Paginator } from "../../models/global/Paginator";
 import { UserViewModel } from "../../models/view/UserViewModel";
 import { Users } from "../../schemas/userSchema";
+import { FilterQuery, SortOrder } from "mongoose";
 
 export const usersQueryRepository = {
   // Return users with query
   async findUsers(
-    searchLoginTerm: string,
-    searchEmailTerm: string,
-    sortBy: string,
-    sortDirection: string,
-    pageNumber: string,
-    pageSize: string
+    pageNumber: number,
+    pageSize: number,
+    sortBy: string = "createdAt",
+    sortDirection: SortOrder,
+    searchLoginTerm?: string,
+    searchEmailTerm?: string
   ): Promise<Paginator<UserViewModel[]>> {
-    // Filter
-    const usersFilter = await funcFilter(
-      undefined,
-      undefined,
-      undefined,
-      searchLoginTerm,
-      searchEmailTerm
-    );
+    const filter: FilterQuery<UserDBModel> = {};
 
-    // Pagination
-    const usersSortingField = sortBy
-      ? `accountData.${sortBy}`
-      : `accountData.createdAt`;
-    const usersPagination = await funcPagination(
-      await funcSorting(usersSortingField, sortDirection),
-      Number(pageNumber) || 1,
-      Number(pageSize) || 10,
-      Users,
-      usersFilter
-    );
+    if (searchLoginTerm || searchEmailTerm) {
+      filter.$or = [];
 
-    // Output
-    return funcOutput(
-      Number(pageNumber) || 1,
-      Number(pageSize) || 10,
-      usersPagination,
-      Users,
-      funcUsersMapping,
-      usersFilter
-    );
+      if (searchLoginTerm) {
+        filter.$or.push({
+          "accountData.login": { $regex: searchLoginTerm, $options: "i" },
+        });
+      }
+
+      if (searchEmailTerm) {
+        filter.$or.push({
+          "accountData.email": { $regex: searchEmailTerm, $options: "i" },
+        });
+      }
+    }
+
+    const sortingObj: { [key: string]: SortOrder } = {
+      [`accountData.${sortBy}`]: "desc",
+    };
+
+    if (sortDirection === "asc") {
+      sortingObj[`accountData.${sortBy}`] = "asc";
+    }
+
+    const output = await Users.find(filter)
+      .sort(sortingObj)
+      .skip(pageNumber > 0 ? (pageNumber - 1) * pageSize : 0)
+      .limit(pageSize > 0 ? pageSize : 0);
+
+    const totalCount = await Users.countDocuments(filter);
+    const pagesCount = Math.ceil(totalCount / Number(pageSize));
+
+    return {
+      pagesCount: pagesCount,
+      page: pageNumber,
+      pageSize: pageSize,
+      totalCount,
+      items: funcUsersMapping(output),
+    };
   },
 
   // Return user with string ID
-  async findUserByIdReturnViewModel(_id: ObjectId): Promise<UserViewModel | null> {
+  async findUserByIdReturnViewModel(
+    _id: ObjectId
+  ): Promise<UserViewModel | null> {
     const foundUser = await Users.findOne({ _id });
 
     if (!foundUser) {
