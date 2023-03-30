@@ -1,8 +1,10 @@
-export type MongoDeviceModel = {
+import { WithId } from "mongodb";
+
+export type DeviceDBModel = WithId<{
   ip: string;
   title: string;
-  deviceId: string;
   userId: string;
+  deviceId: string;
   lastActiveDate: number;
   expirationDate: number;
-};
+}>;

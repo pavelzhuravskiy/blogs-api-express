@@ -1,4 +1,4 @@
-export type MongoDeviceViewModel = {
+export type DeviceViewModel = {
   ip: string;
   title: string;
   lastActiveDate: string;

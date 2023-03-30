@@ -1,5 +1,5 @@
 import { param } from "express-validator";
-import { devicesQueryRepository } from "../../../repositories/query-repos/mongodb-devices-query-repository";
+import { devicesQueryRepository } from "../../../repositories/query-repos/devices-query-repository";
 
 export const validationDevicesFindByParamId = param("deviceId").custom(
   async (value) => {

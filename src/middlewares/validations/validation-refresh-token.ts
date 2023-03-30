@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { jwtService } from "../../application/jwt-service";
-import { devicesQueryRepository } from "../../repositories/query-repos/mongodb-devices-query-repository";
+import { devicesQueryRepository } from "../../repositories/query-repos/devices-query-repository";
 
 export const validationRefreshToken = async (
   req: Request,

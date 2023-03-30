@@ -1,6 +1,6 @@
-import { MongoDeviceModelWithId } from "../../models/devices/MongoDeviceModelWithId";
+import { DeviceDBModel } from "../../models/database/DeviceDBModel";
 
-export const funcDevicesMapping = (array: MongoDeviceModelWithId[]) => {
+export const funcDevicesMapping = (array: DeviceDBModel[]) => {
   return array.map((device) => {
     return {
       ip: device.ip,

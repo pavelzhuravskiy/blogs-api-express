@@ -1,6 +1,6 @@
 import { Request, Response, Router } from "express";
 import { devicesService } from "../domain/devices-service";
-import { devicesQueryRepository } from "../repositories/query-repos/mongodb-devices-query-repository";
+import { devicesQueryRepository } from "../repositories/query-repos/devices-query-repository";
 import { validationErrorCheck } from "../middlewares/validations/_validation-error-check";
 import { validationDevicesFindByParamId } from "../middlewares/validations/find-by-id/validation-devices-find-by-param-id";
 import { jwtService } from "../application/jwt-service";

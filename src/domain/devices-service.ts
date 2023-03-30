@@ -1,14 +1,14 @@
 import { ObjectId } from "mongodb";
-import { MongoDeviceModel } from "../models/devices/MongoDeviceModel";
-import { devicesRepository } from "../repositories/mongodb-devices-repository";
+import { devicesRepository } from "../repositories/devices-repository";
 import { jwtService } from "../application/jwt-service";
+import { DeviceViewModel } from "../models/view/DeviceViewModel";
 
 export const devicesService = {
   async createDevice(
     newRefreshToken: string,
     ip: string,
     userAgent: string
-  ): Promise<MongoDeviceModel | null> {
+  ): Promise<DeviceViewModel | null> {
     const newRefreshTokenObj = await jwtService.verifyToken(newRefreshToken);
 
     if (!newRefreshTokenObj) {
