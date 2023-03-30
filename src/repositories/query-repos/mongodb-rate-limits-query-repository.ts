@@ -4,7 +4,7 @@ import { MongoRateLimitsModel } from "../../models/global/MongoRateLimitsModel";
 export const rateLimitsQueryRepository = {
   async findRateLimit(
     ip: string,
-    endpoint: string
+    endpoint: string,
   ): Promise<MongoRateLimitsModel | null> {
     const foundRateLimit = await rateLimitsCollection.findOne({ ip, endpoint });
 

@@ -12,13 +12,15 @@ export const rateLimitsRepository = {
   async updateCounter(
     ip: string,
     endpoint: string,
-    attemptsCount: number
+    attemptsCount: number,
+    currentDate: number
   ): Promise<boolean> {
     const result = await rateLimitsCollection.updateOne(
       { ip, endpoint },
       {
         $set: {
           attemptsCount,
+          lastAttempt: currentDate
         },
       }
     );

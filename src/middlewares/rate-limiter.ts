@@ -1,7 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { rateLimitsService } from "../domain/rate-limits-service";
 import { rateLimitsQueryRepository } from "../repositories/query-repos/mongodb-rate-limits-query-repository";
-import { funcSleep } from "../functions/global/func-sleep";
 
 export const rateLimiter = async (
   req: Request,
@@ -10,27 +9,39 @@ export const rateLimiter = async (
 ) => {
   const ip = req.ip;
   const endpoint = req.originalUrl;
-  let attemptsCount = 1;
 
   const foundLimiter = await rateLimitsQueryRepository.findRateLimit(
     ip,
     endpoint
   );
 
-  setTimeout(async () => {
-    await rateLimitsService.deleteRateLimit(ip, endpoint);
-  }, 10000);
-
   if (!foundLimiter) {
-    await rateLimitsService.createNewRateLimit(ip, endpoint, attemptsCount);
+    await rateLimitsService.createNewRateLimit(ip, endpoint);
   } else {
+    const currentDate = Date.now();
+    const firstAttemptDate = foundLimiter.firstAttempt;
+    const lastAttemptDate = foundLimiter.lastAttempt;
+    const diffBetweenNowAndFirst = currentDate - firstAttemptDate;
+    const diffBetweenNowAndLast = currentDate - lastAttemptDate;
+
     const attemptsCount = foundLimiter.attemptsCount;
+
     if (attemptsCount >= 5) {
-      res.sendStatus(429);
-      await funcSleep(10000);
-      return;
+      // Waiting timeout 5 sec
+      if (diffBetweenNowAndLast < 5000) {
+        res.sendStatus(429);
+        return;
+      } else {
+        await rateLimitsService.deleteRateLimit(ip, endpoint);
+      }
     }
-    await rateLimitsService.updateCounter(ip, endpoint);
+
+    if (diffBetweenNowAndFirst < 10000) {
+      await rateLimitsService.updateCounter(ip, endpoint, currentDate);
+    } else {
+      await rateLimitsService.deleteRateLimit(ip, endpoint);
+      await rateLimitsService.createNewRateLimit(ip, endpoint);
+    }
   }
 
   next();
