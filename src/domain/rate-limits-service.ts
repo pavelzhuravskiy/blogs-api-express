@@ -1,11 +1,10 @@
 import { RateLimitDBModel } from "../models/database/RateLimitDBModel";
 import { rateLimitsRepository } from "../repositories/rate-limits-repository";
-import { rateLimitsQueryRepository } from "../repositories/query-repos/rate-limits-query-repository";
 
 export const rateLimitsService = {
   async createNewRateLimit(
     ip: string,
-    endpoint: string,
+    endpoint: string
   ): Promise<RateLimitDBModel> {
     const newRateLimit = {
       ip,
@@ -18,11 +17,12 @@ export const rateLimitsService = {
     return rateLimitsRepository.createRateLimit(newRateLimit);
   },
 
-  async updateCounter(ip: string, endpoint: string, currentDate: number): Promise<boolean> {
-    const rateLimit = await rateLimitsQueryRepository.findRateLimit(
-      ip,
-      endpoint,
-    );
+  async updateCounter(
+    ip: string,
+    endpoint: string,
+    currentDate: number
+  ): Promise<boolean> {
+    const rateLimit = await rateLimitsRepository.findRateLimit(ip, endpoint);
 
     if (!rateLimit) {
       return false;
@@ -30,7 +30,12 @@ export const rateLimitsService = {
 
     const attemptsCount = rateLimit.attemptsCount + 1;
 
-    return rateLimitsRepository.updateCounter(ip, endpoint, attemptsCount, currentDate);
+    return rateLimitsRepository.updateCounter(
+      ip,
+      endpoint,
+      attemptsCount,
+      currentDate
+    );
   },
 
   async deleteRateLimit(ip: string, endpoint: string): Promise<boolean> {
