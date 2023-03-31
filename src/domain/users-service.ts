@@ -2,7 +2,7 @@ import { ObjectId } from "mongodb";
 import { UserViewModel } from "../models/view/UserViewModel";
 import { usersRepository } from "../repositories/users-repository";
 import bcrypt from "bcrypt";
-import {UserDBModel} from "../models/database/UserDBModel";
+import { UserDBModel } from "../models/database/UserDBModel";
 
 export const usersService = {
   // Find user in DB by ID
@@ -11,21 +11,25 @@ export const usersService = {
   },
 
   // Find user in DB by login or email
-  async findUserByLoginOrEmail(loginOrEmail: string): Promise<UserDBModel | null> {
+  async findUserByLoginOrEmail(
+    loginOrEmail: string
+  ): Promise<UserDBModel | null> {
     return usersRepository.findUserByLoginOrEmail(loginOrEmail);
   },
 
   // Find user in DB by email confirmation code
-  async findUserByEmailConfirmationCode(code: string): Promise<UserDBModel | null> {
+  async findUserByEmailConfirmationCode(
+    code: string
+  ): Promise<UserDBModel | null> {
     return usersRepository.findUserByEmailConfirmationCode(code);
   },
 
   // Find user in DB by password recovery code
-  async findUserByPasswordRecoveryCode(recoveryCode: string): Promise<UserDBModel | null> {
+  async findUserByPasswordRecoveryCode(
+    recoveryCode: string
+  ): Promise<UserDBModel | null> {
     return usersRepository.findUserByPasswordRecoveryCode(recoveryCode);
   },
-
-
 
   // Create new user
   async createNewUser(
@@ -34,25 +38,26 @@ export const usersService = {
     email: string
   ): Promise<UserViewModel | null> {
     const hash = await bcrypt.hash(password, 10);
-    const newUser = {
-      _id: new ObjectId(),
-      accountData: {
+    const newUser = new UserDBModel(
+      new ObjectId(),
+      {
         login,
         password: hash,
         email,
         createdAt: new Date().toISOString(),
         isMembership: false,
       },
-      emailConfirmation: {
+      {
         confirmationCode: null,
         expirationDate: null,
         isConfirmed: true,
       },
-      passwordRecovery: {
+      {
         recoveryCode: null,
         expirationDate: null,
-      },
-    };
+      }
+    );
+
     return usersRepository.createUser(newUser);
   },
 

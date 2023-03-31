@@ -5,7 +5,8 @@ import { ObjectId } from "mongodb";
 import { randomUUID } from "crypto";
 import { add } from "date-fns";
 import { usersRepository } from "../repositories/users-repository";
-import {usersService} from "./users-service";
+import { usersService } from "./users-service";
+import { UserDBModel } from "../models/database/UserDBModel";
 
 export const authService = {
   // Register new user
@@ -15,32 +16,34 @@ export const authService = {
     email: string
   ): Promise<UserViewModel | null> {
     const hash = await bcrypt.hash(password, 10);
-    const newUser = {
-      _id: new ObjectId(),
-      accountData: {
+
+    const newUser = new UserDBModel(
+      new ObjectId(),
+      {
         login,
         password: hash,
         email,
         createdAt: new Date().toISOString(),
         isMembership: false,
       },
-      emailConfirmation: {
+      {
         confirmationCode: randomUUID(),
         expirationDate: add(new Date(), {
           hours: 1,
         }),
         isConfirmed: false,
       },
-      passwordRecovery: {
+      {
         recoveryCode: null,
         expirationDate: null,
-      },
-    };
+      }
+    );
+
     const createResult = await usersRepository.createUser(newUser);
     try {
       await emailManager.sendRegistrationEmail(
         newUser.accountData.email,
-        newUser.emailConfirmation.confirmationCode
+        newUser.emailConfirmation.confirmationCode!
       );
     } catch (error) {
       console.error(error);
