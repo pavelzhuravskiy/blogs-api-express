@@ -1,8 +1,8 @@
 import { body } from "express-validator";
-import { usersRepository } from "../../repositories/users-repository";
+import { usersService } from "../../domain/users-service";
 
 export const validationEmailConfirm = body("code").custom(async (value) => {
-  const user = await usersRepository.findUserByEmailConfirmationCode(value);
+  const user = await usersService.findUserByEmailConfirmationCode(value);
   if (
     !user ||
     user.emailConfirmation.isConfirmed ||

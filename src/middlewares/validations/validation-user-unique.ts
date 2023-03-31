@@ -1,9 +1,9 @@
 import { body } from "express-validator";
-import { usersRepository } from "../../repositories/users-repository";
+import { usersService } from "../../domain/users-service";
 
 export const validationUserUnique = (field: string) =>
   body(field).custom(async (value) => {
-    const result = await usersRepository.findUserByLoginOrEmail(value);
+    const result = await usersService.findUserByLoginOrEmail(value);
     if (result) {
       throw new Error("User already registered");
     }

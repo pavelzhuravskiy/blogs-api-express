@@ -5,6 +5,7 @@ import { ObjectId } from "mongodb";
 import { randomUUID } from "crypto";
 import { add } from "date-fns";
 import { usersRepository } from "../repositories/users-repository";
+import {usersService} from "./users-service";
 
 export const authService = {
   // Register new user
@@ -50,7 +51,7 @@ export const authService = {
   },
 
   async confirmEmail(code: string): Promise<boolean> {
-    const user = await usersRepository.findUserByEmailConfirmationCode(code);
+    const user = await usersService.findUserByEmailConfirmationCode(code);
     if (!user) {
       return false;
     }
@@ -58,7 +59,7 @@ export const authService = {
   },
 
   async resendEmail(email: string): Promise<boolean> {
-    const user = await usersRepository.findUserByLoginOrEmail(email);
+    const user = await usersService.findUserByLoginOrEmail(email);
     if (!user || !user.emailConfirmation.confirmationCode) {
       return false;
     }
@@ -80,7 +81,7 @@ export const authService = {
 
   // Send password recovery code
   async sendPasswordRecoveryCode(email: string): Promise<boolean> {
-    const user = await usersRepository.findUserByLoginOrEmail(email);
+    const user = await usersService.findUserByLoginOrEmail(email);
 
     if (!user) {
       return false;
@@ -114,7 +115,7 @@ export const authService = {
     password: string
   ): Promise<boolean> {
     const hash = await bcrypt.hash(password, 10);
-    const user = await usersRepository.findUserByPasswordRecoveryCode(
+    const user = await usersService.findUserByPasswordRecoveryCode(
       recoveryCode
     );
     if (!user) {

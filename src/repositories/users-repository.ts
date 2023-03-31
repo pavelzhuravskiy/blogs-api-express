@@ -19,26 +19,46 @@ export const usersRepository = {
   async findUserByLoginOrEmail(
       loginOrEmail: string
   ): Promise<UserDBModel | null> {
-    return Users.findOne({
+    const foundUser = await Users.findOne({
       $or: [
         { "accountData.login": loginOrEmail },
         { "accountData.email": loginOrEmail },
       ],
     });
+
+    if (!foundUser) {
+      return null
+    }
+
+    return foundUser
+
   },
 
   // Find user by email confirmation code
-  async findUserByEmailConfirmationCode(code: string) {
-    return Users.findOne({
+  async findUserByEmailConfirmationCode(code: string): Promise<UserDBModel | null> {
+    const foundUser = await Users.findOne({
       "emailConfirmation.confirmationCode": code,
     });
+
+    if (!foundUser) {
+      return null
+    }
+
+    return foundUser
+
   },
 
   // Find user by password recovery code
-  async findUserByPasswordRecoveryCode(recoveryCode: string) {
-    return Users.findOne({
+  async findUserByPasswordRecoveryCode(recoveryCode: string): Promise<UserDBModel | null> {
+    const foundUser = await Users.findOne({
       "passwordRecovery.recoveryCode": recoveryCode,
     });
+
+    if (!foundUser) {
+      return null
+    }
+
+    return foundUser
   },
 
   // Create new user

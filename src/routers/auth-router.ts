@@ -18,7 +18,6 @@ import { rateLimiter } from "../middlewares/rate-limiter";
 import { validationPasswordConfirm } from "../middlewares/validations/validation-password-confirm";
 import { validationPasswordInput } from "../middlewares/validations/input/validation-password-input";
 import { validationRecoveryCodeInput } from "../middlewares/validations/input/validation-recovery-code-input";
-import { usersRepository } from "../repositories/users-repository";
 
 export const authRouter = Router({});
 
@@ -35,7 +34,7 @@ authRouter.post(
     if (check) {
       const ip = req.ip;
       const userAgent = req.headers["user-agent"] || "unknown";
-      const user = await usersRepository.findUserByLoginOrEmail(
+      const user = await usersService.findUserByLoginOrEmail(
         req.body.loginOrEmail
       );
       const newAccessToken = await jwtService.createAccessTokenJWT(user);
@@ -95,7 +94,7 @@ authRouter.post(
     const deviceId = cookieRefreshTokenObj!.deviceId;
 
     const userId = cookieRefreshTokenObj!.userId.toString();
-    const user = await usersRepository.findUserById(
+    const user = await usersService.findUserById(
       new ObjectId(userId)
     );
 

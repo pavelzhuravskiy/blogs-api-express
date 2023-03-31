@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { jwtService } from "../../application/jwt-service";
-import { devicesRepository } from "../../repositories/devices-repository";
+import { devicesService } from "../../domain/devices-service";
 
 export const validationRefreshToken = async (
   req: Request,
@@ -26,7 +26,7 @@ export const validationRefreshToken = async (
   const deviceId = cookieRefreshTokenObj.deviceId;
   const cookieRefreshTokenIat = cookieRefreshTokenObj.iat;
 
-  const dbDevice = await devicesRepository.findDeviceById(deviceId);
+  const dbDevice = await devicesService.findDeviceById(deviceId);
 
   if (dbDevice) {
     const lastActiveDate = dbDevice.lastActiveDate;

@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { jwtService } from "../../application/jwt-service";
-import { devicesRepository } from "../../repositories/devices-repository";
+import { devicesService } from "../../domain/devices-service";
 
 export const validationDeviceOwner = async (
   req: Request,
@@ -24,7 +24,7 @@ export const validationDeviceOwner = async (
   }
 
   const deviceId = req.params.deviceId;
-  const device = await devicesRepository.findDeviceById(deviceId);
+  const device = await devicesService.findDeviceById(deviceId);
 
   const deviceUserId = device?.userId;
   const cookieUserId = cookieRefreshTokenObj.userId.toString();

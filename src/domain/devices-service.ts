@@ -2,8 +2,13 @@ import { ObjectId } from "mongodb";
 import { devicesRepository } from "../repositories/devices-repository";
 import { jwtService } from "../application/jwt-service";
 import { DeviceViewModel } from "../models/view/DeviceViewModel";
+import { DeviceDBModel } from "../models/database/DeviceDBModel";
 
 export const devicesService = {
+  async findDeviceById(deviceId: string): Promise<DeviceDBModel | null> {
+    return devicesRepository.findDeviceById(deviceId);
+  },
+
   async createDevice(
     newRefreshToken: string,
     ip: string,

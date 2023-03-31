@@ -1,9 +1,9 @@
 import { body } from "express-validator";
-import { usersRepository } from "../../repositories/users-repository";
+import { usersService } from "../../domain/users-service";
 
 export const validationPasswordConfirm = body("recoveryCode").custom(
   async (value) => {
-    const user = await usersRepository.findUserByPasswordRecoveryCode(value);
+    const user = await usersService.findUserByPasswordRecoveryCode(value);
     if (
       !user ||
       user.passwordRecovery.recoveryCode !== value ||

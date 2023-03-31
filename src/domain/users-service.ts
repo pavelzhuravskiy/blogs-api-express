@@ -2,8 +2,31 @@ import { ObjectId } from "mongodb";
 import { UserViewModel } from "../models/view/UserViewModel";
 import { usersRepository } from "../repositories/users-repository";
 import bcrypt from "bcrypt";
+import {UserDBModel} from "../models/database/UserDBModel";
 
 export const usersService = {
+  // Find user in DB by ID
+  async findUserById(_id: ObjectId): Promise<UserDBModel | null> {
+    return usersRepository.findUserById(_id);
+  },
+
+  // Find user in DB by login or email
+  async findUserByLoginOrEmail(loginOrEmail: string): Promise<UserDBModel | null> {
+    return usersRepository.findUserByLoginOrEmail(loginOrEmail);
+  },
+
+  // Find user in DB by email confirmation code
+  async findUserByEmailConfirmationCode(code: string): Promise<UserDBModel | null> {
+    return usersRepository.findUserByEmailConfirmationCode(code);
+  },
+
+  // Find user in DB by password recovery code
+  async findUserByPasswordRecoveryCode(recoveryCode: string): Promise<UserDBModel | null> {
+    return usersRepository.findUserByPasswordRecoveryCode(recoveryCode);
+  },
+
+
+
   // Create new user
   async createNewUser(
     login: string,

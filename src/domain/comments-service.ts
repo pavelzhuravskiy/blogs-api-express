@@ -3,7 +3,7 @@ import { CommentViewModel } from "../models/view/CommentViewModel";
 import { postsQueryRepository } from "../repositories/query-repos/posts-query-repository";
 import { commentsRepository } from "../repositories/comments-repository";
 import { CommentDBModel } from "../models/database/CommentDBModel";
-import { usersRepository } from "../repositories/users-repository";
+import { usersService } from "./users-service";
 
 export const commentsService = {
   // Create new comment
@@ -16,7 +16,7 @@ export const commentsService = {
     if (!post) {
       return false;
     }
-    const user = await usersRepository.findUserById(userId);
+    const user = await usersService.findUserById(userId);
     const newComment = {
       ...content,
       commentatorInfo: {

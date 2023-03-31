@@ -1,6 +1,5 @@
 import { NextFunction, Request, Response } from "express";
 import { rateLimitsService } from "../domain/rate-limits-service";
-import { rateLimitsRepository } from "../repositories/rate-limits-repository";
 
 export const rateLimiter = async (
   req: Request,
@@ -10,7 +9,7 @@ export const rateLimiter = async (
   const ip = req.ip;
   const endpoint = req.originalUrl;
 
-  const foundRateLimit = await rateLimitsRepository.findRateLimit(ip, endpoint);
+  const foundRateLimit = await rateLimitsService.findRateLimit(ip, endpoint);
 
   if (!foundRateLimit) {
     await rateLimitsService.createNewRateLimit(ip, endpoint);

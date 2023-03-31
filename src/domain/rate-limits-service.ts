@@ -2,6 +2,10 @@ import { RateLimitDBModel } from "../models/database/RateLimitDBModel";
 import { rateLimitsRepository } from "../repositories/rate-limits-repository";
 
 export const rateLimitsService = {
+  async findRateLimit(ip: string, endpoint: string): Promise<RateLimitDBModel | null> {
+    return rateLimitsRepository.findRateLimit(ip, endpoint);
+  },
+
   async createNewRateLimit(
     ip: string,
     endpoint: string
