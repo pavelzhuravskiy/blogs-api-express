@@ -72,7 +72,7 @@ class PostsController {
  async createComment(req: Request, res: Response){
    const newComment = await commentsService.createNewCommentByPostId(
        new ObjectId(req.params.id),
-       req.body,
+       req.body.content,
        req.user!._id
    );
    res.status(201).json(newComment);

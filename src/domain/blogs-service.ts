@@ -5,12 +5,20 @@ import { BlogViewModel } from "../models/view/BlogViewModel";
 
 export const blogsService = {
   // Create new blog
-  async createNewBlog(blog: BlogDBModel): Promise<BlogViewModel> {
-    const newBlog = {
-      ...blog,
-      createdAt: new Date().toISOString(),
-      isMembership: false,
-    };
+  async createNewBlog(
+    name: string,
+    description: string,
+    websiteUrl: string
+  ): Promise<BlogViewModel> {
+    const newBlog = new BlogDBModel(
+      new ObjectId(),
+      name,
+      description,
+      websiteUrl,
+      new Date().toISOString(),
+      false
+    );
+
     return blogsRepository.createNewBlog(newBlog);
   },
 

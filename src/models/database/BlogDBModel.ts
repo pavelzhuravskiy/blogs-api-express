@@ -1,9 +1,12 @@
-import { WithId } from "mongodb";
+import { ObjectId } from "mongodb";
 
-export type BlogDBModel = WithId<{
-  name: string;
-  description: string;
-  websiteUrl: string;
-  createdAt: string;
-  isMembership: boolean;
-}>;
+export class BlogDBModel {
+  constructor(
+    public _id: ObjectId,
+    public name: string,
+    public description: string,
+    public websiteUrl: string,
+    public createdAt: string,
+    public isMembership: boolean
+  ) {}
+}

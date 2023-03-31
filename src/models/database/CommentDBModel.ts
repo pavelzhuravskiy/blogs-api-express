@@ -1,11 +1,14 @@
-import { WithId } from "mongodb";
+import { ObjectId } from "mongodb";
 
-export type CommentDBModel = WithId<{
-  content: string;
-  commentatorInfo: {
-    userId: string;
-    userLogin: string;
-  };
-  postId: string;
-  createdAt: string;
-}>;
+export class CommentDBModel {
+  constructor(
+    public _id: ObjectId,
+    public content: string,
+    public commentatorInfo: {
+      userId: string;
+      userLogin: string;
+    },
+    public postId: string,
+    public createdAt: string
+  ) {}
+}

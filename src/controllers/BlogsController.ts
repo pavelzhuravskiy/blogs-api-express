@@ -14,7 +14,11 @@ import { postsQueryRepository } from "../repositories/query-repos/posts-query-re
 
 class BlogsController {
   async createBlog(req: Request, res: Response) {
-    const newBlog = await blogsService.createNewBlog(req.body);
+    const newBlog = await blogsService.createNewBlog(
+      req.body.name,
+      req.body.description,
+      req.body.websiteUrl
+    );
     res.status(201).json(newBlog);
   }
 
