@@ -1,98 +1,29 @@
-import { Request, Response, Router } from "express";
-import { blogsService } from "../domain/blogs-service";
-import { ObjectId } from "mongodb";
-import {
-  RequestWithParamsAndQuery,
-  RequestWithQuery,
-} from "../types/request-types";
-import { QueryModel } from "../models/global/QueryModel";
+import { Router } from "express";
 import { authBasic } from "../middlewares/auth/auth-basic";
 import { validationBlogsInput } from "../middlewares/validations/input/validation-blogs-input";
 import { validationErrorCheck } from "../middlewares/validations/_validation-error-check";
 import { validationBlogsFindByParamId } from "../middlewares/validations/find-by-id/validation-blogs-find-by-param-id";
-import { postsService } from "../domain/posts-service";
 import { validationPostsInput } from "../middlewares/validations/input/validation-posts-input";
-import { StringIdModel } from "../models/global/StringIdModel";
-import { blogsQueryRepository } from "../repositories/query-repos/blogs-query-repository";
-import { postsQueryRepository } from "../repositories/query-repos/posts-query-repository";
-import { SortOrder } from "mongoose";
+import { blogsController } from "../controllers/BlogsController";
 
 export const blogsRouter = Router({});
-
-blogsRouter.get(
-  "/",
-  async (req: RequestWithQuery<QueryModel>, res: Response) => {
-    const foundBlogs = await blogsQueryRepository.findBlogs(
-      Number(req.query.pageNumber) || 1,
-      Number(req.query.pageSize) || 10,
-      req.query.sortBy,
-      req.query.sortDirection as SortOrder,
-      req.query.searchNameTerm
-    );
-    res.json(foundBlogs);
-  }
-);
-
-blogsRouter.get(
-  "/:id",
-  validationBlogsFindByParamId,
-  validationErrorCheck,
-  async (req: Request, res: Response) => {
-    const foundBlog = await blogsQueryRepository.findBlogById(
-      new ObjectId(req.params.id)
-    );
-    res.json(foundBlog);
-  }
-);
-
-blogsRouter.get(
-  "/:id/posts",
-  validationBlogsFindByParamId,
-  validationErrorCheck,
-  async (
-    req: RequestWithParamsAndQuery<StringIdModel, QueryModel>,
-    res: Response
-  ) => {
-    const foundPosts = await postsQueryRepository.findPosts(
-      Number(req.query.pageNumber) || 1,
-      Number(req.query.pageSize) || 10,
-      req.query.sortBy,
-      req.query.sortDirection as SortOrder,
-      new ObjectId(req.params.id)
-    );
-    res.json(foundPosts);
-  }
-);
 
 blogsRouter.post(
   "/",
   authBasic,
   validationBlogsInput,
   validationErrorCheck,
-  async (req: Request, res: Response) => {
-    const newBlog = await blogsService.createNewBlog(req.body);
-    res.status(201).json(newBlog);
-  }
+  blogsController.createBlog
 );
 
-// +++++ Post creation section start +++++
+blogsRouter.get("/", blogsController.getBlogs);
 
-blogsRouter.post(
-  "/:id/posts",
-  authBasic,
+blogsRouter.get(
+  "/:id",
   validationBlogsFindByParamId,
-  validationPostsInput,
   validationErrorCheck,
-  async (req: Request, res: Response) => {
-    const newPost = await postsService.createNewPostByBlogId(
-      new ObjectId(req.params.id),
-      req.body
-    );
-    res.status(201).json(newPost);
-  }
+  blogsController.getBlog
 );
-
-// ----- Post creation section end -----
 
 blogsRouter.put(
   "/:id",
@@ -100,16 +31,7 @@ blogsRouter.put(
   validationBlogsFindByParamId,
   validationBlogsInput,
   validationErrorCheck,
-  async (req: Request, res: Response) => {
-    const isUpdated = await blogsService.updateBlog(
-      new ObjectId(req.params.id),
-      req.body
-    );
-    if (isUpdated) {
-      const updatedBlog = await blogsQueryRepository.findBlogById(req.body.id);
-      res.status(204).json(updatedBlog);
-    }
-  }
+  blogsController.updateBlog
 );
 
 blogsRouter.delete(
@@ -117,22 +39,27 @@ blogsRouter.delete(
   authBasic,
   validationBlogsFindByParamId,
   validationErrorCheck,
-  async (req: Request, res: Response) => {
-    console.log(req.params.id);
-    const isDeleted = await blogsService.deleteBlog(
-      new ObjectId(req.params.id)
-    );
-    if (isDeleted) {
-      res.sendStatus(204);
-    }
-  }
+  blogsController.deleteBlog
 );
 
-blogsRouter.delete("/", authBasic, async (req: Request, res: Response) => {
-  const isDeleted = await blogsService.deleteAll();
-  if (isDeleted) {
-    res.sendStatus(204);
-  } else {
-    res.sendStatus(404);
-  }
-});
+blogsRouter.delete("/", authBasic, blogsController.deleteBlogs);
+
+// +++++ Posts in blogs section start +++++
+
+blogsRouter.post(
+  "/:id/posts",
+  authBasic,
+  validationBlogsFindByParamId,
+  validationPostsInput,
+  validationErrorCheck,
+  blogsController.createPost
+);
+
+blogsRouter.get(
+  "/:id/posts",
+  validationBlogsFindByParamId,
+  validationErrorCheck,
+  blogsController.getPosts
+);
+
+// ----- Posts in blogs section end -----

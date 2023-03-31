@@ -6,7 +6,7 @@ export const rateLimitsService = {
     return rateLimitsRepository.findRateLimit(ip, endpoint);
   },
 
-  async createNewRateLimit(
+  async createRateLimit(
     ip: string,
     endpoint: string
   ): Promise<RateLimitDBModel> {

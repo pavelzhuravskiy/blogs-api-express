@@ -12,7 +12,7 @@ export const rateLimiter = async (
   const foundRateLimit = await rateLimitsService.findRateLimit(ip, endpoint);
 
   if (!foundRateLimit) {
-    await rateLimitsService.createNewRateLimit(ip, endpoint);
+    await rateLimitsService.createRateLimit(ip, endpoint);
   } else {
     const currentDate = Date.now();
     const firstAttemptDate = foundRateLimit.firstAttempt;
@@ -23,7 +23,7 @@ export const rateLimiter = async (
     const attemptsCount = foundRateLimit.attemptsCount;
 
     if (attemptsCount >= 5) {
-      // Waiting timeout 5 sec
+      // Timeout 5 sec
       if (diffBetweenNowAndLast < 5000) {
         res.sendStatus(429);
         return;
@@ -36,7 +36,7 @@ export const rateLimiter = async (
       await rateLimitsService.updateCounter(ip, endpoint, currentDate);
     } else {
       await rateLimitsService.deleteRateLimit(ip, endpoint);
-      await rateLimitsService.createNewRateLimit(ip, endpoint);
+      await rateLimitsService.createRateLimit(ip, endpoint);
     }
   }
 
