@@ -17,6 +17,7 @@ class BlogsController {
     const newBlog = await blogsService.createNewBlog(req.body);
     res.status(201).json(newBlog);
   }
+
   async getBlogs(req: RequestWithQuery<QueryModel>, res: Response) {
     const foundBlogs = await blogsQueryRepository.findBlogs(
       Number(req.query.pageNumber) || 1,
@@ -27,6 +28,7 @@ class BlogsController {
     );
     res.json(foundBlogs);
   }
+
   async getBlog(req: Request, res: Response) {
     const foundBlog = await blogsQueryRepository.findBlogById(
       new ObjectId(req.params.id)
@@ -43,6 +45,7 @@ class BlogsController {
       res.status(204).json(updatedBlog);
     }
   }
+
   async deleteBlog(req: Request, res: Response) {
     console.log(req.params.id);
     const isDeleted = await blogsService.deleteBlog(
@@ -52,6 +55,7 @@ class BlogsController {
       res.sendStatus(204);
     }
   }
+
   async deleteBlogs(req: Request, res: Response) {
     const isDeleted = await blogsService.deleteAll();
     if (isDeleted) {
@@ -60,6 +64,7 @@ class BlogsController {
       res.sendStatus(404);
     }
   }
+
   async createPost(req: Request, res: Response) {
     const newPost = await postsService.createNewPostByBlogId(
       new ObjectId(req.params.id),
@@ -67,6 +72,7 @@ class BlogsController {
     );
     res.status(201).json(newPost);
   }
+
   async getPosts(
     req: RequestWithParamsAndQuery<StringIdModel, QueryModel>,
     res: Response

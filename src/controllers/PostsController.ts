@@ -21,6 +21,7 @@ class PostsController {
    const newPost = await postsService.createNewPost(req.body);
    res.status(201).json(newPost);
  }
+
  async getPosts(req: RequestWithQuery<QueryModel>, res: Response){
    const foundPosts = await postsQueryRepository.findPosts(
        Number(req.query.pageNumber) || 1,
@@ -30,12 +31,14 @@ class PostsController {
    );
    res.json(foundPosts);
  }
+
  async getPost(req: Request, res: Response){
    const foundPost = await postsQueryRepository.findPostById(
        new ObjectId(req.params.id)
    );
    res.json(foundPost);
  }
+
  async updatePost(req: Request, res: Response){
    const isUpdated = await postsService.updatePost(
        new ObjectId(req.params.id),
@@ -47,6 +50,7 @@ class PostsController {
      res.status(204).json(updatedPost);
    }
  }
+
  async deletePost(req: Request, res: Response){
    const isDeleted = await postsService.deletePost(
        new ObjectId(req.params.id)
@@ -55,6 +59,7 @@ class PostsController {
      res.sendStatus(204);
    }
  }
+
  async deletePosts(req: Request, res: Response){
    const isDeleted = await postsService.deleteAll();
    if (isDeleted) {
@@ -63,6 +68,7 @@ class PostsController {
      res.sendStatus(404);
    }
  }
+
  async createComment(req: Request, res: Response){
    const newComment = await commentsService.createNewCommentByPostId(
        new ObjectId(req.params.id),
@@ -71,6 +77,7 @@ class PostsController {
    );
    res.status(201).json(newComment);
  }
+
  async getComments(
      req: RequestWithParamsAndQuery<StringIdModel, QueryModel>,
      res: Response
