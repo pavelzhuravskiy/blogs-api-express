@@ -7,14 +7,15 @@ import { usersService } from "./users-service";
 
 export const commentsService = {
   // Create new comment
-  async createNewCommentByPostId(
+  async createComment(
     postId: ObjectId,
     content: string,
     userId: ObjectId
-  ): Promise<CommentViewModel | boolean> {
+  ): Promise<CommentViewModel | null> {
     const post = await postsQueryRepository.findPostById(new ObjectId(postId));
+
     if (!post) {
-      return false;
+      return null;
     }
 
     const user = await usersService.findUserById(userId);
@@ -27,7 +28,7 @@ export const commentsService = {
       new Date().toISOString()
     );
 
-    return commentsRepository.createNewComment(newComment);
+    return commentsRepository.createComment(newComment);
   },
 
   // Update existing comment

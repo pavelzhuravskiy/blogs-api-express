@@ -5,7 +5,7 @@ import { BlogViewModel } from "../models/view/BlogViewModel";
 
 export const blogsService = {
   // Create new blog
-  async createNewBlog(
+  async createBlog(
     name: string,
     description: string,
     websiteUrl: string
@@ -19,7 +19,7 @@ export const blogsService = {
       false
     );
 
-    return blogsRepository.createNewBlog(newBlog);
+    return blogsRepository.createBlog(newBlog);
   },
 
   // Update existing blog

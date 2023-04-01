@@ -5,7 +5,7 @@ import { Posts } from "../schemas/postSchema";
 
 export const postsRepository = {
   // Create new post
-  async createNewPost(newPost: PostDBModel): Promise<PostViewModel> {
+  async createPost(newPost: PostDBModel): Promise<PostViewModel> {
     const insertedPost = await Posts.create(newPost);
 
     return {

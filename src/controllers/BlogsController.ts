@@ -14,7 +14,7 @@ import { postsQueryRepository } from "../repositories/query-repos/posts-query-re
 
 class BlogsController {
   async createBlog(req: Request, res: Response) {
-    const newBlog = await blogsService.createNewBlog(
+    const newBlog = await blogsService.createBlog(
       req.body.name,
       req.body.description,
       req.body.websiteUrl
@@ -70,9 +70,11 @@ class BlogsController {
   }
 
   async createPost(req: Request, res: Response) {
-    const newPost = await postsService.createNewPostByBlogId(
-      new ObjectId(req.params.id),
-      req.body
+    const newPost = await postsService.createPost(
+        req.body.title,
+        req.body.shortDescription,
+        req.body.content,
+        req.params.id,
     );
     res.status(201).json(newPost);
   }

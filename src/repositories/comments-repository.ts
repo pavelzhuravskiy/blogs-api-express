@@ -5,7 +5,7 @@ import { Comments } from "../schemas/commentSchema";
 
 export const commentsRepository = {
   // Create new comment
-  async createNewComment(
+  async createComment(
     newComment: CommentDBModel
   ): Promise<CommentViewModel> {
     const insertedComment = await Comments.create(newComment);

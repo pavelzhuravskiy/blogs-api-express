@@ -8,7 +8,7 @@ import { usersQueryRepository } from "../repositories/query-repos/users-query-re
 
 class UsersController {
   async createUser(req: Request, res: Response) {
-    const newUser = await usersService.createNewUser(
+    const newUser = await usersService.createUser(
       req.body.login,
       req.body.password,
       req.body.email

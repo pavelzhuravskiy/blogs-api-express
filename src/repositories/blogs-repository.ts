@@ -5,7 +5,7 @@ import { Blogs } from "../schemas/blogSchema";
 
 export const blogsRepository = {
   // Create new blog
-  async createNewBlog(newBlog: BlogDBModel): Promise<BlogViewModel> {
+  async createBlog(newBlog: BlogDBModel): Promise<BlogViewModel> {
     const insertedBlog = await Blogs.create(newBlog);
     return {
       id: insertedBlog._id.toString(),

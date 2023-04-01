@@ -6,37 +6,29 @@ import { blogsQueryRepository } from "../repositories/query-repos/blogs-query-re
 
 export const postsService = {
   // Create new post
-  async createNewPost(post: PostDBModel): Promise<boolean | PostViewModel> {
-    const blog = await blogsQueryRepository.findBlogById(
-      new ObjectId(post.blogId)
-    );
-    if (!blog) {
-      return false;
-    }
-    const newPost = {
-      ...post,
-      blogName: blog.name,
-      createdAt: new Date().toISOString(),
-    };
-    return postsRepository.createNewPost(newPost);
-  },
+  async createPost(
+    title: string,
+    shortDescription: string,
+    content: string,
+    blogId: string
+  ): Promise<PostViewModel | null> {
+    const blog = await blogsQueryRepository.findBlogById(new ObjectId(blogId));
 
-  // Create new post
-  async createNewPostByBlogId(
-    _id: ObjectId,
-    post: PostDBModel
-  ): Promise<boolean | PostViewModel> {
-    const blog = await blogsQueryRepository.findBlogById(new ObjectId(_id));
     if (!blog) {
-      return false;
+      return null;
     }
-    const newPost = {
-      ...post,
-      blogId: _id.toString(),
-      blogName: blog.name,
-      createdAt: new Date().toISOString(),
-    };
-    return postsRepository.createNewPost(newPost);
+
+    const newPost = new PostDBModel(
+      new ObjectId(),
+      title,
+      shortDescription,
+      content,
+      blogId,
+      blog.name,
+      new Date().toISOString()
+    );
+
+    return postsRepository.createPost(newPost);
   },
 
   // Update existing post

@@ -1,10 +1,13 @@
-import { WithId } from "mongodb";
+import { ObjectId } from "mongodb";
 
-export type PostDBModel = WithId<{
-  title: string;
-  shortDescription: string;
-  content: string;
-  blogId: string;
-  blogName: string;
-  createdAt: string;
-}>;
+export class PostDBModel {
+  constructor(
+    public _id: ObjectId,
+    public title: string,
+    public shortDescription: string,
+    public content: string,
+    public blogId: string,
+    public blogName: string,
+    public createdAt: string
+  ) {}
+}

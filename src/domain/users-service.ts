@@ -32,11 +32,11 @@ export const usersService = {
   },
 
   // Create new user
-  async createNewUser(
+  async createUser(
     login: string,
     password: string,
     email: string
-  ): Promise<UserViewModel | null> {
+  ): Promise<UserViewModel> {
     const hash = await bcrypt.hash(password, 10);
     const newUser = new UserDBModel(
       new ObjectId(),
