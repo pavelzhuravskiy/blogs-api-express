@@ -25,15 +25,15 @@ export const devicesService = {
     const expirationDate = newRefreshTokenObj.exp;
     const issuedAt = newRefreshTokenObj.iat;
 
-    const newDevice = {
-      _id: new ObjectId(),
+    const newDevice = new DeviceDBModel(
+      new ObjectId(),
       ip,
-      title: userAgent,
-      userId: userId.toString(),
+      userAgent,
+      userId.toString(),
       deviceId,
-      lastActiveDate: issuedAt,
-      expirationDate: expirationDate,
-    };
+      issuedAt,
+      expirationDate
+    );
 
     return devicesRepository.createDevice(newDevice);
   },

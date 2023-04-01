@@ -1,10 +1,13 @@
-import { WithId } from "mongodb";
+import { ObjectId } from "mongodb";
 
-export type DeviceDBModel = WithId<{
-  ip: string;
-  title: string;
-  userId: string;
-  deviceId: string;
-  lastActiveDate: number;
-  expirationDate: number;
-}>;
+export class DeviceDBModel {
+  constructor(
+    public _id: ObjectId,
+    public ip: string,
+    public title: string,
+    public userId: string,
+    public deviceId: string,
+    public lastActiveDate: number,
+    public expirationDate: number
+  ) {}
+}
