@@ -3,8 +3,7 @@ import { BlogDBModel } from "../models/database/BlogDBModel";
 import { ObjectId } from "mongodb";
 import { BlogViewModel } from "../models/view/BlogViewModel";
 
-export const blogsService = {
-  // Create new blog
+class BlogsService {
   async createBlog(
     name: string,
     description: string,
@@ -20,9 +19,8 @@ export const blogsService = {
     );
 
     return blogsRepository.createBlog(newBlog);
-  },
+  }
 
-  // Update existing blog
   async updateBlog(_id: ObjectId, blog: BlogDBModel): Promise<boolean> {
     return blogsRepository.updateBlog(
       _id,
@@ -30,15 +28,15 @@ export const blogsService = {
       blog.description,
       blog.websiteUrl
     );
-  },
+  }
 
-  // Delete existing blog
   async deleteBlog(_id: ObjectId): Promise<boolean> {
     return blogsRepository.deleteBlog(_id);
-  },
+  }
 
-  // Delete all blogs
   async deleteAll(): Promise<boolean> {
     return blogsRepository.deleteAll();
-  },
-};
+  }
+}
+
+export const blogsService = new BlogsService();

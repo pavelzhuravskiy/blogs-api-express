@@ -5,8 +5,7 @@ import { commentsRepository } from "../repositories/comments-repository";
 import { CommentDBModel } from "../models/database/CommentDBModel";
 import { usersService } from "./users-service";
 
-export const commentsService = {
-  // Create new comment
+class CommentsService {
   async createComment(
     postId: ObjectId,
     content: string,
@@ -29,23 +28,22 @@ export const commentsService = {
     );
 
     return commentsRepository.createComment(newComment);
-  },
+  }
 
-  // Update existing comment
   async updateComment(
     _id: ObjectId,
     comment: CommentViewModel
   ): Promise<boolean> {
     return commentsRepository.updateComment(_id, comment.content);
-  },
+  }
 
-  // Delete existing comment
   async deleteComment(_id: ObjectId): Promise<boolean> {
     return commentsRepository.deleteComment(_id);
-  },
+  }
 
-  // Delete all comments
   async deleteAll(): Promise<boolean> {
     return commentsRepository.deleteAll();
-  },
-};
+  }
+}
+
+export const commentsService = new CommentsService();

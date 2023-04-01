@@ -2,13 +2,13 @@ import { RateLimitDBModel } from "../models/database/RateLimitDBModel";
 import { rateLimitsRepository } from "../repositories/rate-limits-repository";
 import { ObjectId } from "mongodb";
 
-export const rateLimitsService = {
+class RateLimitsService {
   async findRateLimit(
     ip: string,
     endpoint: string
   ): Promise<RateLimitDBModel | null> {
     return rateLimitsRepository.findRateLimit(ip, endpoint);
-  },
+  }
 
   async createRateLimit(
     ip: string,
@@ -24,7 +24,7 @@ export const rateLimitsService = {
     );
 
     return rateLimitsRepository.createRateLimit(newRateLimit);
-  },
+  }
 
   async updateCounter(
     ip: string,
@@ -45,9 +45,11 @@ export const rateLimitsService = {
       attemptsCount,
       currentDate
     );
-  },
+  }
 
   async deleteRateLimit(ip: string, endpoint: string): Promise<boolean> {
     return rateLimitsRepository.deleteRateLimit(ip, endpoint);
-  },
-};
+  }
+}
+
+export const rateLimitsService = new RateLimitsService();

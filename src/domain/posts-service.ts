@@ -4,8 +4,7 @@ import { PostDBModel } from "../models/database/PostDBModel";
 import { PostViewModel } from "../models/view/PostViewModel";
 import { blogsQueryRepository } from "../repositories/query-repos/blogs-query-repository";
 
-export const postsService = {
-  // Create new post
+class PostsService {
   async createPost(
     title: string,
     shortDescription: string,
@@ -29,9 +28,8 @@ export const postsService = {
     );
 
     return postsRepository.createPost(newPost);
-  },
+  }
 
-  // Update existing post
   async updatePost(_id: ObjectId, post: PostViewModel): Promise<boolean> {
     return postsRepository.updatePost(
       _id,
@@ -40,15 +38,15 @@ export const postsService = {
       post.content,
       post.blogId
     );
-  },
+  }
 
-  // Delete existing post
   async deletePost(_id: ObjectId): Promise<boolean> {
     return postsRepository.deletePost(_id);
-  },
+  }
 
-  // Delete all posts
   async deleteAll(): Promise<boolean> {
     return postsRepository.deleteAll();
-  },
-};
+  }
+}
+
+export const postsService = new PostsService();

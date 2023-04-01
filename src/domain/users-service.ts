@@ -4,34 +4,29 @@ import { usersRepository } from "../repositories/users-repository";
 import bcrypt from "bcrypt";
 import { UserDBModel } from "../models/database/UserDBModel";
 
-export const usersService = {
-  // Find user in DB by ID
+class UsersService {
   async findUserById(_id: ObjectId): Promise<UserDBModel | null> {
     return usersRepository.findUserById(_id);
-  },
+  }
 
-  // Find user in DB by login or email
   async findUserByLoginOrEmail(
     loginOrEmail: string
   ): Promise<UserDBModel | null> {
     return usersRepository.findUserByLoginOrEmail(loginOrEmail);
-  },
+  }
 
-  // Find user in DB by email confirmation code
   async findUserByEmailConfirmationCode(
     code: string
   ): Promise<UserDBModel | null> {
     return usersRepository.findUserByEmailConfirmationCode(code);
-  },
+  }
 
-  // Find user in DB by password recovery code
   async findUserByPasswordRecoveryCode(
     recoveryCode: string
   ): Promise<UserDBModel | null> {
     return usersRepository.findUserByPasswordRecoveryCode(recoveryCode);
-  },
+  }
 
-  // Create new user
   async createUser(
     login: string,
     password: string,
@@ -59,9 +54,8 @@ export const usersService = {
     );
 
     return usersRepository.createUser(newUser);
-  },
+  }
 
-  // Credentials check
   async checkCredentials(
     loginOrEmail: string,
     password: string
@@ -72,15 +66,15 @@ export const usersService = {
       return false;
     }
     return bcrypt.compare(password, user.accountData.password);
-  },
+  }
 
-  // Delete user by ID
   async deleteUser(_id: ObjectId): Promise<boolean> {
     return usersRepository.deleteUser(_id);
-  },
+  }
 
-  // Delete all posts
   async deleteAll(): Promise<boolean> {
     return usersRepository.deleteAll();
-  },
-};
+  }
+}
+
+export const usersService = new UsersService();

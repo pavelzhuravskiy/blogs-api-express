@@ -4,10 +4,10 @@ import { jwtService } from "../application/jwt-service";
 import { DeviceViewModel } from "../models/view/DeviceViewModel";
 import { DeviceDBModel } from "../models/database/DeviceDBModel";
 
-export const devicesService = {
+class DevicesService {
   async findDeviceById(deviceId: string): Promise<DeviceDBModel | null> {
     return devicesRepository.findDeviceById(deviceId);
-  },
+  }
 
   async createDevice(
     newRefreshToken: string,
@@ -36,7 +36,7 @@ export const devicesService = {
     );
 
     return devicesRepository.createDevice(newDevice);
-  },
+  }
 
   async updateDevice(
     ip: string,
@@ -44,17 +44,19 @@ export const devicesService = {
     issuedAt: number
   ): Promise<boolean> {
     return devicesRepository.updateDevice(ip, userId, issuedAt);
-  },
+  }
 
   async deleteDevice(deviceId: string): Promise<boolean> {
     return devicesRepository.deleteDevice(deviceId);
-  },
+  }
 
   async deleteAllOldDevices(currentDevice: string): Promise<boolean> {
     return devicesRepository.deleteAllOldDevices(currentDevice);
-  },
+  }
 
   async deleteAll(): Promise<boolean> {
     return devicesRepository.deleteAll();
-  },
-};
+  }
+}
+
+export const devicesService = new DevicesService();

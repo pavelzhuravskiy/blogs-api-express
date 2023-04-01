@@ -8,42 +8,41 @@ import { usersRepository } from "../repositories/users-repository";
 import { usersService } from "./users-service";
 import { UserDBModel } from "../models/database/UserDBModel";
 
-export const authService = {
-  // Register new user
+class AuthService {
   async registerUser(
-    login: string,
-    password: string,
-    email: string
+      login: string,
+      password: string,
+      email: string
   ): Promise<UserViewModel | null> {
     const hash = await bcrypt.hash(password, 10);
 
     const newUser = new UserDBModel(
-      new ObjectId(),
-      {
-        login,
-        password: hash,
-        email,
-        createdAt: new Date().toISOString(),
-        isMembership: false,
-      },
-      {
-        confirmationCode: randomUUID(),
-        expirationDate: add(new Date(), {
-          hours: 1,
-        }),
-        isConfirmed: false,
-      },
-      {
-        recoveryCode: null,
-        expirationDate: null,
-      }
+        new ObjectId(),
+        {
+          login,
+          password: hash,
+          email,
+          createdAt: new Date().toISOString(),
+          isMembership: false,
+        },
+        {
+          confirmationCode: randomUUID(),
+          expirationDate: add(new Date(), {
+            hours: 1,
+          }),
+          isConfirmed: false,
+        },
+        {
+          recoveryCode: null,
+          expirationDate: null,
+        }
     );
 
     const createResult = await usersRepository.createUser(newUser);
     try {
       await emailManager.sendRegistrationEmail(
-        newUser.accountData.email,
-        newUser.emailConfirmation.confirmationCode!
+          newUser.accountData.email,
+          newUser.emailConfirmation.confirmationCode!
       );
     } catch (error) {
       console.error(error);
@@ -51,7 +50,7 @@ export const authService = {
       return null;
     }
     return createResult;
-  },
+  }
 
   async confirmEmail(code: string): Promise<boolean> {
     const user = await usersService.findUserByEmailConfirmationCode(code);
@@ -59,7 +58,7 @@ export const authService = {
       return false;
     }
     return usersRepository.updateEmailConfirmationStatus(user._id);
-  },
+  }
 
   async resendEmail(email: string): Promise<boolean> {
     const user = await usersService.findUserByLoginOrEmail(email);
@@ -69,20 +68,19 @@ export const authService = {
     const newConfirmationCode = randomUUID();
     try {
       await emailManager.sendRegistrationEmail(
-        user.accountData.email,
-        newConfirmationCode
+          user.accountData.email,
+          newConfirmationCode
       );
     } catch (error) {
       console.error(error);
       return false;
     }
     return usersRepository.updateEmailConfirmationCode(
-      user._id,
-      newConfirmationCode
+        user._id,
+        newConfirmationCode
     );
-  },
+  }
 
-  // Send password recovery code
   async sendPasswordRecoveryCode(email: string): Promise<boolean> {
     const user = await usersService.findUserByLoginOrEmail(email);
 
@@ -97,9 +95,9 @@ export const authService = {
     });
 
     const updateResult = await usersRepository.updatePasswordRecoveryData(
-      userId,
-      recoveryCode,
-      expirationDate
+        userId,
+        recoveryCode,
+        expirationDate
     );
 
     try {
@@ -110,20 +108,23 @@ export const authService = {
     }
 
     return updateResult;
-  },
+  }
 
-  // Send password recovery code
   async changePassword(
-    recoveryCode: string,
-    password: string
+      recoveryCode: string,
+      password: string
   ): Promise<boolean> {
     const hash = await bcrypt.hash(password, 10);
     const user = await usersService.findUserByPasswordRecoveryCode(
-      recoveryCode
+        recoveryCode
     );
     if (!user) {
       return false;
     }
     return usersRepository.updatePassword(user._id, hash);
-  },
-};
+  }
+}
+
+
+
+export const authService = new AuthService()
