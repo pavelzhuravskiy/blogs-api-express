@@ -6,7 +6,7 @@ import { Posts } from "../../schemas/postSchema";
 import { FilterQuery, SortOrder } from "mongoose";
 import { PostDBModel } from "../../models/database/PostDBModel";
 
-class PostsQueryRepository {
+export class PostsQueryRepository {
   async findPosts(
     pageNumber: number,
     pageSize: number,
@@ -61,5 +61,3 @@ class PostsQueryRepository {
     };
   }
 }
-
-export const postsQueryRepository = new PostsQueryRepository();

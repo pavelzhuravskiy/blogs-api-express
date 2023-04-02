@@ -1,23 +1,33 @@
 import { ObjectId } from "mongodb";
 import { CommentViewModel } from "../models/view/CommentViewModel";
-import { postsQueryRepository } from "../repositories/query-repos/posts-query-repository";
-import { commentsRepository } from "../repositories/comments-repository";
+import { PostsQueryRepository } from "../repositories/query-repos/posts-query-repository";
+import { CommentsRepository } from "../repositories/comments-repository";
 import { CommentDBModel } from "../models/database/CommentDBModel";
-import { usersService } from "./users-service";
+import { UsersService } from "./users-service";
 
-class CommentsService {
+export class CommentsService {
+  private usersService: UsersService;
+  private postsQueryRepository: PostsQueryRepository;
+  private commentsRepository: CommentsRepository;
+  constructor() {
+    this.usersService = new UsersService();
+    this.postsQueryRepository = new PostsQueryRepository();
+    this.commentsRepository = new CommentsRepository();
+  }
   async createComment(
     postId: ObjectId,
     content: string,
     userId: ObjectId
   ): Promise<CommentViewModel | null> {
-    const post = await postsQueryRepository.findPostById(new ObjectId(postId));
+    const post = await this.postsQueryRepository.findPostById(
+      new ObjectId(postId)
+    );
 
     if (!post) {
       return null;
     }
 
-    const user = await usersService.findUserById(userId);
+    const user = await this.usersService.findUserById(userId);
 
     const newComment = new CommentDBModel(
       new ObjectId(),
@@ -27,23 +37,21 @@ class CommentsService {
       new Date().toISOString()
     );
 
-    return commentsRepository.createComment(newComment);
+    return this.commentsRepository.createComment(newComment);
   }
 
   async updateComment(
     _id: ObjectId,
     comment: CommentViewModel
   ): Promise<boolean> {
-    return commentsRepository.updateComment(_id, comment.content);
+    return this.commentsRepository.updateComment(_id, comment.content);
   }
 
   async deleteComment(_id: ObjectId): Promise<boolean> {
-    return commentsRepository.deleteComment(_id);
+    return this.commentsRepository.deleteComment(_id);
   }
 
   async deleteAll(): Promise<boolean> {
-    return commentsRepository.deleteAll();
+    return this.commentsRepository.deleteAll();
   }
 }
-
-export const commentsService = new CommentsService();

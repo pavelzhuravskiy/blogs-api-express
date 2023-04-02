@@ -1,7 +1,10 @@
 import { NextFunction, Request, Response } from "express";
-import { jwtService } from "../../application/jwt-service";
+import { JwtService } from "../../application/jwt-service";
 import { ObjectId } from "mongodb";
-import { usersService } from "../../domain/users-service";
+import { UsersService } from "../../domain/users-service";
+
+const usersService = new UsersService();
+const jwtService = new JwtService();
 
 export const authBearer = async (
   req: Request,

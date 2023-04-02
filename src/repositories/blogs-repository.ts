@@ -3,7 +3,7 @@ import { ObjectId } from "mongodb";
 import { BlogViewModel } from "../models/view/BlogViewModel";
 import { Blogs } from "../schemas/blogSchema";
 
-class BlogsRepository {
+export class BlogsRepository {
   async createBlog(newBlog: BlogDBModel): Promise<BlogViewModel> {
     const insertedBlog = await Blogs.create(newBlog);
     return {
@@ -17,20 +17,20 @@ class BlogsRepository {
   }
 
   async updateBlog(
-      _id: ObjectId,
-      name: string,
-      description: string,
-      websiteUrl: string
+    _id: ObjectId,
+    name: string,
+    description: string,
+    websiteUrl: string
   ): Promise<boolean> {
     const result = await Blogs.updateOne(
-        { _id },
-        {
-          $set: {
-            name: name,
-            description: description,
-            websiteUrl: websiteUrl,
-          },
-        }
+      { _id },
+      {
+        $set: {
+          name: name,
+          description: description,
+          websiteUrl: websiteUrl,
+        },
+      }
     );
     return result.matchedCount === 1;
   }
@@ -44,7 +44,4 @@ class BlogsRepository {
     await Blogs.deleteMany({});
     return (await Blogs.countDocuments()) === 0;
   }
-
 }
-
-export const blogsRepository = new BlogsRepository();

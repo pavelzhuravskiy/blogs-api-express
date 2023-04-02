@@ -6,14 +6,20 @@ import { devicesController } from "../controllers/DevicesController";
 
 export const securityRouter = Router({});
 
-securityRouter.get("/devices", devicesController.getDevices);
+securityRouter.get(
+  "/devices",
+  devicesController.getDevices.bind(devicesController)
+);
 
 securityRouter.delete(
   "/devices/:deviceId",
   validationDevicesFindByParamId,
   validationErrorCheck,
   validationDeviceOwner,
-  devicesController.deleteDevice
+  devicesController.deleteDevice.bind(devicesController)
 );
 
-securityRouter.delete("/devices", devicesController.deleteDevices);
+securityRouter.delete(
+  "/devices",
+  devicesController.deleteDevices.bind(devicesController)
+);

@@ -6,7 +6,7 @@ import { funcBlogsMapping } from "../../functions/mappings/func-blogs-mapping";
 import { BlogDBModel } from "../../models/database/BlogDBModel";
 import { FilterQuery, SortOrder } from "mongoose";
 
-class BlogsQueryRepository {
+export class BlogsQueryRepository {
   async findBlogs(
     pageNumber: number,
     pageSize: number,
@@ -60,5 +60,3 @@ class BlogsQueryRepository {
     };
   }
 }
-
-export const blogsQueryRepository = new BlogsQueryRepository();

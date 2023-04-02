@@ -1,5 +1,5 @@
 export type CommentViewModel = {
-  id: string
+  id: string;
   content: string;
   commentatorInfo: {
     userId: string;

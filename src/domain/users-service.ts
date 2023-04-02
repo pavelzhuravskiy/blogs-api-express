@@ -1,30 +1,34 @@
 import { ObjectId } from "mongodb";
 import { UserViewModel } from "../models/view/UserViewModel";
-import { usersRepository } from "../repositories/users-repository";
+import { UsersRepository } from "../repositories/users-repository";
 import bcrypt from "bcrypt";
 import { UserDBModel } from "../models/database/UserDBModel";
 
-class UsersService {
+export class UsersService {
+  private usersRepository: UsersRepository;
+  constructor() {
+    this.usersRepository = new UsersRepository();
+  }
   async findUserById(_id: ObjectId): Promise<UserDBModel | null> {
-    return usersRepository.findUserById(_id);
+    return this.usersRepository.findUserById(_id);
   }
 
   async findUserByLoginOrEmail(
     loginOrEmail: string
   ): Promise<UserDBModel | null> {
-    return usersRepository.findUserByLoginOrEmail(loginOrEmail);
+    return this.usersRepository.findUserByLoginOrEmail(loginOrEmail);
   }
 
   async findUserByEmailConfirmationCode(
     code: string
   ): Promise<UserDBModel | null> {
-    return usersRepository.findUserByEmailConfirmationCode(code);
+    return this.usersRepository.findUserByEmailConfirmationCode(code);
   }
 
   async findUserByPasswordRecoveryCode(
     recoveryCode: string
   ): Promise<UserDBModel | null> {
-    return usersRepository.findUserByPasswordRecoveryCode(recoveryCode);
+    return this.usersRepository.findUserByPasswordRecoveryCode(recoveryCode);
   }
 
   async createUser(
@@ -53,14 +57,16 @@ class UsersService {
       }
     );
 
-    return usersRepository.createUser(newUser);
+    return this.usersRepository.createUser(newUser);
   }
 
   async checkCredentials(
     loginOrEmail: string,
     password: string
   ): Promise<boolean> {
-    const user = await usersRepository.findUserByLoginOrEmail(loginOrEmail);
+    const user = await this.usersRepository.findUserByLoginOrEmail(
+      loginOrEmail
+    );
 
     if (!user || !user.emailConfirmation.isConfirmed) {
       return false;
@@ -69,12 +75,10 @@ class UsersService {
   }
 
   async deleteUser(_id: ObjectId): Promise<boolean> {
-    return usersRepository.deleteUser(_id);
+    return this.usersRepository.deleteUser(_id);
   }
 
   async deleteAll(): Promise<boolean> {
-    return usersRepository.deleteAll();
+    return this.usersRepository.deleteAll();
   }
 }
-
-export const usersService = new UsersService();

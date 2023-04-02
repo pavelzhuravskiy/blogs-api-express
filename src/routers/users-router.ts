@@ -15,17 +15,21 @@ usersRouter.post(
   validationUserUnique("email"),
   validationUsersInput,
   validationErrorCheck,
-  usersController.createUser
+  usersController.createUser.bind(usersController)
 );
 
-usersRouter.get("/", authBasic, usersController.getUsers);
+usersRouter.get("/", authBasic, usersController.getUsers.bind(usersController));
 
 usersRouter.delete(
   "/:id",
   authBasic,
   validationUsersFindByParamId,
   validationErrorCheck,
-  usersController.deleteUser
+  usersController.deleteUser.bind(usersController)
 );
 
-usersRouter.delete("/", authBasic, usersController.deleteUsers);
+usersRouter.delete(
+  "/",
+  authBasic,
+  usersController.deleteUsers.bind(usersController)
+);

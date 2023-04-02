@@ -1,20 +1,30 @@
 import { Request, Response } from "express";
-import { blogsService } from "../domain/blogs-service";
+import { BlogsService } from "../domain/blogs-service";
 import {
   RequestWithParamsAndQuery,
   RequestWithQuery,
 } from "../types/request-types";
 import { QueryModel } from "../models/global/QueryModel";
-import { blogsQueryRepository } from "../repositories/query-repos/blogs-query-repository";
+import { BlogsQueryRepository } from "../repositories/query-repos/blogs-query-repository";
 import { SortOrder } from "mongoose";
 import { ObjectId } from "mongodb";
-import { postsService } from "../domain/posts-service";
+import { PostsService } from "../domain/posts-service";
 import { StringIdModel } from "../models/global/StringIdModel";
-import { postsQueryRepository } from "../repositories/query-repos/posts-query-repository";
+import { PostsQueryRepository } from "../repositories/query-repos/posts-query-repository";
 
 class BlogsController {
+  private blogsService: BlogsService;
+  private blogsQueryRepository: BlogsQueryRepository;
+  private postsService: PostsService;
+  private postsQueryRepository: PostsQueryRepository;
+  constructor() {
+    this.blogsService = new BlogsService();
+    this.blogsQueryRepository = new BlogsQueryRepository();
+    this.postsService = new PostsService();
+    this.postsQueryRepository = new PostsQueryRepository();
+  }
   async createBlog(req: Request, res: Response) {
-    const newBlog = await blogsService.createBlog(
+    const newBlog = await this.blogsService.createBlog(
       req.body.name,
       req.body.description,
       req.body.websiteUrl
@@ -23,7 +33,7 @@ class BlogsController {
   }
 
   async getBlogs(req: RequestWithQuery<QueryModel>, res: Response) {
-    const foundBlogs = await blogsQueryRepository.findBlogs(
+    const foundBlogs = await this.blogsQueryRepository.findBlogs(
       Number(req.query.pageNumber) || 1,
       Number(req.query.pageSize) || 10,
       req.query.sortBy,
@@ -34,25 +44,27 @@ class BlogsController {
   }
 
   async getBlog(req: Request, res: Response) {
-    const foundBlog = await blogsQueryRepository.findBlogById(
+    const foundBlog = await this.blogsQueryRepository.findBlogById(
       new ObjectId(req.params.id)
     );
     res.json(foundBlog);
   }
   async updateBlog(req: Request, res: Response) {
-    const isUpdated = await blogsService.updateBlog(
+    const isUpdated = await this.blogsService.updateBlog(
       new ObjectId(req.params.id),
       req.body
     );
     if (isUpdated) {
-      const updatedBlog = await blogsQueryRepository.findBlogById(req.body.id);
+      const updatedBlog = await this.blogsQueryRepository.findBlogById(
+        req.body.id
+      );
       res.status(204).json(updatedBlog);
     }
   }
 
   async deleteBlog(req: Request, res: Response) {
     console.log(req.params.id);
-    const isDeleted = await blogsService.deleteBlog(
+    const isDeleted = await this.blogsService.deleteBlog(
       new ObjectId(req.params.id)
     );
     if (isDeleted) {
@@ -61,7 +73,7 @@ class BlogsController {
   }
 
   async deleteBlogs(req: Request, res: Response) {
-    const isDeleted = await blogsService.deleteAll();
+    const isDeleted = await this.blogsService.deleteAll();
     if (isDeleted) {
       res.sendStatus(204);
     } else {
@@ -70,11 +82,11 @@ class BlogsController {
   }
 
   async createPost(req: Request, res: Response) {
-    const newPost = await postsService.createPost(
-        req.body.title,
-        req.body.shortDescription,
-        req.body.content,
-        req.params.id,
+    const newPost = await this.postsService.createPost(
+      req.body.title,
+      req.body.shortDescription,
+      req.body.content,
+      req.params.id
     );
     res.status(201).json(newPost);
   }
@@ -83,7 +95,7 @@ class BlogsController {
     req: RequestWithParamsAndQuery<StringIdModel, QueryModel>,
     res: Response
   ) {
-    const foundPosts = await postsQueryRepository.findPosts(
+    const foundPosts = await this.postsQueryRepository.findPosts(
       Number(req.query.pageNumber) || 1,
       Number(req.query.pageSize) || 10,
       req.query.sortBy,

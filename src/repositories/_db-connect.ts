@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 
 dotenv.config();
 
-const mongooseURI = process.env.MONGOOSE_URI || "mongodb://0.0.0.0:27017"
+const mongooseURI = process.env.MONGOOSE_URI || "mongodb://0.0.0.0:27017";
 
 const uri =
   process.env.NODE_ENV === "test"
@@ -16,10 +16,10 @@ if (!uri) {
 
 export async function runDB() {
   try {
-    await mongoose.connect(mongooseURI)
+    await mongoose.connect(mongooseURI);
     console.log("Connection successful");
   } catch {
-    await mongoose.disconnect()
+    await mongoose.disconnect();
     console.log("Connection to database failed");
   }
 }

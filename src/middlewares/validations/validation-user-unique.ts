@@ -1,5 +1,7 @@
 import { body } from "express-validator";
-import { usersService } from "../../domain/users-service";
+import { UsersService } from "../../domain/users-service";
+
+const usersService = new UsersService();
 
 export const validationUserUnique = (field: string) =>
   body(field).custom(async (value) => {

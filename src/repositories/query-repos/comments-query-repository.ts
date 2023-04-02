@@ -6,7 +6,7 @@ import { Paginator } from "../../models/view/_Paginator";
 import { CommentDBModel } from "../../models/database/CommentDBModel";
 import { funcCommentsMapping } from "../../functions/mappings/func-comments-mapping";
 
-class CommentsQueryRepository {
+export class CommentsQueryRepository {
   async findComments(
     pageNumber: number,
     pageSize: number,
@@ -57,5 +57,3 @@ class CommentsQueryRepository {
     };
   }
 }
-
-export const commentsQueryRepository = new CommentsQueryRepository();

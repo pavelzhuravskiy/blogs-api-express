@@ -1,6 +1,9 @@
 import { NextFunction, Request, Response } from "express";
-import { jwtService } from "../../application/jwt-service";
-import { devicesService } from "../../domain/devices-service";
+import { JwtService } from "../../application/jwt-service";
+import { DevicesService } from "../../domain/devices-service";
+
+const devicesService = new DevicesService();
+const jwtService = new JwtService();
 
 export const validationDeviceOwner = async (
   req: Request,

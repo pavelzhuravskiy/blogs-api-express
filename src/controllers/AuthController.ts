@@ -1,13 +1,23 @@
 import { Request, Response } from "express";
 import { ObjectId } from "mongodb";
-import { usersService } from "../domain/users-service";
-import { jwtService } from "../application/jwt-service";
-import { devicesService } from "../domain/devices-service";
-import { authService } from "../domain/auth-service";
+import { UsersService } from "../domain/users-service";
+import { JwtService } from "../application/jwt-service";
+import { DevicesService } from "../domain/devices-service";
+import { AuthService } from "../domain/auth-service";
 
 class AuthController {
+  private usersService: UsersService;
+  private devicesService: DevicesService;
+  private authService: AuthService;
+  private jwtService: JwtService;
+  constructor() {
+    this.usersService = new UsersService();
+    this.devicesService = new DevicesService();
+    this.authService = new AuthService();
+    this.jwtService = new JwtService();
+  }
   async registerUser(req: Request, res: Response) {
-    await authService.registerUser(
+    await this.authService.registerUser(
       req.body.login,
       req.body.password,
       req.body.email
@@ -16,29 +26,29 @@ class AuthController {
   }
 
   async confirmRegistration(req: Request, res: Response) {
-    await authService.confirmEmail(req.body.code);
+    await this.authService.confirmEmail(req.body.code);
     res.sendStatus(204);
   }
 
   async reconfirmRegistration(req: Request, res: Response) {
-    await authService.resendEmail(req.body.email);
+    await this.authService.resendEmail(req.body.email);
     res.sendStatus(204);
   }
 
   async login(req: Request, res: Response) {
-    const check = await usersService.checkCredentials(
+    const check = await this.usersService.checkCredentials(
       req.body.loginOrEmail,
       req.body.password
     );
     if (check) {
       const ip = req.ip;
       const userAgent = req.headers["user-agent"] || "unknown";
-      const user = await usersService.findUserByLoginOrEmail(
+      const user = await this.usersService.findUserByLoginOrEmail(
         req.body.loginOrEmail
       );
-      const newAccessToken = await jwtService.createAccessTokenJWT(user);
-      const newRefreshToken = await jwtService.createRefreshTokenJWT(user);
-      await devicesService.createDevice(newRefreshToken, ip, userAgent);
+      const newAccessToken = await this.jwtService.createAccessTokenJWT(user);
+      const newRefreshToken = await this.jwtService.createRefreshTokenJWT(user);
+      await this.devicesService.createDevice(newRefreshToken, ip, userAgent);
       res
         .cookie("refreshToken", newRefreshToken, {
           httpOnly: true,
@@ -55,27 +65,29 @@ class AuthController {
     const ip = req.ip;
     const cookieRefreshToken = req.cookies.refreshToken;
 
-    const cookieRefreshTokenObj = await jwtService.verifyToken(
+    const cookieRefreshTokenObj = await this.jwtService.verifyToken(
       cookieRefreshToken
     );
 
     const deviceId = cookieRefreshTokenObj!.deviceId;
 
     const userId = cookieRefreshTokenObj!.userId.toString();
-    const user = await usersService.findUserById(new ObjectId(userId));
+    const user = await this.usersService.findUserById(new ObjectId(userId));
 
-    const newAccessToken = await jwtService.createAccessTokenJWT(
+    const newAccessToken = await this.jwtService.createAccessTokenJWT(
       user,
       deviceId
     );
-    const newRefreshToken = await jwtService.createRefreshTokenJWT(
+    const newRefreshToken = await this.jwtService.createRefreshTokenJWT(
       user,
       deviceId
     );
-    const newRefreshTokenObj = await jwtService.verifyToken(newRefreshToken);
+    const newRefreshTokenObj = await this.jwtService.verifyToken(
+      newRefreshToken
+    );
     const newIssuedAt = newRefreshTokenObj!.iat;
 
-    await devicesService.updateDevice(ip, userId, newIssuedAt);
+    await this.devicesService.updateDevice(ip, userId, newIssuedAt);
 
     res
       .cookie("refreshToken", newRefreshToken, {
@@ -88,12 +100,12 @@ class AuthController {
 
   async logout(req: Request, res: Response) {
     const cookieRefreshToken = req.cookies.refreshToken;
-    const cookieRefreshTokenObj = await jwtService.verifyToken(
+    const cookieRefreshTokenObj = await this.jwtService.verifyToken(
       cookieRefreshToken
     );
     if (cookieRefreshTokenObj) {
       const cookieDeviceId = cookieRefreshTokenObj.deviceId;
-      await devicesService.deleteDevice(cookieDeviceId);
+      await this.devicesService.deleteDevice(cookieDeviceId);
       res.sendStatus(204);
     } else {
       res.sendStatus(401);
@@ -101,12 +113,12 @@ class AuthController {
   }
 
   async recoverPassword(req: Request, res: Response) {
-    await authService.sendPasswordRecoveryCode(req.body.email);
+    await this.authService.sendPasswordRecoveryCode(req.body.email);
     res.sendStatus(204);
   }
 
   async changePassword(req: Request, res: Response) {
-    await authService.changePassword(
+    await this.authService.changePassword(
       req.body.recoveryCode,
       req.body.newPassword
     );

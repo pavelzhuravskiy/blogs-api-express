@@ -3,7 +3,7 @@ import { settings } from "../settings";
 import { UserDBModel } from "../models/database/UserDBModel";
 import { randomUUID } from "crypto";
 
-export const jwtService = {
+export class JwtService {
   async createAccessTokenJWT(
     user: UserDBModel | null,
     deviceId: string = randomUUID()
@@ -17,7 +17,7 @@ export const jwtService = {
     );
 
     return { accessToken };
-  },
+  }
   async createRefreshTokenJWT(
     user: UserDBModel | null,
     deviceId: string = randomUUID()
@@ -25,7 +25,7 @@ export const jwtService = {
     return jwt.sign({ userId: user!._id, deviceId }, settings.JWT_SECRET, {
       expiresIn: "2h",
     });
-  },
+  }
 
   async verifyToken(token: string) {
     try {
@@ -38,5 +38,7 @@ export const jwtService = {
     } catch (error) {
       return null;
     }
-  },
-};
+  }
+}
+
+// export const jwtService = {};

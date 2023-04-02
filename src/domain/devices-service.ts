@@ -1,12 +1,18 @@
 import { ObjectId } from "mongodb";
-import { devicesRepository } from "../repositories/devices-repository";
-import { jwtService } from "../application/jwt-service";
+import { DevicesRepository } from "../repositories/devices-repository";
+import { JwtService } from "../application/jwt-service";
 import { DeviceViewModel } from "../models/view/DeviceViewModel";
 import { DeviceDBModel } from "../models/database/DeviceDBModel";
 
-class DevicesService {
+export class DevicesService {
+  private devicesRepository: DevicesRepository;
+  private jwtService: JwtService;
+  constructor() {
+    this.devicesRepository = new DevicesRepository();
+    this.jwtService = new JwtService();
+  }
   async findDeviceById(deviceId: string): Promise<DeviceDBModel | null> {
-    return devicesRepository.findDeviceById(deviceId);
+    return this.devicesRepository.findDeviceById(deviceId);
   }
 
   async createDevice(
@@ -14,7 +20,9 @@ class DevicesService {
     ip: string,
     userAgent: string
   ): Promise<DeviceViewModel | null> {
-    const newRefreshTokenObj = await jwtService.verifyToken(newRefreshToken);
+    const newRefreshTokenObj = await this.jwtService.verifyToken(
+      newRefreshToken
+    );
 
     if (!newRefreshTokenObj) {
       return null;
@@ -35,7 +43,7 @@ class DevicesService {
       expirationDate
     );
 
-    return devicesRepository.createDevice(newDevice);
+    return this.devicesRepository.createDevice(newDevice);
   }
 
   async updateDevice(
@@ -43,20 +51,18 @@ class DevicesService {
     userId: string,
     issuedAt: number
   ): Promise<boolean> {
-    return devicesRepository.updateDevice(ip, userId, issuedAt);
+    return this.devicesRepository.updateDevice(ip, userId, issuedAt);
   }
 
   async deleteDevice(deviceId: string): Promise<boolean> {
-    return devicesRepository.deleteDevice(deviceId);
+    return this.devicesRepository.deleteDevice(deviceId);
   }
 
   async deleteAllOldDevices(currentDevice: string): Promise<boolean> {
-    return devicesRepository.deleteAllOldDevices(currentDevice);
+    return this.devicesRepository.deleteAllOldDevices(currentDevice);
   }
 
   async deleteAll(): Promise<boolean> {
-    return devicesRepository.deleteAll();
+    return this.devicesRepository.deleteAll();
   }
 }
-
-export const devicesService = new DevicesService();

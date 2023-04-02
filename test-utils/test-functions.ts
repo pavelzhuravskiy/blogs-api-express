@@ -35,11 +35,16 @@ import {
   usersURI,
 } from "./test-strings";
 import { ObjectId } from "mongodb";
-import { blogsQueryRepository } from "../src/repositories/query-repos/blogs-query-repository";
-import { postsQueryRepository } from "../src/repositories/query-repos/posts-query-repository";
-import { usersQueryRepository } from "../src/repositories/query-repos/users-query-repository";
-import { commentsQueryRepository } from "../src/repositories/query-repos/comments-query-repository";
+import { BlogsQueryRepository } from "../src/repositories/query-repos/blogs-query-repository";
+import { PostsQueryRepository } from "../src/repositories/query-repos/posts-query-repository";
+import { UsersQueryRepository } from "../src/repositories/query-repos/users-query-repository";
+import { CommentsQueryRepository } from "../src/repositories/query-repos/comments-query-repository";
 import { SortOrder } from "mongoose";
+
+const blogsQueryRepository = new BlogsQueryRepository();
+const postsQueryRepository = new PostsQueryRepository();
+const usersQueryRepository = new UsersQueryRepository();
+const commentsQueryRepository = new CommentsQueryRepository();
 
 // ---------- AUTH FUNCTIONS ----------
 

@@ -1,7 +1,7 @@
 import { RateLimitDBModel } from "../models/database/RateLimitDBModel";
 import { RateLimits } from "../schemas/rateLimitSchema";
 
-class RateLimitsRepository {
+export class RateLimitsRepository {
   async findRateLimit(
     ip: string,
     endpoint: string
@@ -50,5 +50,3 @@ class RateLimitsRepository {
     return (await RateLimits.countDocuments()) === 0;
   }
 }
-
-export const rateLimitsRepository = new RateLimitsRepository();

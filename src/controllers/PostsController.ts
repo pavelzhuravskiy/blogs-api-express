@@ -1,20 +1,30 @@
 import { Request, Response } from "express";
-import { postsService } from "../domain/posts-service";
+import { PostsService } from "../domain/posts-service";
 import {
   RequestWithParamsAndQuery,
   RequestWithQuery,
 } from "../types/request-types";
 import { QueryModel } from "../models/global/QueryModel";
-import { postsQueryRepository } from "../repositories/query-repos/posts-query-repository";
+import { PostsQueryRepository } from "../repositories/query-repos/posts-query-repository";
 import { SortOrder } from "mongoose";
 import { ObjectId } from "mongodb";
-import { commentsService } from "../domain/comments-service";
+import { CommentsService } from "../domain/comments-service";
 import { StringIdModel } from "../models/global/StringIdModel";
-import { commentsQueryRepository } from "../repositories/query-repos/comments-query-repository";
+import { CommentsQueryRepository } from "../repositories/query-repos/comments-query-repository";
 
 class PostsController {
+  private postsService: PostsService;
+  private postsQueryRepository: PostsQueryRepository;
+  private commentsService: CommentsService;
+  private commentsQueryRepository: CommentsQueryRepository;
+  constructor() {
+    this.postsService = new PostsService();
+    this.postsQueryRepository = new PostsQueryRepository();
+    this.commentsService = new CommentsService();
+    this.commentsQueryRepository = new CommentsQueryRepository();
+  }
   async createPost(req: Request, res: Response) {
-    const newPost = await postsService.createPost(
+    const newPost = await this.postsService.createPost(
       req.body.title,
       req.body.shortDescription,
       req.body.content,
@@ -24,7 +34,7 @@ class PostsController {
   }
 
   async getPosts(req: RequestWithQuery<QueryModel>, res: Response) {
-    const foundPosts = await postsQueryRepository.findPosts(
+    const foundPosts = await this.postsQueryRepository.findPosts(
       Number(req.query.pageNumber) || 1,
       Number(req.query.pageSize) || 10,
       req.query.sortBy,
@@ -34,26 +44,28 @@ class PostsController {
   }
 
   async getPost(req: Request, res: Response) {
-    const foundPost = await postsQueryRepository.findPostById(
+    const foundPost = await this.postsQueryRepository.findPostById(
       new ObjectId(req.params.id)
     );
     res.json(foundPost);
   }
 
   async updatePost(req: Request, res: Response) {
-    const isUpdated = await postsService.updatePost(
+    const isUpdated = await this.postsService.updatePost(
       new ObjectId(req.params.id),
       req.body
     );
 
     if (isUpdated) {
-      const updatedPost = await postsQueryRepository.findPostById(req.body.id);
+      const updatedPost = await this.postsQueryRepository.findPostById(
+        req.body.id
+      );
       res.status(204).json(updatedPost);
     }
   }
 
   async deletePost(req: Request, res: Response) {
-    const isDeleted = await postsService.deletePost(
+    const isDeleted = await this.postsService.deletePost(
       new ObjectId(req.params.id)
     );
     if (isDeleted) {
@@ -62,7 +74,7 @@ class PostsController {
   }
 
   async deletePosts(req: Request, res: Response) {
-    const isDeleted = await postsService.deleteAll();
+    const isDeleted = await this.postsService.deleteAll();
     if (isDeleted) {
       res.sendStatus(204);
     } else {
@@ -71,7 +83,7 @@ class PostsController {
   }
 
   async createComment(req: Request, res: Response) {
-    const newComment = await commentsService.createComment(
+    const newComment = await this.commentsService.createComment(
       new ObjectId(req.params.id),
       req.body.content,
       req.user!._id
@@ -83,7 +95,7 @@ class PostsController {
     req: RequestWithParamsAndQuery<StringIdModel, QueryModel>,
     res: Response
   ) {
-    const foundComments = await commentsQueryRepository.findComments(
+    const foundComments = await this.commentsQueryRepository.findComments(
       Number(req.query.pageNumber) || 1,
       Number(req.query.pageSize) || 10,
       req.query.sortBy,

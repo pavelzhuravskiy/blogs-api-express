@@ -1,5 +1,7 @@
 import { NextFunction, Request, Response } from "express";
-import { rateLimitsService } from "../domain/rate-limits-service";
+import { RateLimitsService } from "../domain/rate-limits-service";
+
+const rateLimitsService = new RateLimitsService();
 
 export const rateLimiter = async (
   req: Request,
@@ -20,9 +22,7 @@ export const rateLimiter = async (
     const diffBetweenNowAndFirst = currentDate - firstAttemptDate;
     const diffBetweenNowAndLast = currentDate - lastAttemptDate;
 
-    const attemptsCount = foundRateLimit.attemptsCount;
-
-    if (attemptsCount >= 5) {
+    if (foundRateLimit.attemptsCount >= 5) {
       // Timeout 5 sec
       if (diffBetweenNowAndLast < 5000) {
         res.sendStatus(429);

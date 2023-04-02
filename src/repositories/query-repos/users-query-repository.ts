@@ -6,14 +6,14 @@ import { UserViewModel } from "../../models/view/UserViewModel";
 import { Users } from "../../schemas/userSchema";
 import { FilterQuery, SortOrder } from "mongoose";
 
-class UsersQueryRepository {
+export class UsersQueryRepository {
   async findUsers(
-      pageNumber: number,
-      pageSize: number,
-      sortBy: string = "createdAt",
-      sortDirection: SortOrder,
-      searchLoginTerm?: string,
-      searchEmailTerm?: string
+    pageNumber: number,
+    pageSize: number,
+    sortBy: string = "createdAt",
+    sortDirection: SortOrder,
+    searchLoginTerm?: string,
+    searchEmailTerm?: string
   ): Promise<Paginator<UserViewModel[]>> {
     const filter: FilterQuery<UserDBModel> = {};
 
@@ -42,9 +42,9 @@ class UsersQueryRepository {
     }
 
     const output = await Users.find(filter)
-        .sort(sortingObj)
-        .skip(pageNumber > 0 ? (pageNumber - 1) * pageSize : 0)
-        .limit(pageSize > 0 ? pageSize : 0);
+      .sort(sortingObj)
+      .skip(pageNumber > 0 ? (pageNumber - 1) * pageSize : 0)
+      .limit(pageSize > 0 ? pageSize : 0);
 
     const totalCount = await Users.countDocuments(filter);
     const pagesCount = Math.ceil(totalCount / Number(pageSize));
@@ -58,9 +58,7 @@ class UsersQueryRepository {
     };
   }
 
-  async findUserById(
-      _id: ObjectId
-  ): Promise<UserViewModel | null> {
+  async findUserById(_id: ObjectId): Promise<UserViewModel | null> {
     const foundUser = await Users.findOne({ _id });
 
     if (!foundUser) {
@@ -74,7 +72,4 @@ class UsersQueryRepository {
       createdAt: foundUser.accountData.createdAt,
     };
   }
-
 }
-
-export const usersQueryRepository = new UsersQueryRepository();

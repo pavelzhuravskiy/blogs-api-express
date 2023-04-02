@@ -3,7 +3,7 @@ import { ObjectId } from "mongodb";
 import { PostDBModel } from "../models/database/PostDBModel";
 import { Posts } from "../schemas/postSchema";
 
-class PostsRepository {
+export class PostsRepository {
   async createPost(newPost: PostDBModel): Promise<PostViewModel> {
     const insertedPost = await Posts.create(newPost);
 
@@ -50,5 +50,3 @@ class PostsRepository {
     return (await Posts.countDocuments()) === 0;
   }
 }
-
-export const postsRepository = new PostsRepository();

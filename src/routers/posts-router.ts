@@ -16,16 +16,16 @@ postsRouter.post(
   validationPostsInput,
   validationPostsCreation,
   validationErrorCheck,
-  postsController.createPost
+  postsController.createPost.bind(postsController)
 );
 
-postsRouter.get("/", postsController.getPosts);
+postsRouter.get("/", postsController.getPosts.bind(postsController));
 
 postsRouter.get(
   "/:id",
   validationPostsFindByParamId,
   validationErrorCheck,
-  postsController.getPost
+  postsController.getPost.bind(postsController)
 );
 
 postsRouter.put(
@@ -35,7 +35,7 @@ postsRouter.put(
   validationPostsInput,
   validationPostsCreation,
   validationErrorCheck,
-  postsController.updatePost
+  postsController.updatePost.bind(postsController)
 );
 
 postsRouter.delete(
@@ -43,10 +43,14 @@ postsRouter.delete(
   authBasic,
   validationPostsFindByParamId,
   validationErrorCheck,
-  postsController.deletePost
+  postsController.deletePost.bind(postsController)
 );
 
-postsRouter.delete("/", authBasic, postsController.deletePosts);
+postsRouter.delete(
+  "/",
+  authBasic,
+  postsController.deletePosts.bind(postsController)
+);
 
 // +++++ Comments section start +++++
 
@@ -56,14 +60,14 @@ postsRouter.post(
   validationPostsFindByParamId,
   ValidationCommentsInput,
   validationErrorCheck,
-  postsController.createComment
+  postsController.createComment.bind(postsController)
 );
 
 postsRouter.get(
   "/:id/comments",
   validationPostsFindByParamId,
   validationErrorCheck,
-  postsController.getComments
+  postsController.getComments.bind(postsController)
 );
 
 // ----- Comments section end -----

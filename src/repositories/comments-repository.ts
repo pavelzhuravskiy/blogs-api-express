@@ -3,10 +3,8 @@ import { ObjectId } from "mongodb";
 import { CommentDBModel } from "../models/database/CommentDBModel";
 import { Comments } from "../schemas/commentSchema";
 
-class CommentsRepository {
-  async createComment(
-      newComment: CommentDBModel
-  ): Promise<CommentViewModel> {
+export class CommentsRepository {
+  async createComment(newComment: CommentDBModel): Promise<CommentViewModel> {
     const insertedComment = await Comments.create(newComment);
 
     return {
@@ -22,12 +20,12 @@ class CommentsRepository {
 
   async updateComment(_id: ObjectId, content: string): Promise<boolean> {
     const result = await Comments.updateOne(
-        { _id },
-        {
-          $set: {
-            content: content,
-          },
-        }
+      { _id },
+      {
+        $set: {
+          content: content,
+        },
+      }
     );
     return result.matchedCount === 1;
   }
@@ -41,7 +39,4 @@ class CommentsRepository {
     await Comments.deleteMany({});
     return (await Comments.countDocuments()) === 0;
   }
-
 }
-
-export const commentsRepository = new CommentsRepository();

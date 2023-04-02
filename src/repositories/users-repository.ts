@@ -3,7 +3,7 @@ import { UserDBModel } from "../models/database/UserDBModel";
 import { UserViewModel } from "../models/view/UserViewModel";
 import { Users } from "../schemas/userSchema";
 
-class UsersRepository {
+export class UsersRepository {
   async findUserById(_id: ObjectId): Promise<UserDBModel | null> {
     const foundUser = await Users.findOne({ _id });
 
@@ -15,7 +15,7 @@ class UsersRepository {
   }
 
   async findUserByLoginOrEmail(
-      loginOrEmail: string
+    loginOrEmail: string
   ): Promise<UserDBModel | null> {
     const foundUser = await Users.findOne({
       $or: [
@@ -25,36 +25,38 @@ class UsersRepository {
     });
 
     if (!foundUser) {
-      return null
+      return null;
     }
 
-    return foundUser
-
+    return foundUser;
   }
 
-  async findUserByEmailConfirmationCode(code: string): Promise<UserDBModel | null> {
+  async findUserByEmailConfirmationCode(
+    code: string
+  ): Promise<UserDBModel | null> {
     const foundUser = await Users.findOne({
       "emailConfirmation.confirmationCode": code,
     });
 
     if (!foundUser) {
-      return null
+      return null;
     }
 
-    return foundUser
-
+    return foundUser;
   }
 
-  async findUserByPasswordRecoveryCode(recoveryCode: string): Promise<UserDBModel | null> {
+  async findUserByPasswordRecoveryCode(
+    recoveryCode: string
+  ): Promise<UserDBModel | null> {
     const foundUser = await Users.findOne({
       "passwordRecovery.recoveryCode": recoveryCode,
     });
 
     if (!foundUser) {
-      return null
+      return null;
     }
 
-    return foundUser
+    return foundUser;
   }
 
   async createUser(user: UserDBModel): Promise<UserViewModel> {
@@ -80,54 +82,51 @@ class UsersRepository {
 
   async updateEmailConfirmationStatus(_id: ObjectId) {
     const result = await Users.updateOne(
-        { _id },
-        { $set: { "emailConfirmation.isConfirmed": true } }
+      { _id },
+      { $set: { "emailConfirmation.isConfirmed": true } }
     );
     return result.modifiedCount === 1;
   }
 
   async updateEmailConfirmationCode(
-      _id: ObjectId,
-      newConfirmationCode: string
+    _id: ObjectId,
+    newConfirmationCode: string
   ) {
     const result = await Users.updateOne(
-        { _id },
-        { $set: { "emailConfirmation.confirmationCode": newConfirmationCode } }
+      { _id },
+      { $set: { "emailConfirmation.confirmationCode": newConfirmationCode } }
     );
     return result.modifiedCount === 1;
   }
 
   async updatePasswordRecoveryData(
-      _id: ObjectId,
-      recoveryCode: string,
-      expirationDate: Date
+    _id: ObjectId,
+    recoveryCode: string,
+    expirationDate: Date
   ) {
     const result = await Users.updateOne(
-        { _id },
-        {
-          $set: {
-            "passwordRecovery.recoveryCode": recoveryCode,
-            "passwordRecovery.expirationDate": expirationDate,
-          },
-        }
+      { _id },
+      {
+        $set: {
+          "passwordRecovery.recoveryCode": recoveryCode,
+          "passwordRecovery.expirationDate": expirationDate,
+        },
+      }
     );
     return result.modifiedCount === 1;
   }
 
   async updatePassword(_id: ObjectId, hash: string) {
     const result = await Users.updateOne(
-        { _id },
-        {
-          $set: {
-            "accountData.password": hash,
-            "passwordRecovery.recoveryCode": null,
-            "passwordRecovery.expirationDate": null,
-          },
-        }
+      { _id },
+      {
+        $set: {
+          "accountData.password": hash,
+          "passwordRecovery.recoveryCode": null,
+          "passwordRecovery.expirationDate": null,
+        },
+      }
     );
     return result.modifiedCount === 1;
   }
-
 }
-
-export const usersRepository = new UsersRepository();

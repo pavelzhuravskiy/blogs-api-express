@@ -3,12 +3,18 @@ import { RequestWithQuery } from "../types/request-types";
 import { QueryModel } from "../models/global/QueryModel";
 import { SortOrder } from "mongoose";
 import { ObjectId } from "mongodb";
-import { usersService } from "../domain/users-service";
-import { usersQueryRepository } from "../repositories/query-repos/users-query-repository";
+import { UsersService } from "../domain/users-service";
+import { UsersQueryRepository } from "../repositories/query-repos/users-query-repository";
 
 class UsersController {
+  private usersService: UsersService;
+  private usersQueryRepository: UsersQueryRepository;
+  constructor() {
+    this.usersService = new UsersService();
+    this.usersQueryRepository = new UsersQueryRepository();
+  }
   async createUser(req: Request, res: Response) {
-    const newUser = await usersService.createUser(
+    const newUser = await this.usersService.createUser(
       req.body.login,
       req.body.password,
       req.body.email
@@ -17,7 +23,7 @@ class UsersController {
   }
 
   async getUsers(req: RequestWithQuery<QueryModel>, res: Response) {
-    const foundUsers = await usersQueryRepository.findUsers(
+    const foundUsers = await this.usersQueryRepository.findUsers(
       Number(req.query.pageNumber) || 1,
       Number(req.query.pageSize) || 10,
       req.query.sortBy,
@@ -29,7 +35,7 @@ class UsersController {
   }
 
   async deleteUser(req: Request, res: Response) {
-    const isDeleted = await usersService.deleteUser(
+    const isDeleted = await this.usersService.deleteUser(
       new ObjectId(req.params.id)
     );
     if (isDeleted) {
@@ -38,7 +44,7 @@ class UsersController {
   }
 
   async deleteUsers(req: Request, res: Response) {
-    const isDeleted = await usersService.deleteAll();
+    const isDeleted = await this.usersService.deleteAll();
     if (isDeleted) {
       res.sendStatus(204);
     } else {

@@ -13,7 +13,7 @@ commentsRouter.get(
   "/:id",
   validationCommentsFindByParamId,
   validationErrorCheck,
-  commentsController.getComment
+  commentsController.getComment.bind(commentsController)
 );
 
 commentsRouter.put(
@@ -23,7 +23,7 @@ commentsRouter.put(
   ValidationCommentsInput,
   validationErrorCheck,
   validationCommentOwner,
-  commentsController.updateComment
+  commentsController.updateComment.bind(commentsController)
 );
 
 commentsRouter.delete(
@@ -32,7 +32,11 @@ commentsRouter.delete(
   validationErrorCheck,
   authBearer,
   validationCommentOwner,
-  commentsController.deleteComment
+  commentsController.deleteComment.bind(commentsController)
 );
 
-commentsRouter.delete("/", authBasic, commentsController.deleteComments);
+commentsRouter.delete(
+  "/",
+  authBasic,
+  commentsController.deleteComments.bind(commentsController)
+);

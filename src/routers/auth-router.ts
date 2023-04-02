@@ -26,7 +26,7 @@ authRouter.post(
   validationUserUnique("email"),
   validationUsersInput,
   validationErrorCheck,
-  authController.registerUser
+  authController.registerUser.bind(authController)
 );
 
 authRouter.post(
@@ -35,7 +35,7 @@ authRouter.post(
   validationCodeInput,
   validationEmailConfirm,
   validationErrorCheck,
-  authController.confirmRegistration
+  authController.confirmRegistration.bind(authController)
 );
 
 authRouter.post(
@@ -44,7 +44,7 @@ authRouter.post(
   validationEmailInput,
   validationEmailResend,
   validationErrorCheck,
-  authController.reconfirmRegistration
+  authController.reconfirmRegistration.bind(authController)
 );
 
 // ----- Registration section end -----
@@ -53,19 +53,19 @@ authRouter.post(
 
 authRouter.post(
   "/login",
-  rateLimiter,
+  // rateLimiter,
   validationAuthInput,
   validationErrorCheck,
-  authController.login
+  authController.login.bind(authController)
 );
 
 authRouter.post(
   "/refresh-token",
   validationRefreshToken,
-  authController.refreshTokens
+  authController.refreshTokens.bind(authController)
 );
 
-authRouter.post("/logout", authController.logout);
+authRouter.post("/logout", authController.logout.bind(authController));
 
 // ----- Login, logout and tokens section end -----
 
@@ -76,7 +76,7 @@ authRouter.post(
   rateLimiter,
   validationEmailInput,
   validationErrorCheck,
-  authController.recoverPassword
+  authController.recoverPassword.bind(authController)
 );
 
 authRouter.post(
@@ -86,13 +86,17 @@ authRouter.post(
   validationPasswordInput,
   validationPasswordConfirm,
   validationErrorCheck,
-  authController.changePassword
+  authController.changePassword.bind(authController)
 );
 
 // ----- Password recovery section end -----
 
 // +++++ Account info section start +++++
 
-authRouter.get("/me", authBearer, authController.getAccountInfo);
+authRouter.get(
+  "/me",
+  authBearer,
+  authController.getAccountInfo.bind(authController)
+);
 
 // ----- Account info section end -----

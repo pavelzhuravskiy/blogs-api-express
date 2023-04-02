@@ -1,9 +1,14 @@
-import { blogsRepository } from "../repositories/blogs-repository";
+import { BlogsRepository } from "../repositories/blogs-repository";
 import { BlogDBModel } from "../models/database/BlogDBModel";
 import { ObjectId } from "mongodb";
 import { BlogViewModel } from "../models/view/BlogViewModel";
 
-class BlogsService {
+export class BlogsService {
+  private blogsRepository: BlogsRepository;
+  constructor() {
+    this.blogsRepository = new BlogsRepository();
+  }
+
   async createBlog(
     name: string,
     description: string,
@@ -18,11 +23,11 @@ class BlogsService {
       false
     );
 
-    return blogsRepository.createBlog(newBlog);
+    return this.blogsRepository.createBlog(newBlog);
   }
 
   async updateBlog(_id: ObjectId, blog: BlogDBModel): Promise<boolean> {
-    return blogsRepository.updateBlog(
+    return this.blogsRepository.updateBlog(
       _id,
       blog.name,
       blog.description,
@@ -31,12 +36,10 @@ class BlogsService {
   }
 
   async deleteBlog(_id: ObjectId): Promise<boolean> {
-    return blogsRepository.deleteBlog(_id);
+    return this.blogsRepository.deleteBlog(_id);
   }
 
   async deleteAll(): Promise<boolean> {
-    return blogsRepository.deleteAll();
+    return this.blogsRepository.deleteAll();
   }
 }
-
-export const blogsService = new BlogsService();

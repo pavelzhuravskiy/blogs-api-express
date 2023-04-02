@@ -13,16 +13,16 @@ blogsRouter.post(
   authBasic,
   validationBlogsInput,
   validationErrorCheck,
-  blogsController.createBlog
+  blogsController.createBlog.bind(blogsController)
 );
 
-blogsRouter.get("/", blogsController.getBlogs);
+blogsRouter.get("/", blogsController.getBlogs.bind(blogsController));
 
 blogsRouter.get(
   "/:id",
   validationBlogsFindByParamId,
   validationErrorCheck,
-  blogsController.getBlog
+  blogsController.getBlog.bind(blogsController)
 );
 
 blogsRouter.put(
@@ -31,7 +31,7 @@ blogsRouter.put(
   validationBlogsFindByParamId,
   validationBlogsInput,
   validationErrorCheck,
-  blogsController.updateBlog
+  blogsController.updateBlog.bind(blogsController)
 );
 
 blogsRouter.delete(
@@ -39,10 +39,14 @@ blogsRouter.delete(
   authBasic,
   validationBlogsFindByParamId,
   validationErrorCheck,
-  blogsController.deleteBlog
+  blogsController.deleteBlog.bind(blogsController)
 );
 
-blogsRouter.delete("/", authBasic, blogsController.deleteBlogs);
+blogsRouter.delete(
+  "/",
+  authBasic,
+  blogsController.deleteBlogs.bind(blogsController)
+);
 
 // +++++ Posts in blogs section start +++++
 
@@ -52,14 +56,14 @@ blogsRouter.post(
   validationBlogsFindByParamId,
   validationPostsInput,
   validationErrorCheck,
-  blogsController.createPost
+  blogsController.createPost.bind(blogsController)
 );
 
 blogsRouter.get(
   "/:id/posts",
   validationBlogsFindByParamId,
   validationErrorCheck,
-  blogsController.getPosts
+  blogsController.getPosts.bind(blogsController)
 );
 
 // ----- Posts in blogs section end -----

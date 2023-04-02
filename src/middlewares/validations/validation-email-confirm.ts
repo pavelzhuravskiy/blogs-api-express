@@ -1,5 +1,7 @@
 import { body } from "express-validator";
-import { usersService } from "../../domain/users-service";
+import { UsersService } from "../../domain/users-service";
+
+const usersService = new UsersService();
 
 export const validationEmailConfirm = body("code").custom(async (value) => {
   const user = await usersService.findUserByEmailConfirmationCode(value);

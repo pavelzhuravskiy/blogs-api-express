@@ -1,6 +1,8 @@
 import { param } from "express-validator";
 import { ObjectId } from "mongodb";
-import { postsQueryRepository } from "../../../repositories/query-repos/posts-query-repository";
+import { PostsQueryRepository } from "../../../repositories/query-repos/posts-query-repository";
+
+const postsQueryRepository = new PostsQueryRepository();
 
 export const validationPostsFindByParamId = param("id").custom(
   async (value) => {

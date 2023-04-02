@@ -1,17 +1,25 @@
 import { ObjectId } from "mongodb";
-import { postsRepository } from "../repositories/posts-repository";
+import { PostsRepository } from "../repositories/posts-repository";
 import { PostDBModel } from "../models/database/PostDBModel";
 import { PostViewModel } from "../models/view/PostViewModel";
-import { blogsQueryRepository } from "../repositories/query-repos/blogs-query-repository";
+import { BlogsQueryRepository } from "../repositories/query-repos/blogs-query-repository";
 
-class PostsService {
+export class PostsService {
+  private postsRepository: PostsRepository;
+  private blogsQueryRepository: BlogsQueryRepository;
+  constructor() {
+    this.postsRepository = new PostsRepository();
+    this.blogsQueryRepository = new BlogsQueryRepository();
+  }
   async createPost(
     title: string,
     shortDescription: string,
     content: string,
     blogId: string
   ): Promise<PostViewModel | null> {
-    const blog = await blogsQueryRepository.findBlogById(new ObjectId(blogId));
+    const blog = await this.blogsQueryRepository.findBlogById(
+      new ObjectId(blogId)
+    );
 
     if (!blog) {
       return null;
@@ -27,11 +35,11 @@ class PostsService {
       new Date().toISOString()
     );
 
-    return postsRepository.createPost(newPost);
+    return this.postsRepository.createPost(newPost);
   }
 
   async updatePost(_id: ObjectId, post: PostViewModel): Promise<boolean> {
-    return postsRepository.updatePost(
+    return this.postsRepository.updatePost(
       _id,
       post.title,
       post.shortDescription,
@@ -41,12 +49,10 @@ class PostsService {
   }
 
   async deletePost(_id: ObjectId): Promise<boolean> {
-    return postsRepository.deletePost(_id);
+    return this.postsRepository.deletePost(_id);
   }
 
   async deleteAll(): Promise<boolean> {
-    return postsRepository.deleteAll();
+    return this.postsRepository.deleteAll();
   }
 }
-
-export const postsService = new PostsService();

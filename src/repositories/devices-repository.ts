@@ -2,7 +2,7 @@ import { Devices } from "../schemas/deviceSchema";
 import { DeviceDBModel } from "../models/database/DeviceDBModel";
 import { DeviceViewModel } from "../models/view/DeviceViewModel";
 
-class DevicesRepository {
+export class DevicesRepository {
   async findDeviceById(deviceId: string): Promise<DeviceDBModel | null> {
     const foundDevice = await Devices.findOne({ deviceId });
 
@@ -55,5 +55,3 @@ class DevicesRepository {
     return (await Devices.countDocuments()) === 0;
   }
 }
-
-export const devicesRepository = new DevicesRepository();
