@@ -3,10 +3,9 @@ import { ObjectId } from "mongodb";
 import { CommentDBModel } from "../models/database/CommentDBModel";
 import { Comments } from "../schemas/commentSchema";
 
-export const commentsRepository = {
-  // Create new comment
+class CommentsRepository {
   async createComment(
-    newComment: CommentDBModel
+      newComment: CommentDBModel
   ): Promise<CommentViewModel> {
     const insertedComment = await Comments.create(newComment);
 
@@ -19,30 +18,30 @@ export const commentsRepository = {
       },
       createdAt: newComment.createdAt,
     };
-  },
+  }
 
-  // Update existing comment
   async updateComment(_id: ObjectId, content: string): Promise<boolean> {
     const result = await Comments.updateOne(
-      { _id },
-      {
-        $set: {
-          content: content,
-        },
-      }
+        { _id },
+        {
+          $set: {
+            content: content,
+          },
+        }
     );
     return result.matchedCount === 1;
-  },
+  }
 
-  // Delete existing comment
   async deleteComment(_id: ObjectId): Promise<boolean> {
     const result = await Comments.deleteOne({ _id });
     return result.deletedCount === 1;
-  },
+  }
 
-  // Delete all comments
   async deleteAll(): Promise<boolean> {
     await Comments.deleteMany({});
     return (await Comments.countDocuments()) === 0;
-  },
-};
+  }
+
+}
+
+export const commentsRepository = new CommentsRepository();

@@ -3,8 +3,7 @@ import { ObjectId } from "mongodb";
 import { PostDBModel } from "../models/database/PostDBModel";
 import { Posts } from "../schemas/postSchema";
 
-export const postsRepository = {
-  // Create new post
+class PostsRepository {
   async createPost(newPost: PostDBModel): Promise<PostViewModel> {
     const insertedPost = await Posts.create(newPost);
 
@@ -17,9 +16,8 @@ export const postsRepository = {
       blogName: newPost.blogName,
       createdAt: newPost.createdAt,
     };
-  },
+  }
 
-  // Update existing post
   async updatePost(
     _id: ObjectId,
     title: string,
@@ -40,17 +38,17 @@ export const postsRepository = {
     );
 
     return result.matchedCount === 1;
-  },
+  }
 
-  // Delete existing post
   async deletePost(_id: ObjectId): Promise<boolean> {
     const result = await Posts.deleteOne({ _id });
     return result.deletedCount === 1;
-  },
+  }
 
-  // Delete all posts
   async deleteAll(): Promise<boolean> {
     await Posts.deleteMany({});
     return (await Posts.countDocuments()) === 0;
-  },
-};
+  }
+}
+
+export const postsRepository = new PostsRepository();

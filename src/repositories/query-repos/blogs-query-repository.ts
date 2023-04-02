@@ -6,8 +6,7 @@ import { funcBlogsMapping } from "../../functions/mappings/func-blogs-mapping";
 import { BlogDBModel } from "../../models/database/BlogDBModel";
 import { FilterQuery, SortOrder } from "mongoose";
 
-export const blogsQueryRepository = {
-  // Return blogs with query
+class BlogsQueryRepository {
   async findBlogs(
     pageNumber: number,
     pageSize: number,
@@ -21,10 +20,10 @@ export const blogsQueryRepository = {
       filter.name = { $regex: searchNameTerm, $options: "i" };
     }
 
-    const sortingObj: { [key: string]: SortOrder } = {[sortBy]: "desc"};
+    const sortingObj: { [key: string]: SortOrder } = { [sortBy]: "desc" };
 
     if (sortDirection === "asc") {
-      sortingObj[sortBy] = "asc"
+      sortingObj[sortBy] = "asc";
     }
 
     const output = await Blogs.find(filter)
@@ -42,9 +41,8 @@ export const blogsQueryRepository = {
       totalCount,
       items: funcBlogsMapping(output),
     };
-  },
+  }
 
-  // Return blog by ID
   async findBlogById(_id: ObjectId): Promise<BlogViewModel | null> {
     const foundBlog = await Blogs.findOne({ _id });
 
@@ -60,5 +58,7 @@ export const blogsQueryRepository = {
       createdAt: foundBlog.createdAt,
       isMembership: foundBlog.isMembership,
     };
-  },
-};
+  }
+}
+
+export const blogsQueryRepository = new BlogsQueryRepository();

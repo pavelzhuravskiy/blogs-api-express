@@ -2,7 +2,7 @@ import { Devices } from "../schemas/deviceSchema";
 import { DeviceDBModel } from "../models/database/DeviceDBModel";
 import { DeviceViewModel } from "../models/view/DeviceViewModel";
 
-export const devicesRepository = {
+class DevicesRepository {
   async findDeviceById(deviceId: string): Promise<DeviceDBModel | null> {
     const foundDevice = await Devices.findOne({ deviceId });
 
@@ -11,7 +11,7 @@ export const devicesRepository = {
     }
 
     return foundDevice;
-  },
+  }
 
   async createDevice(device: DeviceDBModel): Promise<DeviceViewModel> {
     await Devices.create(device);
@@ -19,9 +19,9 @@ export const devicesRepository = {
       ip: device.ip,
       title: device.title,
       lastActiveDate: device.lastActiveDate.toString(),
-      deviceId: device.deviceId
+      deviceId: device.deviceId,
     };
-  },
+  }
 
   async updateDevice(
     ip: string,
@@ -38,20 +38,22 @@ export const devicesRepository = {
       }
     );
     return result.matchedCount === 1;
-  },
+  }
 
   async deleteDevice(deviceId: string): Promise<boolean> {
     const result = await Devices.deleteOne({ deviceId });
     return result.deletedCount === 1;
-  },
+  }
 
   async deleteAllOldDevices(currentDevice: string): Promise<boolean> {
     await Devices.deleteMany({ deviceId: { $ne: currentDevice } });
     return (await Devices.countDocuments()) === 1;
-  },
+  }
 
   async deleteAll(): Promise<boolean> {
     await Devices.deleteMany({});
     return (await Devices.countDocuments()) === 0;
-  },
-};
+  }
+}
+
+export const devicesRepository = new DevicesRepository();

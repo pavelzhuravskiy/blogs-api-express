@@ -1,10 +1,10 @@
 import { RateLimitDBModel } from "../models/database/RateLimitDBModel";
 import { RateLimits } from "../schemas/rateLimitSchema";
 
-export const rateLimitsRepository = {
+class RateLimitsRepository {
   async findRateLimit(
-      ip: string,
-      endpoint: string
+    ip: string,
+    endpoint: string
   ): Promise<RateLimitDBModel | null> {
     const foundRateLimit = await RateLimits.findOne({ ip, endpoint });
 
@@ -13,14 +13,14 @@ export const rateLimitsRepository = {
     }
 
     return foundRateLimit;
-  },
+  }
 
   async createRateLimit(
     rateLimit: RateLimitDBModel
   ): Promise<RateLimitDBModel> {
     await RateLimits.create(rateLimit);
     return rateLimit;
-  },
+  }
 
   async updateCounter(
     ip: string,
@@ -38,15 +38,17 @@ export const rateLimitsRepository = {
       }
     );
     return result.matchedCount === 1;
-  },
+  }
 
   async deleteRateLimit(ip: string, endpoint: string): Promise<boolean> {
     const result = await RateLimits.deleteOne({ ip, endpoint });
     return result.deletedCount === 1;
-  },
+  }
 
   async deleteAll(): Promise<boolean> {
     await RateLimits.deleteMany({});
     return (await RateLimits.countDocuments()) === 0;
-  },
-};
+  }
+}
+
+export const rateLimitsRepository = new RateLimitsRepository();

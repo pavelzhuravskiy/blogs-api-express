@@ -6,8 +6,7 @@ import { Posts } from "../../schemas/postSchema";
 import { FilterQuery, SortOrder } from "mongoose";
 import { PostDBModel } from "../../models/database/PostDBModel";
 
-export const postsQueryRepository = {
-  // Return posts with query
+class PostsQueryRepository {
   async findPosts(
     pageNumber: number,
     pageSize: number,
@@ -42,9 +41,8 @@ export const postsQueryRepository = {
       totalCount,
       items: funcPostsMapping(output),
     };
-  },
+  }
 
-  // Return post by ID
   async findPostById(_id: ObjectId): Promise<PostViewModel | null> {
     const foundPost = await Posts.findOne({ _id });
 
@@ -61,5 +59,7 @@ export const postsQueryRepository = {
       blogName: foundPost.blogName,
       createdAt: foundPost.createdAt,
     };
-  },
-};
+  }
+}
+
+export const postsQueryRepository = new PostsQueryRepository();

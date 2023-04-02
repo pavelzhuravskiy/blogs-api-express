@@ -6,8 +6,7 @@ import { Paginator } from "../../models/view/_Paginator";
 import { CommentDBModel } from "../../models/database/CommentDBModel";
 import { funcCommentsMapping } from "../../functions/mappings/func-comments-mapping";
 
-export const commentsQueryRepository = {
-  // Return comments with query
+class CommentsQueryRepository {
   async findComments(
     pageNumber: number,
     pageSize: number,
@@ -38,7 +37,7 @@ export const commentsQueryRepository = {
       totalCount,
       items: funcCommentsMapping(output),
     };
-  },
+  }
 
   async findCommentById(_id: ObjectId): Promise<CommentViewModel | null> {
     const foundComment = await Comments.findOne({ _id });
@@ -56,5 +55,7 @@ export const commentsQueryRepository = {
       },
       createdAt: foundComment.createdAt,
     };
-  },
-};
+  }
+}
+
+export const commentsQueryRepository = new CommentsQueryRepository();
