@@ -46,4 +46,20 @@ export class CommentsController {
       res.sendStatus(404);
     }
   }
+
+  async updateLikeStatus(req: Request, res: Response) {
+    const isUpdated = await this.commentsService.updateLikeStatus(
+        new ObjectId(req.params.id),
+        req.body.likeStatus
+    );
+
+    if (isUpdated) {
+      const updatedComment = await this.commentsQueryRepository.findCommentById(
+          new ObjectId(req.params.id)
+      );
+      res.status(204).json(updatedComment);
+    }
+
+  }
+
 }

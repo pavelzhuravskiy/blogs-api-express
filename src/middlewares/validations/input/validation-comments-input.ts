@@ -1,6 +1,6 @@
 import { body } from "express-validator";
 
-export const ValidationCommentsInput = [
+export const validationCommentsInput = [
   body("content")
     .exists()
     .withMessage("Content is required")

@@ -54,6 +54,11 @@ export class CommentsQueryRepository {
         userLogin: foundComment.commentatorInfo.userLogin,
       },
       createdAt: foundComment.createdAt,
+      likesInfo: {
+        likesCount: foundComment.likesInfo.likesCount,
+        dislikesCount: foundComment.likesInfo.dislikesCount,
+        myStatus: foundComment.likesInfo.myStatus
+      }
     };
   }
 }

@@ -46,6 +46,7 @@ const devicesService = new DevicesService(jwtService, devicesRepository);
 const commentsService = new CommentsService(
   usersService,
   postsQueryRepository,
+  commentsQueryRepository,
   commentsRepository
 );
 

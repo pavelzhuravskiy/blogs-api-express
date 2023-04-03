@@ -4,7 +4,7 @@ import { validationPostsInput } from "../middlewares/validations/input/validatio
 import { validationErrorCheck } from "../middlewares/validations/_validation-error-check";
 import { validationPostsCreation } from "../middlewares/validations/validation-posts-creation";
 import { validationPostsFindByParamId } from "../middlewares/validations/find-by-id/validation-posts-find-by-param-id";
-import { ValidationCommentsInput } from "../middlewares/validations/input/validation-comments-input";
+import { validationCommentsInput } from "../middlewares/validations/input/validation-comments-input";
 import { authBearer } from "../middlewares/auth/auth-bearer";
 import { postsController } from "../composition-root";
 
@@ -58,7 +58,7 @@ postsRouter.post(
   "/:id/comments",
   authBearer,
   validationPostsFindByParamId,
-  ValidationCommentsInput,
+  validationCommentsInput,
   validationErrorCheck,
   postsController.createComment.bind(postsController)
 );

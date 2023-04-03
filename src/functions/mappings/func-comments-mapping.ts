@@ -10,6 +10,11 @@ export const funcCommentsMapping = (array: CommentDBModel[]) => {
         userLogin: comment.commentatorInfo.userLogin,
       },
       createdAt: comment.createdAt,
+      likesInfo: {
+        likesCount: comment.likesInfo.likesCount,
+        dislikesCount: comment.likesInfo.dislikesCount,
+        myStatus: comment.likesInfo.myStatus
+      }
     };
   });
 };

@@ -15,6 +15,11 @@ export class CommentsRepository {
         userLogin: newComment.commentatorInfo.userLogin,
       },
       createdAt: newComment.createdAt,
+      likesInfo: {
+        likesCount: newComment.likesInfo.likesCount,
+        dislikesCount: newComment.likesInfo.dislikesCount,
+        myStatus: newComment.likesInfo.myStatus,
+      },
     };
   }
 
@@ -24,6 +29,25 @@ export class CommentsRepository {
       {
         $set: {
           content: content,
+        },
+      }
+    );
+    return result.matchedCount === 1;
+  }
+
+  async updateLikeStatus(
+    _id: ObjectId,
+    likesCount: number,
+    dislikesCount: number,
+    likeStatus: string
+  ): Promise<boolean> {
+    const result = await Comments.updateOne(
+      { _id },
+      {
+        $set: {
+          "likesInfo.likesCount": likesCount,
+          "likesInfo.dislikesCount": dislikesCount,
+          "likesInfo.myStatus": likeStatus,
         },
       }
     );

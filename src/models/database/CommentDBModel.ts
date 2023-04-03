@@ -9,6 +9,11 @@ export class CommentDBModel {
       userLogin: string;
     },
     public postId: string,
-    public createdAt: string
+    public createdAt: string,
+    public likesInfo: {
+        likesCount: number,
+        dislikesCount: number,
+        myStatus: string
+    }
   ) {}
 }
