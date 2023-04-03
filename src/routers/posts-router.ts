@@ -6,7 +6,7 @@ import { validationPostsCreation } from "../middlewares/validations/validation-p
 import { validationPostsFindByParamId } from "../middlewares/validations/find-by-id/validation-posts-find-by-param-id";
 import { ValidationCommentsInput } from "../middlewares/validations/input/validation-comments-input";
 import { authBearer } from "../middlewares/auth/auth-bearer";
-import { postsController } from "../controllers/PostsController";
+import {postsController} from "../composition-root";
 
 export const postsRouter = Router({});
 

@@ -5,12 +5,10 @@ import { PostViewModel } from "../models/view/PostViewModel";
 import { BlogsQueryRepository } from "../repositories/query-repos/blogs-query-repository";
 
 export class PostsService {
-  private postsRepository: PostsRepository;
-  private blogsQueryRepository: BlogsQueryRepository;
-  constructor() {
-    this.postsRepository = new PostsRepository();
-    this.blogsQueryRepository = new BlogsQueryRepository();
-  }
+  constructor(
+    protected postsRepository: PostsRepository,
+    protected blogsQueryRepository: BlogsQueryRepository
+  ) {}
   async createPost(
     title: string,
     shortDescription: string,

@@ -12,16 +12,13 @@ import { CommentsService } from "../domain/comments-service";
 import { StringIdModel } from "../models/global/StringIdModel";
 import { CommentsQueryRepository } from "../repositories/query-repos/comments-query-repository";
 
-class PostsController {
-  private postsService: PostsService;
-  private postsQueryRepository: PostsQueryRepository;
-  private commentsService: CommentsService;
-  private commentsQueryRepository: CommentsQueryRepository;
-  constructor() {
-    this.postsService = new PostsService();
-    this.postsQueryRepository = new PostsQueryRepository();
-    this.commentsService = new CommentsService();
-    this.commentsQueryRepository = new CommentsQueryRepository();
+export class PostsController {
+  constructor(
+    protected postsService: PostsService,
+    protected commentsService: CommentsService,
+    protected postsQueryRepository: PostsQueryRepository,
+    protected commentsQueryRepository: CommentsQueryRepository
+  ) {
   }
   async createPost(req: Request, res: Response) {
     const newPost = await this.postsService.createPost(
@@ -105,5 +102,3 @@ class PostsController {
     res.json(foundComments);
   }
 }
-
-export const postsController = new PostsController();

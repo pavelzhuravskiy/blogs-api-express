@@ -262,7 +262,6 @@ describe("Posts testing", () => {
     it("should return all posts", async () => {
       const response = await getter(postsURI);
 
-      console.log(response.body);
       expect(response.status).toBe(200);
       expect(response.body).toEqual(emptyOutput);
     });

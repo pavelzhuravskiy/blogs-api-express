@@ -4,10 +4,7 @@ import { ObjectId } from "mongodb";
 import { BlogViewModel } from "../models/view/BlogViewModel";
 
 export class BlogsService {
-  private blogsRepository: BlogsRepository;
-  constructor() {
-    this.blogsRepository = new BlogsRepository();
-  }
+  constructor(protected blogsRepository: BlogsRepository) {}
 
   async createBlog(
     name: string,

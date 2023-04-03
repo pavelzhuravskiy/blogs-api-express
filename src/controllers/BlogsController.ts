@@ -12,17 +12,13 @@ import { PostsService } from "../domain/posts-service";
 import { StringIdModel } from "../models/global/StringIdModel";
 import { PostsQueryRepository } from "../repositories/query-repos/posts-query-repository";
 
-class BlogsController {
-  private blogsService: BlogsService;
-  private blogsQueryRepository: BlogsQueryRepository;
-  private postsService: PostsService;
-  private postsQueryRepository: PostsQueryRepository;
-  constructor() {
-    this.blogsService = new BlogsService();
-    this.blogsQueryRepository = new BlogsQueryRepository();
-    this.postsService = new PostsService();
-    this.postsQueryRepository = new PostsQueryRepository();
-  }
+export class BlogsController {
+  constructor(
+    protected blogsService: BlogsService,
+    protected postsService: PostsService,
+    protected blogsQueryRepository: BlogsQueryRepository,
+    protected postsQueryRepository: PostsQueryRepository
+  ) {}
   async createBlog(req: Request, res: Response) {
     const newBlog = await this.blogsService.createBlog(
       req.body.name,
@@ -105,5 +101,3 @@ class BlogsController {
     res.json(foundPosts);
   }
 }
-
-export const blogsController = new BlogsController();
