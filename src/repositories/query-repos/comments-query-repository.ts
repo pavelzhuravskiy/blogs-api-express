@@ -28,7 +28,7 @@ export class CommentsQueryRepository {
       .limit(pageSize > 0 ? pageSize : 0);
 
     const totalCount = await Comments.countDocuments(filter);
-    const pagesCount = Math.ceil(totalCount / Number(pageSize));
+    const pagesCount = Math.ceil(totalCount / pageSize);
 
     return {
       pagesCount: pagesCount,

@@ -32,7 +32,7 @@ export class PostsQueryRepository {
       .limit(pageSize > 0 ? pageSize : 0);
 
     const totalCount = await Posts.countDocuments(filter);
-    const pagesCount = Math.ceil(totalCount / Number(pageSize));
+    const pagesCount = Math.ceil(totalCount / pageSize);
 
     return {
       pagesCount: pagesCount,
