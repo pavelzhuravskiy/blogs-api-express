@@ -4,7 +4,7 @@ import { validationBlogsInput } from "../middlewares/validations/input/validatio
 import { validationErrorCheck } from "../middlewares/validations/_validation-error-check";
 import { validationBlogsFindByParamId } from "../middlewares/validations/find-by-id/validation-blogs-find-by-param-id";
 import { validationPostsInput } from "../middlewares/validations/input/validation-posts-input";
-import {blogsController} from "../composition-root";
+import { blogsController } from "../composition-root";
 
 export const blogsRouter = Router({});
 

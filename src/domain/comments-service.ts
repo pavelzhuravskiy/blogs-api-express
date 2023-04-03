@@ -6,14 +6,11 @@ import { CommentDBModel } from "../models/database/CommentDBModel";
 import { UsersService } from "./users-service";
 
 export class CommentsService {
-  private usersService: UsersService;
-  private postsQueryRepository: PostsQueryRepository;
-  private commentsRepository: CommentsRepository;
-  constructor() {
-    this.usersService = new UsersService();
-    this.postsQueryRepository = new PostsQueryRepository();
-    this.commentsRepository = new CommentsRepository();
-  }
+  constructor(
+    protected usersService: UsersService,
+    protected postsQueryRepository: PostsQueryRepository,
+    protected commentsRepository: CommentsRepository
+  ) {}
   async createComment(
     postId: ObjectId,
     content: string,

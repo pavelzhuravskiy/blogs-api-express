@@ -1,9 +1,12 @@
 import { NextFunction, Request, Response } from "express";
 import { JwtService } from "../../application/jwt-service";
 import { DevicesService } from "../../domain/devices-service";
+import { DevicesRepository } from "../../repositories/devices-repository";
 
-const devicesService = new DevicesService();
+const devicesRepository = new DevicesRepository();
 const jwtService = new JwtService();
+
+const devicesService = new DevicesService(jwtService, devicesRepository);
 
 export const validationRefreshToken = async (
   req: Request,

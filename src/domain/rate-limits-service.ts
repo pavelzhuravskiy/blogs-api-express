@@ -3,10 +3,7 @@ import { RateLimitsRepository } from "../repositories/rate-limits-repository";
 import { ObjectId } from "mongodb";
 
 export class RateLimitsService {
-  private rateLimitsRepository: RateLimitsRepository;
-  constructor() {
-    this.rateLimitsRepository = new RateLimitsRepository();
-  }
+  constructor(protected rateLimitsRepository: RateLimitsRepository) {}
   async findRateLimit(
     ip: string,
     endpoint: string

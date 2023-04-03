@@ -1,7 +1,10 @@
 import { NextFunction, Request, Response } from "express";
 import { RateLimitsService } from "../domain/rate-limits-service";
+import { RateLimitsRepository } from "../repositories/rate-limits-repository";
 
-const rateLimitsService = new RateLimitsService();
+const rateLimitsRepository = new RateLimitsRepository();
+
+const rateLimitsService = new RateLimitsService(rateLimitsRepository);
 
 export const rateLimiter = async (
   req: Request,

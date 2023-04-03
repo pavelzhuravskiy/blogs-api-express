@@ -6,21 +6,15 @@ import { CommentsRepository } from "../repositories/comments-repository";
 import { DevicesRepository } from "../repositories/devices-repository";
 import { RateLimitsRepository } from "../repositories/rate-limits-repository";
 
-class TestingController {
-  private blogsRepository: BlogsRepository;
-  private postsRepository: PostsRepository;
-  private usersRepository: UsersRepository;
-  private commentsRepository: CommentsRepository;
-  private devicesRepository: DevicesRepository;
-  private rateLimitsRepository: RateLimitsRepository;
-  constructor() {
-    this.blogsRepository = new BlogsRepository();
-    this.postsRepository = new PostsRepository();
-    this.usersRepository = new UsersRepository();
-    this.commentsRepository = new CommentsRepository();
-    this.devicesRepository = new DevicesRepository();
-    this.rateLimitsRepository = new RateLimitsRepository();
-  }
+export class TestingController {
+  constructor(
+    protected blogsRepository: BlogsRepository,
+    protected postsRepository: PostsRepository,
+    protected usersRepository: UsersRepository,
+    protected commentsRepository: CommentsRepository,
+    protected devicesRepository: DevicesRepository,
+    protected rateLimitsRepository: RateLimitsRepository
+  ) {}
   async deleteEverything(req: Request, res: Response) {
     await this.blogsRepository.deleteAll();
     await this.postsRepository.deleteAll();
@@ -31,5 +25,3 @@ class TestingController {
     res.sendStatus(204);
   }
 }
-
-export const testingController = new TestingController();

@@ -5,12 +5,10 @@ import { DeviceViewModel } from "../models/view/DeviceViewModel";
 import { DeviceDBModel } from "../models/database/DeviceDBModel";
 
 export class DevicesService {
-  private devicesRepository: DevicesRepository;
-  private jwtService: JwtService;
-  constructor() {
-    this.devicesRepository = new DevicesRepository();
-    this.jwtService = new JwtService();
-  }
+  constructor(
+    protected jwtService: JwtService,
+    protected devicesRepository: DevicesRepository
+  ) {}
   async findDeviceById(deviceId: string): Promise<DeviceDBModel | null> {
     return this.devicesRepository.findDeviceById(deviceId);
   }

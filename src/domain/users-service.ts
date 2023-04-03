@@ -5,10 +5,7 @@ import bcrypt from "bcrypt";
 import { UserDBModel } from "../models/database/UserDBModel";
 
 export class UsersService {
-  private usersRepository: UsersRepository;
-  constructor() {
-    this.usersRepository = new UsersRepository();
-  }
+  constructor(protected usersRepository: UsersRepository) {}
   async findUserById(_id: ObjectId): Promise<UserDBModel | null> {
     return this.usersRepository.findUserById(_id);
   }

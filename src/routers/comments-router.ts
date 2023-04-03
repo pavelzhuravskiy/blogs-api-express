@@ -5,7 +5,7 @@ import { ValidationCommentsInput } from "../middlewares/validations/input/valida
 import { authBearer } from "../middlewares/auth/auth-bearer";
 import { validationCommentOwner } from "../middlewares/validations/validation-comment-owner";
 import { authBasic } from "../middlewares/auth/auth-basic";
-import { commentsController } from "../controllers/CommentsController";
+import { commentsController } from "../composition-root";
 
 export const commentsRouter = Router({});
 

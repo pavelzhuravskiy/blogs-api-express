@@ -6,13 +6,11 @@ import { ObjectId } from "mongodb";
 import { UsersService } from "../domain/users-service";
 import { UsersQueryRepository } from "../repositories/query-repos/users-query-repository";
 
-class UsersController {
-  private usersService: UsersService;
-  private usersQueryRepository: UsersQueryRepository;
-  constructor() {
-    this.usersService = new UsersService();
-    this.usersQueryRepository = new UsersQueryRepository();
-  }
+export class UsersController {
+  constructor(
+    protected usersService: UsersService,
+    protected usersQueryRepository: UsersQueryRepository
+  ) {}
   async createUser(req: Request, res: Response) {
     const newUser = await this.usersService.createUser(
       req.body.login,
@@ -52,5 +50,3 @@ class UsersController {
     }
   }
 }
-
-export const usersController = new UsersController();

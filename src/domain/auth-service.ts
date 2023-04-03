@@ -9,12 +9,10 @@ import { UsersService } from "./users-service";
 import { UserDBModel } from "../models/database/UserDBModel";
 
 export class AuthService {
-  private usersService: UsersService;
-  private usersRepository: UsersRepository;
-  constructor() {
-    this.usersService = new UsersService();
-    this.usersRepository = new UsersRepository();
-  }
+  constructor(
+    protected usersService: UsersService,
+    protected usersRepository: UsersRepository
+  ) {}
   async registerUser(
     login: string,
     password: string,

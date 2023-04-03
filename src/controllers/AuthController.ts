@@ -5,17 +5,13 @@ import { JwtService } from "../application/jwt-service";
 import { DevicesService } from "../domain/devices-service";
 import { AuthService } from "../domain/auth-service";
 
-class AuthController {
-  private usersService: UsersService;
-  private devicesService: DevicesService;
-  private authService: AuthService;
-  private jwtService: JwtService;
-  constructor() {
-    this.usersService = new UsersService();
-    this.devicesService = new DevicesService();
-    this.authService = new AuthService();
-    this.jwtService = new JwtService();
-  }
+export class AuthController {
+  constructor(
+    protected usersService: UsersService,
+    protected authService: AuthService,
+    protected jwtService: JwtService,
+    protected devicesService: DevicesService
+  ) {}
   async registerUser(req: Request, res: Response) {
     await this.authService.registerUser(
       req.body.login,
@@ -134,5 +130,3 @@ class AuthController {
     res.status(200).json(accountInfo);
   }
 }
-
-export const authController = new AuthController();

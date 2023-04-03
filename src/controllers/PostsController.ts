@@ -18,8 +18,7 @@ export class PostsController {
     protected commentsService: CommentsService,
     protected postsQueryRepository: PostsQueryRepository,
     protected commentsQueryRepository: CommentsQueryRepository
-  ) {
-  }
+  ) {}
   async createPost(req: Request, res: Response) {
     const newPost = await this.postsService.createPost(
       req.body.title,

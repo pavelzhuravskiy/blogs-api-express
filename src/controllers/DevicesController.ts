@@ -3,15 +3,12 @@ import { JwtService } from "../application/jwt-service";
 import { DevicesQueryRepository } from "../repositories/query-repos/devices-query-repository";
 import { DevicesService } from "../domain/devices-service";
 
-class DevicesController {
-  private devicesService: DevicesService;
-  private devicesQueryRepository: DevicesQueryRepository;
-  private jwtService: JwtService;
-  constructor() {
-    this.devicesService = new DevicesService();
-    this.devicesQueryRepository = new DevicesQueryRepository();
-    this.jwtService = new JwtService();
-  }
+export class DevicesController {
+  constructor(
+    protected jwtService: JwtService,
+    protected devicesService: DevicesService,
+    protected devicesQueryRepository: DevicesQueryRepository
+  ) {}
   async getDevices(req: Request, res: Response) {
     const cookieRefreshToken = req.cookies.refreshToken;
     const cookieRefreshTokenObj = await this.jwtService.verifyToken(
@@ -54,5 +51,3 @@ class DevicesController {
     }
   }
 }
-
-export const devicesController = new DevicesController();

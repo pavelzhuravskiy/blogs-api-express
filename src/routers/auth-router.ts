@@ -13,7 +13,7 @@ import { rateLimiter } from "../middlewares/rate-limiter";
 import { validationPasswordConfirm } from "../middlewares/validations/validation-password-confirm";
 import { validationPasswordInput } from "../middlewares/validations/input/validation-password-input";
 import { validationRecoveryCodeInput } from "../middlewares/validations/input/validation-recovery-code-input";
-import { authController } from "../controllers/AuthController";
+import { authController } from "../composition-root";
 
 export const authRouter = Router({});
 

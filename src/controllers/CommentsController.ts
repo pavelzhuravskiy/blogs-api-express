@@ -3,13 +3,11 @@ import { ObjectId } from "mongodb";
 import { CommentsQueryRepository } from "../repositories/query-repos/comments-query-repository";
 import { CommentsService } from "../domain/comments-service";
 
-class CommentsController {
-  private commentsQueryRepository: CommentsQueryRepository;
-  private commentsService: CommentsService;
-  constructor() {
-    this.commentsQueryRepository = new CommentsQueryRepository();
-    this.commentsService = new CommentsService();
-  }
+export class CommentsController {
+  constructor(
+    protected commentsService: CommentsService,
+    protected commentsQueryRepository: CommentsQueryRepository
+  ) {}
   async getComment(req: Request, res: Response) {
     const foundComment = await this.commentsQueryRepository.findCommentById(
       new ObjectId(req.params.id)
@@ -49,5 +47,3 @@ class CommentsController {
     }
   }
 }
-
-export const commentsController = new CommentsController();

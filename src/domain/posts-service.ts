@@ -6,8 +6,8 @@ import { BlogsQueryRepository } from "../repositories/query-repos/blogs-query-re
 
 export class PostsService {
   constructor(
-    protected postsRepository: PostsRepository,
-    protected blogsQueryRepository: BlogsQueryRepository
+    protected blogsQueryRepository: BlogsQueryRepository,
+    protected postsRepository: PostsRepository
   ) {}
   async createPost(
     title: string,

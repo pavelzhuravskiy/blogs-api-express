@@ -4,7 +4,7 @@ import { validationUsersInput } from "../middlewares/validations/input/validatio
 import { validationUsersFindByParamId } from "../middlewares/validations/find-by-id/validation-users-find-by-param-id";
 import { validationUserUnique } from "../middlewares/validations/validation-user-unique";
 import { authBasic } from "../middlewares/auth/auth-basic";
-import { usersController } from "../controllers/UsersController";
+import { usersController } from "../composition-root";
 
 export const usersRouter = Router({});
 
