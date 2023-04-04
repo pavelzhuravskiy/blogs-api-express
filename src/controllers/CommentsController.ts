@@ -50,7 +50,8 @@ export class CommentsController {
   async updateLikeStatus(req: Request, res: Response) {
     const isUpdated = await this.commentsService.updateLikeStatus(
         new ObjectId(req.params.id),
-        req.body.likeStatus
+        req.body.likeStatus,
+        req.user!._id
     );
 
     if (isUpdated) {

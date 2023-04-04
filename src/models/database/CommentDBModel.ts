@@ -1,5 +1,9 @@
 import { ObjectId } from "mongodb";
 
+export class UserLikes {
+  constructor(public userId: string, public likeStatus: string) {}
+}
+
 export class CommentDBModel {
   constructor(
     public _id: ObjectId,
@@ -11,9 +15,9 @@ export class CommentDBModel {
     public postId: string,
     public createdAt: string,
     public likesInfo: {
-        likesCount: number,
-        dislikesCount: number,
-        myStatus: string
+      likesCount: number;
+      dislikesCount: number;
+      users: UserLikes[];
     }
   ) {}
 }

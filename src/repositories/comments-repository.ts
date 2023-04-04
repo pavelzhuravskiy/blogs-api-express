@@ -4,6 +4,61 @@ import { CommentDBModel } from "../models/database/CommentDBModel";
 import { Comments } from "../schemas/commentSchema";
 
 export class CommentsRepository {
+  async findUserInLikesInfo(userId: ObjectId): Promise<CommentDBModel | null> {
+    const foundUser = await Comments.findOne(
+      Comments.findOne({ "likesInfo.users.userId": userId })
+    );
+
+    if (!foundUser) {
+      return null;
+    }
+
+    return foundUser;
+  }
+
+  async findUserLikeDBStatus(
+    commentId: ObjectId,
+    userId: ObjectId
+  ): Promise<any> {
+    const foundUser = await Comments.findOne(
+      { _id: commentId },
+      {
+        "likesInfo.users": {
+          $filter: {
+            input: "$likesInfo.users",
+            cond: { $eq: ["$$this.userId", userId.toString()] },
+          },
+        },
+      }
+    );
+    if (!foundUser) {
+      return null;
+    }
+
+    return foundUser.likesInfo.users[0].likeStatus;
+
+  }
+
+  async pushUserInLikesInfo(
+    commentId: ObjectId,
+    userId: ObjectId,
+    likeStatus: string
+  ): Promise<boolean> {
+    console.log(commentId);
+    const result = await Comments.updateOne(
+      { _id: commentId },
+      {
+        $push: {
+          "likesInfo.users": {
+            userId,
+            likeStatus,
+          },
+        },
+      }
+    );
+    return result.matchedCount === 1;
+  }
+
   async createComment(newComment: CommentDBModel): Promise<CommentViewModel> {
     const insertedComment = await Comments.create(newComment);
 
@@ -18,7 +73,7 @@ export class CommentsRepository {
       likesInfo: {
         likesCount: newComment.likesInfo.likesCount,
         dislikesCount: newComment.likesInfo.dislikesCount,
-        myStatus: newComment.likesInfo.myStatus,
+        // myStatus: "newComment.likesInfo.myStatus", // TODO fix
       },
     };
   }
@@ -36,18 +91,19 @@ export class CommentsRepository {
   }
 
   async updateLikeStatus(
-    _id: ObjectId,
+    commentId: ObjectId,
+    userId: ObjectId,
     likesCount: number,
     dislikesCount: number,
     likeStatus: string
   ): Promise<boolean> {
     const result = await Comments.updateOne(
-      { _id },
+      { _id: commentId, "likesInfo.users.userId": userId },
       {
         $set: {
           "likesInfo.likesCount": likesCount,
           "likesInfo.dislikesCount": dislikesCount,
-          "likesInfo.myStatus": likeStatus,
+          "likesInfo.users.$.likeStatus": likeStatus,
         },
       }
     );

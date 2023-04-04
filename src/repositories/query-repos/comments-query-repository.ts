@@ -57,7 +57,7 @@ export class CommentsQueryRepository {
       likesInfo: {
         likesCount: foundComment.likesInfo.likesCount,
         dislikesCount: foundComment.likesInfo.dislikesCount,
-        myStatus: foundComment.likesInfo.myStatus
+        // myStatus: foundComment.likesInfo.myStatus
       }
     };
   }

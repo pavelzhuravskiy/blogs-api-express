@@ -2,7 +2,7 @@ import { ObjectId } from "mongodb";
 import { CommentViewModel } from "../models/view/CommentViewModel";
 import { PostsQueryRepository } from "../repositories/query-repos/posts-query-repository";
 import { CommentsRepository } from "../repositories/comments-repository";
-import { CommentDBModel } from "../models/database/CommentDBModel";
+import { CommentDBModel, UserLikes } from "../models/database/CommentDBModel";
 import { UsersService } from "./users-service";
 import { CommentsQueryRepository } from "../repositories/query-repos/comments-query-repository";
 
@@ -34,7 +34,11 @@ export class CommentsService {
       { userId: user!._id.toString(), userLogin: user!.accountData.login },
       postId.toString(),
       new Date().toISOString(),
-      { likesCount: 0, dislikesCount: 0, myStatus: "None" }
+      {
+        likesCount: 0,
+        dislikesCount: 0,
+        users: [new UserLikes(userId.toString(), "None")],
+      }
     );
 
     return this.commentsRepository.createComment(newComment);
@@ -55,7 +59,63 @@ export class CommentsService {
     return this.commentsRepository.deleteAll();
   }
 
-  async updateLikeStatus(_id: ObjectId, likeStatus: string): Promise<boolean> {
+  async updateLikeStatus(
+    commentId: ObjectId,
+    likeStatus: string,
+    userId: ObjectId
+  ): Promise<any> {
+    const foundComment = await this.commentsQueryRepository.findCommentById(
+      commentId
+    );
+
+    if (!foundComment) {
+      return false;
+    }
+
+    let likesCount = foundComment.likesInfo.likesCount;
+    let dislikesCount = foundComment.likesInfo.dislikesCount;
+
+    const foundUser = await this.commentsRepository.findUserInLikesInfo(userId);
+
+    if (!foundUser) {
+      await this.commentsRepository.pushUserInLikesInfo(
+        commentId,
+        userId,
+        likeStatus
+      );
+      if (likeStatus === "Like") {
+        likesCount++;
+      } else if (likeStatus === "Dislike") {
+        dislikesCount++;
+      }
+    }
+
+    const userLikeDBStatus = await this.commentsRepository.findUserLikeDBStatus(
+      commentId,
+      userId
+    );
+
+    console.log(userLikeDBStatus);
+
+    return this.commentsRepository.updateLikeStatus(
+      commentId,
+      userId,
+      likesCount,
+      dislikesCount,
+      likeStatus
+    );
+
+    // return true
+
+    // return this.commentsRepository.updateLikeStatus(
+    //     commentId,
+    //     likesCount,
+    //     dislikesCount,
+    //     likeStatus
+    // );
+  }
+
+  /*
     const foundComment = await this.commentsQueryRepository.findCommentById(
       _id
     );
@@ -74,40 +134,44 @@ export class CommentsService {
           return true;
         } else if (likeStatus === "Like") {
           dbLikesCount++;
-          dbLikeStatus = "Like"
+          dbLikeStatus = "Like";
         } else {
           dbDislikesCount++;
-          dbLikeStatus = "Dislike"
+          dbLikeStatus = "Dislike";
         }
         break;
 
       case "Like":
         if (likeStatus === "None") {
-          dbLikesCount--
+          dbLikesCount--;
           dbLikeStatus = "None";
         } else if (likeStatus === "Like") {
           return true;
         } else {
           dbLikesCount--;
           dbDislikesCount++;
-          dbLikeStatus = "Dislike"
+          dbLikeStatus = "Dislike";
         }
         break;
 
       case "Dislike":
         if (likeStatus === "None") {
           dbDislikesCount--;
-          dbLikeStatus = "None"
+          dbLikeStatus = "None";
         } else if (likeStatus === "Like") {
-          dbDislikesCount--
-          dbLikesCount++
-          dbLikeStatus = "Like"
+          dbDislikesCount--;
+          dbLikesCount++;
+          dbLikeStatus = "Like";
         } else {
           return true;
         }
     }
 
-    return this.commentsRepository.updateLikeStatus(_id, dbLikesCount, dbDislikesCount, dbLikeStatus);
-
-  }
+    return this.commentsRepository.updateLikeStatus(
+      _id,
+      dbLikesCount,
+      dbDislikesCount,
+      dbLikeStatus
+    );
+  */
 }

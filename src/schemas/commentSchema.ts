@@ -10,10 +10,10 @@ const commentSchema = new mongoose.Schema<CommentDBModel>({
   postId: { type: String, required: true },
   createdAt: { type: String, required: true },
   likesInfo: {
-    likesCount: {type: Number, required: true},
-    dislikesCount: {type: Number, required: true},
-    myStatus: {type: String, required: true}
-  }
+    likesCount: { type: Number, required: true },
+    dislikesCount: { type: Number, required: true },
+    users: [{ userId: String, likeStatus: String }],
+  },
 });
 
 export const Comments = mongoose.model("comments", commentSchema);
