@@ -63,7 +63,7 @@ export class CommentsService {
     commentId: ObjectId,
     likeStatus: string,
     userId: ObjectId
-  ): Promise<any> {
+  ): Promise<boolean> {
     const foundComment = await this.commentsQueryRepository.findCommentById(
       commentId
     );
@@ -88,90 +88,55 @@ export class CommentsService {
       } else if (likeStatus === "Dislike") {
         dislikesCount++;
       }
+      return this.commentsRepository.updateLikesCount(
+        commentId,
+        likesCount,
+        dislikesCount
+      );
     }
 
-    const userLikeDBStatus = await this.commentsRepository.findUserLikeDBStatus(
+    let userLikeDBStatus = await this.commentsRepository.findUserLikeStatus(
       commentId,
       userId
     );
 
-    console.log(userLikeDBStatus);
-
-    return this.commentsRepository.updateLikeStatus(
-      commentId,
-      userId,
-      likesCount,
-      dislikesCount,
-      likeStatus
-    );
-
-    // return true
-
-    // return this.commentsRepository.updateLikeStatus(
-    //     commentId,
-    //     likesCount,
-    //     dislikesCount,
-    //     likeStatus
-    // );
-  }
-
-  /*
-    const foundComment = await this.commentsQueryRepository.findCommentById(
-      _id
-    );
-
-    if (!foundComment) {
-      return false;
-    }
-
-    let dbLikesCount = foundComment.likesInfo.likesCount;
-    let dbDislikesCount = foundComment.likesInfo.dislikesCount;
-    let dbLikeStatus = foundComment.likesInfo.myStatus;
-
-    switch (dbLikeStatus) {
+    switch (userLikeDBStatus) {
       case "None":
-        if (likeStatus === "None") {
-          return true;
-        } else if (likeStatus === "Like") {
-          dbLikesCount++;
-          dbLikeStatus = "Like";
-        } else {
-          dbDislikesCount++;
-          dbLikeStatus = "Dislike";
+        if (likeStatus === "Like") {
+          likesCount++;
+        } else if (likeStatus === "Dislike") {
+          dislikesCount++;
         }
         break;
 
       case "Like":
         if (likeStatus === "None") {
-          dbLikesCount--;
-          dbLikeStatus = "None";
-        } else if (likeStatus === "Like") {
-          return true;
-        } else {
-          dbLikesCount--;
-          dbDislikesCount++;
-          dbLikeStatus = "Dislike";
+          likesCount--;
+        } else if (likeStatus === "Dislike") {
+          likesCount--;
+          dislikesCount++;
         }
         break;
 
       case "Dislike":
         if (likeStatus === "None") {
-          dbDislikesCount--;
-          dbLikeStatus = "None";
+          dislikesCount--;
         } else if (likeStatus === "Like") {
-          dbDislikesCount--;
-          dbLikesCount++;
-          dbLikeStatus = "Like";
-        } else {
-          return true;
+          dislikesCount--;
+          likesCount++;
         }
     }
 
-    return this.commentsRepository.updateLikeStatus(
-      _id,
-      dbLikesCount,
-      dbDislikesCount,
-      dbLikeStatus
+    await this.commentsRepository.updateLikesCount(
+      commentId,
+      likesCount,
+      dislikesCount
     );
-  */
+
+    return this.commentsRepository.updateLikesStatus(
+      commentId,
+      userId,
+      likeStatus
+    );
+  }
 }
