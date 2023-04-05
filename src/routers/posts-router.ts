@@ -7,6 +7,7 @@ import { validationPostsFindByParamId } from "../middlewares/validations/find-by
 import { validationCommentsInput } from "../middlewares/validations/input/validation-comments-input";
 import { authBearer } from "../middlewares/auth/auth-bearer";
 import { postsController } from "../composition-root";
+import { tokenParser } from "../middlewares/auth/token-parser";
 
 export const postsRouter = Router({});
 
@@ -65,6 +66,7 @@ postsRouter.post(
 
 postsRouter.get(
   "/:id/comments",
+  tokenParser,
   validationPostsFindByParamId,
   validationErrorCheck,
   postsController.getComments.bind(postsController)

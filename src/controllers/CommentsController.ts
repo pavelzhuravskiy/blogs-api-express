@@ -10,7 +10,8 @@ export class CommentsController {
   ) {}
   async getComment(req: Request, res: Response) {
     const foundComment = await this.commentsQueryRepository.findCommentById(
-      new ObjectId(req.params.id)
+      new ObjectId(req.params.id),
+      req.user?._id
     );
     res.json(foundComment);
   }
@@ -49,18 +50,16 @@ export class CommentsController {
 
   async updateLikeStatus(req: Request, res: Response) {
     const isUpdated = await this.commentsService.updateLikeStatus(
-        new ObjectId(req.params.id),
-        req.body.likeStatus,
-        req.user!._id
+      new ObjectId(req.params.id),
+      req.body.likeStatus,
+      req.user!._id
     );
 
     if (isUpdated) {
       const updatedComment = await this.commentsQueryRepository.findCommentById(
-          new ObjectId(req.params.id)
+        new ObjectId(req.params.id)
       );
       res.status(204).json(updatedComment);
     }
-
   }
-
 }

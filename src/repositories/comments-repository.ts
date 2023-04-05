@@ -18,7 +18,7 @@ export class CommentsRepository {
       likesInfo: {
         likesCount: newComment.likesInfo.likesCount,
         dislikesCount: newComment.likesInfo.dislikesCount,
-        myStatus: "string", // TODO fix
+        myStatus: "None"
       },
     };
   }

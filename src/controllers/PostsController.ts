@@ -96,7 +96,8 @@ export class PostsController {
       Number(req.query.pageSize) || 10,
       req.query.sortBy,
       req.query.sortDirection as SortOrder,
-      new ObjectId(req.params.id)
+      new ObjectId(req.params.id),
+      req.user?._id
     );
     res.json(foundComments);
   }

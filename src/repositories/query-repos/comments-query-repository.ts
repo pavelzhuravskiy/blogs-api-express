@@ -5,6 +5,7 @@ import { FilterQuery, SortOrder } from "mongoose";
 import { Paginator } from "../../models/view/_Paginator";
 import { CommentDBModel } from "../../models/database/CommentDBModel";
 import { funcCommentsMapping } from "../../functions/mappings/func-comments-mapping";
+import { CommentsRepository } from "../comments-repository";
 
 export class CommentsQueryRepository {
   async findComments(
@@ -12,7 +13,8 @@ export class CommentsQueryRepository {
     pageSize: number,
     sortBy: string = "createdAt",
     sortDirection: SortOrder,
-    postId: ObjectId
+    postId: ObjectId,
+    userId?: ObjectId
   ): Promise<Paginator<CommentViewModel[]>> {
     const filter: FilterQuery<CommentDBModel> = { postId: postId.toString() };
 
@@ -35,15 +37,26 @@ export class CommentsQueryRepository {
       page: pageNumber,
       pageSize: pageSize,
       totalCount,
-      items: funcCommentsMapping(output),
+      items: await funcCommentsMapping(output, userId),
     };
   }
 
-  async findCommentById(_id: ObjectId): Promise<CommentViewModel | null> {
+  async findCommentById(
+    _id: ObjectId,
+    userId?: ObjectId
+  ): Promise<CommentViewModel | null> {
     const foundComment = await Comments.findOne({ _id });
 
     if (!foundComment) {
       return null;
+    }
+
+    const commentsRepository = new CommentsRepository();
+
+    let status;
+
+    if (userId) {
+      status = await commentsRepository.findUserLikeStatus(_id, userId);
     }
 
     return {
@@ -57,8 +70,8 @@ export class CommentsQueryRepository {
       likesInfo: {
         likesCount: foundComment.likesInfo.likesCount,
         dislikesCount: foundComment.likesInfo.dislikesCount,
-        myStatus: "string" // TODO
-      }
+        myStatus: status || "None"
+      },
     };
   }
 }

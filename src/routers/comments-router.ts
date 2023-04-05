@@ -6,14 +6,14 @@ import { authBearer } from "../middlewares/auth/auth-bearer";
 import { validationCommentOwner } from "../middlewares/validations/validation-comment-owner";
 import { authBasic } from "../middlewares/auth/auth-basic";
 import { commentsController } from "../composition-root";
-import {
-    validationLikesInput
-} from "../middlewares/validations/input/validation-likes-input";
+import { validationLikesInput } from "../middlewares/validations/input/validation-likes-input";
+import { tokenParser } from "../middlewares/auth/token-parser";
 
 export const commentsRouter = Router({});
 
 commentsRouter.get(
   "/:id",
+  tokenParser,
   validationCommentsFindByParamId,
   validationErrorCheck,
   commentsController.getComment.bind(commentsController)
@@ -47,12 +47,12 @@ commentsRouter.delete(
 // +++++ Likes in comments section start +++++
 
 commentsRouter.put(
-    "/:id/like-status",
-    validationCommentsFindByParamId,
-    authBearer,
-    validationLikesInput,
-    validationErrorCheck,
-    commentsController.updateLikeStatus.bind(commentsController)
+  "/:id/like-status",
+  validationCommentsFindByParamId,
+  authBearer,
+  validationLikesInput,
+  validationErrorCheck,
+  commentsController.updateLikeStatus.bind(commentsController)
 );
 
 // ----- Likes in comments section end -----
