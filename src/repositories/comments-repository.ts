@@ -18,7 +18,7 @@ export class CommentsRepository {
       likesInfo: {
         likesCount: newComment.likesInfo.likesCount,
         dislikesCount: newComment.likesInfo.dislikesCount,
-        myStatus: "None"
+        myStatus: "None",
       },
     };
   }
@@ -73,9 +73,11 @@ export class CommentsRepository {
       }
     );
 
-    if (!foundUser) {
+    if (!foundUser || foundUser.likesInfo.users.length === 0) {
       return null;
     }
+
+    console.log(foundUser);
 
     return foundUser.likesInfo.users[0].likeStatus;
   }
