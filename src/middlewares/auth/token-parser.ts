@@ -14,26 +14,13 @@ export const tokenParser = async (
   res: Response,
   next: NextFunction
 ) => {
+  const accessToken = req.headers.authorization?.split(" ")[1];
 
-  const cookieRefreshToken = req.cookies.refreshToken;
-
-  if (!cookieRefreshToken) {
-    next();
-    return;
+  if (accessToken) {
+    const accessTokenObj = await jwtService.verifyToken(accessToken);
+    const userId = new ObjectId(accessTokenObj?.userId);
+    req.user = await usersService.findUserById(userId);
   }
-
-  const cookieRefreshTokenObj = await jwtService.verifyToken(
-      cookieRefreshToken
-  );
-
-  if (!cookieRefreshTokenObj) {
-    next();
-    return;
-  }
-
-  const userId = new ObjectId(cookieRefreshTokenObj.userId);
-  req.user = await usersService.findUserById(userId);
 
   next();
-
 };

@@ -9,26 +9,27 @@ import {
   firstComment,
   firstPost,
   firstUser,
-  getterWithId, getterWithIdWithCookie,
+  getterWithId,
+  getterWithIdBearer,
   likesUpdater,
   postCreator,
   postReturner,
   userCreator,
-  userReturner, usersLength,
+  userReturner,
+  usersLength,
 } from "../../test-utils/test-functions";
 import {
   commentsURI,
+  dislikeString,
   likeString,
   longString17,
-  noneString, userEmailFilterString01,
+  noneString,
+  userEmailFilterString01,
   userEmailFilterString02,
   userEmailFilterString03,
-  userEmailFilterString04,
-  userEmailFilterString05, userLoginFilterString01,
+  userLoginFilterString01,
   userLoginFilterString02,
   userLoginFilterString03,
-  userLoginFilterString04,
-  userLoginFilterString05,
 } from "../../test-utils/test-strings";
 
 describe("Likes testing", () => {
@@ -108,7 +109,11 @@ describe("Likes testing", () => {
     });
     it("should NOT update like status with incorrect comment ID", async () => {
       // Trying to update like status with incorrect data
-      const response = await likesUpdater(accessToken, longString17, likeString);
+      const response = await likesUpdater(
+        accessToken,
+        longString17,
+        likeString
+      );
       expect(response.status).toBe(404);
 
       // Checking result
@@ -116,7 +121,157 @@ describe("Likes testing", () => {
       expect(checkResponse.body.likesInfo.myStatus).toBe(noneString);
     });
   });
-  describe("Likes operations", () => {
+  describe("Likes testing 01", () => {
+    beforeAll(eraseAll);
+    it("should create new blog for testing", async () => {
+      // Trying to create a blog
+      const response = await blogCreator();
+      expect(response.status).toBe(201);
+
+      // Checking result by returning created blog
+      const blog = await firstBlog();
+      const returnedBlog = await blogReturner();
+      expect(blog).toStrictEqual(returnedBlog);
+    });
+    it("should create new post for testing", async () => {
+      // Trying to create a post
+      const response = await postCreator();
+      expect(response.status).toBe(201);
+
+      // Checking result by returning created post
+      const post = await firstPost();
+      const returnedPost = await postReturner();
+      expect(post).toStrictEqual(returnedPost);
+    });
+    it("should create users for testing", async () => {
+      await userCreator(
+        undefined,
+        userLoginFilterString01,
+        undefined,
+        userEmailFilterString01
+      );
+      await userCreator(
+        undefined,
+        userLoginFilterString02,
+        undefined,
+        userEmailFilterString02
+      );
+      const lastUserResponse = await userCreator(
+        undefined,
+        userLoginFilterString03,
+        undefined,
+        userEmailFilterString03
+      );
+
+      expect(lastUserResponse.status).toBe(201);
+
+      // Checking result by returning users array length
+      const length = await usersLength();
+      expect(length).toBe(3);
+    });
+
+    let firstAccessToken: string
+    let accessToken: string;
+
+    it("should log in user 1", async () => {
+      // Trying to authenticate with login
+      const loginResponse = await authentication(
+        undefined,
+        userLoginFilterString01
+      );
+      expect(loginResponse.status).toBe(200);
+      firstAccessToken = loginResponse.body.accessToken;
+    });
+
+    let commentId: string;
+
+    it("should create new comment", async () => {
+      // Trying to create comment with authenticated user
+      const response = await commentCreator(firstAccessToken);
+      expect(response.status).toBe(201);
+
+      // Checking result by returning created post
+      const comment = await firstComment();
+
+      commentId = comment.id;
+    });
+    it("should dislike comment by user 1", async () => {
+      // Trying to update like status with correct data
+      const response = await likesUpdater(
+          firstAccessToken,
+        commentId,
+        dislikeString
+      );
+      expect(response.status).toBe(204);
+
+      // Checking result
+      const checkResponse = await getterWithIdBearer(
+        commentsURI,
+        commentId,
+          firstAccessToken
+      );
+
+      expect(checkResponse.body.likesInfo.myStatus).toBe(dislikeString)
+    });
+    it("should log in user 2", async () => {
+      // Trying to authenticate with login
+      const loginResponse = await authentication(
+          undefined,
+          userLoginFilterString02
+      );
+      expect(loginResponse.status).toBe(200);
+      accessToken = loginResponse.body.accessToken;
+    });
+    it("should dislike comment by user 2", async () => {
+      // Trying to update like status with correct data
+      const response = await likesUpdater(
+          accessToken,
+          commentId,
+          dislikeString
+      );
+      expect(response.status).toBe(204);
+
+      // Checking result
+      const checkResponse = await getterWithIdBearer(
+          commentsURI,
+          commentId,
+          firstAccessToken
+      );
+
+      expect(checkResponse.body.likesInfo.myStatus).toBe(dislikeString)
+    });
+    it("should log in user 3", async () => {
+      // Trying to authenticate with login
+      const loginResponse = await authentication(
+          undefined,
+          userLoginFilterString03
+      );
+      expect(loginResponse.status).toBe(200);
+      accessToken = loginResponse.body.accessToken;
+    });
+    it("should like comment by user 3", async () => {
+      // Trying to update like status with correct data
+      const response = await likesUpdater(
+          accessToken,
+          commentId,
+          likeString
+      );
+      expect(response.status).toBe(204);
+
+      // Checking result
+      const checkResponse = await getterWithIdBearer(
+          commentsURI,
+          commentId,
+          firstAccessToken
+      );
+
+      expect(checkResponse.body.likesInfo.myStatus).toBe(dislikeString)
+      expect(checkResponse.body.likesInfo.likesCount).toBe(1)
+      expect(checkResponse.body.likesInfo.dislikesCount).toBe(2)
+
+    });
+  });
+  describe("Likes testing 02", () => {
     beforeAll(eraseAll);
     it("should create new blog for testing", async () => {
       // Trying to create a blog
@@ -141,15 +296,9 @@ describe("Likes testing", () => {
     it("should create users for testing", async () => {
       await userCreator(
           undefined,
-          userLoginFilterString03,
+          userLoginFilterString01,
           undefined,
-          userEmailFilterString03
-      );
-      await userCreator(
-          undefined,
-          userLoginFilterString04,
-          undefined,
-          userEmailFilterString04
+          userEmailFilterString01
       );
       await userCreator(
           undefined,
@@ -157,105 +306,102 @@ describe("Likes testing", () => {
           undefined,
           userEmailFilterString02
       );
-      await userCreator(
-          undefined,
-          userLoginFilterString05,
-          undefined,
-          userEmailFilterString05
-      );
       const lastUserResponse = await userCreator(
           undefined,
-          userLoginFilterString01,
+          userLoginFilterString03,
           undefined,
-          userEmailFilterString01
+          userEmailFilterString03
       );
+
       expect(lastUserResponse.status).toBe(201);
 
       // Checking result by returning users array length
       const length = await usersLength();
-      expect(length).toBe(5);
+      expect(length).toBe(3);
     });
 
-    let accessToken: string;
-    let refreshToken: string;
+    let firstAccessToken: string
+    let secondAccessToken: string
 
-    it("should log in first user with correct credentials", async () => {
+    it("should log in user 1", async () => {
       // Trying to authenticate with login
-      const loginResponse = await authentication(undefined, userLoginFilterString01);
+      const loginResponse = await authentication(
+          undefined,
+          userLoginFilterString01
+      );
       expect(loginResponse.status).toBe(200);
-      accessToken = loginResponse.body.accessToken;
-      refreshToken = loginResponse.headers["set-cookie"][0]
+      firstAccessToken = loginResponse.body.accessToken;
     });
 
     let commentId: string;
 
     it("should create new comment", async () => {
       // Trying to create comment with authenticated user
-      const response = await commentCreator(accessToken);
+      const response = await commentCreator(firstAccessToken);
       expect(response.status).toBe(201);
 
       // Checking result by returning created post
       const comment = await firstComment();
-      const returnedComment = await commentReturner();
-      expect(comment).toStrictEqual(returnedComment);
 
       commentId = comment.id;
     });
-    it("should update like status with correct data", async () => {
+    it("should like comment by user 1", async () => {
       // Trying to update like status with correct data
-      const response = await likesUpdater(accessToken, commentId, likeString);
+      const response = await likesUpdater(
+          firstAccessToken,
+          commentId,
+          likeString
+      );
       expect(response.status).toBe(204);
-
-      // Checking result
-      const checkResponse = await getterWithIdWithCookie(commentsURI, commentId, refreshToken);
-      expect(checkResponse.body.likesInfo.myStatus).toBe(likeString)
     });
-    it("should log in second user with correct credentials", async () => {
+    it("should log in user 2 and check previous", async () => {
       // Trying to authenticate with login
-      const loginResponse = await authentication(undefined, userLoginFilterString02);
+      const loginResponse = await authentication(
+          undefined,
+          userLoginFilterString02
+      );
       expect(loginResponse.status).toBe(200);
-      accessToken = loginResponse.body.accessToken;
-      refreshToken = loginResponse.headers["set-cookie"][0]
+      secondAccessToken = loginResponse.body.accessToken;
+
+      // Checking previous result
+      const checkResponse = await getterWithIdBearer(
+          commentsURI,
+          commentId,
+          secondAccessToken
+      );
+      expect(checkResponse.body.likesInfo.myStatus).toBe(noneString)
+      expect(checkResponse.body.likesInfo.likesCount).toBe(1)
+
     });
-    it("should update like status with correct data", async () => {
+
+    it("should dislike comment by user 2", async () => {
       // Trying to update like status with correct data
-      const response = await likesUpdater(accessToken, commentId, likeString);
+      const response = await likesUpdater(
+          secondAccessToken,
+          commentId,
+          dislikeString
+      );
       expect(response.status).toBe(204);
 
-      // Checking result
-      const checkResponse = await getterWithIdWithCookie(commentsURI, commentId, refreshToken);
-      expect(checkResponse.body.likesInfo.myStatus).toBe(likeString)
     });
-    it("should log in third user with correct credentials", async () => {
+    it("should log in user 1 and check previous", async () => {
       // Trying to authenticate with login
-      const loginResponse = await authentication(undefined, userLoginFilterString03);
+      const loginResponse = await authentication(
+          undefined,
+          userLoginFilterString01
+      );
       expect(loginResponse.status).toBe(200);
-      accessToken = loginResponse.body.accessToken;
-      refreshToken = loginResponse.headers["set-cookie"][0]
-    });
-    it("should update like status with correct data", async () => {
-      // Trying to update like status with correct data
-      const response = await likesUpdater(accessToken, commentId, likeString);
-      expect(response.status).toBe(204);
+      firstAccessToken = loginResponse.body.accessToken;
 
-      // Checking result
-      const checkResponse = await getterWithIdWithCookie(commentsURI, commentId, refreshToken);
-      expect(checkResponse.body.likesInfo.myStatus).toBe(likeString)
-    });
-    it("should log in fourth user with correct credentials", async () => {
-      // Trying to authenticate with login
-      const loginResponse = await authentication(undefined, userEmailFilterString04);
-      expect(loginResponse.status).toBe(200);
-      accessToken = loginResponse.body.accessToken;
-      refreshToken = loginResponse.headers["set-cookie"][0]
-    });
-    it("should update like status with correct data", async () => {
-      // Trying to update like status with correct data
-      const response = await likesUpdater(accessToken, commentId, likeString);
-      expect(response.status).toBe(204);
+      // Checking previous result
+      const checkResponse = await getterWithIdBearer(
+          commentsURI,
+          commentId,
+          firstAccessToken
+      );
 
-      // Checking result
-      const checkResponse = await getterWithIdWithCookie(commentsURI, commentId, refreshToken);
+      expect(checkResponse.body.likesInfo.likesCount).toBe(1)
+      expect(checkResponse.body.likesInfo.dislikesCount).toBe(1)
       expect(checkResponse.body.likesInfo.myStatus).toBe(likeString)
     });
 

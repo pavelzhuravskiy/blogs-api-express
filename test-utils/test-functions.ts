@@ -95,6 +95,17 @@ export const eraserWithId = (
 };
 
 // Delete blog or post by id (Bearer auth)
+export const getterWithIdBearer = async (
+    uri: string,
+    id: string,
+    token: string
+) => {
+  return request(app)
+      .get(uri + id)
+      .set(basicAuthKey, `Bearer ${token}`);
+};
+
+// Delete blog or post by id (Bearer auth)
 export const eraserWithIdBearer = async (
   uri: string,
   id: string,
