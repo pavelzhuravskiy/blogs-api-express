@@ -9,6 +9,7 @@ export const blogsURI = "/blogs/";
 export const commentsURI = "/comments/";
 export const devicesURI = "/security/devices/";
 export const invalidURI = "-100";
+export const likeStatusURI = "/like-status/"
 export const loginURI = "/auth/login/";
 export const logoutURI = "/auth/logout/";
 export const postsURI = "/posts/";
@@ -86,6 +87,11 @@ export const commentContentString02 = "New content 05 for comment";
 export const commentContentString03 = "New content 02 for comment";
 export const commentContentString04 = "New content 01 for comment";
 export const commentContentString05 = "New content 04 for comment";
+
+// Likes strings
+export const likeString = "Like"
+export const dislikeString = "Dislike"
+export const noneString = "None"
 
 // User agent strings
 export const userAgentChromeString = "Google Chrome";

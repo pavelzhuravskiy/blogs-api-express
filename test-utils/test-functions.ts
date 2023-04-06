@@ -16,9 +16,9 @@ import {
   devicesURI,
   invalidAuthValue,
   invalidURI,
-  ipString,
+  ipString, likeStatusURI,
   loginURI,
-  logoutURI,
+  logoutURI, noneString,
   postContentString,
   postNewContentString,
   postNewShortDescriptionString,
@@ -575,6 +575,17 @@ export const getterWithCookie = (uri: string, cookie: string) => {
   return request(app).get(uri).set("cookie", cookie);
 };
 
+// Get by id (cookie)
+export const getterWithIdWithCookie = (
+    uri: string,
+    id: string,
+    cookie: string
+) => {
+  return request(app)
+      .get(uri + id)
+      .set("cookie", cookie);
+};
+
 // Delete by id (cookie)
 export const eraserWithIdWithCookie = (
   uri: string,
@@ -592,3 +603,13 @@ export const eraserWithCookie = (uri: string = devicesURI, cookie: string) => {
 };
 
 // ---------- LIKES FUNCTIONS ----------
+
+// Create new comment
+export const likesUpdater = async (token: string, commentId: string, likeStatus: string = noneString) => {
+  return request(app)
+      .put(commentsURI + commentId + likeStatusURI)
+      .send({
+        likeStatus,
+      })
+      .set(basicAuthKey, `Bearer ${token}`);
+};
