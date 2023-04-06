@@ -59,7 +59,6 @@ export class BlogsController {
   }
 
   async deleteBlog(req: Request, res: Response) {
-    console.log(req.params.id);
     const isDeleted = await this.blogsService.deleteBlog(
       new ObjectId(req.params.id)
     );

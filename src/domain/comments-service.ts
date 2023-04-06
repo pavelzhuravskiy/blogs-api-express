@@ -83,11 +83,15 @@ export class CommentsService {
         userId,
         likeStatus
       );
+
       if (likeStatus === "Like") {
         likesCount++;
-      } else if (likeStatus === "Dislike") {
+      }
+
+      if (likeStatus === "Dislike") {
         dislikesCount++;
       }
+
       return this.commentsRepository.updateLikesCount(
         commentId,
         likesCount,
@@ -100,19 +104,25 @@ export class CommentsService {
       userId
     );
 
+
     switch (userLikeDBStatus) {
       case "None":
         if (likeStatus === "Like") {
           likesCount++;
-        } else if (likeStatus === "Dislike") {
+        }
+
+        if (likeStatus === "Dislike") {
           dislikesCount++;
         }
+
         break;
 
       case "Like":
         if (likeStatus === "None") {
           likesCount--;
-        } else if (likeStatus === "Dislike") {
+        }
+
+        if (likeStatus === "Dislike") {
           likesCount--;
           dislikesCount++;
         }
@@ -121,7 +131,9 @@ export class CommentsService {
       case "Dislike":
         if (likeStatus === "None") {
           dislikesCount--;
-        } else if (likeStatus === "Like") {
+        }
+
+        if (likeStatus === "Like") {
           dislikesCount--;
           likesCount++;
         }

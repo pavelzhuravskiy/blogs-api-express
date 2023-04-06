@@ -48,7 +48,7 @@ export class AuthController {
       res
         .cookie("refreshToken", newRefreshToken, {
           httpOnly: true,
-          // secure: true,
+          secure: true,
         })
         .status(200)
         .json(newAccessToken);
@@ -88,7 +88,7 @@ export class AuthController {
     res
       .cookie("refreshToken", newRefreshToken, {
         httpOnly: true,
-        // secure: true,
+        secure: true,
       })
       .status(200)
       .json(newAccessToken);

@@ -46,6 +46,7 @@ export class CommentsQueryRepository {
     _id: ObjectId,
     userId?: ObjectId
   ): Promise<CommentViewModel | null> {
+
     const foundComment = await Comments.findOne({ _id });
 
     if (!foundComment) {
@@ -55,6 +56,8 @@ export class CommentsQueryRepository {
     const commentsRepository = new CommentsRepository();
 
     let status;
+
+    console.log(userId)
 
     if (userId) {
       status = await commentsRepository.findUserLikeStatus(_id, userId);
