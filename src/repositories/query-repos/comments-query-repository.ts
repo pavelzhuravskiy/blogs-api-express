@@ -57,8 +57,6 @@ export class CommentsQueryRepository {
 
     let status;
 
-    console.log(userId)
-
     if (userId) {
       status = await commentsRepository.findUserLikeStatus(_id, userId);
     }

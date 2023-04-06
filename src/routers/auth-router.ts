@@ -53,7 +53,7 @@ authRouter.post(
 
 authRouter.post(
   "/login",
-  // rateLimiter,
+  rateLimiter,
   validationAuthInput,
   validationErrorCheck,
   authController.login.bind(authController)
