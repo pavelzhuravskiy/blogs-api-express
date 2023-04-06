@@ -30,7 +30,7 @@ const usersQueryRepository = new UsersQueryRepository();
 const devicesQueryRepository = new DevicesQueryRepository();
 const commentsQueryRepository = new CommentsQueryRepository();
 
-const blogsRepository = new BlogsRepository();
+export const blogsRepository = new BlogsRepository();
 const postsRepository = new PostsRepository();
 const usersRepository = new UsersRepository();
 const devicesRepository = new DevicesRepository();

@@ -77,8 +77,6 @@ export class CommentsRepository {
       return null;
     }
 
-    console.log(foundUser);
-
     return foundUser.likesInfo.users[0].likeStatus;
   }
 

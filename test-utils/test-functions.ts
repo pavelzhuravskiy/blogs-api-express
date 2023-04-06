@@ -446,10 +446,8 @@ export const firstCommentId = async () => {
 };
 
 // Create new comment
-export const commentCreator = async (content: any = commentContentString) => {
+export const commentCreator = async (token: string, content: any = commentContentString) => {
   const postId = await firstPostId();
-  const loginResponse = await authentication();
-  const token = loginResponse.body.accessToken;
   return request(app)
     .post(postsURI + postId + commentsURI)
     .send({
@@ -489,6 +487,11 @@ export const commentReturner = async (
       userLogin,
     },
     createdAt,
+    likesInfo: {
+      likesCount: expect.any(Number),
+      dislikesCount: expect.any(Number),
+      myStatus: expect.any(String)
+    }
   };
 };
 
@@ -587,3 +590,5 @@ export const eraserWithIdWithCookie = (
 export const eraserWithCookie = (uri: string = devicesURI, cookie: string) => {
   return request(app).delete(uri).set("cookie", cookie);
 };
+
+// ---------- LIKES FUNCTIONS ----------

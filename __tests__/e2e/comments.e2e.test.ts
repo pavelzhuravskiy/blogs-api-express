@@ -1,4 +1,5 @@
 import {
+  authentication,
   blogCreator,
   blogReturner,
   commentCreator,
@@ -45,8 +46,7 @@ import {
   postsURI,
 } from "../../test-utils/test-strings";
 import request from "supertest";
-import { app} from "../../src";
-import {funcSleep} from "../../src/functions/global/func-sleep";
+import { app } from "../../src";
 
 describe("Comments testing", () => {
   describe("Comments status 400 checks", () => {
@@ -81,9 +81,18 @@ describe("Comments testing", () => {
       const returnedUser = await userReturner();
       expect(user).toStrictEqual(returnedUser);
     });
+
+    let token: string;
+
+    it("should log in user with correct credentials", async () => {
+      // Trying to authenticate with login
+      const loginResponse = await authentication();
+      expect(loginResponse.status).toBe(200);
+      token = loginResponse.body.accessToken;
+    });
     it("should NOT create new comment without content", async () => {
       // Trying to create comment without content
-      const response = await commentCreator(null);
+      const response = await commentCreator(token, null);
       expect(response.status).toBe(400);
 
       // Checking result
@@ -92,7 +101,7 @@ describe("Comments testing", () => {
     });
     it("should NOT create new comment with incorrect content type", async () => {
       // Trying to create comment with incorrect content type
-      const response = await commentCreator(123);
+      const response = await commentCreator(token, 123);
       expect(response.status).toBe(400);
 
       // Checking result
@@ -101,7 +110,7 @@ describe("Comments testing", () => {
     });
     it("should NOT create new comment with incorrect content length", async () => {
       // Trying to create comment with incorrect content length
-      const response = await commentCreator(longString17);
+      const response = await commentCreator(token, longString17);
       expect(response.status).toBe(400);
 
       // Checking result
@@ -141,9 +150,19 @@ describe("Comments testing", () => {
       const returnedUser = await userReturner();
       expect(user).toStrictEqual(returnedUser);
     });
+
+    let token: string;
+
+    it("should log in user with correct credentials", async () => {
+      // Trying to authenticate with login
+      const loginResponse = await authentication();
+      expect(loginResponse.status).toBe(200);
+
+      token = loginResponse.body.accessToken;
+    });
     it("should create new comment for testing", async () => {
       // Trying to create comment with authenticated user
-      const response = await commentCreator();
+      const response = await commentCreator(token);
       expect(response.status).toBe(201);
 
       // Checking result by returning created post
@@ -221,9 +240,19 @@ describe("Comments testing", () => {
       );
       expect(response.status).toBe(201);
     });
+
+    let token: string;
+
+    it("should log in user with correct credentials", async () => {
+      // Trying to authenticate with login
+      const loginResponse = await authentication();
+      expect(loginResponse.status).toBe(200);
+
+      token = loginResponse.body.accessToken;
+    });
     it("should create new comment for testing", async () => {
       // Trying to create comment with authenticated user
-      const response = await commentCreator();
+      const response = await commentCreator(token);
       expect(response.status).toBe(201);
     });
     it("should return 403 when updating comment with incorrect token", async () => {
@@ -325,9 +354,19 @@ describe("Comments testing", () => {
       const returnedUser = await userReturner();
       expect(user).toStrictEqual(returnedUser);
     });
+
+    let token: string;
+
+    it("should log in user with correct credentials", async () => {
+      // Trying to authenticate with login
+      const loginResponse = await authentication();
+      expect(loginResponse.status).toBe(200);
+
+      token = loginResponse.body.accessToken;
+    });
     it("should create new comment", async () => {
       // Trying to create comment with authenticated user
-      const response = await commentCreator();
+      const response = await commentCreator(token);
       expect(response.status).toBe(201);
 
       // Checking result by returning created post
@@ -406,16 +445,22 @@ describe("Comments testing", () => {
       const returnedUser = await userReturner();
       expect(user).toStrictEqual(returnedUser);
     });
+    let token: string;
+    it("should log in user with correct credentials", async () => {
+      // Trying to authenticate with login
+      const loginResponse = await authentication();
+      expect(loginResponse.status).toBe(200);
+
+      token = loginResponse.body.accessToken;
+    });
     it("should create new comments for posts", async () => {
       // Trying to create 4 comments for first post
       let i = 0;
       while (i < 4) {
-        const response = await commentCreator();
+        const response = await commentCreator(token);
         expect(response.status).toBe(201);
         i++;
       }
-
-      await funcSleep(10000);
 
       // Trying to create 3 comments for second post
       let j = 0;
@@ -474,13 +519,26 @@ describe("Comments testing", () => {
       const returnedUser = await userReturner();
       expect(user).toStrictEqual(returnedUser);
     });
+
+    let token: string;
+
+    it("should log in user with correct credentials", async () => {
+      // Trying to authenticate with login
+      const loginResponse = await authentication();
+      expect(loginResponse.status).toBe(200);
+
+      token = loginResponse.body.accessToken;
+    });
     it("should sort comments by any field (content for testing)", async () => {
       // Trying to create 5 comments
-      await commentCreator(commentContentString01);
-      await commentCreator(commentContentString02);
-      await commentCreator(commentContentString03);
-      await commentCreator(commentContentString04);
-      const lastCommentResponse = await commentCreator(commentContentString05);
+      await commentCreator(token, commentContentString01);
+      await commentCreator(token, commentContentString02);
+      await commentCreator(token, commentContentString03);
+      await commentCreator(token, commentContentString04);
+      const lastCommentResponse = await commentCreator(
+        token,
+        commentContentString05
+      );
 
       expect(lastCommentResponse.status).toBe(201);
 
@@ -570,11 +628,21 @@ describe("Comments testing", () => {
       const returnedUser = await userReturner();
       expect(user).toStrictEqual(returnedUser);
     });
+
+    let token: string;
+
+    it("should log in user with correct credentials", async () => {
+      // Trying to authenticate with login
+      const loginResponse = await authentication();
+      expect(loginResponse.status).toBe(200);
+
+      token = loginResponse.body.accessToken;
+    });
     it("should return correct comments pagination output", async () => {
       // Trying to create 20 comments
       let i = 0;
       while (i < 20) {
-        const response = await commentCreator();
+        const response = await commentCreator(token);
         expect(response.status).toBe(201);
         i++;
       }
