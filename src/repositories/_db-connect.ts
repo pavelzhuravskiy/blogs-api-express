@@ -4,7 +4,7 @@ import mongoose from "mongoose";
 dotenv.config();
 
 const mongooseURI = process.env.MONGOOSE_URI || "mongodb://0.0.0.0:27017";
-const testURI = process.env.TEST_URI || "mongodb://0.0.0.0:27017"
+const testURI = process.env.TEST_URI || "mongodb://0.0.0.0:27017";
 
 const uri =
   process.env.NODE_ENV === "test"

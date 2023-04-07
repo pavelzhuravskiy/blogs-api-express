@@ -46,7 +46,6 @@ export class CommentsQueryRepository {
     _id: ObjectId,
     userId?: ObjectId
   ): Promise<CommentViewModel | null> {
-
     const foundComment = await Comments.findOne({ _id });
 
     if (!foundComment) {

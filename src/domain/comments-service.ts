@@ -75,9 +75,10 @@ export class CommentsService {
     let likesCount = foundComment.likesInfo.likesCount;
     let dislikesCount = foundComment.likesInfo.dislikesCount;
 
-    const foundUser = await this.commentsRepository.findUserInLikesInfo(commentId, userId);
-
-    console.log(foundUser)
+    const foundUser = await this.commentsRepository.findUserInLikesInfo(
+      commentId,
+      userId
+    );
 
     if (!foundUser) {
       await this.commentsRepository.pushUserInLikesInfo(

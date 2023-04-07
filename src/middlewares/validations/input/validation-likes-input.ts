@@ -7,6 +7,6 @@ export const validationLikesInput = [
     .isString()
     .withMessage("Type of like status must be string")
     .trim()
-      .isIn([ "None", "Like", "Dislike" ])
+    .isIn(["None", "Like", "Dislike"])
     .withMessage(`Like status should be None, Like or Dislike`),
 ];

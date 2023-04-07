@@ -642,5 +642,64 @@ describe("Likes testing", () => {
       );
       expect(response.status).toBe(204);
     });
+    it("should return correct likes / dislikes counters values", async () => {
+      // Checking results
+      const checkCommentOne = await getterWithIdBearer(
+          commentsURI,
+          commentOneId,
+          firstAccessToken
+      );
+
+      expect(checkCommentOne.body.likesInfo.likesCount).toBe(2);
+      expect(checkCommentOne.body.likesInfo.dislikesCount).toBe(0);
+
+      const checkCommentTwo = await getterWithIdBearer(
+          commentsURI,
+          commentTwoId,
+          firstAccessToken
+      );
+
+      expect(checkCommentTwo.body.likesInfo.likesCount).toBe(2);
+      expect(checkCommentTwo.body.likesInfo.dislikesCount).toBe(0);
+
+      const checkCommentThree = await getterWithIdBearer(
+          commentsURI,
+          commentThreeId,
+          firstAccessToken
+      );
+
+      expect(checkCommentThree.body.likesInfo.likesCount).toBe(0);
+      expect(checkCommentThree.body.likesInfo.dislikesCount).toBe(1);
+
+      const checkCommentFour = await getterWithIdBearer(
+          commentsURI,
+          commentFourId,
+          firstAccessToken
+      );
+
+      expect(checkCommentFour.body.likesInfo.likesCount).toBe(4);
+      expect(checkCommentFour.body.likesInfo.dislikesCount).toBe(0);
+
+      const checkCommentFive = await getterWithIdBearer(
+          commentsURI,
+          commentFiveId,
+          firstAccessToken
+      );
+
+      expect(checkCommentFive.body.likesInfo.likesCount).toBe(1);
+      expect(checkCommentFive.body.likesInfo.dislikesCount).toBe(1);
+
+      const checkCommentSix = await getterWithIdBearer(
+          commentsURI,
+          commentSixId,
+          firstAccessToken
+      );
+
+      expect(checkCommentSix.body.likesInfo.likesCount).toBe(1);
+      expect(checkCommentSix.body.likesInfo.dislikesCount).toBe(1);
+    });
+
+
+
   });
 });
