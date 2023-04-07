@@ -45,9 +45,9 @@ export class CommentsRepository {
     return (await Comments.countDocuments()) === 0;
   }
 
-  async findUserInLikesInfo(userId: ObjectId): Promise<CommentDBModel | null> {
+  async findUserInLikesInfo(commentId: ObjectId, userId: ObjectId): Promise<CommentDBModel | null> {
     const foundUser = await Comments.findOne(
-      Comments.findOne({ "likesInfo.users.userId": userId })
+      Comments.findOne({_id: commentId, "likesInfo.users.userId": userId })
     );
 
     if (!foundUser) {
@@ -61,6 +61,9 @@ export class CommentsRepository {
     commentId: ObjectId,
     userId: ObjectId
   ): Promise<string | null> {
+
+    // console.log(commentId)
+    // console.log(userId)
 
     const foundUser = await Comments.findOne(
       { _id: commentId },

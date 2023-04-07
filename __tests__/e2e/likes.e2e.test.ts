@@ -9,6 +9,7 @@ import {
   firstComment,
   firstPost,
   firstUser,
+  getter,
   getterWithId,
   getterWithIdBearer,
   likesUpdater,
@@ -24,12 +25,15 @@ import {
   likeString,
   longString17,
   noneString,
+  postsURI,
   userEmailFilterString01,
   userEmailFilterString02,
   userEmailFilterString03,
+  userEmailFilterString04,
   userLoginFilterString01,
   userLoginFilterString02,
   userLoginFilterString03,
+  userLoginFilterString04,
 } from "../../test-utils/test-strings";
 
 describe("Likes testing", () => {
@@ -170,7 +174,7 @@ describe("Likes testing", () => {
       expect(length).toBe(3);
     });
 
-    let firstAccessToken: string
+    let firstAccessToken: string;
     let accessToken: string;
 
     it("should log in user 1", async () => {
@@ -198,7 +202,7 @@ describe("Likes testing", () => {
     it("should dislike comment by user 1", async () => {
       // Trying to update like status with correct data
       const response = await likesUpdater(
-          firstAccessToken,
+        firstAccessToken,
         commentId,
         dislikeString
       );
@@ -208,16 +212,16 @@ describe("Likes testing", () => {
       const checkResponse = await getterWithIdBearer(
         commentsURI,
         commentId,
-          firstAccessToken
+        firstAccessToken
       );
 
-      expect(checkResponse.body.likesInfo.myStatus).toBe(dislikeString)
+      expect(checkResponse.body.likesInfo.myStatus).toBe(dislikeString);
     });
     it("should log in user 2", async () => {
       // Trying to authenticate with login
       const loginResponse = await authentication(
-          undefined,
-          userLoginFilterString02
+        undefined,
+        userLoginFilterString02
       );
       expect(loginResponse.status).toBe(200);
       accessToken = loginResponse.body.accessToken;
@@ -225,50 +229,45 @@ describe("Likes testing", () => {
     it("should dislike comment by user 2", async () => {
       // Trying to update like status with correct data
       const response = await likesUpdater(
-          accessToken,
-          commentId,
-          dislikeString
+        accessToken,
+        commentId,
+        dislikeString
       );
       expect(response.status).toBe(204);
 
       // Checking result
       const checkResponse = await getterWithIdBearer(
-          commentsURI,
-          commentId,
-          firstAccessToken
+        commentsURI,
+        commentId,
+        firstAccessToken
       );
 
-      expect(checkResponse.body.likesInfo.myStatus).toBe(dislikeString)
+      expect(checkResponse.body.likesInfo.myStatus).toBe(dislikeString);
     });
     it("should log in user 3", async () => {
       // Trying to authenticate with login
       const loginResponse = await authentication(
-          undefined,
-          userLoginFilterString03
+        undefined,
+        userLoginFilterString03
       );
       expect(loginResponse.status).toBe(200);
       accessToken = loginResponse.body.accessToken;
     });
     it("should like comment by user 3", async () => {
       // Trying to update like status with correct data
-      const response = await likesUpdater(
-          accessToken,
-          commentId,
-          likeString
-      );
+      const response = await likesUpdater(accessToken, commentId, likeString);
       expect(response.status).toBe(204);
 
       // Checking result
       const checkResponse = await getterWithIdBearer(
-          commentsURI,
-          commentId,
-          firstAccessToken
+        commentsURI,
+        commentId,
+        firstAccessToken
       );
 
-      expect(checkResponse.body.likesInfo.myStatus).toBe(dislikeString)
-      expect(checkResponse.body.likesInfo.likesCount).toBe(1)
-      expect(checkResponse.body.likesInfo.dislikesCount).toBe(2)
-
+      expect(checkResponse.body.likesInfo.myStatus).toBe(dislikeString);
+      expect(checkResponse.body.likesInfo.likesCount).toBe(1);
+      expect(checkResponse.body.likesInfo.dislikesCount).toBe(2);
     });
   });
   describe("Likes testing 02", () => {
@@ -295,22 +294,22 @@ describe("Likes testing", () => {
     });
     it("should create users for testing", async () => {
       await userCreator(
-          undefined,
-          userLoginFilterString01,
-          undefined,
-          userEmailFilterString01
+        undefined,
+        userLoginFilterString01,
+        undefined,
+        userEmailFilterString01
       );
       await userCreator(
-          undefined,
-          userLoginFilterString02,
-          undefined,
-          userEmailFilterString02
+        undefined,
+        userLoginFilterString02,
+        undefined,
+        userEmailFilterString02
       );
       const lastUserResponse = await userCreator(
-          undefined,
-          userLoginFilterString03,
-          undefined,
-          userEmailFilterString03
+        undefined,
+        userLoginFilterString03,
+        undefined,
+        userEmailFilterString03
       );
 
       expect(lastUserResponse.status).toBe(201);
@@ -320,14 +319,14 @@ describe("Likes testing", () => {
       expect(length).toBe(3);
     });
 
-    let firstAccessToken: string
-    let secondAccessToken: string
+    let firstAccessToken: string;
+    let secondAccessToken: string;
 
     it("should log in user 1", async () => {
       // Trying to authenticate with login
       const loginResponse = await authentication(
-          undefined,
-          userLoginFilterString01
+        undefined,
+        userLoginFilterString01
       );
       expect(loginResponse.status).toBe(200);
       firstAccessToken = loginResponse.body.accessToken;
@@ -348,62 +347,300 @@ describe("Likes testing", () => {
     it("should like comment by user 1", async () => {
       // Trying to update like status with correct data
       const response = await likesUpdater(
-          firstAccessToken,
-          commentId,
-          likeString
+        firstAccessToken,
+        commentId,
+        likeString
       );
       expect(response.status).toBe(204);
     });
     it("should log in user 2 and check previous", async () => {
       // Trying to authenticate with login
       const loginResponse = await authentication(
-          undefined,
-          userLoginFilterString02
+        undefined,
+        userLoginFilterString02
       );
       expect(loginResponse.status).toBe(200);
       secondAccessToken = loginResponse.body.accessToken;
 
       // Checking previous result
       const checkResponse = await getterWithIdBearer(
-          commentsURI,
-          commentId,
-          secondAccessToken
+        commentsURI,
+        commentId,
+        secondAccessToken
       );
-      expect(checkResponse.body.likesInfo.myStatus).toBe(noneString)
-      expect(checkResponse.body.likesInfo.likesCount).toBe(1)
-
+      expect(checkResponse.body.likesInfo.myStatus).toBe(noneString);
+      expect(checkResponse.body.likesInfo.likesCount).toBe(1);
     });
-
     it("should dislike comment by user 2", async () => {
       // Trying to update like status with correct data
       const response = await likesUpdater(
-          secondAccessToken,
-          commentId,
-          dislikeString
+        secondAccessToken,
+        commentId,
+        dislikeString
       );
       expect(response.status).toBe(204);
-
     });
     it("should log in user 1 and check previous", async () => {
       // Trying to authenticate with login
       const loginResponse = await authentication(
-          undefined,
-          userLoginFilterString01
+        undefined,
+        userLoginFilterString01
       );
       expect(loginResponse.status).toBe(200);
       firstAccessToken = loginResponse.body.accessToken;
 
       // Checking previous result
       const checkResponse = await getterWithIdBearer(
-          commentsURI,
-          commentId,
-          firstAccessToken
+        commentsURI,
+        commentId,
+        firstAccessToken
       );
 
-      expect(checkResponse.body.likesInfo.likesCount).toBe(1)
-      expect(checkResponse.body.likesInfo.dislikesCount).toBe(1)
-      expect(checkResponse.body.likesInfo.myStatus).toBe(likeString)
+      expect(checkResponse.body.likesInfo.likesCount).toBe(1);
+      expect(checkResponse.body.likesInfo.dislikesCount).toBe(1);
+      expect(checkResponse.body.likesInfo.myStatus).toBe(likeString);
+    });
+  });
+  describe("Likes testing 03", () => {
+    beforeAll(eraseAll);
+    it("should create new blog for testing", async () => {
+      // Trying to create a blog
+      const response = await blogCreator();
+      expect(response.status).toBe(201);
+
+      // Checking result by returning created blog
+      const blog = await firstBlog();
+      const returnedBlog = await blogReturner();
+      expect(blog).toStrictEqual(returnedBlog);
     });
 
+    let postId: string;
+
+    it("should create new post for testing", async () => {
+      // Trying to create a post
+      const response = await postCreator();
+      expect(response.status).toBe(201);
+
+      // Checking result by returning created post
+      const post = await firstPost();
+      const returnedPost = await postReturner();
+      postId = post.id;
+      expect(post).toStrictEqual(returnedPost);
+    });
+    it("should create users for testing", async () => {
+      await userCreator(
+        undefined,
+        userLoginFilterString01,
+        undefined,
+        userEmailFilterString01
+      );
+      await userCreator(
+        undefined,
+        userLoginFilterString02,
+        undefined,
+        userEmailFilterString02
+      );
+      await userCreator(
+        undefined,
+        userLoginFilterString03,
+        undefined,
+        userEmailFilterString03
+      );
+      const lastUserResponse = await userCreator(
+        undefined,
+        userLoginFilterString04,
+        undefined,
+        userEmailFilterString04
+      );
+
+      expect(lastUserResponse.status).toBe(201);
+
+      // Checking result by returning users array length
+      const length = await usersLength();
+      expect(length).toBe(4);
+    });
+
+    let firstAccessToken: string;
+    let secondAccessToken: string;
+    let thirdAccessToken: string;
+    let fourthAccessToken: string;
+
+    it("should log in user 1", async () => {
+      // Trying to authenticate with login
+      const loginResponse = await authentication(
+        undefined,
+        userLoginFilterString01
+      );
+      expect(loginResponse.status).toBe(200);
+      firstAccessToken = loginResponse.body.accessToken;
+    });
+
+    let commentOneId: string;
+    let commentTwoId: string;
+    let commentThreeId: string;
+    let commentFourId: string;
+    let commentFiveId: string;
+    let commentSixId: string;
+
+    it("should create 6 comments", async () => {
+      // Trying to create 6 comments
+      let i = 0;
+      while (i < 6) {
+        await commentCreator(firstAccessToken);
+        i++;
+      }
+      const response = await getter(postsURI + postId + commentsURI);
+      expect(response.body.items.length).toBe(6);
+      commentOneId = response.body.items[0].id;
+      commentTwoId = response.body.items[1].id;
+      commentThreeId = response.body.items[2].id;
+      commentFourId = response.body.items[3].id;
+      commentFiveId = response.body.items[4].id;
+      commentSixId = response.body.items[5].id;
+    });
+    it("should like comment 1 by user 1", async () => {
+      // Trying to update like status with correct data
+      const response = await likesUpdater(
+        firstAccessToken,
+        commentOneId,
+        likeString
+      );
+      expect(response.status).toBe(204);
+    });
+    it("should log in user 2", async () => {
+      // Trying to authenticate with login
+      const loginResponse = await authentication(
+        undefined,
+        userLoginFilterString02
+      );
+      expect(loginResponse.status).toBe(200);
+      secondAccessToken = loginResponse.body.accessToken;
+    });
+    it("should like comment 1 by user 2", async () => {
+      // Trying to update like status with correct data
+      const response = await likesUpdater(
+        secondAccessToken,
+        commentOneId,
+        likeString
+      );
+      expect(response.status).toBe(204);
+    });
+    it("should like comment 2 by user 2", async () => {
+      // Trying to update like status with correct data
+      const response = await likesUpdater(
+        secondAccessToken,
+        commentTwoId,
+        likeString
+      );
+      expect(response.status).toBe(204);
+    });
+    it("should log in user 3", async () => {
+      // Trying to authenticate with login
+      const loginResponse = await authentication(
+        undefined,
+        userLoginFilterString03
+      );
+      expect(loginResponse.status).toBe(200);
+      thirdAccessToken = loginResponse.body.accessToken;
+    });
+    it("should like comment 2 by user 3", async () => {
+      // Trying to update like status with correct data
+      const response = await likesUpdater(
+        thirdAccessToken,
+        commentTwoId,
+        likeString
+      );
+      expect(response.status).toBe(204);
+    });
+    it("should dislike comment 3 by user 1", async () => {
+      // Trying to update like status with correct data
+      const response = await likesUpdater(
+        firstAccessToken,
+        commentThreeId,
+        dislikeString
+      );
+      expect(response.status).toBe(204);
+    });
+    it("should like comment 4 by user 1", async () => {
+      // Trying to update like status with correct data
+      const response = await likesUpdater(
+        firstAccessToken,
+        commentFourId,
+        likeString
+      );
+      expect(response.status).toBe(204);
+    });
+    it("should log in user 4", async () => {
+      // Trying to authenticate with login
+      const loginResponse = await authentication(
+        undefined,
+        userLoginFilterString04
+      );
+      expect(loginResponse.status).toBe(200);
+      fourthAccessToken = loginResponse.body.accessToken;
+    });
+    it("should like comment 4 by user 4", async () => {
+      // Trying to update like status with correct data
+      const response = await likesUpdater(
+        fourthAccessToken,
+        commentFourId,
+        likeString
+      );
+      expect(response.status).toBe(204);
+    });
+    it("should like comment 4 by user 2", async () => {
+      // Trying to update like status with correct data
+      const response = await likesUpdater(
+        secondAccessToken,
+        commentFourId,
+        likeString
+      );
+      expect(response.status).toBe(204);
+    });
+    it("should like comment 4 by user 3", async () => {
+      // Trying to update like status with correct data
+      const response = await likesUpdater(
+        thirdAccessToken,
+        commentFourId,
+        likeString
+      );
+      expect(response.status).toBe(204);
+    });
+    it("should like comment 5 by user 2", async () => {
+      // Trying to update like status with correct data
+      const response = await likesUpdater(
+        secondAccessToken,
+        commentFiveId,
+        likeString
+      );
+      expect(response.status).toBe(204);
+    });
+    it("should dislike comment 5 by user 3", async () => {
+      // Trying to update like status with correct data
+      const response = await likesUpdater(
+        thirdAccessToken,
+        commentFiveId,
+        dislikeString
+      );
+      expect(response.status).toBe(204);
+    });
+    it("should like comment 6 by user 1", async () => {
+      // Trying to update like status with correct data
+      const response = await likesUpdater(
+        firstAccessToken,
+        commentSixId,
+        likeString
+      );
+      expect(response.status).toBe(204);
+    });
+    it("should dislike comment 6 by user 2", async () => {
+      // Trying to update like status with correct data
+      const response = await likesUpdater(
+        secondAccessToken,
+        commentSixId,
+        dislikeString
+      );
+      expect(response.status).toBe(204);
+    });
   });
 });

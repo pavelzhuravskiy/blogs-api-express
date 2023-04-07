@@ -75,7 +75,9 @@ export class CommentsService {
     let likesCount = foundComment.likesInfo.likesCount;
     let dislikesCount = foundComment.likesInfo.dislikesCount;
 
-    const foundUser = await this.commentsRepository.findUserInLikesInfo(userId);
+    const foundUser = await this.commentsRepository.findUserInLikesInfo(commentId, userId);
+
+    console.log(foundUser)
 
     if (!foundUser) {
       await this.commentsRepository.pushUserInLikesInfo(
@@ -103,7 +105,6 @@ export class CommentsService {
       commentId,
       userId
     );
-
 
     switch (userLikeDBStatus) {
       case "None":
