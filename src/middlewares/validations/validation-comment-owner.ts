@@ -1,8 +1,6 @@
 import { NextFunction, Request, Response } from "express";
-import { CommentsQueryRepository } from "../../repositories/query-repos/comments-query-repository";
 import { ObjectId } from "mongodb";
-
-const commentsQueryRepository = new CommentsQueryRepository();
+import { commentsQueryRepository } from "../../composition-root";
 
 export const validationCommentOwner = async (
   req: Request,

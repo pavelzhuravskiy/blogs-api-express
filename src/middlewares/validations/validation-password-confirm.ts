@@ -1,10 +1,5 @@
 import { body } from "express-validator";
-import { UsersService } from "../../domain/users-service";
-import { UsersRepository } from "../../repositories/users-repository";
-
-const usersRepository = new UsersRepository();
-
-const usersService = new UsersService(usersRepository);
+import { usersService } from "../../composition-root";
 
 export const validationPasswordConfirm = body("recoveryCode").custom(
   async (value) => {

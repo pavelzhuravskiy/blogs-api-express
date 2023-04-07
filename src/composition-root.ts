@@ -23,32 +23,34 @@ import { CommentsRepository } from "./repositories/comments-repository";
 import { CommentsController } from "./controllers/CommentsController";
 import { TestingController } from "./controllers/TestingController";
 import { RateLimitsRepository } from "./repositories/rate-limits-repository";
+import { RateLimitsService } from "./domain/rate-limits-service";
 
-const blogsQueryRepository = new BlogsQueryRepository();
-const postsQueryRepository = new PostsQueryRepository();
-const usersQueryRepository = new UsersQueryRepository();
+export const blogsQueryRepository = new BlogsQueryRepository();
+export const postsQueryRepository = new PostsQueryRepository();
+export const usersQueryRepository = new UsersQueryRepository();
 const devicesQueryRepository = new DevicesQueryRepository();
-const commentsQueryRepository = new CommentsQueryRepository();
+export const commentsQueryRepository = new CommentsQueryRepository();
 
-export const blogsRepository = new BlogsRepository();
+const blogsRepository = new BlogsRepository();
 const postsRepository = new PostsRepository();
 const usersRepository = new UsersRepository();
 const devicesRepository = new DevicesRepository();
-const commentsRepository = new CommentsRepository();
+export const commentsRepository = new CommentsRepository();
 const rateLimitsRepository = new RateLimitsRepository();
 
 const blogsService = new BlogsService(blogsRepository);
 const postService = new PostsService(blogsQueryRepository, postsRepository);
-const usersService = new UsersService(usersRepository);
+export const usersService = new UsersService(usersRepository);
 const authService = new AuthService(usersService, usersRepository);
-const jwtService = new JwtService();
-const devicesService = new DevicesService(jwtService, devicesRepository);
+export const jwtService = new JwtService();
+export const devicesService = new DevicesService(jwtService, devicesRepository);
 const commentsService = new CommentsService(
   usersService,
   postsQueryRepository,
   commentsQueryRepository,
   commentsRepository
 );
+export const rateLimitsService = new RateLimitsService(rateLimitsRepository);
 
 export const blogsController = new BlogsController(
   blogsService,

@@ -1,8 +1,6 @@
 import { CommentDBModel } from "../../models/database/CommentDBModel";
 import { ObjectId } from "mongodb";
-import { CommentsRepository } from "../../repositories/comments-repository";
-
-const commentsRepository = new CommentsRepository();
+import { commentsRepository } from "../../composition-root";
 
 export const funcCommentsMapping = (
   array: CommentDBModel[],

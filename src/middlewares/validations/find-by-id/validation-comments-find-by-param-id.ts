@@ -1,8 +1,6 @@
 import { param } from "express-validator";
 import { ObjectId } from "mongodb";
-import { CommentsQueryRepository } from "../../../repositories/query-repos/comments-query-repository";
-
-const commentsQueryRepository = new CommentsQueryRepository();
+import { commentsQueryRepository } from "../../../composition-root";
 
 export const validationCommentsFindByParamId = param("id").custom(
   async (value) => {

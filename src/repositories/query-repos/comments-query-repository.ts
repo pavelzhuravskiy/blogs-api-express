@@ -5,7 +5,7 @@ import { FilterQuery, SortOrder } from "mongoose";
 import { Paginator } from "../../models/view/_Paginator";
 import { CommentDBModel } from "../../models/database/CommentDBModel";
 import { funcCommentsMapping } from "../../functions/mappings/func-comments-mapping";
-import { CommentsRepository } from "../comments-repository";
+import { commentsRepository } from "../../composition-root";
 
 export class CommentsQueryRepository {
   async findComments(
@@ -51,8 +51,6 @@ export class CommentsQueryRepository {
     if (!foundComment) {
       return null;
     }
-
-    const commentsRepository = new CommentsRepository();
 
     let status;
 

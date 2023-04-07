@@ -1,8 +1,6 @@
 import { param } from "express-validator";
 import { ObjectId } from "mongodb";
-import { BlogsQueryRepository } from "../../../repositories/query-repos/blogs-query-repository";
-
-const blogsQueryRepository = new BlogsQueryRepository();
+import { blogsQueryRepository } from "../../../composition-root";
 
 export const validationBlogsFindByParamId = param("id").custom(
   async (value) => {

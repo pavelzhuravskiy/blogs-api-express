@@ -1,9 +1,5 @@
 import { body } from "express-validator";
-import { UsersService } from "../../domain/users-service";
-import { UsersRepository } from "../../repositories/users-repository";
-
-const usersRepository = new UsersRepository();
-const usersService = new UsersService(usersRepository);
+import { usersService } from "../../composition-root";
 
 export const validationUserUnique = (field: string) =>
   body(field).custom(async (value) => {

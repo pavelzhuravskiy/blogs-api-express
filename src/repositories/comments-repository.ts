@@ -64,9 +64,6 @@ export class CommentsRepository {
     commentId: ObjectId,
     userId: ObjectId
   ): Promise<string | null> {
-    // console.log(commentId)
-    // console.log(userId)
-
     const foundUser = await Comments.findOne(
       { _id: commentId },
       {

@@ -1,11 +1,5 @@
 import { param } from "express-validator";
-import { DevicesService } from "../../../domain/devices-service";
-import { JwtService } from "../../../application/jwt-service";
-import { DevicesRepository } from "../../../repositories/devices-repository";
-
-const devicesRepository = new DevicesRepository();
-const jwtService = new JwtService();
-const devicesService = new DevicesService(jwtService, devicesRepository);
+import { devicesService } from "../../../composition-root";
 
 export const validationDevicesFindByParamId = param("deviceId").custom(
   async (value) => {
