@@ -5,8 +5,10 @@ import { FilterQuery, SortOrder } from "mongoose";
 import { Paginator } from "../../models/view/_Paginator";
 import { CommentDBModel } from "../../models/database/CommentDBModel";
 import { funcCommentsMapping } from "../../functions/mappings/func-comments-mapping";
+import { injectable } from "inversify";
 import { commentsRepository } from "../../composition-root";
 
+@injectable()
 export class CommentsQueryRepository {
   async findComments(
     pageNumber: number,

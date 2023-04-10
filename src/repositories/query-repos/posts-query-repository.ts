@@ -5,7 +5,9 @@ import { PostViewModel } from "../../models/view/PostViewModel";
 import { Posts } from "../../schemas/postSchema";
 import { FilterQuery, SortOrder } from "mongoose";
 import { PostDBModel } from "../../models/database/PostDBModel";
+import {injectable} from "inversify";
 
+@injectable()
 export class PostsQueryRepository {
   async findPosts(
     pageNumber: number,

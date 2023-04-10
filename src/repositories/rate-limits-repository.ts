@@ -1,6 +1,8 @@
 import { RateLimitDBModel } from "../models/database/RateLimitDBModel";
 import { RateLimits } from "../schemas/rateLimitSchema";
+import {injectable} from "inversify";
 
+@injectable()
 export class RateLimitsRepository {
   async findRateLimit(
     ip: string,

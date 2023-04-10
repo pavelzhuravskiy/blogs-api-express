@@ -1,5 +1,8 @@
 import { param } from "express-validator";
-import { devicesService } from "../../../composition-root";
+import { container } from "../../../composition-root";
+import { DevicesService } from "../../../domain/devices-service";
+
+const devicesService = container.resolve(DevicesService);
 
 export const validationDevicesFindByParamId = param("deviceId").custom(
   async (value) => {

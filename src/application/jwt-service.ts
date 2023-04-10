@@ -2,7 +2,9 @@ import jwt from "jsonwebtoken";
 import { settings } from "../settings";
 import { UserDBModel } from "../models/database/UserDBModel";
 import { randomUUID } from "crypto";
+import {injectable} from "inversify";
 
+@injectable()
 export class JwtService {
   async createAccessTokenJWT(
     user: UserDBModel | null,

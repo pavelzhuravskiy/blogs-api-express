@@ -2,7 +2,9 @@ import { CommentViewModel } from "../models/view/CommentViewModel";
 import { ObjectId } from "mongodb";
 import { CommentDBModel } from "../models/database/CommentDBModel";
 import { Comments } from "../schemas/commentSchema";
+import {injectable} from "inversify";
 
+@injectable()
 export class CommentsRepository {
   async createComment(newComment: CommentDBModel): Promise<CommentViewModel> {
     const insertedComment = await Comments.create(newComment);

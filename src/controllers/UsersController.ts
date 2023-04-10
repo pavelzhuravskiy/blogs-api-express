@@ -5,10 +5,13 @@ import { SortOrder } from "mongoose";
 import { ObjectId } from "mongodb";
 import { UsersService } from "../domain/users-service";
 import { UsersQueryRepository } from "../repositories/query-repos/users-query-repository";
+import { inject, injectable } from "inversify";
 
+@injectable()
 export class UsersController {
   constructor(
-    protected usersService: UsersService,
+    @inject(UsersService) protected usersService: UsersService,
+    @inject(UsersQueryRepository)
     protected usersQueryRepository: UsersQueryRepository
   ) {}
   async createUser(req: Request, res: Response) {

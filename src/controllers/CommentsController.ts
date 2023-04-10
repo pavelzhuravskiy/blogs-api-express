@@ -2,10 +2,13 @@ import { Request, Response } from "express";
 import { ObjectId } from "mongodb";
 import { CommentsQueryRepository } from "../repositories/query-repos/comments-query-repository";
 import { CommentsService } from "../domain/comments-service";
+import { inject, injectable } from "inversify";
 
+@injectable()
 export class CommentsController {
   constructor(
-    protected commentsService: CommentsService,
+    @inject(CommentsService) protected commentsService: CommentsService,
+    @inject(CommentsQueryRepository)
     protected commentsQueryRepository: CommentsQueryRepository
   ) {}
   async getComment(req: Request, res: Response) {

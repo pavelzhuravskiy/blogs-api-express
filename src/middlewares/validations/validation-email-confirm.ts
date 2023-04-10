@@ -1,5 +1,8 @@
 import { body } from "express-validator";
-import { usersService } from "../../composition-root";
+import { container } from "../../composition-root";
+import { UsersService } from "../../domain/users-service";
+
+const usersService = container.resolve(UsersService);
 
 export const validationEmailConfirm = body("code").custom(async (value) => {
   const user = await usersService.findUserByEmailConfirmationCode(value);

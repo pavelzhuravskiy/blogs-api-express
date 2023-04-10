@@ -5,11 +5,14 @@ import { validationCommentsInput } from "../middlewares/validations/input/valida
 import { authBearer } from "../middlewares/auth/auth-bearer";
 import { validationCommentOwner } from "../middlewares/validations/validation-comment-owner";
 import { authBasic } from "../middlewares/auth/auth-basic";
-import { commentsController } from "../composition-root";
 import { validationLikesInput } from "../middlewares/validations/input/validation-likes-input";
 import { tokenParser } from "../middlewares/auth/token-parser";
+import { container } from "../composition-root";
+import { CommentsController } from "../controllers/CommentsController";
 
 export const commentsRouter = Router({});
+
+const commentsController = container.resolve(CommentsController)
 
 commentsRouter.get(
   "/:id",

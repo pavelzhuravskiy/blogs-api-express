@@ -3,11 +3,13 @@ import { DevicesRepository } from "../repositories/devices-repository";
 import { JwtService } from "../application/jwt-service";
 import { DeviceViewModel } from "../models/view/DeviceViewModel";
 import { DeviceDBModel } from "../models/database/DeviceDBModel";
+import { inject, injectable } from "inversify";
 
+@injectable()
 export class DevicesService {
   constructor(
-    protected jwtService: JwtService,
-    protected devicesRepository: DevicesRepository
+    @inject(JwtService) protected jwtService: JwtService,
+    @inject(DevicesRepository) protected devicesRepository: DevicesRepository
   ) {}
   async findDeviceById(deviceId: string): Promise<DeviceDBModel | null> {
     return this.devicesRepository.findDeviceById(deviceId);

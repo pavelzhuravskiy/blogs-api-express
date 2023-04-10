@@ -1,9 +1,14 @@
 import { RateLimitDBModel } from "../models/database/RateLimitDBModel";
 import { RateLimitsRepository } from "../repositories/rate-limits-repository";
 import { ObjectId } from "mongodb";
+import { inject, injectable } from "inversify";
 
+@injectable()
 export class RateLimitsService {
-  constructor(protected rateLimitsRepository: RateLimitsRepository) {}
+  constructor(
+    @inject(RateLimitsRepository)
+    protected rateLimitsRepository: RateLimitsRepository
+  ) {}
   async findRateLimit(
     ip: string,
     endpoint: string

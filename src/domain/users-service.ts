@@ -3,9 +3,13 @@ import { UserViewModel } from "../models/view/UserViewModel";
 import { UsersRepository } from "../repositories/users-repository";
 import bcrypt from "bcrypt";
 import { UserDBModel } from "../models/database/UserDBModel";
+import { inject, injectable } from "inversify";
 
+@injectable()
 export class UsersService {
-  constructor(protected usersRepository: UsersRepository) {}
+  constructor(
+    @inject(UsersRepository) protected usersRepository: UsersRepository
+  ) {}
   async findUserById(_id: ObjectId): Promise<UserDBModel | null> {
     return this.usersRepository.findUserById(_id);
   }

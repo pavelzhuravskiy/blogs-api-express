@@ -1,7 +1,9 @@
 import { Devices } from "../schemas/deviceSchema";
 import { DeviceDBModel } from "../models/database/DeviceDBModel";
 import { DeviceViewModel } from "../models/view/DeviceViewModel";
+import {injectable} from "inversify";
 
+@injectable()
 export class DevicesRepository {
   async findDeviceById(deviceId: string): Promise<DeviceDBModel | null> {
     const foundDevice = await Devices.findOne({ deviceId });

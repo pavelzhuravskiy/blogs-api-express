@@ -7,11 +7,13 @@ import { add } from "date-fns";
 import { UsersRepository } from "../repositories/users-repository";
 import { UsersService } from "./users-service";
 import { UserDBModel } from "../models/database/UserDBModel";
+import { inject, injectable } from "inversify";
 
+@injectable()
 export class AuthService {
   constructor(
-    protected usersService: UsersService,
-    protected usersRepository: UsersRepository
+    @inject(UsersService) protected usersService: UsersService,
+    @inject(UsersRepository) protected usersRepository: UsersRepository
   ) {}
   async registerUser(
     login: string,

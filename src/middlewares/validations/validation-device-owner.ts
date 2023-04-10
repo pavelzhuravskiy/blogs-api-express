@@ -1,5 +1,10 @@
 import { NextFunction, Request, Response } from "express";
-import { devicesService, jwtService } from "../../composition-root";
+import { container } from "../../composition-root";
+import { JwtService } from "../../application/jwt-service";
+import { DevicesService } from "../../domain/devices-service";
+
+const jwtService = container.resolve(JwtService);
+const devicesService = container.resolve(DevicesService);
 
 export const validationDeviceOwner = async (
   req: Request,

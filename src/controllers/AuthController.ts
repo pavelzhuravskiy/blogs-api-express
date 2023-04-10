@@ -4,13 +4,15 @@ import { UsersService } from "../domain/users-service";
 import { JwtService } from "../application/jwt-service";
 import { DevicesService } from "../domain/devices-service";
 import { AuthService } from "../domain/auth-service";
+import { inject, injectable } from "inversify";
 
+@injectable()
 export class AuthController {
   constructor(
-    protected usersService: UsersService,
-    protected authService: AuthService,
-    protected jwtService: JwtService,
-    protected devicesService: DevicesService
+    @inject(UsersService) protected usersService: UsersService,
+    @inject(AuthService) protected authService: AuthService,
+    @inject(JwtService) protected jwtService: JwtService,
+    @inject(DevicesService) protected devicesService: DevicesService
   ) {}
   async registerUser(req: Request, res: Response) {
     await this.authService.registerUser(

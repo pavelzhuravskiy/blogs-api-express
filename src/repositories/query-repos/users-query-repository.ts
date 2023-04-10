@@ -5,7 +5,9 @@ import { Paginator } from "../../models/view/_Paginator";
 import { UserViewModel } from "../../models/view/UserViewModel";
 import { Users } from "../../schemas/userSchema";
 import { FilterQuery, SortOrder } from "mongoose";
+import {injectable} from "inversify";
 
+@injectable()
 export class UsersQueryRepository {
   async findUsers(
     pageNumber: number,

@@ -11,12 +11,16 @@ import { ObjectId } from "mongodb";
 import { CommentsService } from "../domain/comments-service";
 import { StringIdModel } from "../models/global/StringIdModel";
 import { CommentsQueryRepository } from "../repositories/query-repos/comments-query-repository";
+import { inject, injectable } from "inversify";
 
+@injectable()
 export class PostsController {
   constructor(
-    protected postsService: PostsService,
-    protected commentsService: CommentsService,
+    @inject(PostsService) protected postsService: PostsService,
+    @inject(CommentsService) protected commentsService: CommentsService,
+    @inject(PostsQueryRepository)
     protected postsQueryRepository: PostsQueryRepository,
+    @inject(CommentsQueryRepository)
     protected commentsQueryRepository: CommentsQueryRepository
   ) {}
   async createPost(req: Request, res: Response) {

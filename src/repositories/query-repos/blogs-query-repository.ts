@@ -5,7 +5,9 @@ import { Blogs } from "../../schemas/blogSchema";
 import { funcBlogsMapping } from "../../functions/mappings/func-blogs-mapping";
 import { BlogDBModel } from "../../models/database/BlogDBModel";
 import { FilterQuery, SortOrder } from "mongoose";
+import {injectable} from "inversify";
 
+@injectable()
 export class BlogsQueryRepository {
   async findBlogs(
     pageNumber: number,

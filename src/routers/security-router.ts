@@ -2,9 +2,12 @@ import { Router } from "express";
 import { validationErrorCheck } from "../middlewares/validations/_validation-error-check";
 import { validationDevicesFindByParamId } from "../middlewares/validations/find-by-id/validation-devices-find-by-param-id";
 import { validationDeviceOwner } from "../middlewares/validations/validation-device-owner";
-import { devicesController } from "../composition-root";
+import { container } from "../composition-root";
+import { DevicesController } from "../controllers/DevicesController";
 
 export const securityRouter = Router({});
+
+const devicesController = container.resolve(DevicesController)
 
 securityRouter.get(
   "/devices",

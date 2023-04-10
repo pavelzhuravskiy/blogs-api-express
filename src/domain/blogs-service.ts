@@ -2,9 +2,13 @@ import { BlogsRepository } from "../repositories/blogs-repository";
 import { BlogDBModel } from "../models/database/BlogDBModel";
 import { ObjectId } from "mongodb";
 import { BlogViewModel } from "../models/view/BlogViewModel";
+import { inject, injectable } from "inversify";
 
+@injectable()
 export class BlogsService {
-  constructor(protected blogsRepository: BlogsRepository) {}
+  constructor(
+    @inject(BlogsRepository) protected blogsRepository: BlogsRepository
+  ) {}
 
   async createBlog(
     name: string,

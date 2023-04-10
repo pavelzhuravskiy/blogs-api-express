@@ -1,3 +1,4 @@
+import "reflect-metadata";
 import { BlogsRepository } from "./repositories/blogs-repository";
 import { BlogsService } from "./domain/blogs-service";
 import { BlogsController } from "./controllers/BlogsController";
@@ -24,76 +25,37 @@ import { CommentsController } from "./controllers/CommentsController";
 import { TestingController } from "./controllers/TestingController";
 import { RateLimitsRepository } from "./repositories/rate-limits-repository";
 import { RateLimitsService } from "./domain/rate-limits-service";
+import { Container } from "inversify";
 
-export const blogsQueryRepository = new BlogsQueryRepository();
-export const postsQueryRepository = new PostsQueryRepository();
-export const usersQueryRepository = new UsersQueryRepository();
-const devicesQueryRepository = new DevicesQueryRepository();
-export const commentsQueryRepository = new CommentsQueryRepository();
+export const commentsRepository = new CommentsRepository()
+export const container = new Container();
 
-const blogsRepository = new BlogsRepository();
-const postsRepository = new PostsRepository();
-const usersRepository = new UsersRepository();
-const devicesRepository = new DevicesRepository();
-export const commentsRepository = new CommentsRepository();
-const rateLimitsRepository = new RateLimitsRepository();
+container.bind(BlogsController).to(BlogsController);
+container.bind(PostsController).to(PostsController);
+container.bind(UsersController).to(UsersController);
+container.bind(AuthController).to(AuthController);
+container.bind(DevicesController).to(DevicesController);
+container.bind(CommentsController).to(CommentsController);
+container.bind(TestingController).to(TestingController);
 
-const blogsService = new BlogsService(blogsRepository);
-const postService = new PostsService(blogsQueryRepository, postsRepository);
-export const usersService = new UsersService(usersRepository);
-const authService = new AuthService(usersService, usersRepository);
-export const jwtService = new JwtService();
-export const devicesService = new DevicesService(jwtService, devicesRepository);
-const commentsService = new CommentsService(
-  usersService,
-  postsQueryRepository,
-  commentsQueryRepository,
-  commentsRepository
-);
-export const rateLimitsService = new RateLimitsService(rateLimitsRepository);
+container.bind(BlogsService).to(BlogsService);
+container.bind(PostsService).to(PostsService);
+container.bind(UsersService).to(UsersService);
+container.bind(AuthService).to(AuthService);
+container.bind(JwtService).to(JwtService);
+container.bind(DevicesService).to(DevicesService);
+container.bind(CommentsService).to(CommentsService);
+container.bind(RateLimitsService).to(RateLimitsService);
 
-export const blogsController = new BlogsController(
-  blogsService,
-  postService,
-  blogsQueryRepository,
-  postsQueryRepository
-);
+container.bind(BlogsRepository).to(BlogsRepository);
+container.bind(PostsRepository).to(PostsRepository);
+container.bind(UsersRepository).to(UsersRepository);
+container.bind(DevicesRepository).to(DevicesRepository);
+container.bind(CommentsRepository).to(CommentsRepository);
+container.bind(RateLimitsRepository).to(RateLimitsRepository);
 
-export const postsController = new PostsController(
-  postService,
-  commentsService,
-  postsQueryRepository,
-  commentsQueryRepository
-);
-
-export const usersController = new UsersController(
-  usersService,
-  usersQueryRepository
-);
-
-export const authController = new AuthController(
-  usersService,
-  authService,
-  jwtService,
-  devicesService
-);
-
-export const devicesController = new DevicesController(
-  jwtService,
-  devicesService,
-  devicesQueryRepository
-);
-
-export const commentsController = new CommentsController(
-  commentsService,
-  commentsQueryRepository
-);
-
-export const testingController = new TestingController(
-  blogsRepository,
-  postsRepository,
-  usersRepository,
-  commentsRepository,
-  devicesRepository,
-  rateLimitsRepository
-);
+container.bind(BlogsQueryRepository).to(BlogsQueryRepository);
+container.bind(PostsQueryRepository).to(PostsQueryRepository);
+container.bind(UsersQueryRepository).to(UsersQueryRepository);
+container.bind(DevicesQueryRepository).to(DevicesQueryRepository);
+container.bind(CommentsQueryRepository).to(CommentsQueryRepository);

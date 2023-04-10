@@ -2,7 +2,9 @@ import { ObjectId } from "mongodb";
 import { UserDBModel } from "../models/database/UserDBModel";
 import { UserViewModel } from "../models/view/UserViewModel";
 import { Users } from "../schemas/userSchema";
+import {injectable} from "inversify";
 
+@injectable()
 export class UsersRepository {
   async findUserById(_id: ObjectId): Promise<UserDBModel | null> {
     const foundUser = await Users.findOne({ _id });

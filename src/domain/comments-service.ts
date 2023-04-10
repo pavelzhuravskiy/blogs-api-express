@@ -5,13 +5,17 @@ import { CommentsRepository } from "../repositories/comments-repository";
 import { CommentDBModel, UserLikes } from "../models/database/CommentDBModel";
 import { UsersService } from "./users-service";
 import { CommentsQueryRepository } from "../repositories/query-repos/comments-query-repository";
+import { inject, injectable } from "inversify";
 
+@injectable()
 export class CommentsService {
   constructor(
-    protected usersService: UsersService,
+    @inject(UsersService) protected usersService: UsersService,
+    @inject(PostsQueryRepository)
     protected postsQueryRepository: PostsQueryRepository,
+    @inject(CommentsQueryRepository)
     protected commentsQueryRepository: CommentsQueryRepository,
-    protected commentsRepository: CommentsRepository
+    @inject(CommentsRepository) protected commentsRepository: CommentsRepository
   ) {}
   async createComment(
     postId: ObjectId,

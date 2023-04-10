@@ -13,9 +13,12 @@ import { rateLimiter } from "../middlewares/rate-limiter";
 import { validationPasswordConfirm } from "../middlewares/validations/validation-password-confirm";
 import { validationPasswordInput } from "../middlewares/validations/input/validation-password-input";
 import { validationRecoveryCodeInput } from "../middlewares/validations/input/validation-recovery-code-input";
-import { authController } from "../composition-root";
+import { container } from "../composition-root";
+import { AuthController } from "../controllers/AuthController";
 
 export const authRouter = Router({});
+
+const authController = container.resolve(AuthController);
 
 // +++++ Registration section start +++++
 

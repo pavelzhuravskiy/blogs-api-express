@@ -5,14 +5,18 @@ import { UsersRepository } from "../repositories/users-repository";
 import { CommentsRepository } from "../repositories/comments-repository";
 import { DevicesRepository } from "../repositories/devices-repository";
 import { RateLimitsRepository } from "../repositories/rate-limits-repository";
+import { inject, injectable } from "inversify";
 
+@injectable()
 export class TestingController {
   constructor(
-    protected blogsRepository: BlogsRepository,
-    protected postsRepository: PostsRepository,
-    protected usersRepository: UsersRepository,
+    @inject(BlogsRepository) protected blogsRepository: BlogsRepository,
+    @inject(PostsRepository) protected postsRepository: PostsRepository,
+    @inject(UsersRepository) protected usersRepository: UsersRepository,
+    @inject(CommentsRepository)
     protected commentsRepository: CommentsRepository,
-    protected devicesRepository: DevicesRepository,
+    @inject(DevicesRepository) protected devicesRepository: DevicesRepository,
+    @inject(RateLimitsRepository)
     protected rateLimitsRepository: RateLimitsRepository
   ) {}
   async deleteEverything(req: Request, res: Response) {
