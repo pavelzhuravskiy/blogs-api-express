@@ -28,7 +28,7 @@ export class PostsController {
       req.body.title,
       req.body.shortDescription,
       req.body.content,
-      req.body.blogId
+      req.body.blogId,
     );
     res.status(201).json(newPost);
   }

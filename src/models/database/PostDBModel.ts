@@ -1,5 +1,14 @@
 import { ObjectId } from "mongodb";
 
+export class ExtendedUserLikes {
+  constructor(
+    public addedAt: string,
+    public userId: string,
+    userLogin: string,
+    public likeStatus: string
+  ) {}
+}
+
 export class PostDBModel {
   constructor(
     public _id: ObjectId,
@@ -8,6 +17,11 @@ export class PostDBModel {
     public content: string,
     public blogId: string,
     public blogName: string,
-    public createdAt: string
+    public createdAt: string,
+    public likesInfo: {
+      likesCount: number;
+      dislikesCount: number;
+      users: ExtendedUserLikes[];
+    }
   ) {}
 }

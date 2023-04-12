@@ -4,10 +4,12 @@ import { PostDBModel } from "../models/database/PostDBModel";
 import { PostViewModel } from "../models/view/PostViewModel";
 import { BlogsQueryRepository } from "../repositories/query-repos/blogs-query-repository";
 import { inject, injectable } from "inversify";
+import { UsersService } from "./users-service";
 
 @injectable()
 export class PostsService {
   constructor(
+    @inject(UsersService) protected usersService: UsersService,
     @inject(BlogsQueryRepository)
     protected blogsQueryRepository: BlogsQueryRepository,
     @inject(PostsRepository) protected postsRepository: PostsRepository
@@ -33,7 +35,12 @@ export class PostsService {
       content,
       blogId,
       blog.name,
-      new Date().toISOString()
+      new Date().toISOString(),
+      {
+        likesCount: 0,
+        dislikesCount: 0,
+        users: [],
+      }
     );
 
     return this.postsRepository.createPost(newPost);

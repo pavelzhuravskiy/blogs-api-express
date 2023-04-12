@@ -12,11 +12,12 @@ import { PostsController } from "../controllers/PostsController";
 
 export const postsRouter = Router({});
 
-const postsController = container.resolve(PostsController)
+const postsController = container.resolve(PostsController);
 
 postsRouter.post(
   "/",
   authBasic,
+  tokenParser,
   validationPostsInput,
   validationPostsCreation,
   validationErrorCheck,

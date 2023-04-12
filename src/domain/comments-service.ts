@@ -2,7 +2,7 @@ import { ObjectId } from "mongodb";
 import { CommentViewModel } from "../models/view/CommentViewModel";
 import { PostsQueryRepository } from "../repositories/query-repos/posts-query-repository";
 import { CommentsRepository } from "../repositories/comments-repository";
-import { CommentDBModel, UserLikes } from "../models/database/CommentDBModel";
+import { CommentDBModel } from "../models/database/CommentDBModel";
 import { UsersService } from "./users-service";
 import { CommentsQueryRepository } from "../repositories/query-repos/comments-query-repository";
 import { inject, injectable } from "inversify";
@@ -41,7 +41,7 @@ export class CommentsService {
       {
         likesCount: 0,
         dislikesCount: 0,
-        users: [new UserLikes(userId.toString(), "None")],
+        users: [],
       }
     );
 
