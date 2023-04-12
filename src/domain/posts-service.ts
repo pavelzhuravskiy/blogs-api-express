@@ -5,6 +5,9 @@ import { PostViewModel } from "../models/view/PostViewModel";
 import { BlogsQueryRepository } from "../repositories/query-repos/blogs-query-repository";
 import { inject, injectable } from "inversify";
 import { UsersService } from "./users-service";
+import {
+  PostsQueryRepository
+} from "../repositories/query-repos/posts-query-repository";
 
 @injectable()
 export class PostsService {
@@ -12,6 +15,8 @@ export class PostsService {
     @inject(UsersService) protected usersService: UsersService,
     @inject(BlogsQueryRepository)
     protected blogsQueryRepository: BlogsQueryRepository,
+    @inject(PostsQueryRepository)
+    protected postsQueryRepository: PostsQueryRepository,
     @inject(PostsRepository) protected postsRepository: PostsRepository
   ) {}
   async createPost(
@@ -62,5 +67,100 @@ export class PostsService {
 
   async deleteAll(): Promise<boolean> {
     return this.postsRepository.deleteAll();
+  }
+
+  async updateLikeStatus(
+      postId: ObjectId,
+      likeStatus: string,
+      userId: ObjectId
+  ): Promise<boolean> {
+    const foundPost = await this.postsQueryRepository.findPostById(
+        postId
+    );
+
+    if (!foundPost) {
+      return false;
+    }
+
+    let likesCount = foundPost.likesInfo.likesCount;
+    let dislikesCount = foundPost.likesInfo.dislikesCount;
+
+    const foundUser = await this.postsRepository.findUserInLikesInfo(
+        postId,
+        userId
+    );
+
+    if (!foundUser) {
+      await this.postsRepository.pushUserInLikesInfo(
+          postId,
+          userId,
+          likeStatus
+      );
+
+      if (likeStatus === "Like") {
+        likesCount++;
+      }
+
+      if (likeStatus === "Dislike") {
+        dislikesCount++;
+      }
+
+      return this.postsRepository.updateLikesCount(
+          postId,
+          likesCount,
+          dislikesCount
+      );
+    }
+
+    let userLikeDBStatus = await this.postsRepository.findUserLikeStatus(
+        postId,
+        userId
+    );
+
+    switch (userLikeDBStatus) {
+      case "None":
+        if (likeStatus === "Like") {
+          likesCount++;
+        }
+
+        if (likeStatus === "Dislike") {
+          dislikesCount++;
+        }
+
+        break;
+
+      case "Like":
+        if (likeStatus === "None") {
+          likesCount--;
+        }
+
+        if (likeStatus === "Dislike") {
+          likesCount--;
+          dislikesCount++;
+        }
+        break;
+
+      case "Dislike":
+        if (likeStatus === "None") {
+          dislikesCount--;
+        }
+
+        if (likeStatus === "Like") {
+          dislikesCount--;
+          likesCount++;
+        }
+    }
+
+    await this.postsRepository.updateLikesCount(
+        postId,
+        likesCount,
+        dislikesCount
+    );
+
+    return this.postsRepository.updateLikesStatus(
+        postId,
+        userId,
+        likeStatus
+    );
   }
 }

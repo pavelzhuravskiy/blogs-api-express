@@ -9,6 +9,9 @@ import { authBearer } from "../middlewares/auth/auth-bearer";
 import { tokenParser } from "../middlewares/auth/token-parser";
 import { container } from "../composition-root";
 import { PostsController } from "../controllers/PostsController";
+import {
+    validationLikesInput
+} from "../middlewares/validations/input/validation-likes-input";
 
 export const postsRouter = Router({});
 
@@ -56,6 +59,19 @@ postsRouter.delete(
   authBasic,
   postsController.deletePosts.bind(postsController)
 );
+
+// +++++ Likes in posts section start +++++
+
+postsRouter.put(
+    "/:id/like-status",
+    validationPostsFindByParamId,
+    authBearer,
+    validationLikesInput,
+    validationErrorCheck,
+    postsController.updateLikeStatus.bind(postsController)
+);
+
+// ----- Likes in posts section end -----
 
 // +++++ Comments section start +++++
 

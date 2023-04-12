@@ -42,6 +42,7 @@ export class PostsQueryRepository {
       page: pageNumber,
       pageSize: pageSize,
       totalCount,
+      // @ts-ignore // TODO
       items: funcPostsMapping(output),
     };
   }
@@ -61,6 +62,11 @@ export class PostsQueryRepository {
       blogId: foundPost.blogId,
       blogName: foundPost.blogName,
       createdAt: foundPost.createdAt,
+      likesInfo: {
+        likesCount: foundPost.likesInfo.likesCount,
+        dislikesCount: foundPost.likesInfo.dislikesCount,
+        myStatus: "None", // TODO
+      },
     };
   }
 }

@@ -105,4 +105,19 @@ export class PostsController {
     );
     res.json(foundComments);
   }
+
+  async updateLikeStatus(req: Request, res: Response) {
+    const isUpdated = await this.postsService.updateLikeStatus(
+        new ObjectId(req.params.id),
+        req.body.likeStatus,
+        req.user!._id
+    );
+
+    if (isUpdated) {
+      const updatedComment = await this.postsQueryRepository.findPostById(
+          new ObjectId(req.params.id)
+      );
+      res.status(204).json(updatedComment);
+    }
+  }
 }
