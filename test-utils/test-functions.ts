@@ -16,9 +16,11 @@ import {
   devicesURI,
   invalidAuthValue,
   invalidURI,
-  ipString, likeStatusURI,
+  ipString,
+  likeStatusURI,
   loginURI,
-  logoutURI, noneString,
+  logoutURI,
+  noneString,
   postContentString,
   postNewContentString,
   postNewShortDescriptionString,
@@ -40,11 +42,17 @@ import { PostsQueryRepository } from "../src/repositories/query-repos/posts-quer
 import { UsersQueryRepository } from "../src/repositories/query-repos/users-query-repository";
 import { CommentsQueryRepository } from "../src/repositories/query-repos/comments-query-repository";
 import { SortOrder } from "mongoose";
+import { container } from "../src/composition-root";
 
-const blogsQueryRepository = new BlogsQueryRepository();
-const postsQueryRepository = new PostsQueryRepository();
-const usersQueryRepository = new UsersQueryRepository();
-const commentsQueryRepository = new CommentsQueryRepository();
+const blogsQueryRepository = container.resolve(BlogsQueryRepository);
+const postsQueryRepository = container.resolve(PostsQueryRepository);
+const usersQueryRepository = container.resolve(UsersQueryRepository);
+const commentsQueryRepository = container.resolve(CommentsQueryRepository);
+
+// const blogsQueryRepository = new BlogsQueryRepository();
+// const postsQueryRepository = new PostsQueryRepository();
+// const usersQueryRepository = new UsersQueryRepository();
+// const commentsQueryRepository = new CommentsQueryRepository();
 
 // ---------- AUTH FUNCTIONS ----------
 

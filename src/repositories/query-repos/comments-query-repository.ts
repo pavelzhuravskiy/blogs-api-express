@@ -4,12 +4,14 @@ import { Comments } from "../../schemas/commentSchema";
 import { FilterQuery, SortOrder } from "mongoose";
 import { Paginator } from "../../models/view/_Paginator";
 import { CommentDBModel } from "../../models/database/CommentDBModel";
-import { funcCommentsMapping } from "../../functions/mappings/func-comments-mapping";
-import { injectable } from "inversify";
-import { commentsRepository } from "../../composition-root";
+import { inject, injectable } from "inversify";
+import { CommentsRepository } from "../comments-repository";
 
 @injectable()
 export class CommentsQueryRepository {
+  constructor(
+    @inject(CommentsRepository) protected commentsRepository: CommentsRepository
+  ) {}
   async findComments(
     pageNumber: number,
     pageSize: number,
@@ -26,7 +28,7 @@ export class CommentsQueryRepository {
       sortingObj[sortBy] = "asc";
     }
 
-    const output = await Comments.find(filter)
+    const comments = await Comments.find(filter)
       .sort(sortingObj)
       .skip(pageNumber > 0 ? (pageNumber - 1) * pageSize : 0)
       .limit(pageSize > 0 ? pageSize : 0)
@@ -40,7 +42,7 @@ export class CommentsQueryRepository {
       page: pageNumber,
       pageSize: pageSize,
       totalCount,
-      items: await funcCommentsMapping(output, userId),
+      items: await this.commentsMapping(comments, userId),
     };
   }
 
@@ -57,7 +59,7 @@ export class CommentsQueryRepository {
     let status;
 
     if (userId) {
-      status = await commentsRepository.findUserLikeStatus(_id, userId);
+      status = await this.commentsRepository.findUserLikeStatus(_id, userId);
     }
 
     return {
@@ -74,5 +76,38 @@ export class CommentsQueryRepository {
         myStatus: status || "None",
       },
     };
+  }
+
+  private async commentsMapping(
+    array: CommentDBModel[],
+    userId?: ObjectId
+  ): Promise<CommentViewModel[]> {
+    return Promise.all(
+      array.map(async (comment) => {
+        let status;
+
+        if (userId) {
+          status = await this.commentsRepository.findUserLikeStatus(
+            comment._id,
+            userId
+          );
+        }
+
+        return {
+          id: comment._id.toString(),
+          content: comment.content,
+          commentatorInfo: {
+            userId: comment.commentatorInfo.userId,
+            userLogin: comment.commentatorInfo.userLogin,
+          },
+          createdAt: comment.createdAt,
+          likesInfo: {
+            likesCount: comment.likesInfo.likesCount,
+            dislikesCount: comment.likesInfo.dislikesCount,
+            myStatus: status || "None",
+          },
+        };
+      })
+    );
   }
 }

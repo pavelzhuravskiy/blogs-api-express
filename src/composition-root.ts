@@ -27,7 +27,6 @@ import { RateLimitsRepository } from "./repositories/rate-limits-repository";
 import { RateLimitsService } from "./domain/rate-limits-service";
 import { Container } from "inversify";
 
-export const commentsRepository = new CommentsRepository()
 export const container = new Container();
 
 container.bind(BlogsController).to(BlogsController);
