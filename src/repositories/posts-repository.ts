@@ -146,4 +146,8 @@ export class PostsRepository {
     );
     return result.matchedCount === 1;
   }
+
+  async findPostById(_id: ObjectId): Promise<PostDBModel | null> {
+    return Posts.findOne({ _id });
+  }
 }

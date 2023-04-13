@@ -57,12 +57,22 @@ describe("Testing delete operation", () => {
     const returnedUser = await userReturner();
     expect(user).toStrictEqual(returnedUser);
   });
+
+  let token: string;
+
+  it("should log in user with correct credentials", async () => {
+    // Trying to authenticate with login
+    const loginResponse = await authentication();
+    expect(loginResponse.status).toBe(200);
+
+    token = loginResponse.body.accessToken;
+  });
   it("should create new comment", async () => {
-    // Trying to create comment
-    const response = await commentCreator();
+    // Trying to create comment with authenticated user
+    const response = await commentCreator(token);
     expect(response.status).toBe(201);
 
-    // Checking result by returning created comment
+    // Checking result by returning created post
     const comment = await firstComment();
     const returnedComment = await commentReturner();
     expect(comment).toStrictEqual(returnedComment);

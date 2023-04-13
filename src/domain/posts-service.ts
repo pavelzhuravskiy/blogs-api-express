@@ -2,21 +2,15 @@ import { ObjectId } from "mongodb";
 import { PostsRepository } from "../repositories/posts-repository";
 import { PostDBModel } from "../models/database/PostDBModel";
 import { PostViewModel } from "../models/view/PostViewModel";
-import { BlogsQueryRepository } from "../repositories/query-repos/blogs-query-repository";
 import { inject, injectable } from "inversify";
 import { UsersService } from "./users-service";
-import {
-  PostsQueryRepository
-} from "../repositories/query-repos/posts-query-repository";
+import { BlogsRepository } from "../repositories/blogs-repository";
 
 @injectable()
 export class PostsService {
   constructor(
     @inject(UsersService) protected usersService: UsersService,
-    @inject(BlogsQueryRepository)
-    protected blogsQueryRepository: BlogsQueryRepository,
-    @inject(PostsQueryRepository)
-    protected postsQueryRepository: PostsQueryRepository,
+    @inject(BlogsRepository) protected blogsRepository: BlogsRepository,
     @inject(PostsRepository) protected postsRepository: PostsRepository
   ) {}
   async createPost(
@@ -25,9 +19,7 @@ export class PostsService {
     content: string,
     blogId: string
   ): Promise<PostViewModel | null> {
-    const blog = await this.blogsQueryRepository.findBlogById(
-      new ObjectId(blogId)
-    );
+    const blog = await this.blogsRepository.findBlogById(new ObjectId(blogId));
 
     if (!blog) {
       return null;
@@ -70,13 +62,11 @@ export class PostsService {
   }
 
   async updateLikeStatus(
-      postId: ObjectId,
-      likeStatus: string,
-      userId: ObjectId
+    postId: ObjectId,
+    likeStatus: string,
+    userId: ObjectId
   ): Promise<boolean> {
-    const foundPost = await this.postsQueryRepository.findPostById(
-        postId
-    );
+    const foundPost = await this.postsRepository.findPostById(postId);
 
     if (!foundPost) {
       return false;
@@ -86,15 +76,15 @@ export class PostsService {
     let dislikesCount = foundPost.likesInfo.dislikesCount;
 
     const foundUser = await this.postsRepository.findUserInLikesInfo(
-        postId,
-        userId
+      postId,
+      userId
     );
 
     if (!foundUser) {
       await this.postsRepository.pushUserInLikesInfo(
-          postId,
-          userId,
-          likeStatus
+        postId,
+        userId,
+        likeStatus
       );
 
       if (likeStatus === "Like") {
@@ -106,15 +96,15 @@ export class PostsService {
       }
 
       return this.postsRepository.updateLikesCount(
-          postId,
-          likesCount,
-          dislikesCount
+        postId,
+        likesCount,
+        dislikesCount
       );
     }
 
     let userLikeDBStatus = await this.postsRepository.findUserLikeStatus(
-        postId,
-        userId
+      postId,
+      userId
     );
 
     switch (userLikeDBStatus) {
@@ -152,15 +142,11 @@ export class PostsService {
     }
 
     await this.postsRepository.updateLikesCount(
-        postId,
-        likesCount,
-        dislikesCount
+      postId,
+      likesCount,
+      dislikesCount
     );
 
-    return this.postsRepository.updateLikesStatus(
-        postId,
-        userId,
-        likeStatus
-    );
+    return this.postsRepository.updateLikesStatus(postId, userId, likeStatus);
   }
 }

@@ -2,7 +2,7 @@ import { BlogDBModel } from "../models/database/BlogDBModel";
 import { ObjectId } from "mongodb";
 import { BlogViewModel } from "../models/view/BlogViewModel";
 import { Blogs } from "../schemas/blogSchema";
-import {injectable} from "inversify";
+import { injectable } from "inversify";
 
 @injectable()
 export class BlogsRepository {
@@ -45,5 +45,9 @@ export class BlogsRepository {
   async deleteAll(): Promise<boolean> {
     await Blogs.deleteMany({});
     return (await Blogs.countDocuments()) === 0;
+  }
+
+  async findBlogById(_id: ObjectId): Promise<BlogDBModel | null> {
+    return Blogs.findOne({ _id });
   }
 }

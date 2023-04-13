@@ -2,7 +2,7 @@ import { CommentViewModel } from "../models/view/CommentViewModel";
 import { ObjectId } from "mongodb";
 import { CommentDBModel } from "../models/database/CommentDBModel";
 import { Comments } from "../schemas/commentSchema";
-import {injectable} from "inversify";
+import { injectable } from "inversify";
 
 @injectable()
 export class CommentsRepository {
@@ -135,5 +135,9 @@ export class CommentsRepository {
       }
     );
     return result.matchedCount === 1;
+  }
+
+  async findCommentById(_id: ObjectId): Promise<CommentDBModel | null> {
+    return Comments.findOne({ _id });
   }
 }

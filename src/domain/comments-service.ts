@@ -1,20 +1,17 @@
 import { ObjectId } from "mongodb";
 import { CommentViewModel } from "../models/view/CommentViewModel";
-import { PostsQueryRepository } from "../repositories/query-repos/posts-query-repository";
 import { CommentsRepository } from "../repositories/comments-repository";
 import { CommentDBModel } from "../models/database/CommentDBModel";
 import { UsersService } from "./users-service";
-import { CommentsQueryRepository } from "../repositories/query-repos/comments-query-repository";
 import { inject, injectable } from "inversify";
+import { PostsRepository } from "../repositories/posts-repository";
 
 @injectable()
 export class CommentsService {
   constructor(
     @inject(UsersService) protected usersService: UsersService,
-    @inject(PostsQueryRepository)
-    protected postsQueryRepository: PostsQueryRepository,
-    @inject(CommentsQueryRepository)
-    protected commentsQueryRepository: CommentsQueryRepository,
+    @inject(PostsRepository)
+    protected postsRepository: PostsRepository,
     @inject(CommentsRepository) protected commentsRepository: CommentsRepository
   ) {}
   async createComment(
@@ -22,9 +19,7 @@ export class CommentsService {
     content: string,
     userId: ObjectId
   ): Promise<CommentViewModel | null> {
-    const post = await this.postsQueryRepository.findPostById(
-      new ObjectId(postId)
-    );
+    const post = await this.postsRepository.findPostById(new ObjectId(postId));
 
     if (!post) {
       return null;
@@ -68,7 +63,7 @@ export class CommentsService {
     likeStatus: string,
     userId: ObjectId
   ): Promise<boolean> {
-    const foundComment = await this.commentsQueryRepository.findCommentById(
+    const foundComment = await this.commentsRepository.findCommentById(
       commentId
     );
 

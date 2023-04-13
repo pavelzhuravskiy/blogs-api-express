@@ -49,11 +49,6 @@ const postsQueryRepository = container.resolve(PostsQueryRepository);
 const usersQueryRepository = container.resolve(UsersQueryRepository);
 const commentsQueryRepository = container.resolve(CommentsQueryRepository);
 
-// const blogsQueryRepository = new BlogsQueryRepository();
-// const postsQueryRepository = new PostsQueryRepository();
-// const usersQueryRepository = new UsersQueryRepository();
-// const commentsQueryRepository = new CommentsQueryRepository();
-
 // ---------- AUTH FUNCTIONS ----------
 
 // User authentication
