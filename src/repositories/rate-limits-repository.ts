@@ -1,5 +1,5 @@
 import { RateLimitDBModel } from "../models/database/RateLimitDBModel";
-import { RateLimits } from "../schemas/rateLimitSchema";
+import { RateLimitMongooseModel } from "../schemas/rateLimitSchema";
 import {injectable} from "inversify";
 
 @injectable()
@@ -8,7 +8,7 @@ export class RateLimitsRepository {
     ip: string,
     endpoint: string
   ): Promise<RateLimitDBModel | null> {
-    const foundRateLimit = await RateLimits.findOne({ ip, endpoint });
+    const foundRateLimit = await RateLimitMongooseModel.findOne({ ip, endpoint });
 
     if (!foundRateLimit) {
       return null;
@@ -20,7 +20,7 @@ export class RateLimitsRepository {
   async createRateLimit(
     rateLimit: RateLimitDBModel
   ): Promise<RateLimitDBModel> {
-    await RateLimits.create(rateLimit);
+    await RateLimitMongooseModel.create(rateLimit);
     return rateLimit;
   }
 
@@ -30,7 +30,7 @@ export class RateLimitsRepository {
     attemptsCount: number,
     currentDate: number
   ): Promise<boolean> {
-    const result = await RateLimits.updateOne(
+    const result = await RateLimitMongooseModel.updateOne(
       { ip, endpoint },
       {
         $set: {
@@ -43,12 +43,12 @@ export class RateLimitsRepository {
   }
 
   async deleteRateLimit(ip: string, endpoint: string): Promise<boolean> {
-    const result = await RateLimits.deleteOne({ ip, endpoint });
+    const result = await RateLimitMongooseModel.deleteOne({ ip, endpoint });
     return result.deletedCount === 1;
   }
 
   async deleteAll(): Promise<boolean> {
-    await RateLimits.deleteMany({});
-    return (await RateLimits.countDocuments()) === 0;
+    await RateLimitMongooseModel.deleteMany({});
+    return (await RateLimitMongooseModel.countDocuments()) === 0;
   }
 }

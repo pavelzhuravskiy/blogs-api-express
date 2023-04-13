@@ -1,12 +1,12 @@
 import { DeviceViewModel } from "../../models/view/DeviceViewModel";
-import { Devices } from "../../schemas/deviceSchema";
+import { DeviceMongooseModel } from "../../schemas/deviceSchema";
 import { injectable } from "inversify";
 import { DeviceDBModel } from "../../models/database/DeviceDBModel";
 
 @injectable()
 export class DevicesQueryRepository {
   async findDevices(userId: string): Promise<DeviceViewModel[]> {
-    const devices = await Devices.find({ userId }).lean();
+    const devices = await DeviceMongooseModel.find({ userId }).lean();
     return this.devicesMapping(devices);
   }
   private async devicesMapping(array: DeviceDBModel[]) {

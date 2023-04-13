@@ -9,4 +9,4 @@ const rateLimitSchema = new mongoose.Schema<RateLimitDBModel>({
   attemptsCount: { type: Number, required: true },
 });
 
-export const RateLimits = mongoose.model("rate_limits", rateLimitSchema);
+export const RateLimitMongooseModel = mongoose.model("rate_limits", rateLimitSchema);

@@ -1,4 +1,4 @@
-import { Devices } from "../schemas/deviceSchema";
+import { DeviceMongooseModel } from "../schemas/deviceSchema";
 import { DeviceDBModel } from "../models/database/DeviceDBModel";
 import { DeviceViewModel } from "../models/view/DeviceViewModel";
 import {injectable} from "inversify";
@@ -6,7 +6,7 @@ import {injectable} from "inversify";
 @injectable()
 export class DevicesRepository {
   async findDeviceById(deviceId: string): Promise<DeviceDBModel | null> {
-    const foundDevice = await Devices.findOne({ deviceId });
+    const foundDevice = await DeviceMongooseModel.findOne({ deviceId });
 
     if (!foundDevice) {
       return null;
@@ -16,7 +16,7 @@ export class DevicesRepository {
   }
 
   async createDevice(device: DeviceDBModel): Promise<DeviceViewModel> {
-    await Devices.create(device);
+    await DeviceMongooseModel.create(device);
     return {
       ip: device.ip,
       title: device.title,
@@ -30,7 +30,7 @@ export class DevicesRepository {
     userId: string,
     issuedAt: number
   ): Promise<boolean> {
-    const result = await Devices.updateOne(
+    const result = await DeviceMongooseModel.updateOne(
       { userId },
       {
         $set: {
@@ -43,17 +43,17 @@ export class DevicesRepository {
   }
 
   async deleteDevice(deviceId: string): Promise<boolean> {
-    const result = await Devices.deleteOne({ deviceId });
+    const result = await DeviceMongooseModel.deleteOne({ deviceId });
     return result.deletedCount === 1;
   }
 
   async deleteAllOldDevices(currentDevice: string): Promise<boolean> {
-    await Devices.deleteMany({ deviceId: { $ne: currentDevice } });
-    return (await Devices.countDocuments()) === 1;
+    await DeviceMongooseModel.deleteMany({ deviceId: { $ne: currentDevice } });
+    return (await DeviceMongooseModel.countDocuments()) === 1;
   }
 
   async deleteAll(): Promise<boolean> {
-    await Devices.deleteMany({});
-    return (await Devices.countDocuments()) === 0;
+    await DeviceMongooseModel.deleteMany({});
+    return (await DeviceMongooseModel.countDocuments()) === 0;
   }
 }

@@ -1,13 +1,14 @@
 import { PostViewModel } from "../models/view/PostViewModel";
 import { ObjectId } from "mongodb";
 import { PostDBModel } from "../models/database/PostDBModel";
-import { Posts } from "../schemas/postSchema";
+import { PostMongooseModel } from "../schemas/postSchema";
 import { injectable } from "inversify";
+import { HydratedDocument } from "mongoose";
 
 @injectable()
 export class PostsRepository {
   async createPost(newPost: PostDBModel): Promise<PostViewModel> {
-    const insertedPost = await Posts.create(newPost);
+    const insertedPost = await PostMongooseModel.create(newPost);
 
     return {
       id: insertedPost._id.toString(),
@@ -32,7 +33,7 @@ export class PostsRepository {
     content: string,
     blogId: string
   ): Promise<boolean> {
-    const result = await Posts.updateOne(
+    const result = await PostMongooseModel.updateOne(
       { _id },
       {
         $set: {
@@ -48,21 +49,24 @@ export class PostsRepository {
   }
 
   async deletePost(_id: string): Promise<boolean> {
-    const result = await Posts.deleteOne({ _id });
+    const result = await PostMongooseModel.deleteOne({ _id });
     return result.deletedCount === 1;
   }
 
   async deleteAll(): Promise<boolean> {
-    await Posts.deleteMany({});
-    return (await Posts.countDocuments()) === 0;
+    await PostMongooseModel.deleteMany({});
+    return (await PostMongooseModel.countDocuments()) === 0;
   }
 
   async findUserInLikesInfo(
     postId: string,
     userId: ObjectId
   ): Promise<PostDBModel | null> {
-    const foundUser = await Posts.findOne(
-      Posts.findOne({ _id: postId, "likesInfo.users.userId": userId })
+    const foundUser = await PostMongooseModel.findOne(
+      PostMongooseModel.findOne({
+        _id: postId,
+        "likesInfo.users.userId": userId,
+      })
     );
 
     if (!foundUser) {
@@ -77,7 +81,7 @@ export class PostsRepository {
     userId: ObjectId,
     likeStatus: string
   ): Promise<boolean> {
-    const result = await Posts.updateOne(
+    const result = await PostMongooseModel.updateOne(
       { _id: postId },
       {
         $push: {
@@ -95,7 +99,7 @@ export class PostsRepository {
     postId: string,
     userId: ObjectId
   ): Promise<string | null> {
-    const foundUser = await Posts.findOne(
+    const foundUser = await PostMongooseModel.findOne(
       { _id: postId },
       {
         "likesInfo.users": {
@@ -119,7 +123,7 @@ export class PostsRepository {
     likesCount: number,
     dislikesCount: number
   ): Promise<boolean> {
-    const result = await Posts.updateOne(
+    const result = await PostMongooseModel.updateOne(
       { _id: postId },
       {
         $set: {
@@ -136,7 +140,7 @@ export class PostsRepository {
     userId: ObjectId,
     likeStatus: string
   ): Promise<boolean> {
-    const result = await Posts.updateOne(
+    const result = await PostMongooseModel.updateOne(
       { _id: postId, "likesInfo.users.userId": userId },
       {
         $set: {
@@ -147,7 +151,9 @@ export class PostsRepository {
     return result.matchedCount === 1;
   }
 
-  async findPostById(_id: string): Promise<PostDBModel | null> {
-    return Posts.findOne({ _id });
+  async findPostById(
+    _id: string
+  ): Promise<HydratedDocument<PostDBModel> | null> {
+    return PostMongooseModel.findOne({ _id });
   }
 }

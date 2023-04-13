@@ -1,5 +1,5 @@
 import { CommentViewModel } from "../../models/view/CommentViewModel";
-import { Comments } from "../../schemas/commentSchema";
+import { CommentMongooseModel } from "../../schemas/commentSchema";
 import { FilterQuery, SortOrder } from "mongoose";
 import { Paginator } from "../../models/view/_Paginator";
 import { CommentDBModel } from "../../models/database/CommentDBModel";
@@ -20,7 +20,7 @@ export class CommentsQueryRepository {
     postId: string,
     userId?: ObjectId
   ): Promise<Paginator<CommentViewModel[]>> {
-    const filter: FilterQuery<CommentDBModel> = { postId: postId.toString() };
+    const filter: FilterQuery<CommentDBModel> = { postId: postId };
 
     const sortingObj: { [key: string]: SortOrder } = { [sortBy]: "desc" };
 
@@ -28,13 +28,13 @@ export class CommentsQueryRepository {
       sortingObj[sortBy] = "asc";
     }
 
-    const comments = await Comments.find(filter)
+    const comments = await CommentMongooseModel.find(filter)
       .sort(sortingObj)
       .skip(pageNumber > 0 ? (pageNumber - 1) * pageSize : 0)
       .limit(pageSize > 0 ? pageSize : 0)
       .lean();
 
-    const totalCount = await Comments.countDocuments(filter);
+    const totalCount = await CommentMongooseModel.countDocuments(filter);
     const pagesCount = Math.ceil(totalCount / pageSize);
 
     return {
@@ -50,7 +50,7 @@ export class CommentsQueryRepository {
     _id: string,
     userId?: ObjectId
   ): Promise<CommentViewModel | null> {
-    const foundComment = await Comments.findOne({ _id });
+    const foundComment = await CommentMongooseModel.findOne({ _id });
 
     if (!foundComment) {
       return null;

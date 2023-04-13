@@ -1,13 +1,14 @@
 import { CommentViewModel } from "../models/view/CommentViewModel";
 import { CommentDBModel } from "../models/database/CommentDBModel";
-import { Comments } from "../schemas/commentSchema";
+import { CommentMongooseModel } from "../schemas/commentSchema";
 import { injectable } from "inversify";
-import {ObjectId} from "mongodb";
+import { ObjectId } from "mongodb";
+import { HydratedDocument } from "mongoose";
 
 @injectable()
 export class CommentsRepository {
   async createComment(newComment: CommentDBModel): Promise<CommentViewModel> {
-    const insertedComment = await Comments.create(newComment);
+    const insertedComment = await CommentMongooseModel.create(newComment);
 
     return {
       id: insertedComment._id.toString(),
@@ -26,7 +27,7 @@ export class CommentsRepository {
   }
 
   async updateComment(_id: string, content: string): Promise<boolean> {
-    const result = await Comments.updateOne(
+    const result = await CommentMongooseModel.updateOne(
       { _id },
       {
         $set: {
@@ -38,21 +39,24 @@ export class CommentsRepository {
   }
 
   async deleteComment(_id: string): Promise<boolean> {
-    const result = await Comments.deleteOne({ _id });
+    const result = await CommentMongooseModel.deleteOne({ _id });
     return result.deletedCount === 1;
   }
 
   async deleteAll(): Promise<boolean> {
-    await Comments.deleteMany({});
-    return (await Comments.countDocuments()) === 0;
+    await CommentMongooseModel.deleteMany({});
+    return (await CommentMongooseModel.countDocuments()) === 0;
   }
 
   async findUserInLikesInfo(
     commentId: string,
     userId: ObjectId
   ): Promise<CommentDBModel | null> {
-    const foundUser = await Comments.findOne(
-      Comments.findOne({ _id: commentId, "likesInfo.users.userId": userId })
+    const foundUser = await CommentMongooseModel.findOne(
+      CommentMongooseModel.findOne({
+        _id: commentId,
+        "likesInfo.users.userId": userId,
+      })
     );
 
     if (!foundUser) {
@@ -66,7 +70,7 @@ export class CommentsRepository {
     commentId: string,
     userId: ObjectId
   ): Promise<string | null> {
-    const foundUser = await Comments.findOne(
+    const foundUser = await CommentMongooseModel.findOne(
       { _id: commentId },
       {
         "likesInfo.users": {
@@ -90,7 +94,7 @@ export class CommentsRepository {
     userId: ObjectId,
     likeStatus: string
   ): Promise<boolean> {
-    const result = await Comments.updateOne(
+    const result = await CommentMongooseModel.updateOne(
       { _id: commentId },
       {
         $push: {
@@ -109,7 +113,7 @@ export class CommentsRepository {
     likesCount: number,
     dislikesCount: number
   ): Promise<boolean> {
-    const result = await Comments.updateOne(
+    const result = await CommentMongooseModel.updateOne(
       { _id: commentId },
       {
         $set: {
@@ -126,7 +130,7 @@ export class CommentsRepository {
     userId: ObjectId,
     likeStatus: string
   ): Promise<boolean> {
-    const result = await Comments.updateOne(
+    const result = await CommentMongooseModel.updateOne(
       { _id: commentId, "likesInfo.users.userId": userId },
       {
         $set: {
@@ -137,7 +141,9 @@ export class CommentsRepository {
     return result.matchedCount === 1;
   }
 
-  async findCommentById(_id: string): Promise<CommentDBModel | null> {
-    return Comments.findOne({ _id });
+  async findCommentById(
+    _id: string
+  ): Promise<HydratedDocument<CommentDBModel> | null> {
+    return CommentMongooseModel.findOne({ _id });
   }
 }

@@ -1,6 +1,6 @@
 import { BlogViewModel } from "../../models/view/BlogViewModel";
 import { Paginator } from "../../models/view/_Paginator";
-import { Blogs } from "../../schemas/blogSchema";
+import { BlogMongooseModel } from "../../schemas/blogSchema";
 import { BlogDBModel } from "../../models/database/BlogDBModel";
 import { FilterQuery, SortOrder } from "mongoose";
 import { injectable } from "inversify";
@@ -26,13 +26,13 @@ export class BlogsQueryRepository {
       sortingObj[sortBy] = "asc";
     }
 
-    const blogs = await Blogs.find(filter)
+    const blogs = await BlogMongooseModel.find(filter)
       .sort(sortingObj)
       .skip(pageNumber > 0 ? (pageNumber - 1) * pageSize : 0)
       .limit(pageSize > 0 ? pageSize : 0)
       .lean();
 
-    const totalCount = await Blogs.countDocuments(filter);
+    const totalCount = await BlogMongooseModel.countDocuments(filter);
     const pagesCount = Math.ceil(totalCount / pageSize);
 
     return {
@@ -45,7 +45,7 @@ export class BlogsQueryRepository {
   }
 
   async findBlogById(_id: string): Promise<BlogViewModel | null> {
-    const foundBlog = await Blogs.findOne({ _id });
+    const foundBlog = await BlogMongooseModel.findOne({ _id });
 
     if (!foundBlog) {
       return null;

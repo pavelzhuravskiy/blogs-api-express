@@ -1,6 +1,6 @@
 import { Paginator } from "../../models/view/_Paginator";
 import { PostViewModel } from "../../models/view/PostViewModel";
-import { Posts } from "../../schemas/postSchema";
+import { PostMongooseModel } from "../../schemas/postSchema";
 import { FilterQuery, SortOrder } from "mongoose";
 import { PostDBModel } from "../../models/database/PostDBModel";
 import { injectable } from "inversify";
@@ -17,7 +17,7 @@ export class PostsQueryRepository {
     const filter: FilterQuery<PostDBModel> = {};
 
     if (blogId) {
-      filter.blogId = blogId.toString();
+      filter.blogId = blogId;
     }
 
     const sortingObj: { [key: string]: SortOrder } = { [sortBy]: "desc" };
@@ -26,13 +26,13 @@ export class PostsQueryRepository {
       sortingObj[sortBy] = "asc";
     }
 
-    const output = await Posts.find(filter)
+    const output = await PostMongooseModel.find(filter)
       .sort(sortingObj)
       .skip(pageNumber > 0 ? (pageNumber - 1) * pageSize : 0)
       .limit(pageSize > 0 ? pageSize : 0)
       .lean();
 
-    const totalCount = await Posts.countDocuments(filter);
+    const totalCount = await PostMongooseModel.countDocuments(filter);
     const pagesCount = Math.ceil(totalCount / pageSize);
 
     return {
@@ -46,7 +46,7 @@ export class PostsQueryRepository {
   }
 
   async findPostById(_id: string): Promise<PostViewModel | null> {
-    const foundPost = await Posts.findOne({ _id });
+    const foundPost = await PostMongooseModel.findOne({ _id });
 
     if (!foundPost) {
       return null;

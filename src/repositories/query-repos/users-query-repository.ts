@@ -1,7 +1,7 @@
 import { UserDBModel } from "../../models/database/UserDBModel";
 import { Paginator } from "../../models/view/_Paginator";
 import { UserViewModel } from "../../models/view/UserViewModel";
-import { Users } from "../../schemas/userSchema";
+import { UserMongooseModel } from "../../schemas/userSchema";
 import { FilterQuery, SortOrder } from "mongoose";
 import { injectable } from "inversify";
 
@@ -41,13 +41,13 @@ export class UsersQueryRepository {
       sortingObj[`accountData.${sortBy}`] = "asc";
     }
 
-    const output = await Users.find(filter)
+    const output = await UserMongooseModel.find(filter)
       .sort(sortingObj)
       .skip(pageNumber > 0 ? (pageNumber - 1) * pageSize : 0)
       .limit(pageSize > 0 ? pageSize : 0)
       .lean();
 
-    const totalCount = await Users.countDocuments(filter);
+    const totalCount = await UserMongooseModel.countDocuments(filter);
     const pagesCount = Math.ceil(totalCount / pageSize);
 
     return {
@@ -60,7 +60,7 @@ export class UsersQueryRepository {
   }
 
   async findUserById(_id: string): Promise<UserViewModel | null> {
-    const foundUser = await Users.findOne({ _id });
+    const foundUser = await UserMongooseModel.findOne({ _id });
 
     if (!foundUser) {
       return null;

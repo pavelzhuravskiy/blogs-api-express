@@ -10,4 +10,4 @@ const deviceSchema = new mongoose.Schema<DeviceDBModel>({
   expirationDate: { type: Number, required: true },
 });
 
-export const Devices = mongoose.model("devices", deviceSchema);
+export const DeviceMongooseModel = mongoose.model("devices", deviceSchema);
