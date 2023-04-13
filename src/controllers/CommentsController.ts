@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
-import { ObjectId } from "mongodb";
 import { CommentsQueryRepository } from "../repositories/query-repos/comments-query-repository";
 import { CommentsService } from "../domain/comments-service";
 import { inject, injectable } from "inversify";
+import {ObjectId} from "mongodb";
 
 @injectable()
 export class CommentsController {
@@ -13,15 +13,15 @@ export class CommentsController {
   ) {}
   async getComment(req: Request, res: Response) {
     const foundComment = await this.commentsQueryRepository.findCommentById(
-      new ObjectId(req.params.id),
-      req.user?._id
+      req.params.id,
+      new ObjectId(req.user?._id)
     );
     res.json(foundComment);
   }
 
   async updateComment(req: Request, res: Response) {
     const isUpdated = await this.commentsService.updateComment(
-      new ObjectId(req.params.id),
+      req.params.id,
       req.body
     );
 
@@ -34,9 +34,7 @@ export class CommentsController {
   }
 
   async deleteComment(req: Request, res: Response) {
-    const isDeleted = await this.commentsService.deleteComment(
-      new ObjectId(req.params.id)
-    );
+    const isDeleted = await this.commentsService.deleteComment(req.params.id);
     if (isDeleted) {
       res.sendStatus(204);
     }
@@ -53,14 +51,14 @@ export class CommentsController {
 
   async updateLikeStatus(req: Request, res: Response) {
     const isUpdated = await this.commentsService.updateLikeStatus(
-      new ObjectId(req.params.id),
+      req.params.id,
       req.body.likeStatus,
-      req.user!._id
+      new ObjectId(req.user!._id)
     );
 
     if (isUpdated) {
       const updatedComment = await this.commentsQueryRepository.findCommentById(
-        new ObjectId(req.params.id)
+        req.params.id
       );
       res.status(204).json(updatedComment);
     }

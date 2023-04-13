@@ -36,7 +36,6 @@ import {
   userPasswordString,
   usersURI,
 } from "./test-strings";
-import { ObjectId } from "mongodb";
 import { BlogsQueryRepository } from "../src/repositories/query-repos/blogs-query-repository";
 import { PostsQueryRepository } from "../src/repositories/query-repos/posts-query-repository";
 import { UsersQueryRepository } from "../src/repositories/query-repos/users-query-repository";
@@ -228,7 +227,7 @@ export const findPosts = async (
   pageSize: number = 10,
   sortBy: string = "createdAt",
   sortDirection: SortOrder = "desc",
-  blogId?: ObjectId
+  blogId?: string
 ) =>
   await postsQueryRepository.findPosts(
     pageNumber,
@@ -412,7 +411,7 @@ export const findComments = async (
   sortBy: string = "createdAt",
   sortDirection: SortOrder = "desc"
 ) => {
-  const postId = new ObjectId(await firstPostId());
+  const postId = await firstPostId();
   return await commentsQueryRepository.findComments(
     pageNumber,
     pageSize,
@@ -429,7 +428,7 @@ export const findCommentsOfSecondPost = async (
   sortBy: string = "createdAt",
   sortDirection: SortOrder = "desc"
 ) => {
-  const postId = new ObjectId(await secondPostId());
+  const postId = await secondPostId();
   return await commentsQueryRepository.findComments(
     pageNumber,
     pageSize,
@@ -587,17 +586,6 @@ export const refreshTokenUpdater = (
 // Get all with cookie
 export const getterWithCookie = (uri: string, cookie: string) => {
   return request(app).get(uri).set("cookie", cookie);
-};
-
-// Get by id (cookie)
-export const getterWithIdWithCookie = (
-    uri: string,
-    id: string,
-    cookie: string
-) => {
-  return request(app)
-      .get(uri + id)
-      .set("cookie", cookie);
 };
 
 // Delete by id (cookie)

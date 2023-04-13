@@ -19,7 +19,7 @@ export class PostsService {
     content: string,
     blogId: string
   ): Promise<PostViewModel | null> {
-    const blog = await this.blogsRepository.findBlogById(new ObjectId(blogId));
+    const blog = await this.blogsRepository.findBlogById(blogId);
 
     if (!blog) {
       return null;
@@ -43,7 +43,7 @@ export class PostsService {
     return this.postsRepository.createPost(newPost);
   }
 
-  async updatePost(_id: ObjectId, post: PostViewModel): Promise<boolean> {
+  async updatePost(_id: string, post: PostViewModel): Promise<boolean> {
     return this.postsRepository.updatePost(
       _id,
       post.title,
@@ -53,7 +53,7 @@ export class PostsService {
     );
   }
 
-  async deletePost(_id: ObjectId): Promise<boolean> {
+  async deletePost(_id: string): Promise<boolean> {
     return this.postsRepository.deletePost(_id);
   }
 
@@ -62,7 +62,7 @@ export class PostsService {
   }
 
   async updateLikeStatus(
-    postId: ObjectId,
+    postId: string,
     likeStatus: string,
     userId: ObjectId
   ): Promise<boolean> {

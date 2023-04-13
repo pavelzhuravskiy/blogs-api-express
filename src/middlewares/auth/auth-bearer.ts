@@ -21,8 +21,8 @@ export const authBearer = async (
   const tokenObj = await jwtService.verifyToken(token);
 
   if (tokenObj) {
-    const userId = new ObjectId(tokenObj.userId);
-    req.user = await usersService.findUserById(userId);
+    const userId = tokenObj.userId;
+    req.user = await usersService.findUserById(new ObjectId(userId));
     next();
   } else {
     res.sendStatus(401);

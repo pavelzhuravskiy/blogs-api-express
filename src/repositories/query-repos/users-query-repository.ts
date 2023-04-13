@@ -1,4 +1,3 @@
-import { ObjectId } from "mongodb";
 import { UserDBModel } from "../../models/database/UserDBModel";
 import { Paginator } from "../../models/view/_Paginator";
 import { UserViewModel } from "../../models/view/UserViewModel";
@@ -60,7 +59,7 @@ export class UsersQueryRepository {
     };
   }
 
-  async findUserById(_id: ObjectId): Promise<UserViewModel | null> {
+  async findUserById(_id: string): Promise<UserViewModel | null> {
     const foundUser = await Users.findOne({ _id });
 
     if (!foundUser) {

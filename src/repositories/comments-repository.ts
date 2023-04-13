@@ -1,8 +1,8 @@
 import { CommentViewModel } from "../models/view/CommentViewModel";
-import { ObjectId } from "mongodb";
 import { CommentDBModel } from "../models/database/CommentDBModel";
 import { Comments } from "../schemas/commentSchema";
 import { injectable } from "inversify";
+import {ObjectId} from "mongodb";
 
 @injectable()
 export class CommentsRepository {
@@ -25,7 +25,7 @@ export class CommentsRepository {
     };
   }
 
-  async updateComment(_id: ObjectId, content: string): Promise<boolean> {
+  async updateComment(_id: string, content: string): Promise<boolean> {
     const result = await Comments.updateOne(
       { _id },
       {
@@ -37,7 +37,7 @@ export class CommentsRepository {
     return result.matchedCount === 1;
   }
 
-  async deleteComment(_id: ObjectId): Promise<boolean> {
+  async deleteComment(_id: string): Promise<boolean> {
     const result = await Comments.deleteOne({ _id });
     return result.deletedCount === 1;
   }
@@ -48,7 +48,7 @@ export class CommentsRepository {
   }
 
   async findUserInLikesInfo(
-    commentId: ObjectId,
+    commentId: string,
     userId: ObjectId
   ): Promise<CommentDBModel | null> {
     const foundUser = await Comments.findOne(
@@ -63,7 +63,7 @@ export class CommentsRepository {
   }
 
   async findUserLikeStatus(
-    commentId: ObjectId,
+    commentId: string,
     userId: ObjectId
   ): Promise<string | null> {
     const foundUser = await Comments.findOne(
@@ -86,7 +86,7 @@ export class CommentsRepository {
   }
 
   async pushUserInLikesInfo(
-    commentId: ObjectId,
+    commentId: string,
     userId: ObjectId,
     likeStatus: string
   ): Promise<boolean> {
@@ -105,7 +105,7 @@ export class CommentsRepository {
   }
 
   async updateLikesCount(
-    commentId: ObjectId,
+    commentId: string,
     likesCount: number,
     dislikesCount: number
   ): Promise<boolean> {
@@ -122,7 +122,7 @@ export class CommentsRepository {
   }
 
   async updateLikesStatus(
-    commentId: ObjectId,
+    commentId: string,
     userId: ObjectId,
     likeStatus: string
   ): Promise<boolean> {
@@ -137,7 +137,7 @@ export class CommentsRepository {
     return result.matchedCount === 1;
   }
 
-  async findCommentById(_id: ObjectId): Promise<CommentDBModel | null> {
+  async findCommentById(_id: string): Promise<CommentDBModel | null> {
     return Comments.findOne({ _id });
   }
 }

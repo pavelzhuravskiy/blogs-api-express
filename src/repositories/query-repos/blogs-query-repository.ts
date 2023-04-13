@@ -1,4 +1,3 @@
-import { ObjectId } from "mongodb";
 import { BlogViewModel } from "../../models/view/BlogViewModel";
 import { Paginator } from "../../models/view/_Paginator";
 import { Blogs } from "../../schemas/blogSchema";
@@ -45,7 +44,7 @@ export class BlogsQueryRepository {
     };
   }
 
-  async findBlogById(_id: ObjectId): Promise<BlogViewModel | null> {
+  async findBlogById(_id: string): Promise<BlogViewModel | null> {
     const foundBlog = await Blogs.findOne({ _id });
 
     if (!foundBlog) {

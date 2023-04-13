@@ -15,11 +15,11 @@ export class CommentsService {
     @inject(CommentsRepository) protected commentsRepository: CommentsRepository
   ) {}
   async createComment(
-    postId: ObjectId,
+    postId: string,
     content: string,
     userId: ObjectId
   ): Promise<CommentViewModel | null> {
-    const post = await this.postsRepository.findPostById(new ObjectId(postId));
+    const post = await this.postsRepository.findPostById(postId);
 
     if (!post) {
       return null;
@@ -44,13 +44,13 @@ export class CommentsService {
   }
 
   async updateComment(
-    _id: ObjectId,
+    _id: string,
     comment: CommentViewModel
   ): Promise<boolean> {
     return this.commentsRepository.updateComment(_id, comment.content);
   }
 
-  async deleteComment(_id: ObjectId): Promise<boolean> {
+  async deleteComment(_id: string): Promise<boolean> {
     return this.commentsRepository.deleteComment(_id);
   }
 
@@ -59,7 +59,7 @@ export class CommentsService {
   }
 
   async updateLikeStatus(
-    commentId: ObjectId,
+    commentId: string,
     likeStatus: string,
     userId: ObjectId
   ): Promise<boolean> {

@@ -7,7 +7,6 @@ import {
 import { QueryModel } from "../models/global/QueryModel";
 import { BlogsQueryRepository } from "../repositories/query-repos/blogs-query-repository";
 import { SortOrder } from "mongoose";
-import { ObjectId } from "mongodb";
 import { PostsService } from "../domain/posts-service";
 import { StringIdModel } from "../models/global/StringIdModel";
 import { PostsQueryRepository } from "../repositories/query-repos/posts-query-repository";
@@ -45,13 +44,13 @@ export class BlogsController {
 
   async getBlog(req: Request, res: Response) {
     const foundBlog = await this.blogsQueryRepository.findBlogById(
-      new ObjectId(req.params.id)
+      req.params.id
     );
     res.json(foundBlog);
   }
   async updateBlog(req: Request, res: Response) {
     const isUpdated = await this.blogsService.updateBlog(
-      new ObjectId(req.params.id),
+      req.params.id,
       req.body
     );
     if (isUpdated) {
@@ -63,9 +62,7 @@ export class BlogsController {
   }
 
   async deleteBlog(req: Request, res: Response) {
-    const isDeleted = await this.blogsService.deleteBlog(
-      new ObjectId(req.params.id)
-    );
+    const isDeleted = await this.blogsService.deleteBlog(req.params.id);
     if (isDeleted) {
       res.sendStatus(204);
     }
@@ -85,7 +82,7 @@ export class BlogsController {
       req.body.title,
       req.body.shortDescription,
       req.body.content,
-      req.params.id,
+      req.params.id
     );
     res.status(201).json(newPost);
   }
@@ -99,7 +96,7 @@ export class BlogsController {
       Number(req.query.pageSize) || 10,
       req.query.sortBy,
       req.query.sortDirection as SortOrder,
-      new ObjectId(req.params.id)
+      req.params.id
     );
     res.json(foundPosts);
   }

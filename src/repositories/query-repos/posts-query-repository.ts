@@ -1,4 +1,3 @@
-import { ObjectId } from "mongodb";
 import { Paginator } from "../../models/view/_Paginator";
 import { PostViewModel } from "../../models/view/PostViewModel";
 import { Posts } from "../../schemas/postSchema";
@@ -13,7 +12,7 @@ export class PostsQueryRepository {
     pageSize: number,
     sortBy: string = "createdAt",
     sortDirection: SortOrder,
-    blogId?: ObjectId
+    blogId?: string
   ): Promise<Paginator<PostViewModel[]>> {
     const filter: FilterQuery<PostDBModel> = {};
 
@@ -46,7 +45,7 @@ export class PostsQueryRepository {
     };
   }
 
-  async findPostById(_id: ObjectId): Promise<PostViewModel | null> {
+  async findPostById(_id: string): Promise<PostViewModel | null> {
     const foundPost = await Posts.findOne({ _id });
 
     if (!foundPost) {

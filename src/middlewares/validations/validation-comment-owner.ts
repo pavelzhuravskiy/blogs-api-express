@@ -1,5 +1,4 @@
 import { NextFunction, Request, Response } from "express";
-import { ObjectId } from "mongodb";
 import { container } from "../../composition-root";
 import { CommentsQueryRepository } from "../../repositories/query-repos/comments-query-repository";
 
@@ -11,7 +10,7 @@ export const validationCommentOwner = async (
   next: NextFunction
 ) => {
   const foundComment = await commentsQueryRepository.findCommentById(
-    new ObjectId(req.params.id)
+    req.params.id
   );
   if (
     foundComment &&

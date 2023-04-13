@@ -1,4 +1,3 @@
-import { ObjectId } from "mongodb";
 import { CommentViewModel } from "../../models/view/CommentViewModel";
 import { Comments } from "../../schemas/commentSchema";
 import { FilterQuery, SortOrder } from "mongoose";
@@ -6,6 +5,7 @@ import { Paginator } from "../../models/view/_Paginator";
 import { CommentDBModel } from "../../models/database/CommentDBModel";
 import { inject, injectable } from "inversify";
 import { CommentsRepository } from "../comments-repository";
+import {ObjectId} from "mongodb";
 
 @injectable()
 export class CommentsQueryRepository {
@@ -17,7 +17,7 @@ export class CommentsQueryRepository {
     pageSize: number,
     sortBy: string = "createdAt",
     sortDirection: SortOrder,
-    postId: ObjectId,
+    postId: string,
     userId?: ObjectId
   ): Promise<Paginator<CommentViewModel[]>> {
     const filter: FilterQuery<CommentDBModel> = { postId: postId.toString() };
@@ -47,7 +47,7 @@ export class CommentsQueryRepository {
   }
 
   async findCommentById(
-    _id: ObjectId,
+    _id: string,
     userId?: ObjectId
   ): Promise<CommentViewModel | null> {
     const foundComment = await Comments.findOne({ _id });
@@ -88,7 +88,7 @@ export class CommentsQueryRepository {
 
         if (userId) {
           status = await this.commentsRepository.findUserLikeStatus(
-            comment._id,
+            comment._id.toString(),
             userId
           );
         }

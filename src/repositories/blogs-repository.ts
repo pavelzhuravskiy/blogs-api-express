@@ -1,5 +1,4 @@
 import { BlogDBModel } from "../models/database/BlogDBModel";
-import { ObjectId } from "mongodb";
 import { BlogViewModel } from "../models/view/BlogViewModel";
 import { Blogs } from "../schemas/blogSchema";
 import { injectable } from "inversify";
@@ -19,7 +18,7 @@ export class BlogsRepository {
   }
 
   async updateBlog(
-    _id: ObjectId,
+    _id: string,
     name: string,
     description: string,
     websiteUrl: string
@@ -37,7 +36,7 @@ export class BlogsRepository {
     return result.matchedCount === 1;
   }
 
-  async deleteBlog(_id: ObjectId): Promise<boolean> {
+  async deleteBlog(_id: string): Promise<boolean> {
     const result = await Blogs.deleteOne({ _id });
     return result.deletedCount === 1;
   }
@@ -47,7 +46,7 @@ export class BlogsRepository {
     return (await Blogs.countDocuments()) === 0;
   }
 
-  async findBlogById(_id: ObjectId): Promise<BlogDBModel | null> {
+  async findBlogById(_id: string): Promise<BlogDBModel | null> {
     return Blogs.findOne({ _id });
   }
 }

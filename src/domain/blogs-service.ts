@@ -27,7 +27,7 @@ export class BlogsService {
     return this.blogsRepository.createBlog(newBlog);
   }
 
-  async updateBlog(_id: ObjectId, blog: BlogDBModel): Promise<boolean> {
+  async updateBlog(_id: string, blog: BlogDBModel): Promise<boolean> {
     return this.blogsRepository.updateBlog(
       _id,
       blog.name,
@@ -36,7 +36,7 @@ export class BlogsService {
     );
   }
 
-  async deleteBlog(_id: ObjectId): Promise<boolean> {
+  async deleteBlog(_id: string): Promise<boolean> {
     return this.blogsRepository.deleteBlog(_id);
   }
 

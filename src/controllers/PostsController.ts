@@ -28,7 +28,7 @@ export class PostsController {
       req.body.title,
       req.body.shortDescription,
       req.body.content,
-      req.body.blogId,
+      req.body.blogId
     );
     res.status(201).json(newPost);
   }
@@ -45,14 +45,14 @@ export class PostsController {
 
   async getPost(req: Request, res: Response) {
     const foundPost = await this.postsQueryRepository.findPostById(
-      new ObjectId(req.params.id)
+      req.params.id
     );
     res.json(foundPost);
   }
 
   async updatePost(req: Request, res: Response) {
     const isUpdated = await this.postsService.updatePost(
-      new ObjectId(req.params.id),
+      req.params.id,
       req.body
     );
 
@@ -66,7 +66,7 @@ export class PostsController {
 
   async deletePost(req: Request, res: Response) {
     const isDeleted = await this.postsService.deletePost(
-      new ObjectId(req.params.id)
+      req.params.id
     );
     if (isDeleted) {
       res.sendStatus(204);
@@ -84,9 +84,9 @@ export class PostsController {
 
   async createComment(req: Request, res: Response) {
     const newComment = await this.commentsService.createComment(
-      new ObjectId(req.params.id),
+      req.params.id,
       req.body.content,
-      req.user!._id
+      new ObjectId(req.user!._id)
     );
     res.status(201).json(newComment);
   }
@@ -100,7 +100,7 @@ export class PostsController {
       Number(req.query.pageSize) || 10,
       req.query.sortBy,
       req.query.sortDirection as SortOrder,
-      new ObjectId(req.params.id),
+      req.params.id,
       req.user?._id
     );
     res.json(foundComments);
@@ -108,14 +108,14 @@ export class PostsController {
 
   async updateLikeStatus(req: Request, res: Response) {
     const isUpdated = await this.postsService.updateLikeStatus(
-        new ObjectId(req.params.id),
-        req.body.likeStatus,
-        req.user!._id
+      req.params.id,
+      req.body.likeStatus,
+      new ObjectId(req.user!._id)
     );
 
     if (isUpdated) {
       const updatedComment = await this.postsQueryRepository.findPostById(
-          new ObjectId(req.params.id)
+        req.params.id
       );
       res.status(204).json(updatedComment);
     }

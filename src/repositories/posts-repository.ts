@@ -26,7 +26,7 @@ export class PostsRepository {
   }
 
   async updatePost(
-    _id: ObjectId,
+    _id: string,
     title: string,
     shortDescription: string,
     content: string,
@@ -47,7 +47,7 @@ export class PostsRepository {
     return result.matchedCount === 1;
   }
 
-  async deletePost(_id: ObjectId): Promise<boolean> {
+  async deletePost(_id: string): Promise<boolean> {
     const result = await Posts.deleteOne({ _id });
     return result.deletedCount === 1;
   }
@@ -58,7 +58,7 @@ export class PostsRepository {
   }
 
   async findUserInLikesInfo(
-    postId: ObjectId,
+    postId: string,
     userId: ObjectId
   ): Promise<PostDBModel | null> {
     const foundUser = await Posts.findOne(
@@ -73,7 +73,7 @@ export class PostsRepository {
   }
 
   async pushUserInLikesInfo(
-    postId: ObjectId,
+    postId: string,
     userId: ObjectId,
     likeStatus: string
   ): Promise<boolean> {
@@ -92,7 +92,7 @@ export class PostsRepository {
   }
 
   async findUserLikeStatus(
-    postId: ObjectId,
+    postId: string,
     userId: ObjectId
   ): Promise<string | null> {
     const foundUser = await Posts.findOne(
@@ -115,7 +115,7 @@ export class PostsRepository {
   }
 
   async updateLikesCount(
-    postId: ObjectId,
+    postId: string,
     likesCount: number,
     dislikesCount: number
   ): Promise<boolean> {
@@ -132,7 +132,7 @@ export class PostsRepository {
   }
 
   async updateLikesStatus(
-    postId: ObjectId,
+    postId: string,
     userId: ObjectId,
     likeStatus: string
   ): Promise<boolean> {
@@ -147,7 +147,7 @@ export class PostsRepository {
     return result.matchedCount === 1;
   }
 
-  async findPostById(_id: ObjectId): Promise<PostDBModel | null> {
+  async findPostById(_id: string): Promise<PostDBModel | null> {
     return Posts.findOne({ _id });
   }
 }
