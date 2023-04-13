@@ -22,7 +22,7 @@ import {
   userAgentFirefoxString,
   userAgentIphoneString,
 } from "../../test-utils/test-strings";
-import { funcSleep } from "../../src/functions/global/func-sleep";
+import { funcSleep } from "../../src/functions/func-sleep";
 
 describe("Devices testing", () => {
   describe("Devices statuses checks", () => {

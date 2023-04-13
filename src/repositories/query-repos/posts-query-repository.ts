@@ -1,11 +1,10 @@
 import { ObjectId } from "mongodb";
-import { funcPostsMapping } from "../../functions/mappings/func-posts-mapping";
 import { Paginator } from "../../models/view/_Paginator";
 import { PostViewModel } from "../../models/view/PostViewModel";
 import { Posts } from "../../schemas/postSchema";
 import { FilterQuery, SortOrder } from "mongoose";
 import { PostDBModel } from "../../models/database/PostDBModel";
-import {injectable} from "inversify";
+import { injectable } from "inversify";
 
 @injectable()
 export class PostsQueryRepository {
@@ -43,7 +42,7 @@ export class PostsQueryRepository {
       pageSize: pageSize,
       totalCount,
       // @ts-ignore // TODO
-      items: funcPostsMapping(output),
+      items: await this.postsMapping(output),
     };
   }
 
@@ -68,5 +67,19 @@ export class PostsQueryRepository {
         myStatus: "None", // TODO
       },
     };
+  }
+
+  private async postsMapping(array: PostDBModel[]) {
+    return array.map((post) => {
+      return {
+        id: post._id.toString(),
+        title: post.title,
+        shortDescription: post.shortDescription,
+        content: post.content,
+        blogId: post.blogId,
+        blogName: post.blogName,
+        createdAt: post.createdAt,
+      };
+    });
   }
 }

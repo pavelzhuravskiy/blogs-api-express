@@ -1,11 +1,10 @@
 import { ObjectId } from "mongodb";
-import { funcUsersMapping } from "../../functions/mappings/func-users-mapping";
 import { UserDBModel } from "../../models/database/UserDBModel";
 import { Paginator } from "../../models/view/_Paginator";
 import { UserViewModel } from "../../models/view/UserViewModel";
 import { Users } from "../../schemas/userSchema";
 import { FilterQuery, SortOrder } from "mongoose";
-import {injectable} from "inversify";
+import { injectable } from "inversify";
 
 @injectable()
 export class UsersQueryRepository {
@@ -57,7 +56,7 @@ export class UsersQueryRepository {
       page: pageNumber,
       pageSize: pageSize,
       totalCount,
-      items: funcUsersMapping(output),
+      items: await this.usersMapping(output),
     };
   }
 
@@ -74,5 +73,16 @@ export class UsersQueryRepository {
       login: foundUser.accountData.login,
       createdAt: foundUser.accountData.createdAt,
     };
+  }
+
+  private async usersMapping(array: UserDBModel[]) {
+    return array.map((user) => {
+      return {
+        id: user._id.toString(),
+        login: user.accountData.login,
+        email: user.accountData.email,
+        createdAt: user.accountData.createdAt,
+      };
+    });
   }
 }

@@ -2,10 +2,9 @@ import { ObjectId } from "mongodb";
 import { BlogViewModel } from "../../models/view/BlogViewModel";
 import { Paginator } from "../../models/view/_Paginator";
 import { Blogs } from "../../schemas/blogSchema";
-import { funcBlogsMapping } from "../../functions/mappings/func-blogs-mapping";
 import { BlogDBModel } from "../../models/database/BlogDBModel";
 import { FilterQuery, SortOrder } from "mongoose";
-import {injectable} from "inversify";
+import { injectable } from "inversify";
 
 @injectable()
 export class BlogsQueryRepository {
@@ -28,7 +27,7 @@ export class BlogsQueryRepository {
       sortingObj[sortBy] = "asc";
     }
 
-    const output = await Blogs.find(filter)
+    const blogs = await Blogs.find(filter)
       .sort(sortingObj)
       .skip(pageNumber > 0 ? (pageNumber - 1) * pageSize : 0)
       .limit(pageSize > 0 ? pageSize : 0)
@@ -42,7 +41,7 @@ export class BlogsQueryRepository {
       page: pageNumber,
       pageSize: pageSize,
       totalCount,
-      items: funcBlogsMapping(output),
+      items: await this.blogsMapping(blogs),
     };
   }
 
@@ -61,5 +60,18 @@ export class BlogsQueryRepository {
       createdAt: foundBlog.createdAt,
       isMembership: foundBlog.isMembership,
     };
+  }
+
+  private async blogsMapping(array: BlogDBModel[]): Promise<BlogViewModel[]> {
+    return array.map((blog) => {
+      return {
+        id: blog._id.toString(),
+        name: blog.name,
+        description: blog.description,
+        websiteUrl: blog.websiteUrl,
+        createdAt: blog.createdAt,
+        isMembership: blog.isMembership,
+      };
+    });
   }
 }
