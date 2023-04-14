@@ -5,13 +5,15 @@ import { PostViewModel } from "../models/view/PostViewModel";
 import { inject, injectable } from "inversify";
 import { UsersService } from "./users-service";
 import { BlogsRepository } from "../infrastructure/repositories/blogs-repository";
+import { UsersRepository } from "../infrastructure/repositories/users-repository";
 
 @injectable()
 export class PostsService {
   constructor(
     @inject(UsersService) protected usersService: UsersService,
     @inject(BlogsRepository) protected blogsRepository: BlogsRepository,
-    @inject(PostsRepository) protected postsRepository: PostsRepository
+    @inject(PostsRepository) protected postsRepository: PostsRepository,
+    @inject(UsersRepository) protected usersRepository: UsersRepository
   ) {}
   async createPost(
     title: string,
@@ -80,11 +82,17 @@ export class PostsService {
       userId
     );
 
+    const addedAt = new Date().toISOString();
+    const user = await this.usersRepository.findUserById(userId);
+    const login = user!.accountData.login;
+
     if (!foundUser) {
       await this.postsRepository.pushUserInLikesInfo(
         postId,
         userId,
-        likeStatus
+        likeStatus,
+        addedAt,
+        login
       );
 
       if (likeStatus === "Like") {

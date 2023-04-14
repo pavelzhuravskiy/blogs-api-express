@@ -2,7 +2,6 @@ import { Request, Response } from "express";
 import { CommentsQueryRepository } from "../infrastructure/repositories/query-repos/comments-query-repository";
 import { CommentsService } from "../application/comments-service";
 import { inject, injectable } from "inversify";
-import { ObjectId } from "mongodb";
 
 @injectable()
 export class CommentsController {
@@ -14,7 +13,7 @@ export class CommentsController {
   async getComment(req: Request, res: Response) {
     const foundComment = await this.commentsQueryRepository.findCommentById(
       req.params.id,
-      new ObjectId(req.user?._id)
+      req.user?._id
     );
     res.json(foundComment);
   }
@@ -53,7 +52,7 @@ export class CommentsController {
     const isUpdated = await this.commentsService.updateLikeStatus(
       req.params.id,
       req.body.likeStatus,
-      new ObjectId(req.user!._id)
+      req.user!._id
     );
 
     if (isUpdated) {

@@ -18,10 +18,11 @@ export class PostsRepository {
       blogId: newPost.blogId,
       blogName: newPost.blogName,
       createdAt: newPost.createdAt,
-      likesInfo: {
+      extendedLikesInfo: {
         likesCount: newPost.likesInfo.likesCount,
         dislikesCount: newPost.likesInfo.dislikesCount,
         myStatus: "None",
+        newestLikes: []
       },
     };
   }
@@ -79,14 +80,18 @@ export class PostsRepository {
   async pushUserInLikesInfo(
     postId: string,
     userId: ObjectId,
-    likeStatus: string
+    likeStatus: string,
+    addedAt: string,
+    userLogin: string
   ): Promise<boolean> {
     const result = await PostMongooseModel.updateOne(
       { _id: postId },
       {
         $push: {
           "likesInfo.users": {
+            addedAt,
             userId,
+            userLogin,
             likeStatus,
           },
         },

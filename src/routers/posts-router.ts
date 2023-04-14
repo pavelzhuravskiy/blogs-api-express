@@ -25,11 +25,16 @@ postsRouter.post(
   postsController.createPost.bind(postsController)
 );
 
-postsRouter.get("/", postsController.getPosts.bind(postsController));
+postsRouter.get(
+  "/",
+  tokenParser,
+  postsController.getPosts.bind(postsController)
+);
 
 postsRouter.get(
   "/:id",
   validationPostsFindByParamId,
+  tokenParser,
   validationErrorCheck,
   postsController.getPost.bind(postsController)
 );

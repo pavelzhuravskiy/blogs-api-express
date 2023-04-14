@@ -4,7 +4,7 @@ export class ExtendedUserLikes {
   constructor(
     public addedAt: string,
     public userId: string,
-    userLogin: string,
+    public userLogin: string,
     public likeStatus: string
   ) {}
 }

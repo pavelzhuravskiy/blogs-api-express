@@ -7,7 +7,6 @@ import {
 import { QueryModel } from "../models/global/QueryModel";
 import { PostsQueryRepository } from "../infrastructure/repositories/query-repos/posts-query-repository";
 import { SortOrder } from "mongoose";
-import { ObjectId } from "mongodb";
 import { CommentsService } from "../application/comments-service";
 import { StringIdModel } from "../models/global/StringIdModel";
 import { CommentsQueryRepository } from "../infrastructure/repositories/query-repos/comments-query-repository";
@@ -38,14 +37,16 @@ export class PostsController {
       Number(req.query.pageNumber) || 1,
       Number(req.query.pageSize) || 10,
       req.query.sortBy,
-      req.query.sortDirection as SortOrder
+      req.query.sortDirection as SortOrder,
+      req.user?._id
     );
     res.json(foundPosts);
   }
 
   async getPost(req: Request, res: Response) {
     const foundPost = await this.postsQueryRepository.findPostById(
-      req.params.id
+      req.params.id,
+      req.user?._id
     );
     res.json(foundPost);
   }
@@ -84,7 +85,7 @@ export class PostsController {
     const newComment = await this.commentsService.createComment(
       req.params.id,
       req.body.content,
-      new ObjectId(req.user!._id)
+      req.user!._id
     );
     res.status(201).json(newComment);
   }
@@ -108,7 +109,7 @@ export class PostsController {
     const isUpdated = await this.postsService.updateLikeStatus(
       req.params.id,
       req.body.likeStatus,
-      new ObjectId(req.user!._id)
+      req.user!._id
     );
 
     if (isUpdated) {
