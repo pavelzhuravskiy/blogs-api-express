@@ -32,7 +32,7 @@ export class PostsQueryRepository {
       sortingObj[sortBy] = "asc";
     }
 
-    const output = await PostMongooseModel.find(filter)
+    const posts = await PostMongooseModel.find(filter)
       .sort(sortingObj)
       .skip(pageNumber > 0 ? (pageNumber - 1) * pageSize : 0)
       .limit(pageSize > 0 ? pageSize : 0)
@@ -41,13 +41,14 @@ export class PostsQueryRepository {
     const totalCount = await PostMongooseModel.countDocuments(filter);
     const pagesCount = Math.ceil(totalCount / pageSize);
 
+
+
     return {
       pagesCount: pagesCount,
       page: pageNumber,
       pageSize: pageSize,
       totalCount,
-      // @ts-ignore // TODO
-      items: await this.postsMapping(output),
+      items: await this.postsMapping(posts, userId),
     };
   }
 
@@ -127,7 +128,7 @@ export class PostsQueryRepository {
               .sort((a, b) => -a.addedAt.localeCompare(b.addedAt))
               .map((post) => {
                 return {
-                  addedAt: post.addedAt,
+                  addedAt: post.addedAt.toString(),
                   userId: post.userId,
                   login: post.userLogin,
                 };
