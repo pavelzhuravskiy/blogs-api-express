@@ -1,6 +1,6 @@
-import { BlogDBModel } from "../models/database/BlogDBModel";
-import { BlogViewModel } from "../models/view/BlogViewModel";
-import { BlogMongooseModel } from "../schemas/blogSchema";
+import { BlogDBModel } from "../../models/database/BlogDBModel";
+import { BlogViewModel } from "../../models/view/BlogViewModel";
+import { BlogMongooseModel } from "../../domain/BlogSchema";
 import { injectable } from "inversify";
 import { HydratedDocument } from "mongoose";
 

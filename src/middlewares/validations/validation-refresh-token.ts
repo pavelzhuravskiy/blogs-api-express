@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { container } from "../../composition-root";
 import { JwtService } from "../../application/jwt-service";
-import { DevicesService } from "../../domain/devices-service";
+import { DevicesService } from "../../application/devices-service";
 
 const jwtService = container.resolve(JwtService);
 const devicesService = container.resolve(DevicesService);

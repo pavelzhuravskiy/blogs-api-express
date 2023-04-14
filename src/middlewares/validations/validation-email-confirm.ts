@@ -1,6 +1,6 @@
 import { body } from "express-validator";
 import { container } from "../../composition-root";
-import { UsersService } from "../../domain/users-service";
+import { UsersService } from "../../application/users-service";
 
 const usersService = container.resolve(UsersService);
 

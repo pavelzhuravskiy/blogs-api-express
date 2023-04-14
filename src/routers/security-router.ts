@@ -7,7 +7,7 @@ import { DevicesController } from "../controllers/DevicesController";
 
 export const securityRouter = Router({});
 
-const devicesController = container.resolve(DevicesController)
+const devicesController = container.resolve(DevicesController);
 
 securityRouter.get(
   "/devices",

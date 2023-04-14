@@ -1,8 +1,8 @@
-import { Paginator } from "../../models/view/_Paginator";
-import { PostViewModel } from "../../models/view/PostViewModel";
-import { PostMongooseModel } from "../../schemas/postSchema";
+import { Paginator } from "../../../models/view/_Paginator";
+import { PostViewModel } from "../../../models/view/PostViewModel";
+import { PostMongooseModel } from "../../../domain/PostSchema";
 import { FilterQuery, SortOrder } from "mongoose";
-import { PostDBModel } from "../../models/database/PostDBModel";
+import { PostDBModel } from "../../../models/database/PostDBModel";
 import { injectable } from "inversify";
 
 @injectable()

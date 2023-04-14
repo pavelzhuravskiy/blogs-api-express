@@ -9,7 +9,7 @@ import { UsersController } from "../controllers/UsersController";
 
 export const usersRouter = Router({});
 
-const usersController = container.resolve(UsersController)
+const usersController = container.resolve(UsersController);
 
 usersRouter.post(
   "/",

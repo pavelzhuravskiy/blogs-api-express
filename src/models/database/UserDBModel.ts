@@ -1,6 +1,6 @@
 import { ObjectId } from "mongodb";
 
-export class UserDBModel {
+export class IUser {
   constructor(
     public _id: ObjectId,
     public accountData: {

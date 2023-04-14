@@ -1,5 +1,5 @@
 import { RateLimitDBModel } from "../models/database/RateLimitDBModel";
-import { RateLimitsRepository } from "../repositories/rate-limits-repository";
+import { RateLimitsRepository } from "../infrastructure/repositories/rate-limits-repository";
 import { ObjectId } from "mongodb";
 import { inject, injectable } from "inversify";
 

@@ -1,6 +1,6 @@
 import { param } from "express-validator";
 import { container } from "../../../composition-root";
-import { CommentsQueryRepository } from "../../../repositories/query-repos/comments-query-repository";
+import { CommentsQueryRepository } from "../../../infrastructure/repositories/query-repos/comments-query-repository";
 
 const commentsQueryRepository = container.resolve(CommentsQueryRepository);
 

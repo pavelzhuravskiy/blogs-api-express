@@ -3,8 +3,8 @@ import { RequestWithQuery } from "../types/request-types";
 import { QueryModel } from "../models/global/QueryModel";
 import { SortOrder } from "mongoose";
 import { ObjectId } from "mongodb";
-import { UsersService } from "../domain/users-service";
-import { UsersQueryRepository } from "../repositories/query-repos/users-query-repository";
+import { UsersService } from "../application/users-service";
+import { UsersQueryRepository } from "../infrastructure/repositories/query-repos/users-query-repository";
 import { inject, injectable } from "inversify";
 
 @injectable()

@@ -1,10 +1,10 @@
 import { Request, Response } from "express";
-import { UsersService } from "../domain/users-service";
+import { UsersService } from "../application/users-service";
 import { JwtService } from "../application/jwt-service";
-import { DevicesService } from "../domain/devices-service";
-import { AuthService } from "../domain/auth-service";
+import { DevicesService } from "../application/devices-service";
+import { AuthService } from "../application/auth-service";
 import { inject, injectable } from "inversify";
-import {ObjectId} from "mongodb";
+import { ObjectId } from "mongodb";
 
 @injectable()
 export class AuthController {

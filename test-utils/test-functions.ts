@@ -36,10 +36,10 @@ import {
   userPasswordString,
   usersURI,
 } from "./test-strings";
-import { BlogsQueryRepository } from "../src/repositories/query-repos/blogs-query-repository";
-import { PostsQueryRepository } from "../src/repositories/query-repos/posts-query-repository";
-import { UsersQueryRepository } from "../src/repositories/query-repos/users-query-repository";
-import { CommentsQueryRepository } from "../src/repositories/query-repos/comments-query-repository";
+import { BlogsQueryRepository } from "../src/infrastructure/repositories/query-repos/blogs-query-repository";
+import { PostsQueryRepository } from "../src/infrastructure/repositories/query-repos/posts-query-repository";
+import { UsersQueryRepository } from "../src/infrastructure/repositories/query-repos/users-query-repository";
+import { CommentsQueryRepository } from "../src/infrastructure/repositories/query-repos/comments-query-repository";
 import { SortOrder } from "mongoose";
 import { container } from "../src/composition-root";
 

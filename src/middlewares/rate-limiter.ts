@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { container } from "../composition-root";
-import { RateLimitsService } from "../domain/rate-limits-service";
+import { RateLimitsService } from "../application/rate-limits-service";
 
 const rateLimitsService = container.resolve(RateLimitsService);
 

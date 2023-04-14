@@ -1,11 +1,11 @@
-import { CommentViewModel } from "../../models/view/CommentViewModel";
-import { CommentMongooseModel } from "../../schemas/commentSchema";
+import { CommentViewModel } from "../../../models/view/CommentViewModel";
+import { CommentMongooseModel } from "../../../domain/CommentSchema";
 import { FilterQuery, SortOrder } from "mongoose";
-import { Paginator } from "../../models/view/_Paginator";
-import { CommentDBModel } from "../../models/database/CommentDBModel";
+import { Paginator } from "../../../models/view/_Paginator";
+import { CommentDBModel } from "../../../models/database/CommentDBModel";
 import { inject, injectable } from "inversify";
 import { CommentsRepository } from "../comments-repository";
-import {ObjectId} from "mongodb";
+import { ObjectId } from "mongodb";
 
 @injectable()
 export class CommentsQueryRepository {

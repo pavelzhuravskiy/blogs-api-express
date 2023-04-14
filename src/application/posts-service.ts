@@ -1,10 +1,10 @@
 import { ObjectId } from "mongodb";
-import { PostsRepository } from "../repositories/posts-repository";
+import { PostsRepository } from "../infrastructure/repositories/posts-repository";
 import { PostDBModel } from "../models/database/PostDBModel";
 import { PostViewModel } from "../models/view/PostViewModel";
 import { inject, injectable } from "inversify";
 import { UsersService } from "./users-service";
-import { BlogsRepository } from "../repositories/blogs-repository";
+import { BlogsRepository } from "../infrastructure/repositories/blogs-repository";
 
 @injectable()
 export class PostsService {

@@ -1,6 +1,6 @@
 import { param } from "express-validator";
 import { container } from "../../../composition-root";
-import { DevicesService } from "../../../domain/devices-service";
+import { DevicesService } from "../../../application/devices-service";
 
 const devicesService = container.resolve(DevicesService);
 

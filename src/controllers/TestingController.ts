@@ -1,10 +1,10 @@
 import { Request, Response } from "express";
-import { BlogsRepository } from "../repositories/blogs-repository";
-import { PostsRepository } from "../repositories/posts-repository";
-import { UsersRepository } from "../repositories/users-repository";
-import { CommentsRepository } from "../repositories/comments-repository";
-import { DevicesRepository } from "../repositories/devices-repository";
-import { RateLimitsRepository } from "../repositories/rate-limits-repository";
+import { BlogsRepository } from "../infrastructure/repositories/blogs-repository";
+import { PostsRepository } from "../infrastructure/repositories/posts-repository";
+import { UsersRepository } from "../infrastructure/repositories/users-repository";
+import { CommentsRepository } from "../infrastructure/repositories/comments-repository";
+import { DevicesRepository } from "../infrastructure/repositories/devices-repository";
+import { RateLimitsRepository } from "../infrastructure/repositories/rate-limits-repository";
 import { inject, injectable } from "inversify";
 
 @injectable()

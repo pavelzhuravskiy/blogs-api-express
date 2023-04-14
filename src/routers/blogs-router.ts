@@ -4,12 +4,12 @@ import { validationBlogsInput } from "../middlewares/validations/input/validatio
 import { validationErrorCheck } from "../middlewares/validations/_validation-error-check";
 import { validationBlogsFindByParamId } from "../middlewares/validations/find-by-id/validation-blogs-find-by-param-id";
 import { validationPostsInput } from "../middlewares/validations/input/validation-posts-input";
-import {container} from "../composition-root";
-import {BlogsController} from "../controllers/BlogsController";
+import { container } from "../composition-root";
+import { BlogsController } from "../controllers/BlogsController";
 
 export const blogsRouter = Router({});
 
-const blogsController = container.resolve(BlogsController)
+const blogsController = container.resolve(BlogsController);
 
 blogsRouter.post(
   "/",

@@ -1,6 +1,6 @@
-import { RateLimitDBModel } from "../models/database/RateLimitDBModel";
-import { RateLimitMongooseModel } from "../schemas/rateLimitSchema";
-import {injectable} from "inversify";
+import { RateLimitDBModel } from "../../models/database/RateLimitDBModel";
+import { RateLimitMongooseModel } from "../../domain/RateLimitSchema";
+import { injectable } from "inversify";
 
 @injectable()
 export class RateLimitsRepository {
@@ -8,7 +8,10 @@ export class RateLimitsRepository {
     ip: string,
     endpoint: string
   ): Promise<RateLimitDBModel | null> {
-    const foundRateLimit = await RateLimitMongooseModel.findOne({ ip, endpoint });
+    const foundRateLimit = await RateLimitMongooseModel.findOne({
+      ip,
+      endpoint,
+    });
 
     if (!foundRateLimit) {
       return null;

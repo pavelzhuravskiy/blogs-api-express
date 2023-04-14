@@ -1,15 +1,15 @@
 import { Request, Response } from "express";
-import { BlogsService } from "../domain/blogs-service";
+import { BlogsService } from "../application/blogs-service";
 import {
   RequestWithParamsAndQuery,
   RequestWithQuery,
 } from "../types/request-types";
 import { QueryModel } from "../models/global/QueryModel";
-import { BlogsQueryRepository } from "../repositories/query-repos/blogs-query-repository";
+import { BlogsQueryRepository } from "../infrastructure/repositories/query-repos/blogs-query-repository";
 import { SortOrder } from "mongoose";
-import { PostsService } from "../domain/posts-service";
+import { PostsService } from "../application/posts-service";
 import { StringIdModel } from "../models/global/StringIdModel";
-import { PostsQueryRepository } from "../repositories/query-repos/posts-query-repository";
+import { PostsQueryRepository } from "../infrastructure/repositories/query-repos/posts-query-repository";
 import { inject, injectable } from "inversify";
 
 @injectable()

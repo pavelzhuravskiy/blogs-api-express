@@ -1,6 +1,6 @@
 import { body } from "express-validator";
 import { container } from "../../composition-root";
-import { BlogsQueryRepository } from "../../repositories/query-repos/blogs-query-repository";
+import { BlogsQueryRepository } from "../../infrastructure/repositories/query-repos/blogs-query-repository";
 
 const blogsQueryRepository = container.resolve(BlogsQueryRepository);
 

@@ -1,15 +1,13 @@
 import { ObjectId } from "mongodb";
-import { UserDBModel } from "../models/database/UserDBModel";
-import { UserViewModel } from "../models/view/UserViewModel";
-import { UserMongooseModel } from "../schemas/userSchema";
+import { IUser } from "../../models/database/UserDBModel";
+import { UserViewModel } from "../../models/view/UserViewModel";
+import { IUserMethods, UserMongooseModel } from "../../domain/UserSchema";
 import { injectable } from "inversify";
 import { HydratedDocument } from "mongoose";
 
 @injectable()
 export class UsersRepository {
-  async findUserById(
-    _id: ObjectId
-  ): Promise<HydratedDocument<UserDBModel> | null> {
+  async findUserById(_id: ObjectId): Promise<HydratedDocument<IUser> | null> {
     const foundUser = await UserMongooseModel.findOne({ _id });
 
     if (!foundUser) {
@@ -21,21 +19,15 @@ export class UsersRepository {
 
   async findUserByEmailConfirmationCode(
     code: string
-  ): Promise<HydratedDocument<UserDBModel> | null> {
-    const foundUser = await UserMongooseModel.findOne({
+  ): Promise<HydratedDocument<IUser, IUserMethods> | null> {
+    return UserMongooseModel.findOne({
       "emailConfirmation.confirmationCode": code,
     });
-
-    if (!foundUser) {
-      return null;
-    }
-
-    return foundUser;
   }
 
   async findUserByPasswordRecoveryCode(
     recoveryCode: string
-  ): Promise<HydratedDocument<UserDBModel> | null> {
+  ): Promise<HydratedDocument<IUser> | null> {
     const foundUser = await UserMongooseModel.findOne({
       "passwordRecovery.recoveryCode": recoveryCode,
     });
@@ -47,20 +39,19 @@ export class UsersRepository {
     return foundUser;
   }
 
-  async createUser(user: UserDBModel): Promise<UserViewModel> {
-    const insertedUser = await UserMongooseModel.create(user);
+  async createUser(userDTO: IUser): Promise<UserViewModel> {
+    const smartUserModel = new UserMongooseModel(userDTO);
+    await smartUserModel.save();
 
     return {
-      id: insertedUser._id.toString(),
-      login: user.accountData.login,
-      email: user.accountData.email,
-      createdAt: user.accountData.createdAt,
+      id: smartUserModel._id.toString(),
+      login: smartUserModel.accountData.login,
+      email: smartUserModel.accountData.email,
+      createdAt: smartUserModel.accountData.createdAt,
     };
   }
 
-  async findUserByLoginOrEmail(
-    loginOrEmail: string
-  ): Promise<UserDBModel | null> {
+  async findUserByLoginOrEmail(loginOrEmail: string): Promise<IUser | null> {
     const foundUser = await UserMongooseModel.findOne({
       $or: [
         { "accountData.login": loginOrEmail },
@@ -83,14 +74,6 @@ export class UsersRepository {
   async deleteAll(): Promise<boolean> {
     await UserMongooseModel.deleteMany({});
     return (await UserMongooseModel.countDocuments()) === 0;
-  }
-
-  async updateEmailConfirmationStatus(_id: ObjectId) {
-    const result = await UserMongooseModel.updateOne(
-      { _id },
-      { $set: { "emailConfirmation.isConfirmed": true } }
-    );
-    return result.modifiedCount === 1;
   }
 
   async updateEmailConfirmationCode(
@@ -133,5 +116,9 @@ export class UsersRepository {
       }
     );
     return result.modifiedCount === 1;
+  }
+
+  async save(model: any) {
+    return await model.save();
   }
 }

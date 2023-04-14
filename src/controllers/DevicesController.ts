@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { JwtService } from "../application/jwt-service";
-import { DevicesQueryRepository } from "../repositories/query-repos/devices-query-repository";
-import { DevicesService } from "../domain/devices-service";
+import { DevicesQueryRepository } from "../infrastructure/repositories/query-repos/devices-query-repository";
+import { DevicesService } from "../application/devices-service";
 import { inject, injectable } from "inversify";
 
 @injectable()

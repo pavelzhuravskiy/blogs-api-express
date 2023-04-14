@@ -1,6 +1,6 @@
 import { ObjectId } from "mongodb";
-import { DevicesRepository } from "../repositories/devices-repository";
-import { JwtService } from "../application/jwt-service";
+import { DevicesRepository } from "../infrastructure/repositories/devices-repository";
+import { JwtService } from "./jwt-service";
 import { DeviceViewModel } from "../models/view/DeviceViewModel";
 import { DeviceDBModel } from "../models/database/DeviceDBModel";
 import { inject, injectable } from "inversify";

@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
-import { CommentsQueryRepository } from "../repositories/query-repos/comments-query-repository";
-import { CommentsService } from "../domain/comments-service";
+import { CommentsQueryRepository } from "../infrastructure/repositories/query-repos/comments-query-repository";
+import { CommentsService } from "../application/comments-service";
 import { inject, injectable } from "inversify";
-import {ObjectId} from "mongodb";
+import { ObjectId } from "mongodb";
 
 @injectable()
 export class CommentsController {

@@ -1,10 +1,10 @@
 import { ObjectId } from "mongodb";
 import { CommentViewModel } from "../models/view/CommentViewModel";
-import { CommentsRepository } from "../repositories/comments-repository";
+import { CommentsRepository } from "../infrastructure/repositories/comments-repository";
 import { CommentDBModel } from "../models/database/CommentDBModel";
 import { UsersService } from "./users-service";
 import { inject, injectable } from "inversify";
-import { PostsRepository } from "../repositories/posts-repository";
+import { PostsRepository } from "../infrastructure/repositories/posts-repository";
 
 @injectable()
 export class CommentsService {

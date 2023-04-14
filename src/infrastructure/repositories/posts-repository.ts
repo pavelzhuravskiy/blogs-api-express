@@ -1,7 +1,7 @@
-import { PostViewModel } from "../models/view/PostViewModel";
+import { PostViewModel } from "../../models/view/PostViewModel";
 import { ObjectId } from "mongodb";
-import { PostDBModel } from "../models/database/PostDBModel";
-import { PostMongooseModel } from "../schemas/postSchema";
+import { PostDBModel } from "../../models/database/PostDBModel";
+import { PostMongooseModel } from "../../domain/PostSchema";
 import { injectable } from "inversify";
 import { HydratedDocument } from "mongoose";
 

@@ -1,6 +1,6 @@
 import { param } from "express-validator";
 import { container } from "../../../composition-root";
-import { UsersQueryRepository } from "../../../repositories/query-repos/users-query-repository";
+import { UsersQueryRepository } from "../../../infrastructure/repositories/query-repos/users-query-repository";
 
 const usersQueryRepository = container.resolve(UsersQueryRepository);
 

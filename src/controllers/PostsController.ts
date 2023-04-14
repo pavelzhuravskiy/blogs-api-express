@@ -1,16 +1,16 @@
 import { Request, Response } from "express";
-import { PostsService } from "../domain/posts-service";
+import { PostsService } from "../application/posts-service";
 import {
   RequestWithParamsAndQuery,
   RequestWithQuery,
 } from "../types/request-types";
 import { QueryModel } from "../models/global/QueryModel";
-import { PostsQueryRepository } from "../repositories/query-repos/posts-query-repository";
+import { PostsQueryRepository } from "../infrastructure/repositories/query-repos/posts-query-repository";
 import { SortOrder } from "mongoose";
 import { ObjectId } from "mongodb";
-import { CommentsService } from "../domain/comments-service";
+import { CommentsService } from "../application/comments-service";
 import { StringIdModel } from "../models/global/StringIdModel";
-import { CommentsQueryRepository } from "../repositories/query-repos/comments-query-repository";
+import { CommentsQueryRepository } from "../infrastructure/repositories/query-repos/comments-query-repository";
 import { inject, injectable } from "inversify";
 
 @injectable()
@@ -65,9 +65,7 @@ export class PostsController {
   }
 
   async deletePost(req: Request, res: Response) {
-    const isDeleted = await this.postsService.deletePost(
-      req.params.id
-    );
+    const isDeleted = await this.postsService.deletePost(req.params.id);
     if (isDeleted) {
       res.sendStatus(204);
     }

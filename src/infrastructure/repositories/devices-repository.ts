@@ -1,7 +1,7 @@
-import { DeviceMongooseModel } from "../schemas/deviceSchema";
-import { DeviceDBModel } from "../models/database/DeviceDBModel";
-import { DeviceViewModel } from "../models/view/DeviceViewModel";
-import {injectable} from "inversify";
+import { DeviceMongooseModel } from "../../domain/DeviceSchema";
+import { DeviceDBModel } from "../../models/database/DeviceDBModel";
+import { DeviceViewModel } from "../../models/view/DeviceViewModel";
+import { injectable } from "inversify";
 
 @injectable()
 export class DevicesRepository {

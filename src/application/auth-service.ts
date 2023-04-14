@@ -1,13 +1,12 @@
-import { emailManager } from "../managers/email-manager";
+import { emailManager } from "./email-manager";
 import { UserViewModel } from "../models/view/UserViewModel";
 import bcrypt from "bcrypt";
-import { ObjectId } from "mongodb";
 import { randomUUID } from "crypto";
 import { add } from "date-fns";
-import { UsersRepository } from "../repositories/users-repository";
+import { UsersRepository } from "../infrastructure/repositories/users-repository";
 import { UsersService } from "./users-service";
-import { UserDBModel } from "../models/database/UserDBModel";
 import { inject, injectable } from "inversify";
+import { UserMongooseModel } from "../domain/UserSchema";
 
 @injectable()
 export class AuthService {
@@ -22,48 +21,42 @@ export class AuthService {
   ): Promise<UserViewModel | null> {
     const hash = await bcrypt.hash(password, 10);
 
-    const newUser = new UserDBModel(
-      new ObjectId(),
-      {
-        login,
-        password: hash,
-        email,
-        createdAt: new Date().toISOString(),
-        isMembership: false,
-      },
-      {
-        confirmationCode: randomUUID(),
-        expirationDate: add(new Date(), {
-          hours: 1,
-        }),
-        isConfirmed: false,
-      },
-      {
-        recoveryCode: null,
-        expirationDate: null,
-      }
+    const smartUserModel = await UserMongooseModel.makeInstance(
+      login,
+      hash,
+      email
     );
+    const createResult = await this.usersRepository.save(smartUserModel);
 
-    const createResult = await this.usersRepository.createUser(newUser);
     try {
       await emailManager.sendRegistrationEmail(
-        newUser.accountData.email,
-        newUser.emailConfirmation.confirmationCode!
+        smartUserModel.accountData.email,
+        smartUserModel.emailConfirmation.confirmationCode!
       );
     } catch (error) {
       console.error(error);
-      await this.usersRepository.deleteUser(newUser._id);
+      await this.usersRepository.deleteUser(smartUserModel._id);
       return null;
     }
+
     return createResult;
   }
 
   async confirmEmail(code: string): Promise<boolean> {
-    const user = await this.usersService.findUserByEmailConfirmationCode(code);
+    const user = await this.usersRepository.findUserByEmailConfirmationCode(
+      code
+    );
+
     if (!user) {
       return false;
     }
-    return this.usersRepository.updateEmailConfirmationStatus(user._id);
+
+    if (user.canBeConfirmed(code)) {
+      user.confirm(code);
+      return this.usersRepository.save(user);
+    }
+
+    return false;
   }
 
   async resendEmail(email: string): Promise<boolean> {

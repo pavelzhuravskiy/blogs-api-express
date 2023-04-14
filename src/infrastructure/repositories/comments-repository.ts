@@ -1,6 +1,6 @@
-import { CommentViewModel } from "../models/view/CommentViewModel";
-import { CommentDBModel } from "../models/database/CommentDBModel";
-import { CommentMongooseModel } from "../schemas/commentSchema";
+import { CommentViewModel } from "../../models/view/CommentViewModel";
+import { CommentDBModel } from "../../models/database/CommentDBModel";
+import { CommentMongooseModel } from "../../domain/CommentSchema";
 import { injectable } from "inversify";
 import { ObjectId } from "mongodb";
 import { HydratedDocument } from "mongoose";

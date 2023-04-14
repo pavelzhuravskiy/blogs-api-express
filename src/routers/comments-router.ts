@@ -12,7 +12,7 @@ import { CommentsController } from "../controllers/CommentsController";
 
 export const commentsRouter = Router({});
 
-const commentsController = container.resolve(CommentsController)
+const commentsController = container.resolve(CommentsController);
 
 commentsRouter.get(
   "/:id",

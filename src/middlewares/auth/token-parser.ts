@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import { ObjectId } from "mongodb";
 import { container } from "../../composition-root";
 import { JwtService } from "../../application/jwt-service";
-import { UsersService } from "../../domain/users-service";
+import { UsersService } from "../../application/users-service";
 
 const jwtService = container.resolve(JwtService);
 const usersService = container.resolve(UsersService);

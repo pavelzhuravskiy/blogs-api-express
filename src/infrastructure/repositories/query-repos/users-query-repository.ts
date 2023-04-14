@@ -1,7 +1,7 @@
-import { UserDBModel } from "../../models/database/UserDBModel";
-import { Paginator } from "../../models/view/_Paginator";
-import { UserViewModel } from "../../models/view/UserViewModel";
-import { UserMongooseModel } from "../../schemas/userSchema";
+import { IUser } from "../../../models/database/UserDBModel";
+import { Paginator } from "../../../models/view/_Paginator";
+import { UserViewModel } from "../../../models/view/UserViewModel";
+import { UserMongooseModel } from "../../../domain/UserSchema";
 import { FilterQuery, SortOrder } from "mongoose";
 import { injectable } from "inversify";
 
@@ -15,7 +15,7 @@ export class UsersQueryRepository {
     searchLoginTerm?: string,
     searchEmailTerm?: string
   ): Promise<Paginator<UserViewModel[]>> {
-    const filter: FilterQuery<UserDBModel> = {};
+    const filter: FilterQuery<IUser> = {};
 
     if (searchLoginTerm || searchEmailTerm) {
       filter.$or = [];
@@ -74,7 +74,7 @@ export class UsersQueryRepository {
     };
   }
 
-  private async usersMapping(array: UserDBModel[]) {
+  private async usersMapping(array: IUser[]) {
     return array.map((user) => {
       return {
         id: user._id.toString(),

@@ -2,7 +2,7 @@ import express from "express";
 import { blogsRouter } from "./routers/blogs-router";
 import { postsRouter } from "./routers/posts-router";
 import { testingRouter } from "./routers/testing-router";
-import { runDB } from "./repositories/_db-connect";
+import { runDB } from "./infrastructure/repositories/_db-connect";
 import { usersRouter } from "./routers/users-router";
 import { authRouter } from "./routers/auth-router";
 import { commentsRouter } from "./routers/comments-router";
