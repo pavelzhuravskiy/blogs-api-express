@@ -96,7 +96,7 @@ export class BlogsController {
       Number(req.query.pageSize) || 10,
       req.query.sortBy,
       req.query.sortDirection as SortOrder,
-      undefined,
+      req.user?._id,
       req.params.id
     );
     res.json(foundPosts);

@@ -6,6 +6,7 @@ import { validationBlogsFindByParamId } from "../middlewares/validations/find-by
 import { validationPostsInput } from "../middlewares/validations/input/validation-posts-input";
 import { container } from "../composition-root";
 import { BlogsController } from "../controllers/BlogsController";
+import {tokenParser} from "../middlewares/auth/token-parser";
 
 export const blogsRouter = Router({});
 
@@ -64,6 +65,7 @@ blogsRouter.post(
 
 blogsRouter.get(
   "/:id/posts",
+  tokenParser,
   validationBlogsFindByParamId,
   validationErrorCheck,
   blogsController.getPosts.bind(blogsController)
