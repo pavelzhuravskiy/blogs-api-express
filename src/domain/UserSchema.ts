@@ -3,7 +3,7 @@ import { ObjectId } from "mongodb";
 import { randomUUID } from "crypto";
 import { add } from "date-fns";
 
-interface IUser {
+export interface IUser {
   accountData: {
     login: string;
     password: string;

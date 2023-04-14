@@ -1,9 +1,9 @@
-import { IUser } from "../models/database/UserDBModel";
+import { UserDBModel } from "../models/database/UserDBModel";
 
 declare global {
   declare namespace Express {
     export interface Request {
-      user: IUser | null;
+      user: UserDBModel | null;
     }
   }
 }

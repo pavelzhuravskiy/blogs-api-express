@@ -2,7 +2,7 @@ import { ObjectId } from "mongodb";
 import { UserViewModel } from "../models/view/UserViewModel";
 import { UsersRepository } from "../infrastructure/repositories/users-repository";
 import bcrypt from "bcrypt";
-import { IUser } from "../models/database/UserDBModel";
+import { UserDBModel } from "../models/database/UserDBModel";
 import { inject, injectable } from "inversify";
 
 @injectable()
@@ -10,21 +10,21 @@ export class UsersService {
   constructor(
     @inject(UsersRepository) protected usersRepository: UsersRepository
   ) {}
-  async findUserById(_id: ObjectId): Promise<IUser | null> {
+  async findUserById(_id: ObjectId): Promise<UserDBModel | null> {
     return this.usersRepository.findUserById(_id);
   }
 
-  async findUserByLoginOrEmail(loginOrEmail: string): Promise<IUser | null> {
+  async findUserByLoginOrEmail(loginOrEmail: string): Promise<UserDBModel | null> {
     return this.usersRepository.findUserByLoginOrEmail(loginOrEmail);
   }
 
-  async findUserByEmailConfirmationCode(code: string): Promise<IUser | null> {
+  async findUserByEmailConfirmationCode(code: string): Promise<UserDBModel | null> {
     return this.usersRepository.findUserByEmailConfirmationCode(code);
   }
 
   async findUserByPasswordRecoveryCode(
     recoveryCode: string
-  ): Promise<IUser | null> {
+  ): Promise<UserDBModel | null> {
     return this.usersRepository.findUserByPasswordRecoveryCode(recoveryCode);
   }
 
@@ -34,7 +34,7 @@ export class UsersService {
     email: string
   ): Promise<UserViewModel> {
     const hash = await bcrypt.hash(password, 10);
-    const newUser = new IUser(
+    const newUser = new UserDBModel(
       new ObjectId(),
       {
         login,

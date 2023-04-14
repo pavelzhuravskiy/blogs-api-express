@@ -1,4 +1,4 @@
-import { IUser } from "../../../models/database/UserDBModel";
+import { UserDBModel } from "../../../models/database/UserDBModel";
 import { Paginator } from "../../../models/view/_Paginator";
 import { UserViewModel } from "../../../models/view/UserViewModel";
 import { UserMongooseModel } from "../../../domain/UserSchema";
@@ -15,7 +15,7 @@ export class UsersQueryRepository {
     searchLoginTerm?: string,
     searchEmailTerm?: string
   ): Promise<Paginator<UserViewModel[]>> {
-    const filter: FilterQuery<IUser> = {};
+    const filter: FilterQuery<UserDBModel> = {};
 
     if (searchLoginTerm || searchEmailTerm) {
       filter.$or = [];
@@ -74,7 +74,7 @@ export class UsersQueryRepository {
     };
   }
 
-  private async usersMapping(array: IUser[]) {
+  private async usersMapping(array: UserDBModel[]) {
     return array.map((user) => {
       return {
         id: user._id.toString(),

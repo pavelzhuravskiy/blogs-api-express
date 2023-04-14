@@ -1,13 +1,13 @@
 import { ObjectId } from "mongodb";
-import { IUser } from "../../models/database/UserDBModel";
+import { UserDBModel } from "../../models/database/UserDBModel";
 import { UserViewModel } from "../../models/view/UserViewModel";
-import { IUserMethods, UserMongooseModel } from "../../domain/UserSchema";
+import {IUser, IUserMethods, UserMongooseModel} from "../../domain/UserSchema";
 import { injectable } from "inversify";
 import { HydratedDocument } from "mongoose";
 
 @injectable()
 export class UsersRepository {
-  async findUserById(_id: ObjectId): Promise<HydratedDocument<IUser> | null> {
+  async findUserById(_id: ObjectId): Promise<HydratedDocument<UserDBModel> | null> {
     const foundUser = await UserMongooseModel.findOne({ _id });
 
     if (!foundUser) {
@@ -27,7 +27,7 @@ export class UsersRepository {
 
   async findUserByPasswordRecoveryCode(
     recoveryCode: string
-  ): Promise<HydratedDocument<IUser> | null> {
+  ): Promise<HydratedDocument<UserDBModel> | null> {
     const foundUser = await UserMongooseModel.findOne({
       "passwordRecovery.recoveryCode": recoveryCode,
     });
@@ -39,7 +39,7 @@ export class UsersRepository {
     return foundUser;
   }
 
-  async createUser(userDTO: IUser): Promise<UserViewModel> {
+  async createUser(userDTO: UserDBModel): Promise<UserViewModel> {
     const smartUserModel = new UserMongooseModel(userDTO);
     await smartUserModel.save();
 
@@ -51,7 +51,7 @@ export class UsersRepository {
     };
   }
 
-  async findUserByLoginOrEmail(loginOrEmail: string): Promise<IUser | null> {
+  async findUserByLoginOrEmail(loginOrEmail: string): Promise<UserDBModel | null> {
     const foundUser = await UserMongooseModel.findOne({
       $or: [
         { "accountData.login": loginOrEmail },

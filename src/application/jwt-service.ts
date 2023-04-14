@@ -1,13 +1,13 @@
 import jwt from "jsonwebtoken";
 import { settings } from "../settings";
-import { IUser } from "../models/database/UserDBModel";
+import { UserDBModel } from "../models/database/UserDBModel";
 import { randomUUID } from "crypto";
 import { injectable } from "inversify";
 
 @injectable()
 export class JwtService {
   async createAccessTokenJWT(
-    user: IUser | null,
+    user: UserDBModel | null,
     deviceId: string = randomUUID()
   ) {
     const accessToken = jwt.sign(
@@ -21,7 +21,7 @@ export class JwtService {
     return { accessToken };
   }
   async createRefreshTokenJWT(
-    user: IUser | null,
+    user: UserDBModel | null,
     deviceId: string = randomUUID()
   ) {
     return jwt.sign({ userId: user!._id, deviceId }, settings.JWT_SECRET, {
