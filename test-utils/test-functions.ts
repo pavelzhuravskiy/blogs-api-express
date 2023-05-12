@@ -1,5 +1,6 @@
 import { app } from "../src";
 import request from "supertest";
+// import * as request from "supertest";
 import {
   basicAuthKey,
   basicAuthValue,
@@ -42,6 +43,7 @@ import { UsersQueryRepository } from "../src/infrastructure/repositories/query-r
 import { CommentsQueryRepository } from "../src/infrastructure/repositories/query-repos/comments-query-repository";
 import { SortOrder } from "mongoose";
 import { container } from "../src/composition-root";
+import { ObjectId } from "mongodb";
 
 const blogsQueryRepository = container.resolve(BlogsQueryRepository);
 const postsQueryRepository = container.resolve(PostsQueryRepository);
@@ -234,7 +236,7 @@ export const findPosts = async (
     pageSize,
     sortBy,
     sortDirection,
-    blogId
+    new ObjectId(blogId)
   );
 
 // Find posts array length
