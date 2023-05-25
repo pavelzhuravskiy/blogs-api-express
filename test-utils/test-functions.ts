@@ -42,6 +42,7 @@ import { UsersQueryRepository } from "../src/infrastructure/repositories/query-r
 import { CommentsQueryRepository } from "../src/infrastructure/repositories/query-repos/comments-query-repository";
 import { SortOrder } from "mongoose";
 import { container } from "../src/composition-root";
+import { ObjectId } from "mongodb";
 
 const blogsQueryRepository = container.resolve(BlogsQueryRepository);
 const postsQueryRepository = container.resolve(PostsQueryRepository);
@@ -227,7 +228,7 @@ export const findPosts = async (
   pageSize: number = 10,
   sortBy: string = "createdAt",
   sortDirection: SortOrder = "desc",
-  blogId?: string
+  blogId?: ObjectId
 ) =>
   await postsQueryRepository.findPosts(
     pageNumber,
